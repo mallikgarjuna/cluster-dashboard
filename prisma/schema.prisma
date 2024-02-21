@@ -9,3 +9,22 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model Grant {
+  id          Int         @id @default(autoincrement())
+  title       String      @db.VarChar(255)
+  description String      @db.Text
+  status      StatusGrant @default(DRAFT)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+}
+
+enum StatusGrant {
+  DRAFT
+  SUBMITTED
+  AWARDED
+  REJECTED
+  RUNNING_PROJECT
+  DELETED
+  ENDED_PROJECT
+}
