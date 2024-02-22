@@ -32,6 +32,17 @@ const NewGrantPage = () => {
   const [error, setError] = useState("");
   const [isSubmitting, setSubmitting] = useState(false);
 
+  const onSubmit = handleSubmit(async (data) => {
+    try {
+      setSubmitting(true);
+      await axios.post("/api/grants", data);
+      router.push("/grants");
+    } catch (error) {
+      setSubmitting(false);
+      setError("An unexpected error occured.");
+    }
+  });
+
   return (
     <div className="max-w-xl">
       {error && (
@@ -39,19 +50,8 @@ const NewGrantPage = () => {
           <Callout.Text>{error}</Callout.Text>
         </Callout.Root>
       )}
-      <form
-        className=" space-y-2"
-        onSubmit={handleSubmit(async (data) => {
-          try {
-            setSubmitting(true);
-            await axios.post("/api/grants", data);
-            router.push("/grants");
-          } catch (error) {
-            setSubmitting(false);
-            setError("An unexpected error occured.");
-          }
-        })}
-      >
+
+      <form className=" space-y-2" onSubmit={onSubmit}>
         <TextField.Root>
           <TextField.Input placeholder="Title" {...register("title")} />
         </TextField.Root>
