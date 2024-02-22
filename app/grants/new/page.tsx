@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, Callout, TextField } from "@radix-ui/themes";
+import { Button, Callout, Text, TextField } from "@radix-ui/themes";
 import SimpleMDE from "react-simplemde-editor";
 // import dynamic from "next/dynamic";
 // const SimpleMDE = dynamic(() => import("react-simplemde-editor"), {
@@ -11,15 +11,22 @@ import { useForm, Controller } from "react-hook-form";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { createGrantSchema } from "@/app/validationSchemas";
+import { z } from "zod";
 
-interface GrantForm {
-  title: string;
-  description: string;
-}
+type GrantForm = z.infer<typeof createGrantSchema>;
 
 const NewGrantPage = () => {
   const router = useRouter();
-  const { register, control, handleSubmit } = useForm<GrantForm>();
+  const {
+    register,
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<GrantForm>({
+    resolver: zodResolver(createGrantSchema),
+  });
   const [error, setError] = useState("");
 
   return (
@@ -43,6 +50,11 @@ const NewGrantPage = () => {
         <TextField.Root>
           <TextField.Input placeholder="Title" {...register("title")} />
         </TextField.Root>
+        {errors.title && (
+          <Text color="red" as="p">
+            {errors.title.message}
+          </Text>
+        )}
         <Controller
           name="description"
           control={control}
@@ -50,6 +62,11 @@ const NewGrantPage = () => {
             <SimpleMDE placeholder="Description" {...field} />
           )}
         />
+        {errors.description && (
+          <Text color="red" as="p">
+            {errors.description.message}
+          </Text>
+        )}
 
         <Button>Submit New Grant</Button>
       </form>
