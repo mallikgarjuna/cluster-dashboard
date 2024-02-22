@@ -15,6 +15,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { createGrantSchema } from "@/app/validationSchemas";
 import { z } from "zod";
 import ErrorMessage from "@/app/components/ErrorMessage";
+import Spinner from "@/app/components/Spinner";
 
 type GrantForm = z.infer<typeof createGrantSchema>;
 
@@ -29,6 +30,7 @@ const NewGrantPage = () => {
     resolver: zodResolver(createGrantSchema),
   });
   const [error, setError] = useState("");
+  const [isSubmitting, setSubmitting] = useState(false);
 
   return (
     <div className="max-w-xl">
@@ -41,9 +43,11 @@ const NewGrantPage = () => {
         className=" space-y-2"
         onSubmit={handleSubmit(async (data) => {
           try {
+            setSubmitting(true);
             await axios.post("/api/grants", data);
             router.push("/grants");
           } catch (error) {
+            setSubmitting(false);
             setError("An unexpected error occured.");
           }
         })}
@@ -61,7 +65,9 @@ const NewGrantPage = () => {
         />
         {<ErrorMessage>{errors.description?.message}</ErrorMessage>}
 
-        <Button>Submit New Grant</Button>
+        <Button disabled={isSubmitting}>
+          Submit New Grant {isSubmitting && <Spinner />}
+        </Button>
       </form>
     </div>
   );
