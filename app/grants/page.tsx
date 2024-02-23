@@ -2,6 +2,7 @@ import { Button, Table } from "@radix-ui/themes";
 import Link from "next/link";
 import React from "react";
 import prisma from "@/prisma/client";
+import GrantStatusBadge from "../components/GrantStatusBadge";
 
 const GrantsPage = async () => {
   const grants = await prisma.grant.findMany();
@@ -30,10 +31,12 @@ const GrantsPage = async () => {
             <Table.Row key={grant.id}>
               <Table.Cell>
                 {grant.title}
-                <div className="block md:hidden">{grant.status}</div>
+                <div className="block md:hidden">
+                  <GrantStatusBadge status={grant.status} />
+                </div>
               </Table.Cell>
               <Table.Cell className="hidden md:table-cell">
-                {grant.status}
+                <GrantStatusBadge status={grant.status} />
               </Table.Cell>
               <Table.Cell className="hidden md:table-cell">
                 {grant.createdAt.toDateString()}
