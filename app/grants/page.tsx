@@ -1,15 +1,11 @@
-import { Button, Table } from "@radix-ui/themes";
+import { Table } from "@radix-ui/themes";
 // import Link from "next/link";
-import Link from "../components/Link";
-import React from "react";
 import prisma from "@/prisma/client";
-import GrantStatusBadge from "../components/GrantStatusBadge";
-import delay from "delay";
+import { Link, GrantStatusBadge } from "@/app/components";
 import GrantActions from "./GrantActions";
 
 const GrantsPage = async () => {
   const grants = await prisma.grant.findMany();
-  await delay(2000);
 
   return (
     <div>
