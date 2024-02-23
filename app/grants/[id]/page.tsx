@@ -1,13 +1,15 @@
 import React from "react";
 import prisma from "@/prisma/client";
 import { notFound } from "next/navigation";
+import { Card, Flex, Heading, Text } from "@radix-ui/themes";
+import GrantStatusBadge from "@/app/components/GrantStatusBadge";
 
 interface Props {
   params: { id: string };
 }
 
 const GrantDetailPage = async ({ params }: Props) => {
-  if (typeof params.id !== "number") notFound();
+  if (typeof parseInt(params.id) !== "number") notFound();
 
   const grant = await prisma.grant.findUnique({
     where: { id: parseInt(params.id) },
@@ -17,10 +19,14 @@ const GrantDetailPage = async ({ params }: Props) => {
 
   return (
     <div>
-      <p>{grant.title}</p>
-      <p>{grant.description}</p>
-      <p>{grant.status}</p>
-      <p>{grant.updatedAt.toDateString()}</p>
+      <Heading>{grant.title}</Heading>
+      <Flex gap="3" my="2">
+        <GrantStatusBadge status={grant.status} />
+        <Text>{grant.updatedAt.toDateString()}</Text>
+      </Flex>
+      <Card>
+        <p>{grant.description}</p>
+      </Card>
     </div>
   );
 };
