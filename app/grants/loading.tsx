@@ -1,15 +1,12 @@
-import { Button, Table } from "@radix-ui/themes";
-import Link from "next/link";
+import { Table } from "@radix-ui/themes";
 import React from "react";
-import prisma from "@/prisma/client";
 import GrantStatusBadge from "../components/GrantStatusBadge";
-import delay from "delay";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 import GrantActions from "./GrantActions";
 
-const GrantsPage = async () => {
-  const grants = await prisma.grant.findMany();
-  await delay(2000);
-
+const LoadingGrantsPage = () => {
+  const grants = [1, 2, 3, 4, 5];
   return (
     <div>
       <GrantActions />
@@ -27,18 +24,18 @@ const GrantsPage = async () => {
         </Table.Header>
         <Table.Body>
           {grants.map((grant) => (
-            <Table.Row key={grant.id}>
+            <Table.Row key={grant}>
               <Table.Cell>
-                {grant.title}
+                <Skeleton />
                 <div className="block md:hidden">
-                  <GrantStatusBadge status={grant.status} />
+                  <Skeleton />
                 </div>
               </Table.Cell>
               <Table.Cell className="hidden md:table-cell">
-                <GrantStatusBadge status={grant.status} />
+                <Skeleton />
               </Table.Cell>
               <Table.Cell className="hidden md:table-cell">
-                {grant.createdAt.toDateString()}
+                <Skeleton />
               </Table.Cell>
             </Table.Row>
           ))}
@@ -48,4 +45,4 @@ const GrantsPage = async () => {
   );
 };
 
-export default GrantsPage;
+export default LoadingGrantsPage;
