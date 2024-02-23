@@ -29,7 +29,7 @@ const GrantsPage = async () => {
           {grants.map((grant) => (
             <Table.Row key={grant.id}>
               <Table.Cell>
-                {grant.title}
+                <Link href={`/grants/${grant.id}`}>{grant.title}</Link>
                 <div className="block md:hidden">
                   <GrantStatusBadge status={grant.status} />
                 </div>
