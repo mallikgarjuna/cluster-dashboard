@@ -27,7 +27,7 @@ const GrantDetailPage = async ({ params }: Props) => {
       <Box>
         <Flex direction="column" gap="2">
           <EditGrantButton grantId={grant.id} />
-          <DeleteGrantButton />
+          <DeleteGrantButton grantId={grant.id} />
         </Flex>
       </Box>
     </Grid>

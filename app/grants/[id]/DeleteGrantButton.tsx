@@ -1,8 +1,15 @@
 "use client";
 import { AlertDialog, Button, Flex } from "@radix-ui/themes";
+import axios from "axios";
+import { useRouter } from "next/navigation";
 import React from "react";
 
-const DeleteGrantButton = () => {
+interface Props {
+  grantId: number;
+}
+
+const DeleteGrantButton = ({ grantId }: Props) => {
+  const router = useRouter();
   return (
     <AlertDialog.Root>
       <AlertDialog.Trigger>
@@ -21,7 +28,16 @@ const DeleteGrantButton = () => {
             </Button>
           </AlertDialog.Cancel>
           <AlertDialog.Action>
-            <Button color="red">Delete Grant</Button>
+            <Button
+              color="red"
+              onClick={async () => {
+                await axios.delete(`/api/grants/${grantId}`);
+                router.push("/grants");
+                router.refresh();
+              }}
+            >
+              Delete Grant
+            </Button>
           </AlertDialog.Action>
         </Flex>
       </AlertDialog.Content>
