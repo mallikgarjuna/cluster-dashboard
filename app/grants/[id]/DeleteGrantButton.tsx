@@ -1,4 +1,5 @@
 "use client";
+import { Spinner } from "@/app/components";
 import { AlertDialog, Button, Flex } from "@radix-ui/themes";
 import axios from "axios";
 import { useRouter } from "next/navigation";
@@ -11,15 +12,18 @@ interface Props {
 const DeleteGrantButton = ({ grantId }: Props) => {
   const router = useRouter();
   const [error, setError] = useState(false);
+  const [isDeleting, setDeleting] = useState(false);
 
   const deleteGrant = async () => {
     try {
       // to simuate error
       // throw new Error();
+      setDeleting(true);
       await axios.delete(`/api/grants/${grantId}`);
       router.push("/grants");
       router.refresh();
     } catch (error) {
+      setDeleting(false);
       setError(true);
     }
   };
@@ -28,7 +32,10 @@ const DeleteGrantButton = ({ grantId }: Props) => {
     <>
       <AlertDialog.Root>
         <AlertDialog.Trigger>
-          <Button color="red">Delete Grant</Button>
+          <Button color="red" disabled={isDeleting}>
+            Delete Grant
+            {isDeleting && <Spinner />}
+          </Button>
         </AlertDialog.Trigger>
         <AlertDialog.Content>
           <AlertDialog.Title>Confirm Deletetion</AlertDialog.Title>

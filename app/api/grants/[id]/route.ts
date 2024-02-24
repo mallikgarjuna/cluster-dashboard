@@ -1,7 +1,6 @@
 import { GrantSchema } from "@/app/validationSchemas";
-import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/prisma/client";
-import { notFound } from "next/navigation";
+import { NextRequest, NextResponse } from "next/server";
 
 interface Props {
   params: { id: string };
@@ -30,6 +29,9 @@ export async function PATCH(request: NextRequest, { params }: Props) {
 }
 
 export async function DELETE(request: NextRequest, { params }: Props) {
+  // To simulate delay for deleting and loading spinner:
+  // await delay(2000);
+
   const grant = await prisma.grant.findUnique({
     where: { id: parseInt(params.id) },
   });
