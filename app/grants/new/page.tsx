@@ -1,5 +1,12 @@
-import React from "react";
-import GrantForm from "../_components/GrantForm";
+import dynamic from "next/dynamic";
+import GrantFormSkeleton from "./loading";
+
+// import GrantForm from "../_components/GrantForm";
+// lazyloading
+const GrantForm = dynamic(() => import("@/app/grants/_components/GrantForm"), {
+  ssr: false,
+  loading: () => <GrantFormSkeleton />,
+});
 
 const NewGrantPage = () => {
   return <GrantForm />;
