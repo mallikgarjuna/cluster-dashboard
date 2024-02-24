@@ -41,7 +41,8 @@ const GrantForm = ({ grant }: Props) => {
   const onSubmit = handleSubmit(async (data) => {
     try {
       setSubmitting(true);
-      await axios.post("/api/grants", data);
+      if (grant) await axios.patch(`/api/grants/${grant.id}`, data);
+      else await axios.post("/api/grants", data);
       router.push("/grants");
     } catch (error) {
       setSubmitting(false);
@@ -77,7 +78,8 @@ const GrantForm = ({ grant }: Props) => {
         {<ErrorMessage>{errors.description?.message}</ErrorMessage>}
 
         <Button disabled={isSubmitting}>
-          Submit New Grant {isSubmitting && <Spinner />}
+          {grant ? "Update Grant" : "Submit New Grant "}{" "}
+          {isSubmitting && <Spinner />}
         </Button>
       </form>
     </div>
