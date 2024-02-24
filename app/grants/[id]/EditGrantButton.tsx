@@ -10,7 +10,7 @@ const EditGrantButton = ({ grantId }: Props) => {
   return (
     <Button>
       <Pencil2Icon />
-      <Link href={`/grants/${grantId}/edit`}>Edit Grant</Link>
+      <Link href={`/grants/edit/${grantId}`}>Edit Grant</Link>
     </Button>
   );
 };

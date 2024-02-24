@@ -44,7 +44,7 @@ const GrantForm = ({ grant }: Props) => {
       setSubmitting(true);
       if (grant) await axios.patch(`/api/grants/${grant.id}`, data);
       else await axios.post("/api/grants", data);
-      router.push("/grants");
+      router.push("/grants/list");
       router.refresh();
     } catch (error) {
       setSubmitting(false);
