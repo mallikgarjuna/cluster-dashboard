@@ -44,6 +44,7 @@ const GrantForm = ({ grant }: Props) => {
       if (grant) await axios.patch(`/api/grants/${grant.id}`, data);
       else await axios.post("/api/grants", data);
       router.push("/grants");
+      router.refresh();
     } catch (error) {
       setSubmitting(false);
       setError("An unexpected error occured.");
