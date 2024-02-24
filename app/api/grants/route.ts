@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/prisma/client";
-import { createGrantSchema } from "../../validationSchemas";
+import { GrantSchema } from "../../validationSchemas";
 
 export async function POST(request: NextRequest) {
   const body = await request.json();
-  const validation = createGrantSchema.safeParse(body);
+  const validation = GrantSchema.safeParse(body);
   if (!validation.success)
     return NextResponse.json(validation.error.format(), { status: 400 });
   // 400: Bad request, meaning: the client sent invalid data

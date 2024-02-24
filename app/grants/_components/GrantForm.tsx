@@ -12,14 +12,14 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { createGrantSchema } from "@/app/validationSchemas";
+import { GrantSchema } from "@/app/validationSchemas";
 import { z } from "zod";
 import ErrorMessage from "@/app/components/ErrorMessage";
 import Spinner from "@/app/components/Spinner";
 import delay from "delay";
 import { Grant } from "@prisma/client";
 
-type GrantFormData = z.infer<typeof createGrantSchema>;
+type GrantFormData = z.infer<typeof GrantSchema>;
 
 interface Props {
   grant?: Grant;
@@ -33,7 +33,7 @@ const GrantForm = ({ grant }: Props) => {
     handleSubmit,
     formState: { errors },
   } = useForm<GrantFormData>({
-    resolver: zodResolver(createGrantSchema),
+    resolver: zodResolver(GrantSchema),
   });
   const [error, setError] = useState("");
   const [isSubmitting, setSubmitting] = useState(false);
