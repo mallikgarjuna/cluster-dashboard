@@ -1,4 +1,5 @@
 "use client";
+
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React from "react";
@@ -15,6 +16,7 @@ import {
 } from "@radix-ui/themes";
 import { useSession } from "next-auth/react";
 import { CaretDownIcon } from "@radix-ui/react-icons";
+import { Skeleton } from "@/app/components";
 
 const NavBar = () => {
   return (
@@ -65,7 +67,7 @@ const AuthStatus = () => {
   const { data: session, status } = useSession();
   // console.log(status);
 
-  if (status === "loading") return null;
+  if (status === "loading") return <Skeleton width="4rem" />;
 
   if (status === "unauthenticated")
     return (
