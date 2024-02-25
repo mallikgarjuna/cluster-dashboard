@@ -1,0 +1,20 @@
+
+Notes Created on [2024.02.25.Sun]
+- add .txt to .ignore, before creating this file
+
+- bought: clusterdashboard.com domain on NameSilo
+    - for 1 year; [2024.02.25.Sun]
+
+- CodeWithMosh Nextjs part-1:
+    Sending Emails with React Email and Resend:
+    https://members.codewithmosh.com/courses/2178940/lectures/49120516;
+
+- Resend w/ Supabase: 
+    - Configure Custom SMTP For Supabase Auth With Resend
+    https://www.youtube.com/watch?v=5T0SpSvptQ0
+
+- 10 minutes | Complete Setup with Next.js, Resend, React-Email, Custom Domain
+    https://www.youtube.com/watch?v=fEeksraKfJI
+
+- Easily Deploy To Vercel With A Custom Domain
+    https://www.youtube.com/watch?v=MCvCHWJ1uHk

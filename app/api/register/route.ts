@@ -1,0 +1,42 @@
+import { NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
+import prisma from "@/prisma/client";
+import bcrypt from "bcrypt";
+
+const UserRegistrationSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(5),
+});
+
+export async function POST(request: NextRequest) {
+  const body = await request.json();
+
+  // In body, we have to make sure that we've a valid email and pswd
+  // use zod
+  const validation = UserRegistrationSchema.safeParse(body);
+  if (!validation.success)
+    return NextResponse.json(validation.error.errors, { status: 400 });
+  // 400 = invalid request
+
+  // if valid, make sure that we don't have a user w/ same email
+  const user = await prisma.user.findUnique({
+    where: { email: body.email },
+  });
+
+  if (user)
+    return NextResponse.json({ error: "User already exists" }, { status: 400 });
+
+  // if user doesn' exist, create a user
+  // to do that, first we have to hash the password using bcrypt
+  const hashedPassword = await bcrypt.hash(body.password, 10);
+  const newUser = await prisma.user.create({
+    data: {
+      email: body.email,
+      hashedPassword,
+    },
+  });
+
+  //   Finally return a basic response to the client
+  //   obvisouly, don't return the hashedpwd for security reasons
+  return NextResponse.json({ email: newUser.email });
+}
