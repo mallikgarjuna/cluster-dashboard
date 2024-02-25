@@ -6,6 +6,7 @@ import GrantDetails from "./GrantDetails";
 import DeleteGrantButton from "./DeleteGrantButton";
 import { getServerSession } from "next-auth";
 import authOptions from "@/app/auth/authOptions";
+import AssigneeSelect from "./AssigneeSelect";
 
 interface Props {
   params: { id: string };
@@ -30,6 +31,7 @@ const GrantDetailPage = async ({ params }: Props) => {
       {session && (
         <Box>
           <Flex direction="column" gap="2">
+            <AssigneeSelect />
             <EditGrantButton grantId={grant.id} />
             <DeleteGrantButton grantId={grant.id} />
           </Flex>
