@@ -1,5 +1,7 @@
+import authOptions from "@/app/auth/authOptions";
 import { GrantSchema } from "@/app/validationSchemas";
 import prisma from "@/prisma/client";
+import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 
 interface Props {
@@ -7,6 +9,10 @@ interface Props {
 }
 
 export async function PATCH(request: NextRequest, { params }: Props) {
+  const session = await getServerSession(authOptions);
+  if (!session) return NextResponse.json({}, { status: 401 });
+  // 401 == unauthorized
+
   const body = await request.json();
   const validation = GrantSchema.safeParse(body);
   if (!validation.success)
@@ -29,6 +35,10 @@ export async function PATCH(request: NextRequest, { params }: Props) {
 }
 
 export async function DELETE(request: NextRequest, { params }: Props) {
+  const session = await getServerSession(authOptions);
+  if (!session) return NextResponse.json({}, { status: 401 });
+  // 401 == unauthorized
+
   // To simulate delay for deleting and loading spinner:
   // await delay(2000);
 

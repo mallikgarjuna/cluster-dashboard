@@ -4,12 +4,15 @@ import { notFound } from "next/navigation";
 import EditGrantButton from "./EditGrantButton";
 import GrantDetails from "./GrantDetails";
 import DeleteGrantButton from "./DeleteGrantButton";
+import { getServerSession } from "next-auth";
+import authOptions from "@/app/auth/authOptions";
 
 interface Props {
   params: { id: string };
 }
 
 const GrantDetailPage = async ({ params }: Props) => {
+  const session = await getServerSession(authOptions);
   if (typeof parseInt(params.id) !== "number") notFound();
 
   const grant = await prisma.grant.findUnique({
@@ -24,12 +27,14 @@ const GrantDetailPage = async ({ params }: Props) => {
       <Box className="md:col-span-4">
         <GrantDetails grant={grant} />
       </Box>
-      <Box>
-        <Flex direction="column" gap="2">
-          <EditGrantButton grantId={grant.id} />
-          <DeleteGrantButton grantId={grant.id} />
-        </Flex>
-      </Box>
+      {session && (
+        <Box>
+          <Flex direction="column" gap="2">
+            <EditGrantButton grantId={grant.id} />
+            <DeleteGrantButton grantId={grant.id} />
+          </Flex>
+        </Box>
+      )}
     </Grid>
   );
 };
