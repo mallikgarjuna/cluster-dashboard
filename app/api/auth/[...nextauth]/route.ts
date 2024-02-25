@@ -17,6 +17,7 @@ const handler = NextAuth({
           placeholder: "Password",
         },
       },
+
       async authorize(credentials, req) {
         if (!credentials?.email || !credentials?.password) return null;
 
@@ -35,6 +36,9 @@ const handler = NextAuth({
       },
     }),
   ],
+  session: {
+    strategy: "jwt",
+  },
 });
 
 export { handler as GET, handler as POST };

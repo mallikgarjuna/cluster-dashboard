@@ -4,12 +4,21 @@ import { usePathname } from "next/navigation";
 import React from "react";
 import { GrCluster } from "react-icons/gr";
 import classnames from "classnames";
-import { Box, Container, Flex } from "@radix-ui/themes";
+import {
+  Avatar,
+  Box,
+  Button,
+  Container,
+  DropdownMenu,
+  Flex,
+  Text,
+} from "@radix-ui/themes";
 import { useSession } from "next-auth/react";
 
 const NavBar = () => {
   const currentPath = usePathname();
   const { data: session, status } = useSession();
+  // console.log(status);
 
   const links = [
     { label: "Dashboard", href: "/" },
@@ -44,7 +53,26 @@ const NavBar = () => {
 
           <Box>
             {status === "authenticated" && (
-              <Link href="/api/auth/signout">Log out</Link>
+              <DropdownMenu.Root>
+                <DropdownMenu.Trigger>
+                  <Button variant="soft">{session.user?.email}</Button>
+                  {/* Image doesn't exist for credentials login, so use email text display */}
+                  {/* <Avatar
+                    src={session.user!.image!}
+                    fallback="?"
+                    size="2"
+                    radius="full"
+                  /> */}
+                </DropdownMenu.Trigger>
+                <DropdownMenu.Content>
+                  <DropdownMenu.Label>
+                    <Text size="2">{session.user!.email}</Text>
+                  </DropdownMenu.Label>
+                  <DropdownMenu.Item>
+                    <Link href="/api/auth/signout">Log out</Link>
+                  </DropdownMenu.Item>
+                </DropdownMenu.Content>
+              </DropdownMenu.Root>
             )}
             {status === "unauthenticated" && (
               <Link href="/api/auth/signin">Log in</Link>
