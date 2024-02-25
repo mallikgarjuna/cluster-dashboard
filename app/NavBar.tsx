@@ -4,9 +4,13 @@ import { usePathname } from "next/navigation";
 import React from "react";
 import { GrCluster } from "react-icons/gr";
 import classnames from "classnames";
+import { Box } from "@radix-ui/themes";
+import { useSession } from "next-auth/react";
 
 const NavBar = () => {
   const currentPath = usePathname();
+  const { data: session, status } = useSession();
+
   const links = [
     { label: "Dashboard", href: "/" },
     { label: "Grants", href: "/grants/list" },
@@ -33,6 +37,14 @@ const NavBar = () => {
           </li>
         ))}
       </ul>
+      <Box>
+        {status === "authenticated" && (
+          <Link href="/api/auth/signout">Log out</Link>
+        )}
+        {status === "unauthenticated" && (
+          <Link href="/api/auth/signin">Log in</Link>
+        )}
+      </Box>
     </nav>
   );
 };
