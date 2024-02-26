@@ -1,11 +1,10 @@
 "use client";
 
+import { Skeleton } from "@/app/components";
 import { Grant, User } from "@prisma/client";
 import { Select } from "@radix-ui/themes";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import React, { useEffect, useState } from "react";
-import { Skeleton } from "@/app/components";
 import toast, { Toaster } from "react-hot-toast";
 
 interface Props {
@@ -13,16 +12,7 @@ interface Props {
 }
 
 const AssigneeSelect = ({ grant }: Props) => {
-  const {
-    data: users,
-    error,
-    isLoading,
-  } = useQuery<User[]>({
-    queryKey: ["users"],
-    queryFn: () => axios.get("/api/users").then((res) => res.data),
-    staleTime: 60 * 1000, //60s
-    retry: 3,
-  });
+  const { data: users, error, isLoading } = useUsers();
 
   if (isLoading) return <Skeleton />;
   if (error) return null;
@@ -37,17 +27,19 @@ const AssigneeSelect = ({ grant }: Props) => {
   //     fetchUsers();
   //   }, []);
 
+  const assignGrant = (userId: string) => {
+    axios
+      .patch("/api/grants/" + grant.id, {
+        assignedToUserId: userId === "unassigned" ? null : userId,
+      })
+      .catch(() => toast.error("Changes could not be saved."));
+  };
+
   return (
     <>
       <Select.Root
         defaultValue={grant.assignedToUserId || "unassigned"}
-        onValueChange={(userId) => {
-          axios
-            .patch("/api/grants/" + grant.id, {
-              assignedToUserId: userId === "unassigned" ? null : userId,
-            })
-            .catch(() => toast.error("Changes could not be saved."));
-        }}
+        onValueChange={assignGrant}
       >
         <Select.Trigger placeholder="Assign user..." />
         <Select.Content>
@@ -66,5 +58,13 @@ const AssigneeSelect = ({ grant }: Props) => {
     </>
   );
 };
+
+const useUsers = () =>
+  useQuery<User[]>({
+    queryKey: ["users"],
+    queryFn: () => axios.get("/api/users").then((res) => res.data),
+    staleTime: 60 * 1000, //60s
+    retry: 3,
+  });
 
 export default AssigneeSelect;
