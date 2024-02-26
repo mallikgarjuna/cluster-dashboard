@@ -31,7 +31,7 @@ const GrantDetailPage = async ({ params }: Props) => {
       {session && (
         <Box>
           <Flex direction="column" gap="2">
-            <AssigneeSelect />
+            <AssigneeSelect grant={grant} />
             <EditGrantButton grantId={grant.id} />
             <DeleteGrantButton grantId={grant.id} />
           </Flex>

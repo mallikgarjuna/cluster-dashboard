@@ -1,13 +1,17 @@
 "use client";
 
-import { User } from "@prisma/client";
+import { Grant, User } from "@prisma/client";
 import { Select } from "@radix-ui/themes";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Skeleton } from "@/app/components";
 
-const AssigneeSelect = () => {
+interface Props {
+  grant: Grant;
+}
+
+const AssigneeSelect = ({ grant }: Props) => {
   const {
     data: users,
     error,
@@ -33,11 +37,19 @@ const AssigneeSelect = () => {
   //   }, []);
 
   return (
-    <Select.Root>
+    <Select.Root
+      defaultValue={grant.assignedToUserId || "unassigned"}
+      onValueChange={(userId) => {
+        axios.patch("/api/grants/" + grant.id, {
+          assignedToUserId: userId === "unassigned" ? null : userId,
+        });
+      }}
+    >
       <Select.Trigger placeholder="Assign user..." />
       <Select.Content>
         <Select.Group>
           <Select.Label>Suggestions</Select.Label>
+          <Select.Item value="unassigned">Unassigned</Select.Item>
           {users?.map((user) => (
             <Select.Item key={user.id} value={user.id}>
               {user.name}
