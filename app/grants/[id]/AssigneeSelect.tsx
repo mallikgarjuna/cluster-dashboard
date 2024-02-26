@@ -6,6 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Skeleton } from "@/app/components";
+import toast, { Toaster } from "react-hot-toast";
 
 interface Props {
   grant: Grant;
@@ -37,27 +38,32 @@ const AssigneeSelect = ({ grant }: Props) => {
   //   }, []);
 
   return (
-    <Select.Root
-      defaultValue={grant.assignedToUserId || "unassigned"}
-      onValueChange={(userId) => {
-        axios.patch("/api/grants/" + grant.id, {
-          assignedToUserId: userId === "unassigned" ? null : userId,
-        });
-      }}
-    >
-      <Select.Trigger placeholder="Assign user..." />
-      <Select.Content>
-        <Select.Group>
-          <Select.Label>Suggestions</Select.Label>
-          <Select.Item value="unassigned">Unassigned</Select.Item>
-          {users?.map((user) => (
-            <Select.Item key={user.id} value={user.id}>
-              {user.name}
-            </Select.Item>
-          ))}
-        </Select.Group>
-      </Select.Content>
-    </Select.Root>
+    <>
+      <Select.Root
+        defaultValue={grant.assignedToUserId || "unassigned"}
+        onValueChange={(userId) => {
+          axios
+            .patch("/api/grants/" + grant.id, {
+              assignedToUserId: userId === "unassigned" ? null : userId,
+            })
+            .catch(() => toast.error("Changes could not be saved."));
+        }}
+      >
+        <Select.Trigger placeholder="Assign user..." />
+        <Select.Content>
+          <Select.Group>
+            <Select.Label>Suggestions</Select.Label>
+            <Select.Item value="unassigned">Unassigned</Select.Item>
+            {users?.map((user) => (
+              <Select.Item key={user.id} value={user.id}>
+                {user.name}
+              </Select.Item>
+            ))}
+          </Select.Group>
+        </Select.Content>
+      </Select.Root>
+      <Toaster />
+    </>
   );
 };
 
