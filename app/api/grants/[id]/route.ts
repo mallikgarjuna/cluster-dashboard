@@ -1,5 +1,5 @@
 import authOptions from "@/app/auth/authOptions";
-import { GrantSchema } from "@/app/validationSchemas";
+import { patchGrantSchema } from "@/app/validationSchemas";
 import prisma from "@/prisma/client";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
@@ -14,11 +14,24 @@ export async function PATCH(request: NextRequest, { params }: Props) {
   // 401 == unauthorized
 
   const body = await request.json();
-  const validation = GrantSchema.safeParse(body);
+  const validation = patchGrantSchema.safeParse(body);
   if (!validation.success)
     return NextResponse.json(validation.error.format(), { status: 400 });
   // 400: Bad request, meaning: the client sent invalid data
 
+  // Validating assignedToUserId:
+  // If the body has a assignedToUserId, make sure its a valid user;
+  if (body.assignedToUserId) {
+    const user = await prisma.user.findUnique({
+      where: { id: body.assignedToUserId },
+    });
+
+    if (!user)
+      return NextResponse.json({ error: "Invalid user." }, { status: 400 });
+  }
+
+  // Validating grant:
+  // Make sure that client is updating a valid grant
   const grant = await prisma.grant.findUnique({
     where: { id: parseInt(params.id) },
   });
@@ -28,7 +41,11 @@ export async function PATCH(request: NextRequest, { params }: Props) {
 
   const updatedGrant = await prisma.grant.update({
     where: { id: grant.id },
-    data: { title: body.title, description: body.description },
+    data: {
+      title: body.title,
+      description: body.description,
+      assignedToUserId: body.assignedToUserId,
+    },
   });
 
   return NextResponse.json(updatedGrant);
