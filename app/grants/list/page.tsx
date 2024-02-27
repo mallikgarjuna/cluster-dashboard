@@ -3,9 +3,22 @@ import { Table } from "@radix-ui/themes";
 import prisma from "@/prisma/client";
 import { Link, GrantStatusBadge } from "@/app/components";
 import GrantActions from "./GrantActions";
+import { StatusGrant } from "@prisma/client";
 
-const GrantsPage = async () => {
-  const grants = await prisma.grant.findMany();
+interface Props {
+  searchParams: { status: StatusGrant }; // an obj w/ prop called 'status'
+}
+
+const GrantsPage = async ({ searchParams }: Props) => {
+  // validate the status param
+  const statuses = Object.values(StatusGrant);
+  const status = statuses.includes(searchParams.status)
+    ? searchParams.status
+    : undefined;
+
+  const grants = await prisma.grant.findMany({
+    where: { status: status },
+  });
 
   return (
     <div>

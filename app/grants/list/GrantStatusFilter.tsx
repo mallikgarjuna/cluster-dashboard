@@ -2,13 +2,14 @@
 
 import { StatusGrant } from "@prisma/client";
 import { Select } from "@radix-ui/themes";
+import { useRouter } from "next/navigation";
 import React from "react";
 
 const statuses: { label: string; value?: StatusGrant }[] = [
   { label: "All" },
-  { label: "Draft", value: "DRAFT" },
   { label: "Awarded", value: "AWARDED" },
   { label: "Deleted", value: "DELETED" },
+  { label: "Draft", value: "DRAFT" },
   { label: "Ended project", value: "ENDED_PROJECT" },
   { label: "Rejected", value: "REJECTED" },
   { label: "Running project", value: "RUNNING_PROJECT" },
@@ -16,8 +17,15 @@ const statuses: { label: string; value?: StatusGrant }[] = [
 ];
 
 const GrantStatusFilter = () => {
+  const router = useRouter();
+
   return (
-    <Select.Root>
+    <Select.Root
+      onValueChange={(status) => {
+        const query = status === "All" ? "" : `?status=${status}`;
+        router.push("/grants/list" + query);
+      }}
+    >
       <Select.Trigger placeholder="Filter by status..." />
       <Select.Content>
         {statuses.map((status) => (
