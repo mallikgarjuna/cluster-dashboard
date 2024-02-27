@@ -1,14 +1,17 @@
-import { Button } from "@radix-ui/themes";
+import { GrantStatusBadge } from "@/app/components";
+import { Button, Flex } from "@radix-ui/themes";
 import Link from "next/link";
 import React from "react";
+import GrantStatusFilter from "./GrantStatusFilter";
 
 const GrantActions = () => {
   return (
-    <div className="mb-5">
+    <Flex mb="5" justify="between">
+      <GrantStatusFilter />
       <Button>
         <Link href="/grants/new">New Grant</Link>
       </Button>
-    </div>
+    </Flex>
   );
 };
 
