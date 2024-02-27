@@ -21,7 +21,10 @@ const GrantStatusFilter = () => {
       <Select.Trigger placeholder="Filter by status..." />
       <Select.Content>
         {statuses.map((status) => (
-          <Select.Item value={status.value || "All"}>
+          <Select.Item
+            key={status.value || "All"}
+            value={status.value || "All"}
+          >
             {status.label}
           </Select.Item>
         ))}
