@@ -12,12 +12,6 @@ interface Props {
 }
 
 const GrantsPage = async ({ searchParams }: Props) => {
-  // validate the status param
-  const statuses = Object.values(StatusGrant);
-  const status = statuses.includes(searchParams.status)
-    ? searchParams.status
-    : undefined;
-
   const columns: {
     label: string;
     value: keyof Grant;
@@ -28,8 +22,21 @@ const GrantsPage = async ({ searchParams }: Props) => {
     { label: "Created", value: "createdAt", classname: "hidden md:table-cell" },
   ];
 
+  // validate the status param
+  const statuses = Object.values(StatusGrant);
+  const status = statuses.includes(searchParams.status)
+    ? searchParams.status
+    : undefined;
+
+  const orderBy = columns
+    .map((column) => column.value)
+    .includes(searchParams.orderBy)
+    ? { [searchParams.orderBy]: "asc" }
+    : undefined;
+
   const grants = await prisma.grant.findMany({
     where: { status: status },
+    orderBy: orderBy,
   });
 
   return (
