@@ -6,7 +6,7 @@ import GrantStatusFilter from "./GrantStatusFilter";
 
 const GrantActions = () => {
   return (
-    <Flex mb="5" justify="between">
+    <Flex justify="between">
       <GrantStatusFilter />
       <Button>
         <Link href="/grants/new">New Grant</Link>
