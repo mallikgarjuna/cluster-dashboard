@@ -1,19 +1,12 @@
 import Image from "next/image";
 import Pagination from "./components/Pagination";
+import LatestGrants from "./LatestGrants";
 
-interface Props {
-  searchParams: { page: string };
-}
-
-export default function Home({ searchParams }: Props) {
+export default function Home() {
   return (
     <>
       <div>Cluster Dashboard</div>
-      <Pagination
-        itemsCount={100}
-        pageSize={10}
-        currentPage={parseInt(searchParams.page)}
-      />
+      <LatestGrants />
     </>
   );
 }
