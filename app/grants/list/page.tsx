@@ -6,9 +6,14 @@ import NextLink from "next/link";
 import GrantActions from "./GrantActions";
 import { Grant, StatusGrant } from "@prisma/client";
 import { ArrowUpIcon } from "@radix-ui/react-icons";
+import Pagination from "@/app/components/Pagination";
 
 interface Props {
-  searchParams: { status: StatusGrant; orderBy: keyof Grant }; // an obj w/ prop called 'status'
+  searchParams: {
+    status: StatusGrant;
+    orderBy: keyof Grant;
+    page: string;
+  }; // an obj w/ prop called 'status'
 }
 
 const GrantsPage = async ({ searchParams }: Props) => {
@@ -34,9 +39,18 @@ const GrantsPage = async ({ searchParams }: Props) => {
     ? { [searchParams.orderBy]: "asc" }
     : undefined;
 
+  const page = parseInt(searchParams.page) || 1;
+  const pageSize = 10;
+
   const grants = await prisma.grant.findMany({
     where: { status: status },
     orderBy: orderBy,
+    skip: (page - 1) * pageSize,
+    take: pageSize,
+  });
+
+  const grantsCount = await prisma.grant.count({
+    where: { status: status },
   });
 
   return (
@@ -83,6 +97,11 @@ const GrantsPage = async ({ searchParams }: Props) => {
           ))}
         </Table.Body>
       </Table.Root>
+      <Pagination
+        itemsCount={grantsCount}
+        pageSize={pageSize}
+        currentPage={page}
+      />
     </div>
   );
 };
