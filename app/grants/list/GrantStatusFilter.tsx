@@ -2,7 +2,7 @@
 
 import { StatusGrant } from "@prisma/client";
 import { Select } from "@radix-ui/themes";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import React from "react";
 
 const statuses: { label: string; value?: StatusGrant }[] = [
@@ -18,11 +18,20 @@ const statuses: { label: string; value?: StatusGrant }[] = [
 
 const GrantStatusFilter = () => {
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   return (
     <Select.Root
+      defaultValue={searchParams.get("status") || "All"}
       onValueChange={(status) => {
-        const query = status === "All" ? "" : `?status=${status}`;
+        const params = new URLSearchParams();
+        if (status !== "All") params.append("status", status);
+        if (searchParams.get("orderBy"))
+          params.append("orderBy", searchParams.get("orderBy")!);
+
+        // add '?' only if we have at least one param
+        const query = params.size ? "?" + params.toString() : "";
+        // const query = status === "All" ? "" : `?status=${status}`;
         router.push("/grants/list" + query);
       }}
     >
