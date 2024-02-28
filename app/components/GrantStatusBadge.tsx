@@ -13,7 +13,7 @@ const statusMap: Record<
     color: "blue" | "green" | "red" | "orange" | "purple" | "gray" | "tomato";
   }
 > = {
-  SUBMITTED: { label: "Open", color: "blue" },
+  SUBMITTED: { label: "Submitted", color: "blue" },
   AWARDED: { label: "Awarded", color: "green" },
   REJECTED: { label: "Rejected", color: "red" },
   RUNNING_PROJECT: { label: "Running project", color: "orange" },
