@@ -3,6 +3,7 @@ import Pagination from "./components/Pagination";
 import LatestGrants from "./LatestGrants";
 import GrantSummary from "./GrantSummary";
 import prisma from "@/prisma/client";
+import GrantChart from "./GrantChart";
 
 export default async function Home() {
   const submitted = await prisma.grant.count({
@@ -15,11 +16,7 @@ export default async function Home() {
     <>
       <div>Cluster Dashboard</div>
       {/* <LatestGrants /> */}
-      <GrantSummary
-        submitted={submitted}
-        awarded={awarded}
-        rejected={rejected}
-      />
+      <GrantChart submitted={submitted} awarded={awarded} rejected={rejected} />
     </>
   );
 }
