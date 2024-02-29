@@ -5,6 +5,7 @@ import { StatusGrant } from "@prisma/client";
 import GrantActions from "./GrantActions";
 import GrantTable, { GrantQuery, columnNames } from "./GrantTable";
 import { Flex } from "@radix-ui/themes";
+import { Metadata } from "next";
 
 interface Props {
   searchParams: GrantQuery; // an obj w/ prop called 'status'
@@ -49,5 +50,10 @@ const GrantsPage = async ({ searchParams }: Props) => {
 };
 
 export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = {
+  title: "Cluster Dashboard - Grants List",
+  description: "View all cluster grants",
+};
 
 export default GrantsPage;

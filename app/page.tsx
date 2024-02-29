@@ -5,6 +5,7 @@ import GrantSummary from "./GrantSummary";
 import prisma from "@/prisma/client";
 import GrantChart from "./GrantChart";
 import { Flex, Grid } from "@radix-ui/themes";
+import { Metadata } from "next";
 
 export default async function Home() {
   const submitted = await prisma.grant.count({
@@ -31,3 +32,8 @@ export default async function Home() {
     </Grid>
   );
 }
+
+export const metadata: Metadata = {
+  title: "Cluster Dashboard - Grants",
+  description: "View a summary of grants",
+};

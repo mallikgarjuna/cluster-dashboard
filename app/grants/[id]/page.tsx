@@ -7,18 +7,22 @@ import DeleteGrantButton from "./DeleteGrantButton";
 import { getServerSession } from "next-auth";
 import authOptions from "@/app/auth/authOptions";
 import AssigneeSelect from "./AssigneeSelect";
+import { Metadata } from "next";
+import { cache } from "react";
 
 interface Props {
   params: { id: string };
 }
 
+const fetchGrant = cache((grantId: number) =>
+  prisma.grant.findUnique({ where: { id: grantId } })
+);
+
 const GrantDetailPage = async ({ params }: Props) => {
   const session = await getServerSession(authOptions);
   if (typeof parseInt(params.id) !== "number") notFound();
 
-  const grant = await prisma.grant.findUnique({
-    where: { id: parseInt(params.id) },
-  });
+  const grant = await fetchGrant(parseInt(params.id));
 
   if (!grant) notFound();
 
@@ -40,5 +44,14 @@ const GrantDetailPage = async ({ params }: Props) => {
     </Grid>
   );
 };
+
+export async function generateMetadata({ params }: Props) {
+  const grant = await fetchGrant(parseInt(params.id));
+
+  return {
+    title: grant?.title,
+    description: "Details of grant " + grant?.id,
+  };
+}
 
 export default GrantDetailPage;
