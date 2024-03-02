@@ -16,5 +16,16 @@ Notes Created on [2024.02.25.Sun]
 - 10 minutes | Complete Setup with Next.js, Resend, React-Email, Custom Domain
     https://www.youtube.com/watch?v=fEeksraKfJI
 
-- Easily Deploy To Vercel With A Custom Domain
-    https://www.youtube.com/watch?v=MCvCHWJ1uHk
+- Custom Sign-in Emails in NextAuth Using Resend https://www.youtube.com/watch?v=1AkboeedMz8;
+
+- MDN Curriculum: The essential skillset for new front-end developers 
+    https://developer.mozilla.org/en-US/curriculum/;
+
+- Learn Next.js https://nextjs.org/learn/dashboard-app
+
+
+
+TODO:
+- running supbase local db vs production db
+- database user roles (admin, manager, PI, PhD, etc.)
+    - check prisma docs? or tutorials
