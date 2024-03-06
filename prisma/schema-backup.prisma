@@ -1,0 +1,74 @@
+model FundingAgency {
+    id                 Int                 @id @default(autoincrement())
+    name               String
+    website            String
+    createdAt          DateTime            @default(now())
+    updatedAt          DateTime            @updatedAt
+    fundingPrograms    FundingProgram[]
+    fundingInstruments FundingInstrument[]
+    fundingActions     FundingAction[]
+    fundingCalls       FundingCall[]
+}
+
+model FundingProgram {
+    id                   Int                 @id @default(autoincrement())
+    createdAt            DateTime            @default(now())
+    updatedAt            DateTime            @updatedAt
+    name                 String
+    relatedFundingAgency FundingAgency       @relation(fields: [fundingAgencyId], references: [id])
+    fundingAgencyId      Int
+    fundingInstruments   FundingInstrument[]
+    fundingActions       FundingAction[]
+    fundingCalls         FundingCall[]
+}
+
+model FundingInstrument {
+    id                    Int             @id @default(autoincrement())
+    createdAt             DateTime        @default(now())
+    updatedAt             DateTime        @updatedAt
+    name                  String
+    relatedFundingAgency  FundingAgency   @relation(fields: [fundingAgencyId], references: [id])
+    fundingAgencyId       Int
+    relatedFundingProgram FundingProgram  @relation(fields: [fundingProgramId], references: [id])
+    fundingProgramId      Int
+    fundingActions        FundingAction[]
+    fundingCalls          FundingCall[]
+}
+
+model FundingAction {
+    id                       Int               @id @default(autoincrement())
+    createdAt                DateTime          @default(now())
+    updatedAt                DateTime          @updatedAt
+    name                     String
+    relatedFundingAgency     FundingAgency     @relation(fields: [fundingAgencyId], references: [id])
+    fundingAgencyId          Int
+    relatedFundingProgram    FundingProgram    @relation(fields: [fundingProgramId], references: [id])
+    fundingProgramId         Int
+    relatedFundingInstrument FundingInstrument @relation(fields: [fundingInstrumentId], references: [id])
+    fundingInstrumentId      Int
+    fundingCalls             FundingCall[]
+}
+
+model FundingCall {
+    id                       Int               @id @default(autoincrement())
+    createdAt                DateTime          @default(now())
+    updatedAt                DateTime          @updatedAt
+    name                     String
+    website                  String
+    deadline                 DateTime
+    decisionDate             DateTime          @map("resultDate")
+    type                     FundingCallType
+    relatedFundingAgency     FundingAgency     @relation(fields: [fundingAgencyId], references: [id])
+    fundingAgencyId          Int
+    relatedFundingProgram    FundingProgram    @relation(fields: [fundingProgramId], references: [id])
+    fundingProgramId         Int
+    relatedFundingInstrument FundingInstrument @relation(fields: [fundingInstrumentId], references: [id])
+    fundingInstrumentId      Int
+    relatedFundingAction     FundingAction     @relation(fields: [fundingActionId], references: [id])
+    fundingActionId          Int
+}
+
+enum FundingCallType {
+    INDIVIDUAL
+    COLLABORATIVE
+}

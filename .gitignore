@@ -36,9 +36,10 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-.txt
 # Sentry Config File
 .sentryclirc
 
 # db
 /docker-data
+
+.txt

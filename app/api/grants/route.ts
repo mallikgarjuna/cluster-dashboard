@@ -1,7 +1,7 @@
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/prisma/client";
-import { grantSchema } from "../../validationSchemas";
+import { grantFormSchema } from "../../validationSchemas";
 import authOptions from "@/app/auth/authOptions";
 
 export async function POST(request: NextRequest) {
@@ -10,13 +10,17 @@ export async function POST(request: NextRequest) {
   // 401 == unauthorized
 
   const body = await request.json();
-  const validation = grantSchema.safeParse(body);
+  const validation = grantFormSchema.safeParse(body);
   if (!validation.success)
     return NextResponse.json(validation.error.format(), { status: 400 });
   // 400: Bad request, meaning: the client sent invalid data
 
   const newGrant = await prisma.grant.create({
-    data: { title: body.title, description: body.description },
+    data: {
+      title: body.title,
+      description: body.description,
+      submissionDate: body.submissionDate,
+    },
   });
 
   return NextResponse.json(newGrant, { status: 201 });

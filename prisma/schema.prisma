@@ -16,6 +16,12 @@ model Grant {
   title            String      @db.VarChar(255)
   description      String      @db.Text
   status           StatusGrant @default(DRAFT)
+  // acronym          String?
+  // budgetTotal      Float?
+  submissionDate   DateTime?
+  // deadline         DateTime?
+  // decisionDate     DateTime?
+  // notes            String?     @db.Text
   createdAt        DateTime    @default(now())
   updatedAt        DateTime    @updatedAt
   assignedToUserId String?     @db.VarChar(255)

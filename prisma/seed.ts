@@ -12,13 +12,14 @@ async function main() {
 
   console.log("Start seeding...");
   for (let i = 0; i < 10; i++) {
-    await prisma.grant.create({
+    const grant = await prisma.grant.create({
       data: {
         title: `Grant ${faker.location.country()} `,
         description: `Description Grant: ${faker.lorem.lines(2)}`,
         status: "SUBMITTED",
       },
     });
+    console.log(`Created a Grant with id: ${grant.id}`);
   }
 
   console.log("Finish seeding.");
