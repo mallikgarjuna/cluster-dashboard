@@ -10,6 +10,7 @@ export async function POST(request: NextRequest) {
   // 401 == unauthorized
 
   const body = await request.json();
+  console.log(body);
   const validation = grantFormSchema.safeParse(body);
   if (!validation.success)
     return NextResponse.json(validation.error.format(), { status: 400 });
@@ -19,7 +20,11 @@ export async function POST(request: NextRequest) {
     data: {
       title: body.title,
       description: body.description,
+      acronym: body.acronym,
+      budgetTotal: body.budgetTotal,
       submissionDate: body.submissionDate,
+      deadline: body.deadline,
+      decisionDate: body.decisionDate,
     },
   });
 

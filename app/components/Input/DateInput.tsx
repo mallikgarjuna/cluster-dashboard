@@ -4,20 +4,31 @@ import { InputProps } from "./types";
 import { InputErrorMessage } from "./InputErrorMessage";
 import ReactDatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { Text, TextField } from "@radix-ui/themes";
 
 export const DateInput: FC<InputProps> = ({
+  type,
   label,
   name,
   errors,
   placeholder,
 }) => {
-  const { control } = useFormContext();
+  const { control, register } = useFormContext();
   return (
     <div>
       <div>
         {/* <label htmlFor={name} className="text-base font-medium">
           {label}
         </label> */}
+        <Text as="p">{label}</Text>
+
+        {/* <input
+          type="date"
+          {...register(name)}
+          placeholder={placeholder}
+          max="2025-01-01"
+        /> */}
+
         <Controller
           control={control}
           name={name}
@@ -36,6 +47,7 @@ export const DateInput: FC<InputProps> = ({
         />
       </div>
       <InputErrorMessage name={name} errors={errors} />
+      {/* {<ErrorMessage>{errors.submissionDate?.message}</ErrorMessage>} */}
     </div>
   );
 };

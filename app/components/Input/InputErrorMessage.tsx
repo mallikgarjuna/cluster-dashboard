@@ -7,7 +7,9 @@ export const InputErrorMessage: FC<InputErrorProps> = ({ errors, name }) => {
     <ErrorMessage
       errors={errors}
       name={name}
-      render={({ message }) => <p className="form__error">{message}</p>}
+      render={({ message }) => (
+        <p className="text-red-500 text-sm">{message}</p>
+      )}
     />
   );
 };

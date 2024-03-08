@@ -14,8 +14,10 @@ export interface InputErrorProps {
 
 export interface InputProps extends InputErrorProps {
   label: string;
-  type?: "text" | "email" | "time";
+  type?: "text" | "email" | "time" | "number" | "date";
   placeholder?: string;
+  valueAsNumber?: boolean;
+  defaultValue?: string | number; //GrantFormDataType[keyof GrantFormDataType];
 }
 
 export interface SelectProps extends InputProps {

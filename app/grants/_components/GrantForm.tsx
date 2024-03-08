@@ -18,6 +18,7 @@ import "easymde/dist/easymde.min.css";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Controller, FormProvider, useForm } from "react-hook-form";
+import CustomInput from "@/app/components/Input/CustomInput";
 
 // type GrantFormDataType = z.infer<typeof grantFormSchema>;
 
@@ -83,22 +84,57 @@ const GrantForm = ({ grant }: Props) => {
           />
           {<ErrorMessage>{errors.description?.message}</ErrorMessage>}
 
-          {/* <TextField.Root>
-            <TextField.Input
-              defaultValue={grant?.budgetTotal ?? ""}
-              placeholder="Total budget"
-              {...register("budgetTotal")}
-            />
-          </TextField.Root>
-          {<ErrorMessage>{errors.budgetTotal?.message}</ErrorMessage>} */}
+          <CustomInput
+            type="text"
+            name="acronym"
+            label="Acronym"
+            placeholder="Acronym"
+            errors={errors}
+            defaultValue={grant?.acronym || ""}
+          />
 
-          <DateInput
+          <CustomInput
+            type="number"
+            name="budgetTotal"
+            label="Total budget"
+            placeholder="Total budget"
+            errors={errors}
+            valueAsNumber
+            defaultValue={grant?.budgetTotal || 0}
+          />
+
+          <CustomInput
+            type="date"
             name="submissionDate"
             label="submission Date"
-            errors={errors}
             placeholder="Enter submission Date"
+            errors={errors}
+            defaultValue={grant?.submissionDate?.toISOString()}
           />
-          {<ErrorMessage>{errors.submissionDate?.message}</ErrorMessage>}
+
+          <CustomInput
+            type="date"
+            name="deadline"
+            label="Deadline"
+            placeholder="Enter deadline"
+            errors={errors}
+          />
+
+          <CustomInput
+            type="date"
+            name="decisionDate"
+            label="Decision Date"
+            placeholder="Enter decision date"
+            errors={errors}
+          />
+
+          <CustomInput
+            type="text"
+            name="notes"
+            label="Notes"
+            placeholder="Enter additional information"
+            errors={errors}
+          />
 
           <Button disabled={isSubmitting}>
             {grant ? "Update Grant" : "Submit New Grant "}{" "}

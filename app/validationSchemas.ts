@@ -5,11 +5,12 @@ import { z } from "zod";
 export const grantFormSchema = z.object({
   title: z.string().min(1, "Title is required.").max(255),
   description: z.string().min(1, "Description is required.").max(65535),
-  // acronym: z.string().optional().nullable(),
-  // budgetTotal: z.number().optional().nullable(),
-  submissionDate: z.coerce.date().optional().nullable(),
-  // deadline: z.date().optional().nullable(),
-  // decisionDate: z.date().optional().nullable(),
+  acronym: z.string().optional(),
+  budgetTotal: z.number().optional(),
+  submissionDate: z.coerce.date().optional(),
+  deadline: z.coerce.date().optional(),
+  decisionDate: z.coerce.date().optional(),
+  notes: z.string().optional(),
 });
 
 export type GrantFormDataType = z.infer<typeof grantFormSchema>;

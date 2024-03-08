@@ -1,0 +1,4 @@
+-- AlterTable
+ALTER TABLE "Grant" ADD COLUMN     "budgetTotal" DOUBLE PRECISION DEFAULT 0,
+ALTER COLUMN "title" SET DEFAULT '',
+ALTER COLUMN "description" SET DEFAULT '';
