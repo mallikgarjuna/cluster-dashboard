@@ -25,6 +25,7 @@ export async function POST(request: NextRequest) {
       submissionDate: body.submissionDate,
       deadline: body.deadline,
       decisionDate: body.decisionDate,
+      notes: body.notes,
     },
   });
 

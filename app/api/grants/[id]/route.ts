@@ -44,6 +44,12 @@ export async function PATCH(request: NextRequest, { params }: Props) {
     data: {
       title: body.title,
       description: body.description,
+      acronym: body.acronym,
+      budgetTotal: body.budgetTotal,
+      submissionDate: body.submissionDate,
+      deadline: body.deadline,
+      decisionDate: body.decisionDate,
+      notes: body.notes,
       assignedToUserId: body.assignedToUserId,
     },
   });

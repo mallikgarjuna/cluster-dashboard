@@ -14,6 +14,7 @@ const CustomInput = ({
   defaultValue,
 }: InputProps) => {
   const { register } = useFormContext();
+
   return (
     <>
       <div>
@@ -23,7 +24,11 @@ const CustomInput = ({
           type={type}
           {...register(name, { valueAsNumber })}
           placeholder={placeholder}
-          defaultValue={defaultValue}
+          defaultValue={
+            type === "date" && typeof defaultValue === "string"
+              ? defaultValue?.substring(0, 10)
+              : defaultValue
+          }
         />
       </div>
       <InputErrorMessage name={name} errors={errors} />

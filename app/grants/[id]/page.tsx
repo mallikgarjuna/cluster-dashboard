@@ -23,6 +23,7 @@ const GrantDetailPage = async ({ params }: Props) => {
   if (typeof parseInt(params.id) !== "number") notFound();
 
   const grant = await fetchGrant(parseInt(params.id));
+  // console.log("Grant details received: ", grant);
 
   if (!grant) notFound();
 

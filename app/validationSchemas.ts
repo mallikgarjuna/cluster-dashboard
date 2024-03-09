@@ -28,4 +28,10 @@ export const patchGrantSchema = z.object({
     .max(255)
     .optional()
     .nullable(),
+  acronym: z.string().optional(),
+  budgetTotal: z.number().optional(),
+  submissionDate: z.coerce.date().optional(),
+  deadline: z.coerce.date().optional(),
+  decisionDate: z.coerce.date().optional(),
+  notes: z.string().optional(),
 });

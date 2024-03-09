@@ -118,6 +118,7 @@ const GrantForm = ({ grant }: Props) => {
             label="Deadline"
             placeholder="Enter deadline"
             errors={errors}
+            defaultValue={grant?.deadline?.toISOString()}
           />
 
           <CustomInput
@@ -126,7 +127,15 @@ const GrantForm = ({ grant }: Props) => {
             label="Decision Date"
             placeholder="Enter decision date"
             errors={errors}
+            defaultValue={grant?.decisionDate?.toISOString()}
           />
+
+          {/* <input
+            type="date"
+            placeholder="Enter decision date"
+            {...register("decisionDate")}
+
+          /> */}
 
           <CustomInput
             type="text"
@@ -134,6 +143,7 @@ const GrantForm = ({ grant }: Props) => {
             label="Notes"
             placeholder="Enter additional information"
             errors={errors}
+            defaultValue={grant?.notes || ""}
           />
 
           <Button disabled={isSubmitting}>
