@@ -18,7 +18,9 @@ const CustomInput = ({
   return (
     <>
       <div>
-        <Text as="p">{label}</Text>
+        <Text as="p" weight="bold">
+          {label}
+        </Text>
         {/* <input type={type} {...register(name)} placeholder={placeholder} /> */}
         <TextField.Input
           type={type}

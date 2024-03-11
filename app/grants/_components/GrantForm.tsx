@@ -1,24 +1,17 @@
 "use client";
 
 import { Button, Callout, TextField } from "@radix-ui/themes";
-import SimpleMDE from "react-simplemde-editor";
-// No dynamic import - b/ see les:4.7
-// import dynamic from "next/dynamic";
-// const SimpleMDE = dynamic(() => import("react-simplemde-editor"), {
-//   ssr: false,
-// });
 import ErrorMessage from "@/app/components/ErrorMessage";
-import { DateInput } from "@/app/components/Input/DateInput";
+import CustomInput from "@/app/components/Input/CustomInput";
+import CustomMDEInput from "@/app/components/Input/CustomMDEInput";
 import Spinner from "@/app/components/Spinner";
 import { GrantFormDataType, grantFormSchema } from "@/app/validationSchemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Grant } from "@prisma/client";
 import axios from "axios";
-import "easymde/dist/easymde.min.css";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { Controller, FormProvider, useForm } from "react-hook-form";
-import CustomInput from "@/app/components/Input/CustomInput";
+import { FormProvider, useForm } from "react-hook-form";
 
 // type GrantFormDataType = z.infer<typeof grantFormSchema>;
 
@@ -65,24 +58,21 @@ const GrantForm = ({ grant }: Props) => {
       )}
       <FormProvider {...methods}>
         <form className=" space-y-2" onSubmit={handleSubmit(onSubmit)}>
-          <TextField.Root>
-            <TextField.Input
-              defaultValue={grant?.title}
-              placeholder="Title"
-              {...register("title")}
-            />
-          </TextField.Root>
-          {<ErrorMessage>{errors.title?.message}</ErrorMessage>}
-
-          <Controller
-            name="description"
-            control={control}
-            defaultValue={grant?.description}
-            render={({ field }) => (
-              <SimpleMDE placeholder="Description" {...field} />
-            )}
+          <CustomInput
+            type="text"
+            name="title"
+            label="Title"
+            placeholder="Title"
+            errors={errors}
           />
-          {<ErrorMessage>{errors.description?.message}</ErrorMessage>}
+
+          <CustomMDEInput
+            label="Description"
+            name="description"
+            defaultValue={grant?.description}
+            placeholder="Description"
+            errors={errors}
+          />
 
           <CustomInput
             type="text"
@@ -130,15 +120,7 @@ const GrantForm = ({ grant }: Props) => {
             defaultValue={grant?.decisionDate?.toISOString()}
           />
 
-          {/* <input
-            type="date"
-            placeholder="Enter decision date"
-            {...register("decisionDate")}
-
-          /> */}
-
-          <CustomInput
-            type="text"
+          <CustomMDEInput
             name="notes"
             label="Notes"
             placeholder="Enter additional information"
