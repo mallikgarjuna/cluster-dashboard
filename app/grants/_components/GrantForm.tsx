@@ -62,6 +62,7 @@ const GrantForm = ({ grant }: Props) => {
             type="text"
             name="title"
             label="Title"
+            defaultValue={grant?.title}
             placeholder="Title"
             errors={errors}
           />

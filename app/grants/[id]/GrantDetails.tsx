@@ -29,17 +29,18 @@ const GrantDetails = ({ grant }: Props) => {
 
       <CustomFiledDetails
         subheading="Submission date"
-        fieldInfo={grant.submissionDate!.toDateString()}
+        fieldInfo={grant.submissionDate?.toDateString() ?? null}
+        //===   fieldInfo={grant.submissionDate ? grant.submissionDate.toDateString() : null}
       />
 
       <CustomFiledDetails
         subheading="Deadline"
-        fieldInfo={grant.deadline!.toDateString()}
+        fieldInfo={grant.deadline?.toDateString() ?? null}
       />
 
       <CustomFiledDetails
         subheading="Decision date"
-        fieldInfo={grant.decisionDate!.toDateString()}
+        fieldInfo={grant.decisionDate?.toDateString() ?? null}
       />
 
       <CustomFiledDetails subheading="Notes" fieldInfo={grant.notes} />
