@@ -35,3 +35,12 @@ export const patchGrantSchema = z.object({
   decisionDate: z.coerce.date().optional(),
   notes: z.string().optional(),
 });
+
+export const SignInFormSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(5),
+});
+
+export type SignInFormInputFieldsType = z.infer<typeof SignInFormSchema>;
+
+export type SignInFormInputFieldsName = keyof SignInFormInputFieldsType;

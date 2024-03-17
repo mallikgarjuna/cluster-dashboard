@@ -34,6 +34,7 @@ const CustomMDEInput = ({
             placeholder={placeholder}
             options={{
               maxHeight: "100px",
+              autofocus: true,
             }}
           />
         )}
