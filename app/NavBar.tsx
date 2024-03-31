@@ -29,7 +29,12 @@ const NavBar = () => {
             </Link>
             <NavLinks />
           </Flex>
-          <AuthStatus />
+          <Flex gap="3" align="center">
+            <Link href="/auth/signup" className="nav-link">
+              Sign up
+            </Link>
+            <AuthStatus />
+          </Flex>
         </Flex>
       </Container>
     </nav>
