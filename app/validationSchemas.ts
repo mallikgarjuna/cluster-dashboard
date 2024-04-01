@@ -75,8 +75,8 @@ export const SignupFormSchema = z
     }),
   })
   .refine((data) => data.password === data.confirmPassword, {
-    message: "Password and confirmPassword do not match",
-    path: ["password", "confirmPassword"],
+    message: "Password and Confirm password do not match",
+    path: ["confirmPassword"],
   });
 
 export type SignupFormInputFieldsDataType = z.infer<typeof SignupFormSchema>;

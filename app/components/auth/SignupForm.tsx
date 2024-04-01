@@ -4,11 +4,21 @@ import { Button, Checkbox, Input, Link } from "@nextui-org/react";
 import { HiEye, HiEyeOff, HiKey, HiMail, HiUser } from "react-icons/hi";
 import React, { useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import { SignupFormInputFieldsDataType } from "@/app/validationSchemas";
+import {
+  SignupFormInputFieldsDataType,
+  SignupFormSchema,
+} from "@/app/validationSchemas";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 const SignupForm = () => {
-  const { register, handleSubmit, control } =
-    useForm<SignupFormInputFieldsDataType>();
+  const {
+    register,
+    handleSubmit,
+    control,
+    formState: { errors },
+  } = useForm<SignupFormInputFieldsDataType>({
+    resolver: zodResolver(SignupFormSchema),
+  });
 
   const [isVisiblePass, setIsVisiblePass] = useState(false);
   const toggleVisiblePass = () => setIsVisiblePass((prev) => !prev);
@@ -26,6 +36,8 @@ const SignupForm = () => {
     >
       <Input
         {...register("firstName")}
+        errorMessage={errors.firstName?.message}
+        isInvalid={!!errors.firstName}
         type="text"
         label="First Name"
         placeholder="Enter your first name"
@@ -33,6 +45,8 @@ const SignupForm = () => {
       />
       <Input
         {...register("lastName")}
+        errorMessage={errors.lastName?.message}
+        isInvalid={!!errors.lastName}
         type="text"
         label="Last Name"
         placeholder="Enter your last name"
@@ -40,6 +54,8 @@ const SignupForm = () => {
       />
       <Input
         {...register("email")}
+        errorMessage={errors.email?.message}
+        isInvalid={!!errors.email}
         type="email"
         label="Email"
         placeholder="Enter your email"
@@ -48,6 +64,8 @@ const SignupForm = () => {
       />
       <Input
         {...register("password")}
+        errorMessage={errors.password?.message}
+        isInvalid={!!errors.password}
         type={isVisiblePass ? "text" : "password"}
         label="Password"
         placeholder="Enter your password"
@@ -61,6 +79,8 @@ const SignupForm = () => {
       />
       <Input
         {...register("confirmPassword")}
+        errorMessage={errors.confirmPassword?.message}
+        isInvalid={!!errors.confirmPassword}
         type={isVisiblePass ? "text" : "password"}
         label="Confirm Password"
         placeholder="Renter to confirm password"
@@ -82,6 +102,11 @@ const SignupForm = () => {
           </Checkbox>
         )}
       />
+      {!!errors.accepted && (
+        <p className="col-span-2 text-red-500 text-xs">
+          {errors.accepted.message}
+        </p>
+      )}
       <div className="col-span-2 flex justify-center">
         <Button type="submit" color="primary" className="w-48">
           Sign up
