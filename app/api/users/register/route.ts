@@ -1,19 +1,22 @@
+import { User } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import prisma from "@/prisma/client";
 import bcrypt from "bcrypt";
+import { SignupFormSchema } from "@/app/validationSchemas";
 
-const UserRegistrationSchema = z.object({
-  email: z.string().email(),
-  password: z.string().min(5),
-});
+// const UserRegistrationSchema = z.object({
+//   email: z.string().email(),
+//   password: z.string().min(5),
+// });
 
 export async function POST(request: NextRequest) {
   const body = await request.json();
 
   // In body, we have to make sure that we've a valid email and pswd
   // use zod
-  const validation = UserRegistrationSchema.safeParse(body);
+  // const validation = UserRegistrationSchema.safeParse(body);
+  const validation = SignupFormSchema.safeParse(body);
   if (!validation.success)
     return NextResponse.json(validation.error.errors, { status: 400 });
   // 400 = invalid request
@@ -33,6 +36,8 @@ export async function POST(request: NextRequest) {
     data: {
       email: body.email,
       hashedPassword,
+      firstName: body.firstName,
+      lastName: body.lastName,
     },
   });
 

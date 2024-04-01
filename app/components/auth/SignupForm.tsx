@@ -28,6 +28,7 @@ const SignupForm = () => {
   const saveUser: SubmitHandler<SignupFormInputFieldsDataType> = async (
     data
   ) => {
+    // const { confirmPassword, accepted, ...user } = data;
     try {
       await axios.post("/api/users/register", data);
       toast.success("The user registered successfully!");
