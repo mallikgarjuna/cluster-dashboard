@@ -5,15 +5,14 @@ import { usePathname } from "next/navigation";
 import React from "react";
 import { GrCluster } from "react-icons/gr";
 import classnames from "classnames";
+import { Avatar, Box, Container, Flex, Text } from "@radix-ui/themes";
 import {
-  Avatar,
-  Box,
   Button,
-  Container,
+  Dropdown,
+  DropdownTrigger,
   DropdownMenu,
-  Flex,
-  Text,
-} from "@radix-ui/themes";
+  DropdownItem,
+} from "@nextui-org/react";
 import { useSession } from "next-auth/react";
 import { CaretDownIcon } from "@radix-ui/react-icons";
 import { Skeleton } from "@/app/components";
@@ -30,9 +29,6 @@ const NavBar = () => {
             <NavLinks />
           </Flex>
           <Flex gap="3" align="center">
-            <Link href="/auth/signup" className="nav-link">
-              Sign up
-            </Link>
             <AuthStatus />
           </Flex>
         </Flex>
@@ -76,18 +72,23 @@ const AuthStatus = () => {
 
   if (status === "unauthenticated")
     return (
-      <Link className="nav-link" href="/api/auth/signin">
-        Log in
-      </Link>
+      <>
+        <Link className="nav-link" href="/api/auth/signin">
+          Sign in
+        </Link>
+        <Link className="nav-link" href="/auth/signup">
+          Sign up
+        </Link>
+      </>
     );
 
   return (
     <Box>
       {status === "authenticated" && (
-        <DropdownMenu.Root>
-          <DropdownMenu.Trigger>
+        <Dropdown>
+          <DropdownTrigger>
             {/* <Text>{session.user?.email}</Text> */}
-            <Button variant="soft">
+            <Button variant="light">
               {session.user?.email}
               <CaretDownIcon />
             </Button>
@@ -98,16 +99,14 @@ const AuthStatus = () => {
           size="2"
           radius="full"
         /> */}
-          </DropdownMenu.Trigger>
-          <DropdownMenu.Content>
-            <DropdownMenu.Label>
-              <Text size="2">{session.user!.email}</Text>
-            </DropdownMenu.Label>
-            <DropdownMenu.Item>
-              <Link href="/api/auth/signout">Log out</Link>
-            </DropdownMenu.Item>
-          </DropdownMenu.Content>
-        </DropdownMenu.Root>
+          </DropdownTrigger>
+          <DropdownMenu aria-label="Static-Actions">
+            <DropdownItem key="email">{session.user!.email}</DropdownItem>
+            <DropdownItem key="signout" as={Link} href="/api/auth/signout">
+              Sign out
+            </DropdownItem>
+          </DropdownMenu>
+        </Dropdown>
       )}
     </Box>
   );
