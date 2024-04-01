@@ -52,16 +52,14 @@ export const SignupFormSchema = z
       .string()
       .min(2, "First name must be at least 2 characters")
       .max(45, "First name must be less than 45 characters")
-      .regex(new RegExp("^[a-zA-Z]+$", "No special characters are allowed!")),
+      .regex(new RegExp("^[a-zA-Z]+$"), "No special characters are allowed!"),
     lastName: z
       .string()
       .min(2, "Last name must be at least 2 characters")
       .max(45, "Last name must be less than 45 characters")
-      .regex(new RegExp("^[a-zA-Z]+$", "No special characters are allowed!")),
-    email: z
-      .string()
-      .email("Please enter a valid email address")
-      .endsWith("@umcg.nl", "Please enter a valid UMCG email address"),
+      .regex(new RegExp("^[a-zA-Z]+$"), "No special characters are allowed!"),
+    email: z.string().email("Please enter a valid email address"),
+    // .endsWith("@umcg.nl", "Please enter a valid UMCG email address"),
     password: z
       .string()
       .min(5, "Password must be at least 5 characters long")
@@ -80,3 +78,7 @@ export const SignupFormSchema = z
     message: "Password and confirmPassword do not match",
     path: ["password", "confirmPassword"],
   });
+
+export type SignupFormInputFieldsDataType = z.infer<typeof SignupFormSchema>;
+
+export type SignupFormInputFieldsName = keyof SignupFormInputFieldsDataType;
