@@ -9,6 +9,8 @@ import {
   SignupFormSchema,
 } from "@/app/validationSchemas";
 import { zodResolver } from "@hookform/resolvers/zod";
+import axios from "axios";
+import toast from "react-hot-toast";
 
 const SignupForm = () => {
   const {
@@ -26,7 +28,14 @@ const SignupForm = () => {
   const saveUser: SubmitHandler<SignupFormInputFieldsDataType> = async (
     data
   ) => {
-    console.log(data);
+    try {
+      await axios.post("/api/users/register", data);
+      toast.success("The user registered successfully!");
+      console.log(data);
+    } catch (error) {
+      toast.error("Something went wrong...");
+      console.error(error);
+    }
   };
 
   return (
