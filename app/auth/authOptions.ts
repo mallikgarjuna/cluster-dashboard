@@ -40,6 +40,17 @@ const authOptions: NextAuthOptions = {
   session: {
     strategy: "jwt",
   },
+  callbacks: {
+    async jwt({ token, user }) {
+      if (user) token.user = user as User;
+      return token;
+    },
+
+    async session({ session, token }) {
+      if (token.user) session.user = token.user;
+      return session;
+    },
+  },
   // pages: {
   //   signIn: "/auth/signIn",
   // },
