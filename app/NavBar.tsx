@@ -89,7 +89,7 @@ const AuthStatus = () => {
           <DropdownTrigger>
             {/* <Text>{session.user?.email}</Text> */}
             <Button variant="light">
-              {session.user?.email}
+              {`${session.user.firstName} ${session.user.lastName}`}
               <CaretDownIcon />
             </Button>
             {/* Image doesn't exist for credentials login, so use email text display */}
