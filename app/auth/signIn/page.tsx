@@ -1,51 +1,28 @@
 "use client";
 
-import { SignInFormInputFieldsType } from "@/app/validationSchemas";
-import { Button, Heading, TextField } from "@radix-ui/themes";
-import { signIn } from "next-auth/react";
-import { useRouter } from "next/navigation";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { Link } from "@/app/components";
+import SigninForm from "@/app/components/auth/SigninForm";
+import { Heading } from "@radix-ui/themes";
 
-const SignInPage = () => {
-  const router = useRouter();
-  const { handleSubmit, register } = useForm<SignInFormInputFieldsType>();
-
-  const onSubmit: SubmitHandler<SignInFormInputFieldsType> = async (data) => {
-    try {
-      console.log(data);
-      await signIn("credentials", {
-        email: data.email,
-        password: data.password,
-        redirect: true,
-        callbackUrl: "/",
-      });
-      router.push("/");
-      router.refresh();
-    } catch (error) {
-      console.log(error);
-    }
+interface Props {
+  searchParams: {
+    callbackUrl?: string;
   };
+}
+const SigninPage = ({ searchParams }: Props) => {
+  console.log(searchParams);
+
   return (
-    <div className="max-w-3xl">
-      <Heading>SignInPage</Heading>
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="flex flex-col gap-4 justify-center items-center border-gray-300"
-      >
-        <TextField.Input
-          type="email"
-          placeholder="Email"
-          {...register("email")}
-        />
-        <TextField.Input
-          type="password"
-          placeholder="Password"
-          {...register("password")}
-        />
-        <Button>Sign In</Button>
-      </form>
+    <div className="flex flex-col gap-4 justify-center items-center">
+      <SigninForm callbackUrl={searchParams.callbackUrl} />
+
+      <Link href="/auth/resetPassword">Forgot password?</Link>
+      <div className="flex gap-2">
+        <p>Don't have an account? </p>
+        <Link href="/auth/signup">Sign up</Link>
+      </div>
     </div>
   );
 };
 
-export default SignInPage;
+export default SigninPage;

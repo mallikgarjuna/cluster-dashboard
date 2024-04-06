@@ -13,7 +13,7 @@ import {
   DropdownMenu,
   DropdownItem,
 } from "@nextui-org/react";
-import { useSession } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import { CaretDownIcon } from "@radix-ui/react-icons";
 import { Skeleton } from "@/app/components";
 
@@ -74,9 +74,10 @@ const AuthStatus = () => {
   if (status === "unauthenticated")
     return (
       <>
-        <Link className="nav-link" href="/api/auth/signin">
+        {/* <Link className="nav-link" href="/api/auth/signin">
           Sign in
-        </Link>
+        </Link> */}
+        <Button onClick={() => signIn()}>Sign in</Button>
         <Link className="nav-link" href="/auth/signup">
           Sign up
         </Link>

@@ -5,6 +5,7 @@ import bcrypt from "bcrypt";
 import { NextAuthOptions } from "next-auth";
 import axios from "axios";
 import { User } from "@prisma/client";
+import toast from "react-hot-toast";
 
 const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
@@ -25,15 +26,36 @@ const authOptions: NextAuthOptions = {
 
         if (!credentials?.email || !credentials?.password) return null;
 
+        // // Calling signin API here with credentials is not working properly
         const credentialsData = {
           email: credentials.email,
           password: credentials.password,
         };
-        const user: User = await axios
-          .post(`${process.env.BASE_URL}/api/users/login`, credentialsData)
-          .then((res) => res.data);
 
+        const user = await axios
+          .post(`${process.env.BASE_URL}/api/users/login`, credentialsData)
+          .then((res) => res.data)
+          .catch((error) => {
+            // console.error(error.response.data.error);
+            // throw error;
+            throw new Error(error.response.data.error);
+          });
         return user ? user : null;
+
+        // const user = await prisma.user.findUnique({
+        //   where: { email: credentials.email },
+        // });
+
+        // if (!user) throw new Error("User does not exist");
+
+        // const passwordsMatch = await bcrypt.compare(
+        //   credentials.password,
+        //   user?.hashedPassword!
+        // );
+
+        // if (!passwordsMatch) throw new Error("Password is not correct");
+
+        // return user;
       },
     }),
   ],
@@ -51,9 +73,9 @@ const authOptions: NextAuthOptions = {
       return session;
     },
   },
-  // pages: {
-  //   signIn: "/auth/signIn",
-  // },
+  pages: {
+    signIn: "/auth/signin",
+  },
 };
 
 export default authOptions;

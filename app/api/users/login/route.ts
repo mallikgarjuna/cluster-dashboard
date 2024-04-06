@@ -24,12 +24,21 @@ export async function POST(request: NextRequest) {
     where: { email: body.email },
   });
 
-  if (!user) return null;
+  if (!user)
+    return NextResponse.json({ error: "User does not exist" }, { status: 404 });
+  // 404 = not found
 
   const passwordsMatch = await bcrypt.compare(
     body.password,
-    user.hashedPassword!
+    user?.hashedPassword!
   );
 
-  return passwordsMatch ? NextResponse.json(user) : null;
+  if (!passwordsMatch)
+    return NextResponse.json(
+      { error: "Password is not correct" },
+      { status: 400 }
+    );
+  // 400: Bad request, meaning: the client sent invalid data
+
+  return NextResponse.json(user);
 }
