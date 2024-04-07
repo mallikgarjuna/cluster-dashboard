@@ -1,4 +1,4 @@
-import WelcomeEmailTemplate from "@/app/components/emails/WelcomeEmailTemplate";
+import WelcomeEmailTemplate from "@/emails/WelcomeEmailTemplate";
 import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
 import { z } from "zod";

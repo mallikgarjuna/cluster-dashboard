@@ -43,3 +43,6 @@ next-env.d.ts
 /docker-data
 
 .txt
+
+# React-email preview-email app files
+.react-email/
