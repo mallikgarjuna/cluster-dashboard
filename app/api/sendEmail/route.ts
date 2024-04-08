@@ -1,3 +1,4 @@
+import ActivateEmailTemplate from "@/emails/ActivateEmailTemplate";
 import WelcomeEmailTemplate from "@/emails/WelcomeEmailTemplate";
 import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
@@ -22,10 +23,11 @@ export async function POST(request: NextRequest) {
   const { toEmail, firstName } = body;
 
   const { data, error } = await resend.emails.send({
-    from: "Cluster Dashboard <noreply@resend.dev>",
+    from: "Cluster Dashboard <noreply@clusterdashboard.com>", //add custom domain
     to: [toEmail],
     subject: "Activate your account",
-    react: WelcomeEmailTemplate({ firstName: firstName }),
+    // react: WelcomeEmailTemplate({ firstName: firstName }),
+    react: ActivateEmailTemplate({ name: firstName }),
   });
 
   if (error) return NextResponse.json(error, { status: 400 });
