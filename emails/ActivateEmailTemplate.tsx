@@ -11,22 +11,25 @@ import {
 } from "@react-email/components";
 
 interface Props {
-  name: string;
+  firstName: string;
+  activationUrl: string;
 }
 
-const ActivateEmailTemplate = ({ name }: Props) => {
+const ActivateEmailTemplate = ({ firstName, activationUrl }: Props) => {
   return (
     <Html>
       <Preview>Activate your account</Preview>
       <Tailwind>
         <Body>
           <Container className="p-4 border border-solid border-gray-300 rounded-md">
-            <Text>Hello {name},</Text>
+            <Text>Hello {firstName},</Text>
             <Text>
               Welcome to cluster-dashbaord. Please click on a link below to
               activate your account.
             </Text>
-            <Link href="#">Activate your cluster-dashboard account</Link>
+            <Link href={activationUrl}>
+              Activate your cluster-dashboard account
+            </Link>
             <Section>
               <Text>
                 Best,

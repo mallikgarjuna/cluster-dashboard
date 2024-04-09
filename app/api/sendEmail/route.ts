@@ -8,7 +8,9 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 
 const WelcomeEmailSchema = z.object({
   toEmail: z.string().email(),
+  subject: z.string().min(1),
   firstName: z.string().min(1),
+  activationUrl: z.string().url(),
 });
 
 export async function POST(request: NextRequest) {
@@ -20,14 +22,17 @@ export async function POST(request: NextRequest) {
   if (!validation.success)
     return NextResponse.json(validation.error.errors, { status: 400 });
 
-  const { toEmail, firstName } = body;
+  const { toEmail, subject, firstName, activationUrl } = body;
 
   const { data, error } = await resend.emails.send({
     from: "Cluster Dashboard <noreply@clusterdashboard.com>", //add custom domain
     to: [toEmail],
-    subject: "Activate your account",
+    subject: subject,
     // react: WelcomeEmailTemplate({ firstName: firstName }),
-    react: ActivateEmailTemplate({ name: firstName }),
+    react: ActivateEmailTemplate({
+      firstName: firstName,
+      activationUrl: activationUrl,
+    }),
   });
 
   if (error) return NextResponse.json(error, { status: 400 });

@@ -33,7 +33,7 @@ const authOptions: NextAuthOptions = {
         };
 
         const user = await axios
-          .post(`${process.env.BASE_URL}/api/users/login`, credentialsData)
+          .post(`${process.env.NEXTAUTH_URL}/api/users/login`, credentialsData)
           .then((res) => res.data)
           .catch((error) => {
             // console.error(error.response.data.error);

@@ -4,6 +4,7 @@ import { z } from "zod";
 import prisma from "@/prisma/client";
 import bcrypt from "bcrypt";
 import { SignupFormSchema } from "@/app/validationSchemas";
+import axios from "axios";
 
 // const UserRegistrationSchema = z.object({
 //   email: z.string().email(),
@@ -40,6 +41,16 @@ export async function POST(request: NextRequest) {
       lastName: body.lastName,
     },
   });
+
+  // if user is created, send an activation email with a link to the auth/activation page
+  const activationUrl = `${process.env.NEXTAUTH_URL}/auth/activation/${newUser.id}`;
+  const activationData = {
+    toEmail: newUser.email,
+    subject: "Activate your account",
+    firstName: newUser.firstName,
+    activationUrl: activationUrl,
+  };
+  await axios.post(`${process.env.NEXTAUTH_URL}/api/sendEmail`, activationData);
 
   //   Finally return a basic response to the client
   //   obvisouly, don't return the hashedpwd for security reasons
