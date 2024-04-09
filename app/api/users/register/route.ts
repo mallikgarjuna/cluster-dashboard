@@ -5,6 +5,7 @@ import prisma from "@/prisma/client";
 import bcrypt from "bcrypt";
 import { SignupFormSchema } from "@/app/validationSchemas";
 import axios from "axios";
+import { signJwt } from "@/lib/jwt";
 
 // const UserRegistrationSchema = z.object({
 //   email: z.string().email(),
@@ -43,7 +44,10 @@ export async function POST(request: NextRequest) {
   });
 
   // if user is created, send an activation email with a link to the auth/activation page
-  const activationUrl = `${process.env.NEXTAUTH_URL}/auth/activation/${newUser.id}`;
+  // encrypt the userId with jwt:
+  const jwtUserId = signJwt({ userId: newUser.id });
+
+  const activationUrl = `${process.env.NEXTAUTH_URL}/auth/activation/${jwtUserId}`;
   const activationData = {
     toEmail: newUser.email,
     subject: "Activate your account",
