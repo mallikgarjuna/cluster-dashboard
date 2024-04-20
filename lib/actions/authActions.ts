@@ -1,0 +1,73 @@
+"use server";
+import {
+  SignupFormInputFieldsDataType,
+  SignupFormSchema,
+} from "@/app/validationSchemas";
+import prisma from "@/prisma/client";
+import { User } from "@prisma/client";
+import bcrypt from "bcrypt";
+import { signJwt } from "../jwt";
+import axios from "axios";
+import { redirect } from "next/navigation";
+
+export async function registerUser(
+  signupFormData: SignupFormInputFieldsDataType
+) {
+  // In the received data, we have to make sure that we've a valid email and pswd
+  const validatedFields = SignupFormSchema.safeParse(signupFormData);
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: "Missing fields. Failed to create user.",
+    };
+  }
+  const { firstName, lastName, email, password } = validatedFields.data;
+
+  // if valid, make sure that we don't have a user w/ same email
+  const user = await prisma.user.findUnique({
+    where: { email: email },
+  });
+  if (user) {
+    return {
+      message: "User already exists. Failed to create user.",
+    };
+  }
+
+  // if user doesn' exist, create a user
+  const hashedPassword = await bcrypt.hash(password, 10);
+
+  //Used 'var' instead of 'const/let' so that I can access 'newUser' ourside try-catch block
+  try {
+    var newUser = await prisma.user.create({
+      data: {
+        email,
+        hashedPassword,
+        firstName,
+        lastName,
+      },
+    });
+  } catch (error) {
+    return {
+      message: "Database error: Failed to create user.",
+    };
+  }
+
+  // if user is created, send an activation email with a link to the auth/activation page
+  // encrypt the userId with jwt:
+  const jwtUserId = signJwt({ newUserId: newUser.id });
+
+  const activationUrl = `${process.env.NEXTAUTH_URL}/auth/activation/${jwtUserId}`;
+  const activationData = {
+    toEmail: newUser.email,
+    subject: "Activate your account",
+    firstName: newUser.firstName,
+    activationUrl: activationUrl,
+  };
+  await axios.post(`${process.env.NEXTAUTH_URL}/api/sendEmail`, activationData);
+
+  //   Finally return a basic response to the client
+  //   obvisouly, don't return the hashedpwd for security reasons
+  return { email: newUser.email };
+
+  redirect("/");
+}

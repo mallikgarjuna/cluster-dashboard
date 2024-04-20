@@ -11,6 +11,7 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { registerUser } from "@/lib/actions/authActions";
 
 const SignupForm = () => {
   const {
@@ -26,13 +27,14 @@ const SignupForm = () => {
   const toggleVisiblePass = () => setIsVisiblePass((prev) => !prev);
 
   const saveUser: SubmitHandler<SignupFormInputFieldsDataType> = async (
-    data
+    singupFormData
   ) => {
-    // const { confirmPassword, accepted, ...user } = data;
+    // const { confirmPassword, accepted, ...user } = singupFormData;
     try {
-      await axios.post("/api/users/register", data);
+      // await axios.post("/api/users/register", singupFormData);
+      const result = await registerUser(singupFormData);
       toast.success("The user registered successfully!");
-      console.log(data);
+      // console.log(singupFormData);
     } catch (error) {
       toast.error("Something went wrong...");
       console.error(error);

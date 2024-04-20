@@ -45,7 +45,7 @@ export async function POST(request: NextRequest) {
 
   // if user is created, send an activation email with a link to the auth/activation page
   // encrypt the userId with jwt:
-  const jwtUserId = signJwt({ userId: newUser.id });
+  const jwtUserId = signJwt({ newUserId: newUser.id });
 
   const activationUrl = `${process.env.NEXTAUTH_URL}/auth/activation/${jwtUserId}`;
   const activationData = {

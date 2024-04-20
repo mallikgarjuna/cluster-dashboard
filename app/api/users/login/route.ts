@@ -40,5 +40,7 @@ export async function POST(request: NextRequest) {
     );
   // 400: Bad request, meaning: the client sent invalid data
 
+  if (!user.emailVerified) throw new Error("Please verify your email first.");
+
   return NextResponse.json(user);
 }

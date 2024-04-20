@@ -90,3 +90,8 @@ export const SignupFormSchema = z
 export type SignupFormInputFieldsDataType = z.infer<typeof SignupFormSchema>;
 
 export type SignupFormInputFieldsName = keyof SignupFormInputFieldsDataType;
+
+// type for user activation API
+export type ActivateUserDataType = {
+  token: string;
+};

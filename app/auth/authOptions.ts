@@ -41,6 +41,8 @@ const authOptions: NextAuthOptions = {
             throw new Error(error.response.data.error);
           });
         return user ? user : null;
+        // this will be sent to next-auth session
+        // if the user is inside the session, the user is authenticated; otherwise, not!
 
         // const user = await prisma.user.findUnique({
         //   where: { email: credentials.email },
