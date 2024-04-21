@@ -8,7 +8,7 @@ import {
 import prisma from "@/prisma/client";
 import { User } from "@prisma/client";
 import bcrypt from "bcrypt";
-import { signJwt } from "../jwt";
+import { signJwt, verifyJwt } from "../jwt";
 import axios from "axios";
 import { redirect } from "next/navigation";
 import { signIn } from "next-auth/react";
@@ -76,7 +76,7 @@ export async function registerUser(signupFormData: SignupFormInputType) {
   redirect("/");
 }
 
-// signin user action
+// TODO: (not used it yet) signin user action
 export async function loginUser(signinFormData: SigninFormInputType) {
   // In the received data, we have to make sure that we've a valid email and pswd
   const validatedFields = SigninFormSchema.safeParse(signinFormData);
@@ -100,3 +100,26 @@ export async function loginUser(signinFormData: SigninFormInputType) {
     };
   }
 }
+
+// Activate user server action (called in auth/activation/[jwt]/page.tsx)
+type ActivateUserFunction = (
+  jwtUserId: string
+) => Promise<"userNotExist" | "alreadyActivated" | "success">;
+
+export const activateUser: ActivateUserFunction = async (jwtUserID) => {
+  const payload = verifyJwt(jwtUserID);
+  console.log(payload);
+  if ("newUserId" in payload) {
+    const userId = payload.newUserId;
+    const user = await prisma?.user.findUnique({ where: { id: userId } });
+    if (!user) return "userNotExist";
+    if (user.emailVerified) return "alreadyActivated";
+    await prisma?.user.update({
+      where: { id: userId },
+      data: { emailVerified: new Date() },
+    });
+    return "success";
+  } else {
+    throw new Error("Invalid payload, without 'newUserId' field");
+  }
+};
