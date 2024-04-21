@@ -95,3 +95,11 @@ export type SignupFormInputFieldsName = keyof SignupFormInputType;
 export type ActivateUserDataType = {
   token: string;
 };
+
+export const ForgotPasswordFormSchema = z.object({
+  email: z.string().email("Please enter a valid email."),
+});
+
+export type ForgotPasswordFormInputType = z.infer<
+  typeof ForgotPasswordFormSchema
+>;

@@ -1,5 +1,6 @@
 "use server";
 import {
+  ForgotPasswordFormInputType,
   SigninFormInputType,
   SigninFormSchema,
   SignupFormInputType,
@@ -12,7 +13,7 @@ import { signJwt, verifyJwt } from "../jwt";
 import axios from "axios";
 import { redirect } from "next/navigation";
 import { signIn } from "next-auth/react";
-import { sendEmail } from "./mailActions";
+import { sendActivationEmail, sendResetEmail } from "./mailActions";
 
 // register user action
 export async function registerUser(signupFormData: SignupFormInputType) {
@@ -67,7 +68,7 @@ export async function registerUser(signupFormData: SignupFormInputType) {
     activationUrl: activationUrl,
   };
   //   await axios.post(`${process.env.NEXTAUTH_URL}/api/sendEmail`, activationData);
-  await sendEmail(activationData); // calling server action, instead of api
+  await sendActivationEmail(activationData); // calling server action, instead of api
 
   //   Finally return a basic response to the client
   //   obvisouly, don't return the hashedpwd for security reasons
@@ -123,3 +124,25 @@ export const activateUser: ActivateUserFunction = async (jwtUserID) => {
     throw new Error("Invalid payload, without 'newUserId' field");
   }
 };
+
+// forgot Password server action
+export async function forgotPassword(
+  forgotPasswordFormData: ForgotPasswordFormInputType
+) {
+  const user = await prisma.user.findUnique({
+    where: { email: forgotPasswordFormData.email },
+  });
+  if (!user) throw new Error("The user does not exist.");
+
+  // if user exists, send an email with restpassword link
+  const jwtUserId = signJwt({ id: user.id });
+  const resetUrl = `${process.env.NEXTAUTH_URL}/auth/resetPassword/${jwtUserId}`;
+  const resetPasswordData = {
+    toEmail: user.email!,
+    subject: "Reset your password",
+    firstName: user.firstName!,
+    resetUrl: resetUrl,
+  };
+
+  await sendResetEmail(resetPasswordData);
+}

@@ -40,7 +40,8 @@ const SigninForm = ({ callbackUrl }: Props) => {
     }
 
     toast.success("Logged in successfully!");
-    router.push(callbackUrl || "/");
+    // router.push(callbackUrl || "/");
+    router.push("/");
   };
 
   const toggleVisiblePass = () => setIsVisiblePass((prev) => !prev);
