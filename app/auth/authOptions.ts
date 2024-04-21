@@ -27,37 +27,43 @@ const authOptions: NextAuthOptions = {
         if (!credentials?.email || !credentials?.password) return null;
 
         // // Calling signin API here with credentials is not working properly
-        const credentialsData = {
-          email: credentials.email,
-          password: credentials.password,
-        };
+        // const credentialsData = {
+        //   email: credentials.email,
+        //   password: credentials.password,
+        // };
+        // const user = await axios
+        //   .post(`${process.env.NEXTAUTH_URL}/api/users/login`, credentialsData)
+        //   .then((res) => res.data)
+        //   .catch((error) => {
+        //     // console.error(error.response.data.error);
+        //     // throw error;
+        //     throw new Error(error.response.data.error);
+        //   });
+        // return user ? user : null;
+        // // this will be sent to next-auth session
+        // // if the user is inside the session, the user is authenticated; otherwise, not!
 
-        const user = await axios
-          .post(`${process.env.NEXTAUTH_URL}/api/users/login`, credentialsData)
-          .then((res) => res.data)
-          .catch((error) => {
-            // console.error(error.response.data.error);
-            // throw error;
-            throw new Error(error.response.data.error);
-          });
-        return user ? user : null;
-        // this will be sent to next-auth session
-        // if the user is inside the session, the user is authenticated; otherwise, not!
+        // Instead of api/users/login API, implement its logic here itself!
+        // Check if the user exists, if not, throw error
+        const user = await prisma.user.findUnique({
+          where: { email: credentials.email },
+        });
+        if (!user) throw new Error("User does not exist");
 
-        // const user = await prisma.user.findUnique({
-        //   where: { email: credentials.email },
-        // });
+        // Check if the entered password is matching with the registered one, if not, throw error
+        const passwordsMatch = await bcrypt.compare(
+          credentials.password,
+          user?.hashedPassword!
+        );
+        if (!passwordsMatch) throw new Error("Password is not correct");
 
-        // if (!user) throw new Error("User does not exist");
+        // Check if the email is verified, if not throw error;
+        if (!user.emailVerified)
+          throw new Error("Please verify your email first!");
 
-        // const passwordsMatch = await bcrypt.compare(
-        //   credentials.password,
-        //   user?.hashedPassword!
-        // );
-
-        // if (!passwordsMatch) throw new Error("Password is not correct");
-
-        // return user;
+        return user;
+        // // this will be sent to next-auth session
+        // // if the user is inside the session, the user is authenticated; otherwise, not!
       },
     }),
   ],

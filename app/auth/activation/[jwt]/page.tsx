@@ -16,7 +16,7 @@ const ActivationPage = async ({ params }: Props) => {
   // );
   // const result = response.data;
 
-  const result = await activateUser(params.jwt);
+  const result = await activateUser(params.jwt); //use server action instead of API
   return (
     <div className="h-screen flex flex-col items-center justify-center">
       <h1>ActivationPage</h1>
