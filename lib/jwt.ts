@@ -26,6 +26,7 @@ export function verifyJwt(token: string) {
     return decoded as JwtPayload;
   } catch (error) {
     console.log(error);
-    return new Error("Invalid or expired jwt token");
+    // return new Error("Invalid or expired jwt token");
+    return null;
   }
 }
