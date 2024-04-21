@@ -109,20 +109,25 @@ type ActivateUserFunction = (
 
 export const activateUser: ActivateUserFunction = async (jwtUserID) => {
   const payload = verifyJwt(jwtUserID);
-  console.log(payload);
-  if ("newUserId" in payload) {
-    const userId = payload.newUserId;
-    const user = await prisma?.user.findUnique({ where: { id: userId } });
-    if (!user) return "userNotExist";
-    if (user.emailVerified) return "alreadyActivated";
-    await prisma?.user.update({
-      where: { id: userId },
-      data: { emailVerified: new Date() },
-    });
-    return "success";
-  } else {
-    throw new Error("Invalid payload, without 'newUserId' field");
-  }
+  // console.log(payload);
+  if (!payload) return "userNotExist";
+
+  // if ("newUserId" in payload) {
+  const userId = payload.newUserId;
+  const user = await prisma?.user.findUnique({ where: { id: userId } });
+  if (!user) return "userNotExist";
+
+  if (user.emailVerified) return "alreadyActivated";
+
+  const result = await prisma?.user.update({
+    where: { id: userId },
+    data: { emailVerified: new Date() },
+  });
+  if (result) return "success";
+  else throw new Error("Something went wrong...");
+  // } else {
+  //   throw new Error("Invalid payload, without 'newUserId' field");
+  // }
 };
 
 // forgot Password server action
@@ -146,3 +151,30 @@ export async function forgotPassword(
 
   await sendResetEmail(resetPasswordData);
 }
+
+type ResetPasswordFunc = (
+  jwtUserId: string,
+  password: string
+) => Promise<"userNotExist" | "success">;
+
+export const resetPassword: ResetPasswordFunc = async (jwtUserId, password) => {
+  const payload = verifyJwt(jwtUserId);
+  if (!payload) return "userNotExist";
+
+  const userId = payload.id; // id was set in forgotPassword server action
+  const user = prisma.user.findUnique({
+    where: { id: userId },
+  });
+  if (!user) return "userNotExist";
+
+  const result = await prisma.user.update({
+    where: { id: userId },
+    data: {
+      hashedPassword: await bcrypt.hash(password, 10),
+    },
+  });
+  if (result) return "success";
+  else throw new Error("Something went wrong...");
+
+  redirect("/");
+};

@@ -1,9 +1,12 @@
 "use client";
 
+import { resetPassword } from "@/lib/actions/authActions";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button, Input } from "@nextui-org/react";
+import { useRouter } from "next/navigation";
 import React, { useState } from "react";
-import { useForm } from "react-hook-form";
+import { SubmitHandler, useForm } from "react-hook-form";
+import toast from "react-hot-toast";
 import { HiEye, HiEyeOff } from "react-icons/hi";
 import { z } from "zod";
 
@@ -30,6 +33,8 @@ const ResetPasswordForm = ({ jwtUserId }: Props) => {
   const [visiblePass, setVisiblePass] = useState(false);
   const toggleVisiblePass = () => setVisiblePass((prev) => !prev);
 
+  const router = useRouter();
+
   const {
     register,
     handleSubmit,
@@ -39,8 +44,30 @@ const ResetPasswordForm = ({ jwtUserId }: Props) => {
     resolver: zodResolver(ResetPasswordFormSchema),
   });
 
+  const resetPass: SubmitHandler<ResetPasswordFormInputType> = async (
+    resetPasswordFormData
+  ) => {
+    try {
+      const result = await resetPassword(
+        jwtUserId,
+        resetPasswordFormData.password
+      );
+      if (result === "success")
+        toast.success("Your password has been reset successfully.");
+
+      //   redirect the user to signin page
+      router.push("/auth/signin");
+    } catch (error) {
+      console.error(error);
+      toast.error("Something went wrong in resetting password...");
+    }
+  };
+
   return (
-    <form className="flex flex-col gap-2 border rounded-md p-2 m-2">
+    <form
+      onSubmit={handleSubmit(resetPass)}
+      className="flex flex-col gap-2 border rounded-md p-2 m-2"
+    >
       <div className="text-2xl font-bold">Reset Your Password</div>
       <Input
         type={visiblePass ? "text" : "password"}
