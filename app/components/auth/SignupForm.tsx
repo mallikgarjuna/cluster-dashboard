@@ -4,10 +4,7 @@ import { Button, Checkbox, Input, Link } from "@nextui-org/react";
 import { HiEye, HiEyeOff, HiKey, HiMail, HiUser } from "react-icons/hi";
 import React, { useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import {
-  SignupFormInputFieldsDataType,
-  SignupFormSchema,
-} from "@/app/validationSchemas";
+import { SignupFormInputType, SignupFormSchema } from "@/app/validationSchemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
 import toast from "react-hot-toast";
@@ -18,15 +15,15 @@ const SignupForm = () => {
     register,
     handleSubmit,
     control,
-    formState: { errors },
-  } = useForm<SignupFormInputFieldsDataType>({
+    formState: { errors, isSubmitting },
+  } = useForm<SignupFormInputType>({
     resolver: zodResolver(SignupFormSchema),
   });
 
   const [isVisiblePass, setIsVisiblePass] = useState(false);
   const toggleVisiblePass = () => setIsVisiblePass((prev) => !prev);
 
-  const saveUser: SubmitHandler<SignupFormInputFieldsDataType> = async (
+  const saveUser: SubmitHandler<SignupFormInputType> = async (
     singupFormData
   ) => {
     // const { confirmPassword, accepted, ...user } = singupFormData;
@@ -120,8 +117,14 @@ const SignupForm = () => {
         </p>
       )}
       <div className="col-span-2 flex justify-center">
-        <Button type="submit" color="primary" className="w-48">
-          Sign up
+        <Button
+          type="submit"
+          disabled={isSubmitting}
+          isLoading={isSubmitting}
+          color="primary"
+          className="w-48"
+        >
+          {isSubmitting ? "Signing up..." : "Sign up"}
         </Button>
       </div>
     </form>

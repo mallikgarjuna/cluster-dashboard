@@ -1,9 +1,6 @@
 "use client";
 
-import {
-  SigninFormInputFieldsType,
-  SigninFormSchema,
-} from "@/app/validationSchemas";
+import { SigninFormInputType, SigninFormSchema } from "@/app/validationSchemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button, Input } from "@nextui-org/react";
 import { signIn } from "next-auth/react";
@@ -23,13 +20,16 @@ const SigninForm = ({ callbackUrl }: Props) => {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<SigninFormInputFieldsType>({
+  } = useForm<SigninFormInputType>({
     resolver: zodResolver(SigninFormSchema),
   });
-  const signinUser: SubmitHandler<SigninFormInputFieldsType> = async (data) => {
+
+  const signinUser: SubmitHandler<SigninFormInputType> = async (
+    signinFormData
+  ) => {
     const result = await signIn("credentials", {
-      email: data.email,
-      password: data.password,
+      email: signinFormData.email,
+      password: signinFormData.password,
       redirect: false,
     });
 

@@ -43,9 +43,9 @@ export const SigninFormSchema = z.object({
   }),
 });
 
-export type SigninFormInputFieldsType = z.infer<typeof SigninFormSchema>;
+export type SigninFormInputType = z.infer<typeof SigninFormSchema>;
 
-export type SigninFormInputFieldsName = keyof SigninFormInputFieldsType;
+export type SigninFormInputFieldsName = keyof SigninFormInputType;
 
 // Signup form schema
 export const SignupFormSchema = z
@@ -87,9 +87,9 @@ export const SignupFormSchema = z
     path: ["confirmPassword"],
   });
 
-export type SignupFormInputFieldsDataType = z.infer<typeof SignupFormSchema>;
+export type SignupFormInputType = z.infer<typeof SignupFormSchema>;
 
-export type SignupFormInputFieldsName = keyof SignupFormInputFieldsDataType;
+export type SignupFormInputFieldsName = keyof SignupFormInputType;
 
 // type for user activation API
 export type ActivateUserDataType = {

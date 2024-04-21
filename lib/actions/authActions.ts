@@ -1,6 +1,8 @@
 "use server";
 import {
-  SignupFormInputFieldsDataType,
+  SigninFormInputType,
+  SigninFormSchema,
+  SignupFormInputType,
   SignupFormSchema,
 } from "@/app/validationSchemas";
 import prisma from "@/prisma/client";
@@ -9,10 +11,11 @@ import bcrypt from "bcrypt";
 import { signJwt } from "../jwt";
 import axios from "axios";
 import { redirect } from "next/navigation";
+import { signIn } from "next-auth/react";
+import { sendEmail } from "./mailActions";
 
-export async function registerUser(
-  signupFormData: SignupFormInputFieldsDataType
-) {
+// register user action
+export async function registerUser(signupFormData: SignupFormInputType) {
   // In the received data, we have to make sure that we've a valid email and pswd
   const validatedFields = SignupFormSchema.safeParse(signupFormData);
   if (!validatedFields.success) {
@@ -58,16 +61,42 @@ export async function registerUser(
 
   const activationUrl = `${process.env.NEXTAUTH_URL}/auth/activation/${jwtUserId}`;
   const activationData = {
-    toEmail: newUser.email,
+    toEmail: newUser.email!,
     subject: "Activate your account",
-    firstName: newUser.firstName,
+    firstName: newUser.firstName!,
     activationUrl: activationUrl,
   };
-  await axios.post(`${process.env.NEXTAUTH_URL}/api/sendEmail`, activationData);
+  //   await axios.post(`${process.env.NEXTAUTH_URL}/api/sendEmail`, activationData);
+  await sendEmail(activationData); // calling server action, instead of api
 
   //   Finally return a basic response to the client
   //   obvisouly, don't return the hashedpwd for security reasons
   return { email: newUser.email };
 
   redirect("/");
+}
+
+// signin user action
+export async function loginUser(signinFormData: SigninFormInputType) {
+  // In the received data, we have to make sure that we've a valid email and pswd
+  const validatedFields = SigninFormSchema.safeParse(signinFormData);
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: "Missing fields. Failed to sign in user.",
+    };
+  }
+  const { email, password } = validatedFields.data;
+
+  try {
+    const result = await signIn("credentials", {
+      email: signinFormData.email,
+      password: signinFormData.password,
+      redirect: false,
+    });
+  } catch (error) {
+    return {
+      message: "Database error: Failed to sign in user.",
+    };
+  }
 }
