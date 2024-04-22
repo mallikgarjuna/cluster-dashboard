@@ -74,9 +74,19 @@ model User {
   emailVerified  DateTime?
   hashedPassword String?
   image          String?
+  role           UserRole  @default(USER)
   accounts       Account[]
   sessions       Session[]
   assignedGrants Grant[]
+}
+
+enum UserRole {
+  USER
+  ADMIN
+  GRANTOFFICER
+  MANAGER
+  HEAD
+  GROUPLEADER
 }
 
 model VerificationToken {
