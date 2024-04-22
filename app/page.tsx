@@ -1,39 +1,24 @@
-import Image from "next/image";
-import Pagination from "./components/Pagination";
-import LatestGrants from "./LatestGrants";
-import GrantSummary from "./GrantSummary";
-import prisma from "@/prisma/client";
-import GrantChart from "./GrantChart";
 import { Flex, Grid } from "@radix-ui/themes";
 import { Metadata } from "next";
+import Link from "next/link";
+import { HiArrowRight } from "react-icons/hi";
 
-export default async function Home() {
-  const submitted = await prisma.grant.count({
-    where: { status: "SUBMITTED" },
-  });
-  const awarded = await prisma.grant.count({ where: { status: "AWARDED" } });
-  const rejected = await prisma.grant.count({ where: { status: "REJECTED" } });
-
+export default async function HomePage() {
   return (
     <Grid columns={{ initial: "1", md: "2" }} gap="5">
       <Flex direction="column" gap="5">
-        <GrantSummary
-          submitted={submitted}
-          awarded={awarded}
-          rejected={rejected}
-        />
-        <GrantChart
-          submitted={submitted}
-          awarded={awarded}
-          rejected={rejected}
-        />
+        <Link
+          href="/auth/signin"
+          className="flex items-center gap-5 self-start rounded-lg bg-blue-500 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-blue-400 md:text-base"
+        >
+          <span>Log in</span> <HiArrowRight />
+        </Link>
       </Flex>
-      <LatestGrants />
     </Grid>
   );
 }
 
 export const metadata: Metadata = {
-  title: "Cluster Dashboard - Grants",
+  title: "Cluster Dashboard - Homepage",
   description: "View a summary of grants",
 };
