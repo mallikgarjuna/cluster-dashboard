@@ -3,10 +3,14 @@ import React from "react";
 import authOptions from "../auth/authOptions";
 import { Image } from "@nextui-org/react";
 import { HiOutlineUserCircle, HiUser } from "react-icons/hi";
+import { redirect } from "next/navigation";
 
 const ProfilePage = async () => {
   const session = await getServerSession(authOptions);
   const user = session?.user;
+
+  //   if un-authenticated, redirect the user to login page
+  if (!session || !session.user) redirect("/auth/signin");
 
   return (
     <div>
