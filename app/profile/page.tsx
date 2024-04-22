@@ -10,7 +10,7 @@ const ProfilePage = async () => {
   const user = session?.user;
 
   //   if un-authenticated, redirect the user to login page
-  if (!session || !session.user) redirect("/auth/signin");
+  //   if (!session || !session.user) redirect("/auth/signin"); //instead use middleware
 
   return (
     <div>
