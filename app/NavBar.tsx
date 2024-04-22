@@ -104,6 +104,9 @@ const AuthStatus = () => {
           </DropdownTrigger>
           <DropdownMenu aria-label="Static-Actions">
             <DropdownItem key="email">{session.user!.email}</DropdownItem>
+            <DropdownItem key="profile" as={Link} href="/profile">
+              Profile
+            </DropdownItem>
             <DropdownItem key="signout" as={Link} href="/api/auth/signout">
               Sign out
             </DropdownItem>
