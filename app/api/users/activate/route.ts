@@ -9,7 +9,7 @@ type ActivateUserFunction = (
 const activateUser: ActivateUserFunction = async (jwtUserID) => {
   const payload = verifyJwt(jwtUserID);
   console.log(payload);
-  if ("newUserId" in payload) {
+  if ("newUserId" in payload!) {
     const userId = payload.newUserId;
     const user = await prisma?.user.findUnique({ where: { id: userId } });
     if (!user) return "userNotExist";
