@@ -19,7 +19,7 @@ import { Skeleton } from "@/app/components";
 
 const NavBar = () => {
   return (
-    <nav className=" border-b mb-5 px-5 py-3">
+    <nav className=" border-b mb-0 px-5 py-3">
       <Container>
         <Flex justify="between">
           <Flex gap="3" align="center">
@@ -41,8 +41,7 @@ const NavLinks = () => {
   const currentPath = usePathname();
 
   const links = [
-    { label: "HomeDashboard", href: "/" },
-    { label: "Grants", href: "/grants/list" },
+    { label: "Home", href: "/" },
     { label: "Dashboard", href: "/dashboard" },
     { label: "Admin", href: "/admin" },
   ];
