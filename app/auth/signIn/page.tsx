@@ -18,7 +18,7 @@ const SigninPage = ({ searchParams }: Props) => {
 
       <Link href="/auth/forgotPassword">Forgot password?</Link>
       <div className="flex gap-2">
-        <p>Don't have an account? </p>
+        <p>Don&apos;t have an account? </p>
         <Link href="/auth/signup">Sign up</Link>
       </div>
     </div>
