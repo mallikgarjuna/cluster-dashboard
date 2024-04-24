@@ -9,7 +9,7 @@ const GrantActions = () => {
     <Flex justify="between">
       <GrantStatusFilter />
       <Button>
-        <Link href="/grants/new">New Grant</Link>
+        <Link href="/dashboard/grants/new">New Grant</Link>
       </Button>
     </Flex>
   );

@@ -25,7 +25,9 @@ const LatestGrants = async () => {
               <Table.Cell>
                 <Flex justify="between">
                   <Flex direction="column" gap="2" align="start">
-                    <Link href={`/grants/${grant.id}`}>{grant.title}</Link>
+                    <Link href={`/dashboard/grants/${grant.id}`}>
+                      {grant.title}
+                    </Link>
                     <GrantStatusBadge status={grant.status} />
                   </Flex>
                   {grant.assignedToUser && (

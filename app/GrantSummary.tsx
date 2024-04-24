@@ -27,7 +27,7 @@ const GrantSummary = ({ submitted, awarded, rejected }: Props) => {
           <Flex direction="column" gap="1">
             <Link
               className="text-sm font-medium"
-              href={`/grants/list?status=${container.status}`}
+              href={`/dashboard/grants/list?status=${container.status}`}
             >
               {container.label}
             </Link>

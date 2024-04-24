@@ -9,12 +9,15 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { registerUser } from "@/lib/actions/authActions";
+import { useRouter } from "next/navigation";
 
 const SignupForm = () => {
+  const router = useRouter();
   const {
     register,
     handleSubmit,
     control,
+    reset,
     formState: { errors, isSubmitting },
   } = useForm<SignupFormInputType>({
     resolver: zodResolver(SignupFormSchema),
@@ -31,6 +34,8 @@ const SignupForm = () => {
       // await axios.post("/api/users/register", singupFormData);
       const result = await registerUser(singupFormData);
       toast.success("The user registered successfully!");
+      reset();
+      router.push("/auth/signin");
       // console.log(singupFormData);
     } catch (error) {
       toast.error("Something went wrong...");

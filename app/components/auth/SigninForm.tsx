@@ -19,6 +19,7 @@ const SigninForm = ({ callbackUrl }: Props) => {
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors, isSubmitting },
   } = useForm<SigninFormInputType>({
     resolver: zodResolver(SigninFormSchema),
@@ -40,8 +41,9 @@ const SigninForm = ({ callbackUrl }: Props) => {
     }
 
     toast.success("Logged in successfully!");
+    reset();
     // router.push(callbackUrl || "/");
-    router.push("/");
+    router.push("/dashboard");
   };
 
   const toggleVisiblePass = () => setIsVisiblePass((prev) => !prev);

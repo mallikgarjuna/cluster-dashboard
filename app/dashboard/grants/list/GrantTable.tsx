@@ -44,7 +44,7 @@ const GrantTable = ({ searchParams, grants }: Props) => {
         {grants.map((grant) => (
           <Table.Row key={grant.id}>
             <Table.Cell>
-              <Link href={`/grants/${grant.id}`}>{grant.title}</Link>
+              <Link href={`/dashboard/grants/${grant.id}`}>{grant.title}</Link>
               <div className="block md:hidden">
                 <GrantStatusBadge status={grant.status} />
               </div>

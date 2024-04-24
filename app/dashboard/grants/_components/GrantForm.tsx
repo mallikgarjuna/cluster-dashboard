@@ -41,7 +41,7 @@ const GrantForm = ({ grant }: Props) => {
       setSubmitting(true);
       if (grant) await axios.patch(`/api/grants/${grant.id}`, data);
       else await axios.post("/api/grants", data);
-      router.push("/grants/list");
+      router.push("/dashboard/grants/list");
       router.refresh();
     } catch (error) {
       setSubmitting(false);
@@ -58,6 +58,9 @@ const GrantForm = ({ grant }: Props) => {
       )}
       <FormProvider {...methods}>
         <form className=" space-y-2" onSubmit={handleSubmit(onSubmit)}>
+          <div className="text-3xl font-bold items-center justify-center">
+            {!!grant ? "Edit grant" : "Create new grant"}
+          </div>
           <CustomInput
             type="text"
             name="title"
@@ -129,10 +132,20 @@ const GrantForm = ({ grant }: Props) => {
             defaultValue={grant?.notes || ""}
           />
 
-          <Button disabled={isSubmitting}>
-            {grant ? "Update Grant" : "Submit New Grant "}{" "}
-            {isSubmitting && <Spinner />}
-          </Button>
+          <div className="flex justify-between">
+            <Button disabled={isSubmitting}>
+              {grant ? "Update Grant" : "Submit New Grant "}{" "}
+              {isSubmitting && <Spinner />}
+            </Button>
+
+            <Button
+              onClick={() => router.push("/dashboard/grants/list")}
+              type="button"
+              color="red"
+            >
+              Cancel
+            </Button>
+          </div>
         </form>
       </FormProvider>
     </div>
