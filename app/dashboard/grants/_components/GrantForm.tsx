@@ -1,155 +1,161 @@
 "use client";
-
-import { Button, Callout, TextField } from "@radix-ui/themes";
-import ErrorMessage from "@/app/components/ErrorMessage";
-import CustomInput from "@/app/components/Input/CustomInput";
-import CustomMDEInput from "@/app/components/Input/CustomMDEInput";
-import Spinner from "@/app/components/Spinner";
+import { Spinner } from "@/app/components";
 import { GrantFormDataType, grantFormSchema } from "@/app/validationSchemas";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Button, Input } from "@nextui-org/react";
 import { Grant } from "@prisma/client";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { FormProvider, useForm } from "react-hook-form";
-
-// type GrantFormDataType = z.infer<typeof grantFormSchema>;
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import toast from "react-hot-toast";
+import SimpleMdeReact from "react-simplemde-editor";
+import "easymde/dist/easymde.min.css";
 
 interface Props {
   grant?: Grant;
 }
 
-// Receives a 'grant' prop, "optional" (see above interface)
-const GrantForm = ({ grant }: Props) => {
+const GrantFormMG = ({ grant }: Props) => {
   const router = useRouter();
-  const methods = useForm<GrantFormDataType>({
-    resolver: zodResolver(grantFormSchema),
-  });
   const {
     register,
-    control,
     handleSubmit,
-    setValue,
-    formState: { errors },
-  } = methods;
-  const [error, setError] = useState("");
-  const [isSubmitting, setSubmitting] = useState(false);
+    control,
+    reset,
+    formState: { errors, isSubmitting },
+  } = useForm<GrantFormDataType>({
+    resolver: zodResolver(grantFormSchema),
+  });
 
-  const onSubmit = async (data: GrantFormDataType) => {
+  const submitGrantForm: SubmitHandler<GrantFormDataType> = async (
+    grantFormData
+  ) => {
     try {
-      console.log(data);
-      setSubmitting(true);
-      if (grant) await axios.patch(`/api/grants/${grant.id}`, data);
-      else await axios.post("/api/grants", data);
+      if (grant) {
+        await axios.patch(`/api/grants/${grant.id}`, grantFormData);
+      } else {
+        await axios.post("/api/grants", grantFormData);
+      }
+      toast.success("The grant was saved successfully!");
+      reset();
       router.push("/dashboard/grants/list");
       router.refresh();
     } catch (error) {
-      setSubmitting(false);
-      setError("An unexpected error occured.");
+      toast.error("Something went wrong...");
+      console.log(error);
     }
   };
 
   return (
     <div className="max-w-xl">
-      {error && (
-        <Callout.Root color="red" className="mb-5">
-          <Callout.Text>{error}</Callout.Text>
-        </Callout.Root>
-      )}
-      <FormProvider {...methods}>
-        <form className=" space-y-2" onSubmit={handleSubmit(onSubmit)}>
-          <div className="text-3xl font-bold items-center justify-center">
-            {!!grant ? "Edit grant" : "Create new grant"}
-          </div>
-          <CustomInput
-            type="text"
-            name="title"
-            label="Title"
-            defaultValue={grant?.title}
-            placeholder="Title"
-            errors={errors}
-          />
-
-          <CustomMDEInput
-            label="Description"
-            name="description"
-            defaultValue={grant?.description}
-            placeholder="Description"
-            errors={errors}
-          />
-
-          <CustomInput
-            type="text"
-            name="acronym"
-            label="Acronym"
-            placeholder="Acronym"
-            errors={errors}
-            defaultValue={grant?.acronym || ""}
-          />
-
-          <CustomInput
-            type="number"
-            name="budgetTotal"
-            label="Total budget"
-            placeholder="Total budget"
-            errors={errors}
-            valueAsNumber
-            defaultValue={grant?.budgetTotal || 0}
-          />
-
-          <CustomInput
-            type="date"
-            name="submissionDate"
-            label="submission Date"
-            placeholder="Enter submission Date"
-            errors={errors}
-            defaultValue={grant?.submissionDate?.toISOString()}
-          />
-
-          <CustomInput
-            type="date"
-            name="deadline"
-            label="Deadline"
-            placeholder="Enter deadline"
-            errors={errors}
-            defaultValue={grant?.deadline?.toISOString()}
-          />
-
-          <CustomInput
-            type="date"
-            name="decisionDate"
-            label="Decision Date"
-            placeholder="Enter decision date"
-            errors={errors}
-            defaultValue={grant?.decisionDate?.toISOString()}
-          />
-
-          <CustomMDEInput
-            name="notes"
-            label="Notes"
-            placeholder="Enter additional information"
-            errors={errors}
-            defaultValue={grant?.notes || ""}
-          />
-
-          <div className="flex justify-between">
-            <Button disabled={isSubmitting}>
-              {grant ? "Update Grant" : "Submit New Grant "}{" "}
-              {isSubmitting && <Spinner />}
-            </Button>
-
-            <Button
-              onClick={() => router.push("/dashboard/grants/list")}
-              type="button"
-              color="red"
-            >
-              Cancel
-            </Button>
-          </div>
-        </form>
-      </FormProvider>
+      <form onSubmit={handleSubmit(submitGrantForm)} className="space-y-2">
+        <div className="text-3xl font-bold">
+          {!!grant ? "Edit Grant" : "Create New Grant"}
+        </div>
+        <Input
+          {...register("title")}
+          errorMessage={errors.title?.message}
+          isInvalid={!!errors.title}
+          type="text"
+          label="Title"
+          placeholder="Title of the grant"
+          defaultValue={grant?.title}
+        />
+        <Controller
+          name="description"
+          control={control}
+          render={({ field }) => (
+            <SimpleMdeReact
+              {...field}
+              placeholder="Description of grant"
+              options={{
+                maxHeight: "100px",
+                autofocus: true,
+              }}
+            />
+          )}
+          defaultValue={grant?.description}
+        />
+        {!!errors.description && (
+          <p className="text-sm text-red-500">{errors.description.message}</p>
+        )}
+        <Input
+          {...register("acronym")}
+          errorMessage={errors.acronym?.message}
+          isInvalid={!!errors.acronym}
+          type="text"
+          label="Acronym"
+          placeholder="Acronym of the grant"
+          defaultValue={grant?.acronym || ""}
+        />
+        <Input
+          {...register("budgetTotal", { valueAsNumber: true })}
+          errorMessage={errors.budgetTotal?.message}
+          isInvalid={!!errors.budgetTotal}
+          type="number"
+          label="Budget Total"
+          placeholder="Total budget of the grant"
+          // defaultValue is uncontrolled (if not below, may need to use Controlled comp;)
+          defaultValue={grant?.budgetTotal?.toString() || "0"}
+          // defaultValue={grant?.budgetTotal || 0}
+        />
+        <Input
+          {...register("submissionDate")}
+          errorMessage={errors.submissionDate?.message}
+          isInvalid={!!errors.submissionDate}
+          type="date"
+          label="Submission Date"
+          // placeholder="Submission date of the grant"
+          defaultValue={grant?.submissionDate?.toISOString().substring(0, 10)}
+        />
+        <Input
+          {...register("deadline")}
+          errorMessage={errors.deadline?.message}
+          isInvalid={!!errors.deadline}
+          type="date"
+          label="Deadline Date"
+          // placeholder="Submission date of the grant"
+          defaultValue={grant?.deadline?.toISOString().substring(0, 10)}
+        />
+        <Input
+          {...register("decisionDate")}
+          errorMessage={errors.decisionDate?.message}
+          isInvalid={!!errors.decisionDate}
+          type="date"
+          label="Decision Date"
+          // placeholder="Submission date of the grant"
+          defaultValue={grant?.decisionDate?.toISOString().substring(0, 10)}
+        />
+        <Controller
+          name="notes"
+          control={control}
+          render={({ field }) => (
+            <SimpleMdeReact
+              {...field}
+              placeholder="Additional notes"
+              options={{
+                maxHeight: "100px",
+                autofocus: true,
+              }}
+            />
+          )}
+          defaultValue={grant?.notes || ""}
+        />
+        {!!errors.notes && (
+          <p className="text-sm text-red-500">{errors.notes.message}</p>
+        )}
+        <div className="flex justify-between">
+          <Button type="submit" color="primary" disabled={isSubmitting}>
+            {grant ? "Update Grant" : "Create New Grant"}
+            {isSubmitting && <Spinner />}
+          </Button>
+          <Button type="button" color="danger" onClick={() => router.back()}>
+            Cancel
+          </Button>
+        </div>
+      </form>
     </div>
   );
 };
 
-export default GrantForm;
+export default GrantFormMG;
