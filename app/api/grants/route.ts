@@ -26,6 +26,7 @@ export async function POST(request: NextRequest) {
       deadline: body.deadline,
       decisionDate: body.decisionDate,
       notes: body.notes,
+      assignedToUserId: body.assignedToUserId,
     },
   });
 

@@ -2,20 +2,31 @@
 import { Spinner } from "@/app/components";
 import { GrantFormDataType, grantFormSchema } from "@/app/validationSchemas";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button, Input } from "@nextui-org/react";
-import { Grant } from "@prisma/client";
+import {
+  Button,
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  DropdownTrigger,
+  Input,
+  Select,
+  SelectItem,
+} from "@nextui-org/react";
+import { Grant, User } from "@prisma/client";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import SimpleMdeReact from "react-simplemde-editor";
 import "easymde/dist/easymde.min.css";
+import { fetchUsers } from "@/lib/actions/userActions";
+import { useQuery } from "@tanstack/react-query";
 
 interface Props {
   grant?: Grant;
 }
 
-const GrantFormMG = ({ grant }: Props) => {
+const GrantForm = ({ grant }: Props) => {
   const router = useRouter();
   const {
     register,
@@ -40,11 +51,14 @@ const GrantFormMG = ({ grant }: Props) => {
       reset();
       router.push("/dashboard/grants/list");
       router.refresh();
+      console.log(grantFormData);
     } catch (error) {
       toast.error("Something went wrong...");
       console.log(error);
     }
   };
+
+  const { data: users, error, isLoading } = useUsers();
 
   return (
     <div className="max-w-xl">
@@ -61,6 +75,7 @@ const GrantFormMG = ({ grant }: Props) => {
           placeholder="Title of the grant"
           defaultValue={grant?.title}
         />
+
         <Controller
           name="description"
           control={control}
@@ -79,6 +94,7 @@ const GrantFormMG = ({ grant }: Props) => {
         {!!errors.description && (
           <p className="text-sm text-red-500">{errors.description.message}</p>
         )}
+
         <Input
           {...register("acronym")}
           errorMessage={errors.acronym?.message}
@@ -88,6 +104,7 @@ const GrantFormMG = ({ grant }: Props) => {
           placeholder="Acronym of the grant"
           defaultValue={grant?.acronym || ""}
         />
+
         <Input
           {...register("budgetTotal", { valueAsNumber: true })}
           errorMessage={errors.budgetTotal?.message}
@@ -99,6 +116,7 @@ const GrantFormMG = ({ grant }: Props) => {
           defaultValue={grant?.budgetTotal?.toString() || "0"}
           // defaultValue={grant?.budgetTotal || 0}
         />
+
         <Input
           {...register("submissionDate")}
           errorMessage={errors.submissionDate?.message}
@@ -108,6 +126,7 @@ const GrantFormMG = ({ grant }: Props) => {
           // placeholder="Submission date of the grant"
           defaultValue={grant?.submissionDate?.toISOString().substring(0, 10)}
         />
+
         <Input
           {...register("deadline")}
           errorMessage={errors.deadline?.message}
@@ -117,6 +136,7 @@ const GrantFormMG = ({ grant }: Props) => {
           // placeholder="Submission date of the grant"
           defaultValue={grant?.deadline?.toISOString().substring(0, 10)}
         />
+
         <Input
           {...register("decisionDate")}
           errorMessage={errors.decisionDate?.message}
@@ -126,6 +146,7 @@ const GrantFormMG = ({ grant }: Props) => {
           // placeholder="Submission date of the grant"
           defaultValue={grant?.decisionDate?.toISOString().substring(0, 10)}
         />
+
         <Controller
           name="notes"
           control={control}
@@ -144,6 +165,26 @@ const GrantFormMG = ({ grant }: Props) => {
         {!!errors.notes && (
           <p className="text-sm text-red-500">{errors.notes.message}</p>
         )}
+
+        <Controller
+          control={control}
+          name="assignedToUserId"
+          render={({ field }) => (
+            <Select
+              label="Applicant Groupleader"
+              placeholder="Select groupleader"
+              className="max-w-xs"
+              {...register("assignedToUserId")}
+            >
+              {users?.map((user) => (
+                <SelectItem key={user?.id} value={user?.id}>
+                  {user?.lastName}
+                </SelectItem>
+              )) ?? []}
+            </Select>
+          )}
+        />
+
         <div className="flex justify-between">
           <Button type="submit" color="primary" disabled={isSubmitting}>
             {grant ? "Update Grant" : "Create New Grant"}
@@ -158,4 +199,12 @@ const GrantFormMG = ({ grant }: Props) => {
   );
 };
 
-export default GrantFormMG;
+const useUsers = () =>
+  useQuery<User[]>({
+    queryKey: ["users"],
+    queryFn: () => axios.get("/api/users").then((res) => res.data),
+    staleTime: 60 * 1000, //60s
+    retry: 3,
+  });
+
+export default GrantForm;

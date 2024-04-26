@@ -1,3 +1,4 @@
+import { StatusGrant } from "@prisma/client";
 import { z } from "zod";
 
 // grant form schema
@@ -11,6 +12,8 @@ export const grantFormSchema = z.object({
   deadline: z.coerce.date().optional(),
   decisionDate: z.coerce.date().optional(),
   notes: z.string().optional(),
+  assignedToUserId: z.string().optional(),
+  // status: z.nativeEnum(StatusGrant),
 });
 
 export type GrantFormDataType = z.infer<typeof grantFormSchema>;

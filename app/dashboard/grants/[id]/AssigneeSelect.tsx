@@ -48,7 +48,7 @@ const AssigneeSelect = ({ grant }: Props) => {
             <Select.Item value="unassigned">Unassigned</Select.Item>
             {users?.map((user) => (
               <Select.Item key={user.id} value={user.id}>
-                {user.name}
+                {user.lastName}
               </Select.Item>
             ))}
           </Select.Group>
