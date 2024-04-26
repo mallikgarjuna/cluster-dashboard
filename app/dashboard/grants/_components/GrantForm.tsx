@@ -12,7 +12,7 @@ import {
   Select,
   SelectItem,
 } from "@nextui-org/react";
-import { Grant, User } from "@prisma/client";
+import { Grant, StatusGrant, User } from "@prisma/client";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
@@ -59,6 +59,7 @@ const GrantForm = ({ grant }: Props) => {
   };
 
   const { data: users, error, isLoading } = useUsers();
+  const statuses = Object.values(StatusGrant);
 
   return (
     <div className="max-w-xl">
@@ -179,6 +180,25 @@ const GrantForm = ({ grant }: Props) => {
               {users?.map((user) => (
                 <SelectItem key={user?.id} value={user?.id}>
                   {user?.lastName}
+                </SelectItem>
+              )) ?? []}
+            </Select>
+          )}
+        />
+
+        <Controller
+          control={control}
+          name="status"
+          render={({ field }) => (
+            <Select
+              label="Applicantion Status"
+              placeholder="Select status"
+              className="max-w-xs"
+              {...register("status")}
+            >
+              {statuses?.map((status) => (
+                <SelectItem key={status} value={status}>
+                  {status}
                 </SelectItem>
               )) ?? []}
             </Select>

@@ -13,10 +13,11 @@ export const grantFormSchema = z.object({
   decisionDate: z.coerce.date().optional(),
   notes: z.string().optional(),
   assignedToUserId: z.string().optional(),
-  // status: z.nativeEnum(StatusGrant),
+  status: z.nativeEnum(StatusGrant),
 });
 
 export type GrantFormDataType = z.infer<typeof grantFormSchema>;
+// export const statuses = Object.values(StatusGrant);
 
 export const patchGrantSchema = z.object({
   title: z.string().min(1, "Title is required.").max(255).optional(),

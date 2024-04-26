@@ -27,6 +27,7 @@ export async function POST(request: NextRequest) {
       decisionDate: body.decisionDate,
       notes: body.notes,
       assignedToUserId: body.assignedToUserId,
+      status: body.status,
     },
   });
 
