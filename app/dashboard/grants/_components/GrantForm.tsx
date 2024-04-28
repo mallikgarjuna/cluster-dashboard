@@ -170,39 +170,54 @@ const GrantForm = ({ grant }: Props) => {
         <Controller
           control={control}
           name="assignedToUserId"
-          render={({ field }) => (
-            <Select
-              label="Applicant Groupleader"
-              placeholder="Select groupleader"
-              className="max-w-xs"
-              {...register("assignedToUserId")}
-            >
-              {users?.map((user) => (
-                <SelectItem key={user?.id} value={user?.id}>
-                  {user?.lastName}
-                </SelectItem>
-              )) ?? []}
-            </Select>
-          )}
+          render={({ field }) => {
+            const selectedKeys = grant?.assignedToUserId
+              ? [grant.assignedToUserId]
+              : [];
+            return (
+              <Select
+                {...field}
+                label="Applicant Groupleader"
+                placeholder="Select groupleader"
+                className="max-w-xs"
+                {...register("assignedToUserId")}
+                errorMessage={errors.assignedToUserId?.message}
+                isInvalid={!!errors.assignedToUserId}
+                defaultSelectedKeys={selectedKeys}
+              >
+                {users?.map((user) => (
+                  <SelectItem key={user?.id} value={user?.id}>
+                    {user?.lastName}
+                  </SelectItem>
+                )) ?? []}
+              </Select>
+            );
+          }}
         />
 
         <Controller
           control={control}
           name="status"
-          render={({ field }) => (
-            <Select
-              label="Applicantion Status"
-              placeholder="Select status"
-              className="max-w-xs"
-              {...register("status")}
-            >
-              {statuses?.map((status) => (
-                <SelectItem key={status} value={status}>
-                  {status}
-                </SelectItem>
-              )) ?? []}
-            </Select>
-          )}
+          render={({ field }) => {
+            const selectedKeys = grant?.status ? [grant.status] : [];
+            return (
+              <Select
+                label="Applicantion Status"
+                placeholder="Select status"
+                className="max-w-xs"
+                {...register("status")}
+                errorMessage={errors.status?.message}
+                isInvalid={!!errors.status}
+                defaultSelectedKeys={selectedKeys}
+              >
+                {statuses?.map((status) => (
+                  <SelectItem key={status} value={status}>
+                    {status}
+                  </SelectItem>
+                )) ?? []}
+              </Select>
+            );
+          }}
         />
 
         <div className="flex justify-between">

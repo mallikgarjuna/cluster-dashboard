@@ -3,13 +3,18 @@ import { Grant } from "@prisma/client";
 import { Card, Flex, Heading, Text, TextField } from "@radix-ui/themes";
 import ReactMarkdown from "react-markdown";
 import CustomFiledDetails from "./CustomFiledDetails";
+import prisma from "@/prisma/client";
 
 interface Props {
   grant: Grant;
 }
 
-const GrantDetails = ({ grant }: Props) => {
+const GrantDetails = async ({ grant }: Props) => {
   // console.log(grant);
+  const user = await prisma?.user.findUnique({
+    where: { id: grant.assignedToUserId as string | undefined },
+  });
+
   return (
     <Flex direction="column" gap="3">
       <Heading>{grant.title}</Heading>
@@ -44,6 +49,16 @@ const GrantDetails = ({ grant }: Props) => {
       />
 
       <CustomFiledDetails subheading="Notes" fieldInfo={grant.notes} />
+
+      <CustomFiledDetails
+        subheading="Applicant user"
+        fieldInfo={user?.lastName ?? null}
+      />
+
+      <CustomFiledDetails
+        subheading="Applicant user"
+        fieldInfo={grant.status ?? null}
+      />
     </Flex>
   );
 };
