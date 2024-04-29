@@ -2,19 +2,32 @@ import { Flex, Grid } from "@radix-ui/themes";
 import { Metadata } from "next";
 import Link from "next/link";
 import { HiArrowRight } from "react-icons/hi";
+import ClusterLogo from "./ui/ClusterLogo";
+import { lusitana } from "./ui/fonts";
 
 export default async function HomePage() {
   return (
-    <Grid columns={{ initial: "1", md: "2" }} gap="5">
-      <Flex direction="column" gap="5">
-        <Link
-          href="/auth/signin"
-          className="flex items-center gap-5 self-start rounded-lg bg-blue-500 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-blue-400 md:text-base"
-        >
-          <span>Log in</span> <HiArrowRight />
-        </Link>
-      </Flex>
-    </Grid>
+    <main className="flex flex-col min-h-screen p-6 gap-6">
+      <div className="flex h-20 items-end bg-blue-500 rounded-lg p-4 md:h-52">
+        <ClusterLogo />
+      </div>
+      <Grid columns={{ initial: "1", md: "2" }} gap="5">
+        <Flex direction="column" gap="5">
+          <p
+            className={`text-xl text-gray-800 md:text-3xl md:leading-normal ${lusitana.className}`}
+          >
+            <strong>Welcome to Cluster Dashboard.</strong>
+            This is the dashboard for the cluster BST.
+          </p>
+          <Link
+            href="/auth/signin"
+            className="flex items-center gap-5 self-start rounded-lg bg-blue-500 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-blue-400 md:text-base"
+          >
+            <span>Log in</span> <HiArrowRight />
+          </Link>
+        </Flex>
+      </Grid>
+    </main>
   );
 }
 

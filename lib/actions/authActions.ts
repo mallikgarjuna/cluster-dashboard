@@ -162,7 +162,7 @@ export const resetPassword: ResetPasswordFunc = async (jwtUserId, password) => {
   if (!payload) return "userNotExist";
 
   const userId = payload.id; // id was set in forgotPassword server action
-  const user = prisma.user.findUnique({
+  const user = await prisma.user.findUnique({
     where: { id: userId },
   });
   if (!user) return "userNotExist";

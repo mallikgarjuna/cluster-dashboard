@@ -11,8 +11,15 @@ interface Props {
 
 const GrantDetails = async ({ grant }: Props) => {
   // console.log(grant);
-  const user = await prisma?.user.findUnique({
-    where: { id: grant.assignedToUserId as string | undefined },
+  // if (grant.assignedToUserId) {
+  //   let user = await prisma.user.findUnique({
+  //     where: { id: grant.assignedToUserId },
+  //   });
+  // }
+
+  if (!grant.assignedToUserId) return null;
+  const user = await prisma.user.findUnique({
+    where: { id: grant.assignedToUserId },
   });
 
   return (
@@ -56,7 +63,7 @@ const GrantDetails = async ({ grant }: Props) => {
       />
 
       <CustomFiledDetails
-        subheading="Applicant user"
+        subheading="Grant status"
         fieldInfo={grant.status ?? null}
       />
     </Flex>
