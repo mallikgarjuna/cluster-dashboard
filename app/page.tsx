@@ -13,12 +13,12 @@ export default async function HomePage() {
       </div>
       <Grid columns={{ initial: "1", md: "2" }} gap="5">
         <Flex direction="column" gap="5">
-          <p
+          <div
             className={`text-xl text-gray-800 md:text-3xl md:leading-normal ${lusitana.className}`}
           >
             <strong>Welcome to Cluster Dashboard.</strong>
-            This is the dashboard for the cluster BST.
-          </p>
+            <p>This is the dashboard for the cluster BST.</p>
+          </div>
           <Link
             href="/auth/signin"
             className="flex items-center gap-5 self-start rounded-lg bg-blue-500 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-blue-400 md:text-base"

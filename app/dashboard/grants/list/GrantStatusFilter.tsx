@@ -32,7 +32,7 @@ const GrantStatusFilter = () => {
         // add '?' only if we have at least one param
         const query = params.size ? "?" + params.toString() : "";
         // const query = status === "All" ? "" : `?status=${status}`;
-        router.push("/grants/list" + query);
+        router.push("/dashboard/grants/list" + query);
       }}
     >
       <Select.Trigger placeholder="Filter by status..." />
