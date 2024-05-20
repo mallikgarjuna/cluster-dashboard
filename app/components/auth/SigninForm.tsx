@@ -1,6 +1,7 @@
 "use client";
 
 import { SigninFormInputType, SigninFormSchema } from "@/app/validationSchemas";
+import { loginUser } from "@/lib/actions/authActions";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button, Input } from "@nextui-org/react";
 import { signIn } from "next-auth/react";
@@ -28,19 +29,21 @@ const SigninForm = ({ callbackUrl }: Props) => {
   const signinUser: SubmitHandler<SigninFormInputType> = async (
     signinFormData
   ) => {
+    // signIn() is a client-side function, cannot wrap it in a server-action; see docs;
     const result = await signIn("credentials", {
       email: signinFormData.email,
       password: signinFormData.password,
       redirect: false,
     });
+    // console.log("result: ", result); // {error: 'xxx'/ null, status: 200, ok: true, url: null}
 
-    // Here, result.ok is true if the HTTP req is successful; so check result.error;
+    // Here, result.ok is true if the HTTP req is successful which is always true; so check result.error;
     if (result?.error) {
       toast.error(`Something went wrong... ${result.error}`);
       return;
     }
-
     toast.success("Logged in successfully!");
+
     reset();
     // router.push(callbackUrl || "/");
     router.push("/dashboard");

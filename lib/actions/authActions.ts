@@ -14,6 +14,7 @@ import axios from "axios";
 import { redirect } from "next/navigation";
 import { signIn } from "next-auth/react";
 import { sendActivationEmail, sendResetEmail } from "./mailActions";
+import { getErrorMessage } from "../utils";
 
 // register user action
 export async function registerUser(signupFormData: SignupFormInputType) {
@@ -21,8 +22,11 @@ export async function registerUser(signupFormData: SignupFormInputType) {
   const validatedFields = SignupFormSchema.safeParse(signupFormData);
   if (!validatedFields.success) {
     return {
-      errors: validatedFields.error.flatten().fieldErrors,
-      message: "Missing fields. Failed to create user.",
+      success: false,
+      message:
+        "Missing fields. Failed to create user." +
+        "\n" +
+        getErrorMessage(validatedFields.error),
     };
   }
   const { firstName, lastName, email, password } = validatedFields.data;
@@ -33,6 +37,7 @@ export async function registerUser(signupFormData: SignupFormInputType) {
   });
   if (user) {
     return {
+      success: false,
       message: "User already exists. Failed to create user.",
     };
   }
@@ -52,7 +57,11 @@ export async function registerUser(signupFormData: SignupFormInputType) {
     });
   } catch (error) {
     return {
-      message: "Database error: Failed to create user.",
+      success: false,
+      message:
+        "Database error: Failed to create user." +
+        "\n" +
+        getErrorMessage(error),
     };
   }
 
@@ -68,33 +77,61 @@ export async function registerUser(signupFormData: SignupFormInputType) {
     activationUrl: activationUrl,
   };
   //   await axios.post(`${process.env.NEXTAUTH_URL}/api/sendEmail`, activationData);
-  await sendActivationEmail(activationData); // calling server action, instead of api
+  const activationResult = await sendActivationEmail(activationData); // calling server action, instead of api
+  if (activationResult.success === false) {
+    return {
+      success: false,
+      message:
+        "Failed to send activation email. Failed to create user." +
+        "\n" +
+        activationResult.message,
+    };
+  }
 
   //   Finally return a basic response to the client
   //   obvisouly, don't return the hashedpwd for security reasons
-  return { email: newUser.email };
+  return {
+    success: true,
+    message: "User created. Activation email sent.",
+    email: newUser.email,
+  };
 
   redirect("/");
 }
 
-// TODO: (not used it yet) signin user action
+// TODO: (not used it yet) signin user action b/c signIn() is a client-side function;
 export async function loginUser(signinFormData: SigninFormInputType) {
   // In the received data, we have to make sure that we've a valid email and pswd
   const validatedFields = SigninFormSchema.safeParse(signinFormData);
   if (!validatedFields.success) {
     return {
-      errors: validatedFields.error.flatten().fieldErrors,
-      message: "Missing fields. Failed to sign in user.",
+      success: false,
+      message:
+        "Missing fields. Failed to sign in user." +
+        "\n" +
+        getErrorMessage(validatedFields.error),
     };
   }
   const { email, password } = validatedFields.data;
 
   try {
+    // Here signIn() is a client-side function and cannot work in server-side here; so throws an error;
     const result = await signIn("credentials", {
-      email: signinFormData.email,
-      password: signinFormData.password,
+      email: email,
+      password: password,
       redirect: false,
     });
+    if (result?.error) {
+      return {
+        success: false,
+        message: "Failed to sign in user",
+      };
+    } else {
+      return {
+        success: true,
+        message: "Logged in successfully!",
+      };
+    }
   } catch (error) {
     return {
       message: "Database error: Failed to sign in user.",

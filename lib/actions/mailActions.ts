@@ -4,6 +4,7 @@ import ActivateEmailTemplate from "@/emails/ActivateEmailTemplate";
 import ResetPasswordEmailTemplate from "@/emails/ResetPasswordEmailTemplate";
 import { Resend } from "resend";
 import { z } from "zod";
+import { getErrorMessage } from "../utils";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -25,8 +26,11 @@ export async function sendActivationEmail(
   const validation = WelcomeEmailSchema.safeParse(activationData);
   if (!validation.success) {
     return {
-      errors: validation.error.errors,
-      message: "Missing activaion data. Failed to send Email.",
+      success: false,
+      message:
+        "Missing activaion data. Failed to send Activation Email." +
+        "\n" +
+        getErrorMessage(validation.error),
       status: 400,
     };
   }
@@ -44,11 +48,17 @@ export async function sendActivationEmail(
     }),
   });
 
-  if (error) return { errors: error, status: 400 };
+  if (error)
+    return {
+      success: false,
+      message: "Failed to send Activation Email" + "\n" + error.message,
+      status: 400,
+    };
 
   //   return NextResponse.json(data, { status: 200 });
   return {
-    message: "Email sent successfully",
+    success: true,
+    message: "Activation Email sent successfully",
     status: 200,
   };
 }
@@ -71,8 +81,11 @@ export async function sendResetEmail(
   const validation = ResetPasswordEmailSchema.safeParse(resetPasswordData);
   if (!validation.success) {
     return {
-      errors: validation.error.errors,
-      message: "Missing activaion data. Failed to send reset Email.",
+      success: false,
+      message:
+        "Missing activaion data. Failed to send reset Email." +
+        "\n" +
+        getErrorMessage(validation.error),
       status: 400,
     };
   }
@@ -90,11 +103,17 @@ export async function sendResetEmail(
     }),
   });
 
-  if (error) return { errors: error, status: 400 };
+  if (error)
+    return {
+      success: false,
+      message: "Failed to send reset Email" + "\n" + error.message,
+      status: 400,
+    };
 
   //   return NextResponse.json(data, { status: 200 });
   return {
-    message: "Email sent successfully",
+    success: true,
+    message: "Reset Email sent successfully",
     status: 200,
   };
 }

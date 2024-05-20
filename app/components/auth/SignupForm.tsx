@@ -33,9 +33,15 @@ const SignupForm = () => {
     try {
       // await axios.post("/api/users/register", singupFormData);
       const result = await registerUser(singupFormData);
-      toast.success("The user registered successfully!");
-      reset();
-      router.push("/auth/signin");
+      if (!result.success) {
+        toast.error(result.message);
+      } else {
+        toast.success(
+          "The user registered successfully!" + "\n" + result.message
+        );
+        reset();
+        router.push("/auth/signin");
+      }
       // console.log(singupFormData);
     } catch (error) {
       toast.error("Something went wrong...");
