@@ -1,6 +1,11 @@
 import { Link, GrantStatusBadge } from "@/app/components";
 import prisma from "@/prisma/client";
-import { Department, Grant, StatusGrant } from "@prisma/client";
+import {
+  Department,
+  Grant,
+  OSDepartmentShortName,
+  StatusGrant,
+} from "@prisma/client";
 import { ArrowDownIcon, ArrowUpIcon } from "@radix-ui/react-icons";
 import { Table } from "@radix-ui/themes";
 import NextLink from "next/link";
@@ -11,6 +16,7 @@ export interface GrantQuery {
   orderBy: keyof Grant; // | keyof Department;
   page: string;
   sortOrder: "asc" | "desc";
+  department: OSDepartmentShortName;
 }
 
 interface Props {

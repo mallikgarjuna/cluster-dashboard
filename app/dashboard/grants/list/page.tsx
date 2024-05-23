@@ -1,7 +1,7 @@
 // import Link from "next/link";
 import Pagination from "@/app/components/Pagination";
 import prisma from "@/prisma/client";
-import { StatusGrant } from "@prisma/client";
+import { OSDepartmentShortName, StatusGrant } from "@prisma/client";
 import GrantActions from "./GrantActions";
 import GrantTable, { GrantQuery, columnNamesGrant } from "./GrantTable";
 import { Flex } from "@radix-ui/themes";
@@ -12,6 +12,7 @@ interface Props {
 }
 
 const GrantsPage = async ({ searchParams }: Props) => {
+  console.log("searchParams: ", searchParams);
   // validate the status param
   const statuses = Object.values(StatusGrant);
   const status = statuses.includes(searchParams.status)
@@ -22,19 +23,59 @@ const GrantsPage = async ({ searchParams }: Props) => {
     ? { [searchParams.orderBy]: searchParams.sortOrder }
     : undefined;
 
+  const departments = Object.values(OSDepartmentShortName);
+  const department = departments.includes(searchParams.department)
+    ? searchParams.department
+    : undefined;
+
   const page = parseInt(searchParams.page) || 1;
   const pageSize = 10;
 
+  const filters = { status: status, department: department };
+
   const grants = await prisma.grant.findMany({
-    where: { status: status },
+    // where: { status: status },
+    where: {
+      AND: [
+        ...(filters.status ? [{ status: filters.status }] : [{}]),
+        ...(filters.department
+          ? [
+              {
+                assignedToUser: {
+                  relatedDepartment: { nameShort: filters.department },
+                },
+              },
+            ]
+          : [{}]),
+      ],
+    },
     orderBy: orderBy, //this is an obj;
     skip: (page - 1) * pageSize,
     take: pageSize,
   });
 
+  // console.log("grants: ", grants);
+
   const grantsCount = await prisma.grant.count({
-    where: { status: status },
+    where: {
+      AND: [
+        ...(filters.status ? [{ status: filters.status }] : [{}]),
+        ...(filters.department
+          ? [
+              {
+                assignedToUser: {
+                  relatedDepartment: { nameShort: filters.department },
+                },
+              },
+            ]
+          : [{}]),
+      ],
+    },
+    //   where: { status: status },
   });
+
+  // const grantsCount = grants.length; // this gives 10 == pageSize only;
+  console.log("grantsCount: ", grantsCount);
 
   return (
     <Flex direction="column" gap="3">
