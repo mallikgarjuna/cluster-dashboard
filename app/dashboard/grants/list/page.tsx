@@ -3,7 +3,7 @@ import Pagination from "@/app/components/Pagination";
 import prisma from "@/prisma/client";
 import { StatusGrant } from "@prisma/client";
 import GrantActions from "./GrantActions";
-import GrantTable, { GrantQuery, columnNames } from "./GrantTable";
+import GrantTable, { GrantQuery, columnNamesGrant } from "./GrantTable";
 import { Flex } from "@radix-ui/themes";
 import { Metadata } from "next";
 
@@ -18,8 +18,8 @@ const GrantsPage = async ({ searchParams }: Props) => {
     ? searchParams.status
     : undefined;
 
-  const orderBy = columnNames.includes(searchParams.orderBy)
-    ? { [searchParams.orderBy]: "asc" }
+  const orderBy = columnNamesGrant.includes(searchParams.orderBy)
+    ? { [searchParams.orderBy]: searchParams.sortOrder }
     : undefined;
 
   const page = parseInt(searchParams.page) || 1;
@@ -27,7 +27,7 @@ const GrantsPage = async ({ searchParams }: Props) => {
 
   const grants = await prisma.grant.findMany({
     where: { status: status },
-    orderBy: orderBy,
+    orderBy: orderBy, //this is an obj;
     skip: (page - 1) * pageSize,
     take: pageSize,
   });

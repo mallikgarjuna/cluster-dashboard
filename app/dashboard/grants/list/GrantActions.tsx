@@ -3,11 +3,13 @@ import { Button, Flex } from "@radix-ui/themes";
 import Link from "next/link";
 import React from "react";
 import GrantStatusFilter from "./GrantStatusFilter";
+import DepartmentFilter from "./DepartmentFilter";
 
 const GrantActions = () => {
   return (
     <Flex justify="between">
       <GrantStatusFilter />
+      <DepartmentFilter />
       <Button>
         <Link href="/dashboard/grants/new">New Grant</Link>
       </Button>

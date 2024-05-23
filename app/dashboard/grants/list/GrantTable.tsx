@@ -1,15 +1,16 @@
 import { Link, GrantStatusBadge } from "@/app/components";
 import prisma from "@/prisma/client";
 import { Department, Grant, StatusGrant } from "@prisma/client";
-import { ArrowUpIcon } from "@radix-ui/react-icons";
+import { ArrowDownIcon, ArrowUpIcon } from "@radix-ui/react-icons";
 import { Table } from "@radix-ui/themes";
 import NextLink from "next/link";
 import React from "react";
 
 export interface GrantQuery {
   status: StatusGrant;
-  orderBy: keyof Grant | keyof Department;
+  orderBy: keyof Grant; // | keyof Department;
   page: string;
+  sortOrder: "asc" | "desc";
 }
 
 interface Props {
@@ -18,90 +19,113 @@ interface Props {
 }
 
 const GrantTable = async ({ searchParams, grants }: Props) => {
+  const toggleSortOrder = () => {
+    return searchParams.sortOrder === "asc" ? "desc" : "asc";
+  };
+
   return (
     <Table.Root variant="surface">
       <Table.Header>
         <Table.Row>
-          {columns.map((column) => (
+          {columnsGrant.map((column) => (
             <Table.ColumnHeaderCell
               key={column.value}
               className={column.classname}
             >
               <NextLink
                 href={{
-                  query: { ...searchParams, orderBy: column.value },
+                  query: {
+                    ...searchParams,
+                    orderBy: column.value,
+                    sortOrder: toggleSortOrder(),
+                  },
                 }}
               >
                 {column.label}
               </NextLink>
-              {searchParams.orderBy === column.value && (
-                <ArrowUpIcon className="inline" />
-              )}
+              {searchParams.orderBy === column.value &&
+                (searchParams.sortOrder === "asc" ? (
+                  <ArrowUpIcon className="inline" />
+                ) : (
+                  <ArrowDownIcon className="inline" />
+                ))}
+            </Table.ColumnHeaderCell>
+          ))}
+          {columnsNonGrant.map((column) => (
+            <Table.ColumnHeaderCell
+              key={column.value}
+              className={column.classname}
+            >
+              {column.label}
             </Table.ColumnHeaderCell>
           ))}
         </Table.Row>
       </Table.Header>
       <Table.Body>
-        {await Promise.all(
-          grants.map(async (grant) => {
-            // if (!grant.assignedToUserId) return null;
-            const user = await prisma.user.findUnique({
-              where: { id: grant.assignedToUserId || "" },
-            });
+        {grants.map(async (grant) => {
+          const user = await prisma.user.findUnique({
+            where: { id: grant.assignedToUserId || "" },
+          });
 
-            const dept = await prisma.department.findFirst({
-              where: { id: (user?.departmentId as number) || 1 },
-            });
+          const dept = await prisma.department.findFirst({
+            where: { id: (user?.departmentId as number) || 1 },
+          });
 
-            return (
-              <Table.Row key={grant.id}>
-                <Table.Cell>
-                  <Link href={`/dashboard/grants/${grant.id}`}>
-                    {grant.title}
-                  </Link>
-                  <div className="block md:hidden">
-                    <GrantStatusBadge status={grant.status} />
-                  </div>
-                </Table.Cell>
-                <Table.Cell className="hidden md:table-cell">
+          return (
+            <Table.Row key={grant.id}>
+              <Table.Cell>
+                <Link href={`/dashboard/grants/${grant.id}`}>
+                  {grant.title}
+                </Link>
+                <div className="block md:hidden">
                   <GrantStatusBadge status={grant.status} />
-                </Table.Cell>
-                <Table.Cell className="hidden md:table-cell">
-                  {grant.createdAt.toDateString()}
-                </Table.Cell>
-                <Table.Cell className="hidden md:table-cell">
-                  {/* user lastName where user.id = grant.assignedToUserId */}
-                  {user?.lastName}
-                </Table.Cell>
-                <Table.Cell className="hidden md:table-cell">
-                  {/* user lastName where user.id = grant.assignedToUserId */}
-                  {dept?.nameShort}
-                </Table.Cell>
-              </Table.Row>
-            );
-          })
-        )}
+                </div>
+              </Table.Cell>
+              <Table.Cell className="hidden md:table-cell">
+                <GrantStatusBadge status={grant.status} />
+              </Table.Cell>
+              <Table.Cell className="hidden md:table-cell">
+                {grant.createdAt.toDateString()}
+              </Table.Cell>
+              <Table.Cell className="hidden md:table-cell">
+                {/* user lastName where user.id = grant.assignedToUserId */}
+                {user?.lastName}
+              </Table.Cell>
+              <Table.Cell className="hidden md:table-cell">
+                {/* user lastName where user.id = grant.assignedToUserId */}
+                {dept?.nameShort}
+              </Table.Cell>
+            </Table.Row>
+          );
+        })}
       </Table.Body>
     </Table.Root>
   );
 };
 
-const columns: {
+const columnsGrant: {
   label: string;
-  value: keyof Grant | keyof Department;
+  value: keyof Grant; // | keyof Department;
   classname?: string;
 }[] = [
   { label: "Grant", value: "title" },
   { label: "Status", value: "status", classname: "hidden md:table-cell" },
   { label: "Created", value: "createdAt", classname: "hidden md:table-cell" },
   { label: "PI", value: "assignedToUserId", classname: "hidden md:table-cell" },
+];
+
+const columnsNonGrant: {
+  label: string;
+  value: keyof Department;
+  classname?: string;
+}[] = [
   {
     label: "Dept",
-    value: "title",
+    value: "nameShort",
     classname: "hidden md:table-cell",
   },
 ];
 
-export const columnNames = columns.map((column) => column.value);
+export const columnNamesGrant = columnsGrant.map((column) => column.value);
 
 export default GrantTable;

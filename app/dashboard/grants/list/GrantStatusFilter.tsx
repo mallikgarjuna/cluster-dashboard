@@ -24,10 +24,16 @@ const GrantStatusFilter = () => {
     <Select.Root
       defaultValue={searchParams.get("status") || "All"}
       onValueChange={(status) => {
-        const params = new URLSearchParams();
-        if (status !== "All") params.append("status", status);
-        if (searchParams.get("orderBy"))
-          params.append("orderBy", searchParams.get("orderBy")!);
+        // const params = new URLSearchParams();
+        // if (status !== "All") params.append("status", status);
+        // if (searchParams.get("orderBy"))
+        //   params.append("orderBy", searchParams.get("orderBy")!);
+        // if (searchParams.get("sortOrder"))
+        //   params.append("sortOrder", searchParams.get("sortOrder")!);
+
+        // Instead of creating empty query string, create one from existing 'searchParams' obj;
+        const params = new URLSearchParams(searchParams);
+        if (status) params.set("status", status);
 
         // add '?' only if we have at least one param
         const query = params.size ? "?" + params.toString() : "";
