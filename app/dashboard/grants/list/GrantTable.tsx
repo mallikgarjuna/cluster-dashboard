@@ -94,6 +94,9 @@ const GrantTable = async ({ searchParams, grants }: Props) => {
                 {grant.createdAt.toDateString()}
               </Table.Cell>
               <Table.Cell className="hidden md:table-cell">
+                {grant.projectNumber}
+              </Table.Cell>
+              <Table.Cell className="hidden md:table-cell">
                 {/* user lastName where user.id = grant.assignedToUserId */}
                 {user?.lastName}
               </Table.Cell>
@@ -117,6 +120,11 @@ const columnsGrant: {
   { label: "Grant", value: "title" },
   { label: "Status", value: "status", classname: "hidden md:table-cell" },
   { label: "Created", value: "createdAt", classname: "hidden md:table-cell" },
+  {
+    label: "P-Number",
+    value: "projectNumber",
+    classname: "hidden md:table-cell",
+  },
   { label: "PI", value: "assignedToUserId", classname: "hidden md:table-cell" },
 ];
 

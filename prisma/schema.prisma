@@ -22,6 +22,7 @@ model Grant {
   deadline         DateTime?
   decisionDate     DateTime?
   notes            String?     @default("") @db.Text
+  projectNumber    Int?        @default(0)
   createdAt        DateTime    @default(now())
   updatedAt        DateTime    @updatedAt
   assignedToUserId String?     @db.VarChar(255)

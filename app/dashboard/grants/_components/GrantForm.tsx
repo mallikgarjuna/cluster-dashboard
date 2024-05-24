@@ -67,6 +67,7 @@ const GrantForm = ({ grant }: Props) => {
         <div className="text-3xl font-bold">
           {!!grant ? "Edit Grant" : "Create New Grant"}
         </div>
+
         <Input
           {...register("title")}
           errorMessage={errors.title?.message}
@@ -166,6 +167,16 @@ const GrantForm = ({ grant }: Props) => {
         {!!errors.notes && (
           <p className="text-sm text-red-500">{errors.notes.message}</p>
         )}
+
+        <Input
+          {...register("projectNumber", { valueAsNumber: true })}
+          errorMessage={errors.projectNumber?.message}
+          isInvalid={!!errors.projectNumber}
+          type="number"
+          label="Project number (UMCG)"
+          placeholder="6 digit project number from project controller"
+          defaultValue={grant?.projectNumber?.toString() || "0"}
+        />
 
         <Controller
           control={control}

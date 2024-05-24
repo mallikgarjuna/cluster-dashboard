@@ -14,6 +14,13 @@ export const grantFormSchema = z.object({
   notes: z.string().optional(),
   assignedToUserId: z.string().optional(),
   status: z.nativeEnum(StatusGrant),
+  projectNumber: z
+    .number()
+    .refine((value) => String(value).length === 6, {
+      message: "Project number must be exactly 6 digits",
+      path: ["projectNumber"],
+    })
+    .optional(),
 });
 
 export type GrantFormDataType = z.infer<typeof grantFormSchema>;

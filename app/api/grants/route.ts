@@ -28,6 +28,7 @@ export async function POST(request: NextRequest) {
       notes: body.notes,
       assignedToUserId: body.assignedToUserId,
       status: body.status,
+      projectNumber: body.projectNumber,
     },
   });
 

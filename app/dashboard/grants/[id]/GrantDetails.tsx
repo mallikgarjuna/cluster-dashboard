@@ -58,6 +58,11 @@ const GrantDetails = async ({ grant }: Props) => {
       <CustomFiledDetails subheading="Notes" fieldInfo={grant.notes} />
 
       <CustomFiledDetails
+        subheading="Project Number"
+        fieldInfo={grant.projectNumber}
+      />
+
+      <CustomFiledDetails
         subheading="Applicant user"
         fieldInfo={user?.lastName ?? null}
       />

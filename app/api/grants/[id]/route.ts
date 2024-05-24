@@ -52,6 +52,7 @@ export async function PATCH(request: NextRequest, { params }: Props) {
       notes: body.notes,
       assignedToUserId: body.assignedToUserId,
       status: body.status,
+      projectNumber: body.projectNumber,
     },
   });
 
