@@ -12,7 +12,7 @@ interface Props {
 }
 
 const GrantsPage = async ({ searchParams }: Props) => {
-  console.log("searchParams: ", searchParams);
+  // console.log("searchParams: ", searchParams);
   // validate the status param
   const statuses = Object.values(StatusGrant);
   const status = statuses.includes(searchParams.status)
@@ -21,7 +21,8 @@ const GrantsPage = async ({ searchParams }: Props) => {
 
   const orderBy = columnNamesGrant.includes(searchParams.orderBy)
     ? { [searchParams.orderBy]: searchParams.sortOrder }
-    : undefined;
+    : { createdAt: "desc" as "desc" | "asc" }; //default sortorder of table
+  // : undefined;
 
   const departments = Object.values(OSDepartmentShortName);
   const department = departments.includes(searchParams.department)
@@ -75,7 +76,7 @@ const GrantsPage = async ({ searchParams }: Props) => {
   });
 
   // const grantsCount = grants.length; // this gives 10 == pageSize only;
-  console.log("grantsCount: ", grantsCount);
+  // console.log("grantsCount: ", grantsCount);
 
   return (
     <Flex direction="column" gap="3">
