@@ -22,6 +22,7 @@ export default withAuth(
     if (
       request.nextUrl.pathname.startsWith("/dashboard") &&
       request.nextauth.token?.user.role !== "USER" &&
+      request.nextauth.token?.user.role !== "GROUPLEADER" &&
       request.nextauth.token?.user.role !== "ADMIN"
     ) {
       return NextResponse.rewrite(new URL("/denied", request.url));
@@ -30,7 +31,8 @@ export default withAuth(
     if (
       (request.nextUrl.pathname.startsWith("/dashboard/grants/edit") ||
         request.nextUrl.pathname.startsWith("/dashboard/grants/new")) &&
-      request.nextauth.token?.user.role !== "ADMIN"
+      request.nextauth.token?.user.role !== "ADMIN" &&
+      request.nextauth.token?.user.role !== "GROUPLEADER"
     ) {
       return NextResponse.rewrite(new URL("/denied", request.url));
     }

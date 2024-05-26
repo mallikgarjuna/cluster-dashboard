@@ -6,12 +6,16 @@ import GrantActions from "./GrantActions";
 import GrantTable, { GrantQuery, columnNamesGrant } from "./GrantTable";
 import { Flex } from "@radix-ui/themes";
 import { Metadata } from "next";
+import { getServerSession } from "next-auth";
+import authOptions from "@/app/auth/authOptions";
 
 interface Props {
   searchParams: GrantQuery; // an obj w/ prop called 'status'
 }
 
 const GrantsPage = async ({ searchParams }: Props) => {
+  const session = await getServerSession(authOptions);
+
   // console.log("searchParams: ", searchParams);
   // validate the status param
   const statuses = Object.values(StatusGrant);
@@ -58,6 +62,9 @@ const GrantsPage = async ({ searchParams }: Props) => {
         ...(filters.groupLeader
           ? [{ assignedToUser: { id: filters.groupLeader } }]
           : [{}]),
+        ...(session?.user.role === "GROUPLEADER"
+          ? [{ assignedToUser: { id: session?.user.id } }]
+          : [{}]),
       ],
     },
     orderBy: orderBy, //this is an obj;
@@ -82,6 +89,9 @@ const GrantsPage = async ({ searchParams }: Props) => {
           : [{}]),
         ...(filters.groupLeader
           ? [{ assignedToUser: { id: filters.groupLeader } }]
+          : [{}]),
+        ...(session?.user.role === "GROUPLEADER"
+          ? [{ assignedToUser: { id: session?.user.id } }]
           : [{}]),
       ],
     },

@@ -4,6 +4,7 @@ import { Select, SelectItem, SelectSection, useUser } from "@nextui-org/react";
 import { User } from "@prisma/client";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
+import { useSession } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import React from "react";
 import Skeleton from "react-loading-skeleton";
@@ -11,6 +12,22 @@ import Skeleton from "react-loading-skeleton";
 const GroupLeaderFilter = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
+  const { data: session, status } = useSession();
+
+  if (session?.user.role === "GROUPLEADER") {
+    return (
+      <Select
+        label="Filter by group leader...."
+        className="max-w-xs"
+        // defaultSelectedKeys={[session.user.id]}
+        selectedKeys={[session.user.id]}
+      >
+        <SelectItem key={session.user.id} value={session.user.id}>
+          {session.user.lastName}
+        </SelectItem>
+      </Select>
+    );
+  }
 
   // const users = await fetchAllUsers();
   const { data: users, error } = useUsers();
