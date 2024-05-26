@@ -5,6 +5,7 @@ import {
   Grant,
   OSDepartmentShortName,
   StatusGrant,
+  User,
 } from "@prisma/client";
 import { ArrowDownIcon, ArrowUpIcon } from "@radix-ui/react-icons";
 import { Table } from "@radix-ui/themes";
@@ -17,6 +18,7 @@ export interface GrantQuery {
   page: string;
   sortOrder: "asc" | "desc";
   department: OSDepartmentShortName;
+  groupLeader: User["id"]; // this is still a string type; //string;
 }
 
 interface Props {

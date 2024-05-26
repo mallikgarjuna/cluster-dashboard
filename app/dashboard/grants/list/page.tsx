@@ -29,10 +29,17 @@ const GrantsPage = async ({ searchParams }: Props) => {
     ? searchParams.department
     : undefined;
 
+  const groupLeader =
+    searchParams.groupLeader === "All" ? undefined : searchParams.groupLeader;
+
   const page = parseInt(searchParams.page) || 1;
   const pageSize = 10;
 
-  const filters = { status: status, department: department };
+  const filters = {
+    status: status,
+    department: department,
+    groupLeader: groupLeader,
+  };
 
   const grants = await prisma.grant.findMany({
     // where: { status: status },
@@ -47,6 +54,9 @@ const GrantsPage = async ({ searchParams }: Props) => {
                 },
               },
             ]
+          : [{}]),
+        ...(filters.groupLeader
+          ? [{ assignedToUser: { id: filters.groupLeader } }]
           : [{}]),
       ],
     },
@@ -69,6 +79,9 @@ const GrantsPage = async ({ searchParams }: Props) => {
                 },
               },
             ]
+          : [{}]),
+        ...(filters.groupLeader
+          ? [{ assignedToUser: { id: filters.groupLeader } }]
           : [{}]),
       ],
     },

@@ -19,7 +19,7 @@ import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import SimpleMdeReact from "react-simplemde-editor";
 import "easymde/dist/easymde.min.css";
-import { fetchUsers } from "@/lib/actions/userActions";
+import { fetchAllUsers } from "@/lib/actions/user/queries";
 import { useQuery } from "@tanstack/react-query";
 
 interface Props {
