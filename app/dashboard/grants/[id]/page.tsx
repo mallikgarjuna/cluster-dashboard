@@ -9,6 +9,8 @@ import authOptions from "@/app/auth/authOptions";
 import AssigneeSelect from "./AssigneeSelect";
 import { Metadata } from "next";
 import { cache } from "react";
+import { Button } from "@nextui-org/react";
+import GoBackButton from "./GoBackButton";
 
 interface Props {
   params: { id: string };
@@ -33,15 +35,18 @@ const GrantDetailPage = async ({ params }: Props) => {
       <Box className="md:col-span-4">
         <GrantDetails grant={grant} />
       </Box>
-      {session && (
-        <Box>
-          <Flex direction="column" gap="2">
-            <AssigneeSelect grant={grant} />
-            <EditGrantButton grantId={grant.id} />
-            <DeleteGrantButton grantId={grant.id} />
-          </Flex>
-        </Box>
-      )}
+      <Box>
+        <Flex direction="column" gap="2">
+          {session?.user.role === "ADMIN" && (
+            <>
+              {/* <AssigneeSelect grant={grant} /> */}
+              <EditGrantButton grantId={grant.id} />
+              <DeleteGrantButton grantId={grant.id} />
+            </>
+          )}
+          <GoBackButton />
+        </Flex>
+      </Box>
     </Grid>
   );
 };

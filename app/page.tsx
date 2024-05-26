@@ -4,8 +4,12 @@ import Link from "next/link";
 import { HiArrowRight } from "react-icons/hi";
 import ClusterLogo from "./ui/ClusterLogo";
 import { lusitana } from "./ui/fonts";
+import { getServerSession } from "next-auth";
+import authOptions from "./auth/authOptions";
 
 export default async function HomePage() {
+  const session = await getServerSession(authOptions);
+
   return (
     <main className="flex flex-col min-h-screen p-6 gap-6">
       <div className="flex h-20 items-end bg-blue-500 rounded-lg p-4 md:h-52">
@@ -19,12 +23,14 @@ export default async function HomePage() {
             <strong>Welcome to Cluster Dashboard.</strong>
             <p>This is the dashboard for the cluster BST.</p>
           </div>
-          <Link
-            href="/auth/signin"
-            className="flex items-center gap-5 self-start rounded-lg bg-blue-500 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-blue-400 md:text-base"
-          >
-            <span>Log in</span> <HiArrowRight />
-          </Link>
+          {!session && (
+            <Link
+              href="/auth/signin"
+              className="flex items-center gap-5 self-start rounded-lg bg-blue-500 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-blue-400 md:text-base"
+            >
+              <span>Log in</span> <HiArrowRight />
+            </Link>
+          )}
         </Flex>
       </Grid>
     </main>

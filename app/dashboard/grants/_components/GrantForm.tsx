@@ -51,7 +51,7 @@ const GrantForm = ({ grant }: Props) => {
       reset();
       router.push("/dashboard/grants/list");
       router.refresh();
-      console.log(grantFormData);
+      // console.log(grantFormData);
     } catch (error) {
       toast.error("Something went wrong...");
       console.log(error);

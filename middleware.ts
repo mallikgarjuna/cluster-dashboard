@@ -26,6 +26,14 @@ export default withAuth(
     ) {
       return NextResponse.rewrite(new URL("/denied", request.url));
     }
+
+    if (
+      (request.nextUrl.pathname.startsWith("/dashboard/grants/edit") ||
+        request.nextUrl.pathname.startsWith("/dashboard/grants/new")) &&
+      request.nextauth.token?.user.role !== "ADMIN"
+    ) {
+      return NextResponse.rewrite(new URL("/denied", request.url));
+    }
   },
   {
     callbacks: {
