@@ -14,6 +14,9 @@ const GroupLeaderFilter = () => {
   const router = useRouter();
   const { data: session, status } = useSession();
 
+  // const users = await fetchAllUsers();
+  const { data: users, error } = useUsers();
+
   if (session?.user.role === "GROUPLEADER") {
     return (
       <Select
@@ -28,9 +31,6 @@ const GroupLeaderFilter = () => {
       </Select>
     );
   }
-
-  // const users = await fetchAllUsers();
-  const { data: users, error } = useUsers();
 
   if (!users) return <Skeleton />;
 
