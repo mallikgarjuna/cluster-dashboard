@@ -59,6 +59,7 @@ const GrantForm = ({ grant }: Props) => {
   };
 
   const { data: users, error, isLoading } = useUsers();
+
   const statuses = Object.values(StatusGrant);
 
   return (
