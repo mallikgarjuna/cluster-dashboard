@@ -198,7 +198,11 @@ const GrantForm = ({ grant }: Props) => {
                 defaultSelectedKeys={selectedKeys}
               >
                 {users?.map((user) => (
-                  <SelectItem key={user?.id} value={user?.id}>
+                  <SelectItem
+                    key={user?.id}
+                    value={user?.id}
+                    textValue={user?.lastName ?? ""}
+                  >
                     {user?.lastName}
                   </SelectItem>
                 )) ?? []}
@@ -223,7 +227,11 @@ const GrantForm = ({ grant }: Props) => {
                 defaultSelectedKeys={selectedKeys}
               >
                 {statuses?.map((status) => (
-                  <SelectItem key={status} value={status}>
+                  <SelectItem
+                    key={status}
+                    value={status}
+                    textValue={status.toString()}
+                  >
                     {status}
                   </SelectItem>
                 )) ?? []}

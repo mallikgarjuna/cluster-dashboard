@@ -25,7 +25,11 @@ const GroupLeaderFilter = () => {
         // defaultSelectedKeys={[session.user.id]}
         selectedKeys={[session.user.id]}
       >
-        <SelectItem key={session.user.id} value={session.user.id}>
+        <SelectItem
+          key={session.user.id}
+          value={session.user.id}
+          textValue={session.user.lastName ?? ""}
+        >
           {session.user.lastName}
         </SelectItem>
       </Select>
@@ -48,13 +52,17 @@ const GroupLeaderFilter = () => {
       }}
     >
       <SelectSection title="All">
-        <SelectItem key="All" value="All">
+        <SelectItem key="All" value="All" textValue="All">
           All
         </SelectItem>
       </SelectSection>
       <SelectSection title="Individual">
         {users.map((user) => (
-          <SelectItem key={user.id} value={user.id}>
+          <SelectItem
+            key={user.id}
+            value={user.id}
+            textValue={user.lastName ?? ""}
+          >
             {user.lastName}
           </SelectItem>
         ))}

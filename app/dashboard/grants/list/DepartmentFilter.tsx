@@ -37,6 +37,7 @@ const DepartmentFilter = () => {
         <SelectItem
           key={department.value || "All"}
           value={department.value || "All"}
+          textValue={department.label}
         >
           {department.label}
         </SelectItem>

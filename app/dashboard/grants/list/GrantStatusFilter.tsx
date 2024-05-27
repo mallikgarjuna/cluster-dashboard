@@ -46,7 +46,11 @@ const GrantStatusFilter = () => {
       className="max-w-xs"
     >
       {statuses.map((status) => (
-        <SelectItem key={status.value || "All"} value={status.value || "All"}>
+        <SelectItem
+          key={status.value || "All"}
+          value={status.value || "All"}
+          textValue={status.label}
+        >
           {status.label}
         </SelectItem>
       ))}
