@@ -1,5 +1,6 @@
 import { Link, GrantStatusBadge } from "@/app/components";
 import prisma from "@/prisma/client";
+import { GrantWithUserWithDepartment } from "@/prisma/customTypes";
 import {
   Department,
   Grant,
@@ -23,7 +24,8 @@ export interface GrantQuery {
 
 interface Props {
   searchParams: GrantQuery;
-  grants: Grant[];
+  grants: GrantWithUserWithDepartment[];
+  // grants: Grant[];
 }
 
 const GrantTable = async ({ searchParams, grants }: Props) => {
@@ -71,14 +73,6 @@ const GrantTable = async ({ searchParams, grants }: Props) => {
       </Table.Header>
       <Table.Body>
         {grants.map(async (grant) => {
-          const user = await prisma.user.findUnique({
-            where: { id: grant.assignedToUserId || "" },
-          });
-
-          const dept = await prisma.department.findFirst({
-            where: { id: (user?.departmentId as number) || 1 },
-          });
-
           return (
             <Table.Row key={grant.id}>
               <Table.Cell>
@@ -100,11 +94,13 @@ const GrantTable = async ({ searchParams, grants }: Props) => {
               </Table.Cell>
               <Table.Cell className="hidden md:table-cell">
                 {/* user lastName where user.id = grant.assignedToUserId */}
-                {user?.lastName}
+                {/* {user?.lastName} */}
+                {grant.assignedToUser?.lastName}
               </Table.Cell>
               <Table.Cell className="hidden md:table-cell">
                 {/* user lastName where user.id = grant.assignedToUserId */}
-                {dept?.nameShort}
+                {/* {dept?.nameShort} */}
+                {grant.assignedToUser?.relatedDepartment?.nameShort}
               </Table.Cell>
             </Table.Row>
           );

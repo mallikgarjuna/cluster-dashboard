@@ -8,6 +8,7 @@ import { Flex } from "@radix-ui/themes";
 import { Metadata } from "next";
 import { getServerSession } from "next-auth";
 import authOptions from "@/app/auth/authOptions";
+import { select } from "@nextui-org/react";
 
 interface Props {
   searchParams: GrantQuery; // an obj w/ prop called 'status'
@@ -67,6 +68,13 @@ const GrantsPage = async ({ searchParams }: Props) => {
           : [{}]),
       ],
     },
+    include: {
+      assignedToUser: {
+        include: {
+          relatedDepartment: true,
+        },
+      },
+    },
     orderBy: orderBy, //this is an obj;
     skip: (page - 1) * pageSize,
     take: pageSize,
@@ -95,6 +103,7 @@ const GrantsPage = async ({ searchParams }: Props) => {
           : [{}]),
       ],
     },
+
     //   where: { status: status },
   });
 
