@@ -77,7 +77,7 @@ const GrantTable = async ({ searchParams, grants }: Props) => {
             <Table.Row key={grant.id}>
               <Table.Cell>
                 <Link href={`/dashboard/grants/${grant.id}`}>
-                  {grant.title}
+                  {grant.acronym ?? grant.title}
                 </Link>
                 <div className="block md:hidden">
                   <GrantStatusBadge status={grant.status} />

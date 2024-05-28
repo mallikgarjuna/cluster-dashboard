@@ -37,7 +37,8 @@ const GrantDetailPage = async ({ params }: Props) => {
       </Box>
       <Box>
         <Flex direction="column" gap="2">
-          {session?.user.role === "ADMIN" && (
+          {(session?.user.role === "ADMIN" ||
+            session?.user.id === grant.assignedToUserId) && (
             <>
               {/* <AssigneeSelect grant={grant} /> */}
               <EditGrantButton grantId={grant.id} />
