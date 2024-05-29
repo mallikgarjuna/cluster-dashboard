@@ -10,7 +10,7 @@ interface Props {
   };
 }
 const SigninPage = ({ searchParams }: Props) => {
-  // console.log(searchParams);
+  // console.log("searchParams: ", searchParams);
 
   return (
     <div className="flex flex-col gap-4 justify-center items-center">
@@ -24,5 +24,6 @@ const SigninPage = ({ searchParams }: Props) => {
     </div>
   );
 };
+
 //
 export default SigninPage;

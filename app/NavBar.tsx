@@ -78,7 +78,10 @@ const AuthStatus = () => {
         {/* <Link className="nav-link" href="/api/auth/signin">
           Sign in
         </Link> */}
-        <Button onClick={() => signIn()}>Sign in</Button>
+        {/* <Button onClick={() => signIn()}>Sign in</Button> */}
+        <Link className="nav-link" href="/auth/signin">
+          Sign in
+        </Link>
         <Link className="nav-link" href="/auth/signup">
           Sign up
         </Link>
