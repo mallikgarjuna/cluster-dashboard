@@ -1,6 +1,8 @@
 import "@radix-ui/themes/styles.css";
-import "./theme-config.css";
-import "./globals.css";
+// import "./theme-config.css";
+import "@/app/theme-config.css";
+// import "./globals.css";
+import "@/app/globals.css";
 import type { Metadata } from "next";
 import NavBar from "./NavBar";
 import { Container, Theme } from "@radix-ui/themes";
