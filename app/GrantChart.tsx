@@ -5,14 +5,16 @@ import React from "react";
 import { ResponsiveContainer, BarChart, XAxis, YAxis, Bar } from "recharts";
 
 interface Props {
+  awaiting: number;
   submitted: number;
   awarded: number;
   rejected: number;
 }
 
-const GrantChart = ({ submitted, awarded, rejected }: Props) => {
+const GrantChart = ({ awaiting, submitted, awarded, rejected }: Props) => {
   const data = [
     { label: "Submitted", value: submitted },
+    { label: "Awaiting", value: awaiting },
     { label: "Awarded", value: awarded },
     { label: "Rejected", value: rejected },
   ];
