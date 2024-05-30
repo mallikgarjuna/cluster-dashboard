@@ -3,7 +3,7 @@
 import { Select, SelectItem } from "@nextui-org/react";
 import { StatusGrant } from "@prisma/client";
 // import { Select } from "@radix-ui/themes";
-import { useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React from "react";
 
 const statuses: { label: string; value?: StatusGrant }[] = [
@@ -20,6 +20,7 @@ const statuses: { label: string; value?: StatusGrant }[] = [
 const GrantStatusFilter = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const pathname = usePathname();
 
   return (
     <Select
@@ -41,7 +42,10 @@ const GrantStatusFilter = () => {
         // add '?' only if we have at least one param
         const query = params.size ? "?" + params.toString() : "";
         // const query = status === "All" ? "" : `?status=${status}`;
-        router.push("/dashboard/grants/list" + query);
+
+        // router.push("/dashboard/grants/list" + query);
+        // Add 'pathname' instead of explicitly adding it so that this comp can be added to all pages;
+        router.push(pathname + query);
       }}
       className="max-w-xs"
     >

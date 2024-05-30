@@ -5,13 +5,14 @@ import { User } from "@prisma/client";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useSession } from "next-auth/react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React from "react";
 import Skeleton from "react-loading-skeleton";
 
 const GroupLeaderFilter = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
+  const pathname = usePathname();
   const { data: session, status } = useSession();
 
   // const users = await fetchAllUsers();
@@ -48,7 +49,10 @@ const GroupLeaderFilter = () => {
         const params = new URLSearchParams(searchParams);
         if (groupLeader) params.set("groupLeader", groupLeader);
         const query = params.size ? "?" + params.toString() : "";
-        router.push("/dashboard/grants/list" + query);
+
+        // router.push("/dashboard/grants/list" + query);
+        // Add 'pathname' instead of explicitly adding it so that this comp can be added to all pages;
+        router.push(pathname + query);
       }}
     >
       <SelectSection title="All">
