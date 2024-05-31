@@ -2,23 +2,31 @@ import { StatusGrant } from "@prisma/client";
 import { Card, Flex, Text } from "@radix-ui/themes";
 import Link from "next/link";
 import React from "react";
+import { GrantQuery } from "./dashboard/grants/list/GrantTable";
 
 interface Props {
   awaiting: number;
   submitted: number;
   awarded: number;
   rejected: number;
+  searchParams: GrantQuery;
 }
 
-const GrantSummary = ({ awaiting, submitted, awarded, rejected }: Props) => {
+const GrantSummary = ({
+  awaiting,
+  submitted,
+  awarded,
+  rejected,
+  searchParams,
+}: Props) => {
   const containers: {
     label: string;
     value: number;
     status: StatusGrant | "All";
   }[] = [
-    { label: "Submitted Grants", value: submitted, status: "SUBMITTED" },
+    { label: "Total Submitted Grants", value: submitted, status: "SUBMITTED" },
     { label: "Awaiting results", value: awaiting, status: "SUBMITTED" },
-    { label: "Awarded Grants", value: awarded, status: "AWARDED" },
+    { label: "Total Awarded Grants", value: awarded, status: "AWARDED" },
     { label: "Rejected Grants", value: rejected, status: "REJECTED" },
   ];
 
@@ -29,7 +37,14 @@ const GrantSummary = ({ awaiting, submitted, awarded, rejected }: Props) => {
           <Flex direction="column" gap="1">
             <Link
               className="text-sm font-medium"
-              href={`/dashboard/grants/list?status=${container.status}`} // TODO: add appropriate query params
+              // href={`/dashboard/grants/list?status=${container.status}`} // TODO: add appropriate query params
+              href={{
+                pathname: "/dashboard/grants/list",
+                query: {
+                  ...searchParams,
+                  status: container.status,
+                },
+              }}
             >
               {container.label}
             </Link>

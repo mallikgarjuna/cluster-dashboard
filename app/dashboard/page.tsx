@@ -107,6 +107,7 @@ export default async function DashboardPage({ searchParams }: Props) {
             submitted={submittedTotal}
             awarded={awardedTotal}
             rejected={rejectedTotal}
+            searchParams={searchParams}
           />
           <GrantChart
             awaiting={submittedCurrently}
