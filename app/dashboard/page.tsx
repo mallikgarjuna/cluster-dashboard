@@ -88,6 +88,15 @@ export default async function DashboardPage({ searchParams }: Props) {
     },
   });
 
+  const latestGrants = await prisma.grant.findMany({
+    where: {
+      AND: [...isGroupLeader, ...filterDepartment, ...filterGroupLeader],
+    },
+    orderBy: { createdAt: "desc" },
+    take: 5,
+    include: { assignedToUser: true },
+  });
+
   return (
     <Flex direction="column" gap="5">
       <DashboardActions />
@@ -106,7 +115,7 @@ export default async function DashboardPage({ searchParams }: Props) {
             rejected={rejectedTotal}
           />
         </Flex>
-        <LatestGrants />
+        <LatestGrants latestGrants={latestGrants} />
       </Grid>
     </Flex>
   );

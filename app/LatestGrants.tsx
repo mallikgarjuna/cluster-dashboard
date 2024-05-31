@@ -5,25 +5,15 @@ import { GrantStatusBadge } from "./components";
 import Link from "next/link";
 import { getServerSession } from "next-auth";
 import authOptions from "./auth/authOptions";
+import { Grant } from "@prisma/client";
+import { GrantWithUser } from "@/prisma/customTypes";
 
-const LatestGrants = async () => {
+interface Props {
+  latestGrants: GrantWithUser[];
+}
+
+const LatestGrants = async ({ latestGrants }: Props) => {
   const session = await getServerSession(authOptions);
-
-  const groupLeader =
-    session?.user.role === "GROUPLEADER"
-      ? [{ assignedToUser: { id: session?.user.id } }]
-      : [{}];
-
-  const grants = await prisma.grant.findMany({
-    where: {
-      AND: [...groupLeader],
-    },
-    orderBy: { createdAt: "desc" },
-    take: 5,
-    include: {
-      assignedToUser: true,
-    },
-  });
 
   return (
     <Card>
@@ -32,7 +22,7 @@ const LatestGrants = async () => {
       </Heading>
       <Table.Root>
         <Table.Body>
-          {grants.map((grant) => (
+          {latestGrants.map((grant) => (
             <Table.Row key={grant.id}>
               <Table.Cell>
                 <Flex justify="between">
