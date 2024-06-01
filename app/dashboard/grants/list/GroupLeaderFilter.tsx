@@ -1,7 +1,8 @@
 "use client";
 import { fetchAllUsers } from "@/lib/actions/user/queries";
+import { UserWithDepartment } from "@/prisma/customTypes";
 import { Select, SelectItem, SelectSection, useUser } from "@nextui-org/react";
-import { User } from "@prisma/client";
+import { OSDepartmentShortName, User } from "@prisma/client";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useSession } from "next-auth/react";
@@ -16,7 +17,7 @@ const GroupLeaderFilter = () => {
   const { data: session, status } = useSession();
 
   // const users = await fetchAllUsers();
-  const { data: users, error } = useUsers();
+  const { data: users, error } = useUsersWithDepartment();
 
   if (session?.user.role === "GROUPLEADER") {
     return (
@@ -39,8 +40,44 @@ const GroupLeaderFilter = () => {
 
   if (!users) return <Skeleton />;
 
+  // Filter the users based on their department's shortname
+  // const departmentShortNames: string[] = Object.values(OSDepartmentShortName);
+  // const departmentUsersObject: Record<string, UserWithDepartment[]> = {};
+
+  const departmentShortNames = Object.values(OSDepartmentShortName);
+  // console.log("departmentShortNames: ", departmentShortNames);
+
+  const departmentUsersObject: Record<
+    OSDepartmentShortName,
+    UserWithDepartment[]
+  > = departmentShortNames.reduce((obj, department) => {
+    obj[department] = [];
+    return obj;
+  }, {} as Record<OSDepartmentShortName, UserWithDepartment[]>);
+
+  // console.log("departmentUsersObject: ", departmentUsersObject);
+
+  users.forEach((user) => {
+    // console.log("user: ", user.relatedDepartment);
+
+    // const department = user.relatedDepartment?.nameShort;
+    const department = user.relatedDepartment?.nameShort; //not a string
+    // console.log("department: ", department);
+
+    // // Create an array for the department if it doesn't exist
+    // if (department && !departmentUsersObject[department]) {
+    //   departmentUsersObject[department] = [];
+    // }
+
+    // Add the user to the corresponding department array - only if the user is a groupleader
+    if (department && user.role === "GROUPLEADER") {
+      departmentUsersObject[department].push(user);
+    }
+  });
+
   return (
     <Select
+      items={departmentShortNames}
       label="Filter by group leader...."
       className="max-w-xs"
       defaultSelectedKeys={[searchParams.get("groupLeader") || "All"]}
@@ -55,13 +92,13 @@ const GroupLeaderFilter = () => {
         router.push(pathname + query);
       }}
     >
-      <SelectSection title="All">
+      <SelectSection title="All" showDivider>
         <SelectItem key="All" value="All" textValue="All">
           All
         </SelectItem>
       </SelectSection>
-      <SelectSection title="Individual">
-        {users.map((user) => (
+      <SelectSection title={departmentShortNames[0]} showDivider>
+        {departmentUsersObject[departmentShortNames[0]].map((user) => (
           <SelectItem
             key={user.id}
             value={user.id}
@@ -71,14 +108,52 @@ const GroupLeaderFilter = () => {
           </SelectItem>
         ))}
       </SelectSection>
+      <SelectSection title={departmentShortNames[1]} showDivider>
+        {departmentUsersObject[departmentShortNames[1]].map((user) => (
+          <SelectItem
+            key={user.id}
+            value={user.id}
+            textValue={user.lastName ?? ""}
+          >
+            {user.lastName}
+          </SelectItem>
+        ))}
+      </SelectSection>
+      <SelectSection title={departmentShortNames[2]} showDivider>
+        {departmentUsersObject[departmentShortNames[2]].map((user) => (
+          <SelectItem
+            key={user.id}
+            value={user.id}
+            textValue={user.lastName ?? ""}
+          >
+            {user.lastName}
+          </SelectItem>
+        ))}
+      </SelectSection>
+
+      {/* This works fine but gives TS error - instead render each dept's user separately above */}
+      {/* {departmentShortNames.map((department) => (
+        <SelectSection key={department} title={department} showDivider>
+          {departmentUsersObject[department].map((user) => (
+            <SelectItem
+              key={user.id}
+              value={user.id}
+              textValue={user.lastName ?? ""}
+            >
+              {user.lastName}
+            </SelectItem>
+          ))}
+        </SelectSection>
+      ))} */}
     </Select>
   );
 };
 
-const useUsers = () =>
-  useQuery<User[]>({
+const useUsersWithDepartment = () =>
+  useQuery<UserWithDepartment[]>({
     queryKey: ["users"],
-    queryFn: () => axios.get("/api/users").then((res) => res.data),
+    queryFn: () =>
+      axios.get("/api/users/withdepartment").then((res) => res.data),
     staleTime: 60 * 1000, //60s
     retry: 3,
   });

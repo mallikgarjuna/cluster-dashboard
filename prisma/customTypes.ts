@@ -25,3 +25,15 @@ const grantWithUserWithDepartment = Prisma.validator<Prisma.GrantDefaultArgs>()(
 export type GrantWithUserWithDepartment = Prisma.GrantGetPayload<
   typeof grantWithUserWithDepartment
 >;
+
+////////////////////////// User type //////////////////////////
+// User with department type
+const userWithDepartment = Prisma.validator<Prisma.UserDefaultArgs>()({
+  include: {
+    relatedDepartment: true,
+  },
+});
+
+export type UserWithDepartment = Prisma.UserGetPayload<
+  typeof userWithDepartment
+>;
