@@ -2,13 +2,22 @@
 import { CreateUserFormInputType } from "@/app/validationSchemas";
 import { createUserByAdmin } from "@/lib/actions/authActions";
 import { Button, Checkbox, Input, Select, SelectItem } from "@nextui-org/react";
-import { UserRole } from "@prisma/client";
+import { Department, UserRole } from "@prisma/client";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
-import { HiEye, HiEyeOff, HiKey, HiMail, HiUser } from "react-icons/hi";
+import {
+  HiEye,
+  HiEyeOff,
+  HiKey,
+  HiMail,
+  HiOfficeBuilding,
+  HiUser,
+} from "react-icons/hi";
 
 const CreateUserForm = () => {
   const router = useRouter();
@@ -26,6 +35,9 @@ const CreateUserForm = () => {
   const createUserOnSubmit = async (
     createUserFormData: CreateUserFormInputType
   ) => {
+    // Check the type of departmentId returned by the form
+    // console.log(createUserFormData);
+
     try {
       const result = await createUserByAdmin(createUserFormData);
       if (!result.success) {
@@ -34,14 +46,16 @@ const CreateUserForm = () => {
         toast.success(
           "The user created by Admin successfully!" + "\n" + result.message
         );
+        reset();
+        router.push("/admin");
       }
-      reset();
-      router.push("/admin");
     } catch (error) {
       toast.error("Something went wrong...");
       console.error(error);
     }
   };
+
+  const { data: departments, error, isLoading } = useDepartments();
 
   return (
     <form
@@ -126,6 +140,42 @@ const CreateUserForm = () => {
           </Select>
         )}
       />
+
+      <Controller
+        control={control}
+        name="departmentId"
+        render={({ field }) => (
+          <Select
+            {...field}
+            {...register("departmentId", { valueAsNumber: true })}
+            onChange={(event) => field.onChange(parseInt(event.target.value))}
+            errorMessage={errors.departmentId?.message}
+            isInvalid={!!errors.departmentId}
+            label="Department"
+            placeholder="Select user's department"
+            startContent={<HiOfficeBuilding />}
+            className="col-span-2"
+          >
+            {departments?.map((department) => (
+              <SelectItem
+                key={department.id}
+                value={department.id}
+                textValue={department.nameShort ?? ""}
+              >
+                {department.nameShort}
+              </SelectItem>
+            )) || (
+              <SelectItem key={0} value={0}>
+                None
+              </SelectItem>
+            )}
+          </Select>
+        )}
+      />
+      {!!errors.departmentId && (
+        <p className="text-sm text-red-500">{errors.departmentId.message}</p>
+      )}
+
       <Controller
         control={control}
         name="accepted"
@@ -160,5 +210,13 @@ const CreateUserForm = () => {
     </form>
   );
 };
+
+const useDepartments = () =>
+  useQuery<Department[]>({
+    queryKey: ["departments"],
+    queryFn: () => axios.get("/api/departments").then((res) => res.data),
+    staleTime: 60 * 1000, //60s
+    retry: 3,
+  });
 
 export default CreateUserForm;

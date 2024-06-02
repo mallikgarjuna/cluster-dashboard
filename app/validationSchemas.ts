@@ -129,9 +129,10 @@ export const CreateUserFormSchema = z
       .max(45, "Password must be less than 45 characters long"),
     confirmPassword: z
       .string()
-      .min(5, "Password must be at least 5 characters long")
+      .min(5, "Password must be at lest 5 characters long")
       .max(45, "Password must be less than 45 characters long"),
     role: z.nativeEnum(UserRole),
+    departmentId: z.number(),
     accepted: z.literal(true, {
       errorMap: () => ({
         message: "Please accept the terms and conditions",

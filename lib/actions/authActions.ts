@@ -116,7 +116,9 @@ export async function createUserByAdmin(
         getErrorMessage(validatedFields.error),
     };
   }
-  const { firstName, lastName, email, password, role } = validatedFields.data;
+  const { firstName, lastName, email, password, role, departmentId } =
+    validatedFields.data;
+  const name = `${firstName} ${lastName}`;
 
   // If valid, make sure that we don't have a user w/ same email
   const user = await prisma?.user.findUnique({
@@ -133,7 +135,15 @@ export async function createUserByAdmin(
   const hashedPassword = await bcrypt.hash(password, 10);
   try {
     var newUser = await prisma.user.create({
-      data: { email, hashedPassword, firstName, lastName, role },
+      data: {
+        email,
+        hashedPassword,
+        firstName,
+        lastName,
+        name: name,
+        role,
+        departmentId: departmentId,
+      },
     });
   } catch (error) {
     return {
