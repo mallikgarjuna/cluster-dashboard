@@ -3,20 +3,20 @@ import React from "react";
 
 const AdminPage = () => {
   return (
-    <article>
-      <h2>AdminPage</h2>
-      <ul className="flex flex-col gap-3">
+    <article className="flex flex-col gap-3">
+      <h2 className="text-3xl">Admin Tasks</h2>
+      <ol className="flex flex-col gap-3">
         <li>
-          <Link href="/auth/createUser" color="blue">
+          <Link href="/auth/createUser" color="blue" className="text-blue-500">
             Create new user by Admin
           </Link>
         </li>
         <li>
-          <Link href="/dashboard" color="blue">
+          <Link href="/dashboard" color="blue" className="text-blue-500">
             Dashboard
           </Link>
         </li>
-      </ul>
+      </ol>
     </article>
   );
 };
