@@ -1,4 +1,4 @@
-import { StatusGrant } from "@prisma/client";
+import { StatusGrant, UserRole } from "@prisma/client";
 import { z } from "zod";
 
 // grant form schema
@@ -131,6 +131,7 @@ export const CreateUserFormSchema = z
       .string()
       .min(5, "Password must be at least 5 characters long")
       .max(45, "Password must be less than 45 characters long"),
+    role: z.nativeEnum(UserRole),
     accepted: z.literal(true, {
       errorMap: () => ({
         message: "Please accept the terms and conditions",

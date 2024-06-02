@@ -1,7 +1,8 @@
 "use client";
 import { CreateUserFormInputType } from "@/app/validationSchemas";
 import { createUserByAdmin } from "@/lib/actions/authActions";
-import { Button, Checkbox, Input } from "@nextui-org/react";
+import { Button, Checkbox, Input, Select, SelectItem } from "@nextui-org/react";
+import { UserRole } from "@prisma/client";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
@@ -103,6 +104,27 @@ const CreateUserForm = () => {
         placeholder="Confirm your password"
         startContent={<HiKey />}
         className="col-span-2"
+      />
+      <Controller
+        control={control}
+        name="role"
+        render={({ field }) => (
+          <Select
+            {...register("role")}
+            errorMessage={errors.role?.message}
+            isInvalid={!!errors.role}
+            label="User Role"
+            placeholder="Select user role"
+            startContent={<HiUser />}
+            className="col-span-2"
+          >
+            {Object.values(UserRole).map((role) => (
+              <SelectItem key={role} value={role}>
+                {role}
+              </SelectItem>
+            ))}
+          </Select>
+        )}
       />
       <Controller
         control={control}
