@@ -40,13 +40,15 @@ const SigninForm = ({ callbackUrl }: Props) => {
     // Here, result.ok is true if the HTTP req is successful which is always true; so check result.error;
     if (result?.error) {
       toast.error(`Something went wrong... ${result.error}`);
+      reset({ password: "" });
       return;
     }
     toast.success("Logged in successfully!");
 
     reset();
     // router.push(callbackUrl || "/");
-    router.push("/dashboard");
+    // router.push("/dashboard");
+    router.push("/"); // b/c /dashboard is taking too long to load
   };
 
   const toggleVisiblePass = () => setIsVisiblePass((prev) => !prev);
