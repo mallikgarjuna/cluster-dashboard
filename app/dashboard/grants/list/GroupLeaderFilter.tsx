@@ -97,6 +97,7 @@ const GroupLeaderFilter = () => {
           All
         </SelectItem>
       </SelectSection>
+      {/*       
       <SelectSection title={departmentShortNames[0]} showDivider>
         {departmentUsersObject[departmentShortNames[0]].map((user) => (
           <SelectItem
@@ -129,7 +130,7 @@ const GroupLeaderFilter = () => {
             {user.lastName}
           </SelectItem>
         ))}
-      </SelectSection>
+      </SelectSection> */}
 
       {/* This works fine but gives TS error - instead render each dept's user separately above */}
       {/* {departmentShortNames.map((department) => (
@@ -145,6 +146,18 @@ const GroupLeaderFilter = () => {
           ))}
         </SelectSection>
       ))} */}
+
+      <SelectSection title="Individual">
+        {users.map((user) => (
+          <SelectItem
+            key={user.id}
+            value={user.id}
+            textValue={user.lastName ?? ""}
+          >
+            {user.lastName}
+          </SelectItem>
+        ))}
+      </SelectSection>
     </Select>
   );
 };
