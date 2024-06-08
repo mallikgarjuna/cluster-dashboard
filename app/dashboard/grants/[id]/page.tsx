@@ -16,15 +16,16 @@ interface Props {
   params: { id: string };
 }
 
-const fetchGrant = cache((grantId: number) =>
-  prisma.grant.findUnique({ where: { id: grantId } })
+const fetchGrant = cache((grantId: string) =>
+  prisma.grant.findUnique({ where: { newId: grantId } })
 );
 
 const GrantDetailPage = async ({ params }: Props) => {
   const session = await getServerSession(authOptions);
   if (typeof parseInt(params.id) !== "number") notFound();
 
-  const grant = await fetchGrant(parseInt(params.id));
+  const grant = await fetchGrant(params.id);
+  // const grant = await fetchGrant(parseInt(params.id));
   // console.log("Grant details received: ", grant);
 
   if (!grant) notFound();
@@ -53,7 +54,8 @@ const GrantDetailPage = async ({ params }: Props) => {
 };
 
 export async function generateMetadata({ params }: Props) {
-  const grant = await fetchGrant(parseInt(params.id));
+  const grant = await fetchGrant(params.id);
+  // const grant = await fetchGrant(parseInt(params.id));
 
   return {
     title: grant?.title,
