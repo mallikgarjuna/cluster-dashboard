@@ -23,22 +23,22 @@ import prisma from "../client";
 
 // // // Rename newId to Id in Department
 
-async function main() {
-  const departments = await prisma.department.findMany();
+// async function main() {
+//   const departments = await prisma.department.findMany();
 
-  for (const department of departments) {
-    await prisma.department.update({
-      where: { newId: department.newId },
-      data: { id: department.newId },
-    });
-  }
-}
+//   for (const department of departments) {
+//     await prisma.department.update({
+//       where: { newId: department.newId },
+//       data: { id: department.newId },
+//     });
+//   }
+// }
 
-main()
-  .catch((e) => {
-    console.error(e);
-    process.exit(1);
-  })
-  .finally(async () => {
-    await prisma.$disconnect();
-  });
+// main()
+//   .catch((e) => {
+//     console.error(e);
+//     process.exit(1);
+//   })
+//   .finally(async () => {
+//     await prisma.$disconnect();
+//   });
