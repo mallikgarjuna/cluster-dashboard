@@ -18,10 +18,12 @@ interface Props {
 }
 
 const EditGrantPage = async ({ params }: Props) => {
-  if (typeof parseInt(params.id) !== "number") notFound();
+  // This check is not needed after changing the type of id to string;
+  // if (typeof parseInt(params.id) !== "number") notFound();
 
   const grant = await prisma.grant.findUnique({
-    where: { id: parseInt(params.id) },
+    where: { newId: params.id },
+    // where: { id: parseInt(params.id) },
   });
 
   if (!grant) notFound();
