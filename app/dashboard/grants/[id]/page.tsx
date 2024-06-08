@@ -17,7 +17,7 @@ interface Props {
 }
 
 const fetchGrant = cache((grantId: string) =>
-  prisma.grant.findUnique({ where: { newId: grantId } })
+  prisma.grant.findUnique({ where: { id: grantId } })
 );
 
 const GrantDetailPage = async ({ params }: Props) => {
@@ -42,8 +42,8 @@ const GrantDetailPage = async ({ params }: Props) => {
             session?.user.id === grant.assignedToUserId) && (
             <>
               {/* <AssigneeSelect grant={grant} /> */}
-              <EditGrantButton grantId={grant.newId!} />
-              <DeleteGrantButton grantId={grant.newId!} />
+              <EditGrantButton grantId={grant.id!} />
+              <DeleteGrantButton grantId={grant.id!} />
             </>
           )}
           <GoBackButton />
@@ -59,7 +59,7 @@ export async function generateMetadata({ params }: Props) {
 
   return {
     title: grant?.title,
-    description: "Details of grant " + grant?.newId,
+    description: "Details of grant " + grant?.id,
   };
 }
 

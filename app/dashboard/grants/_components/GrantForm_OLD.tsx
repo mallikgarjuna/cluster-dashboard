@@ -39,7 +39,7 @@ const GrantForm_OLD = ({ grant }: Props) => {
     try {
       console.log(data);
       setSubmitting(true);
-      if (grant) await axios.patch(`/api/grants/${grant.newId}`, data);
+      if (grant) await axios.patch(`/api/grants/${grant.id}`, data);
       else await axios.post("/api/grants", data);
       router.push("/dashboard/grants/list");
       router.refresh();

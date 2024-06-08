@@ -74,9 +74,9 @@ const GrantTable = async ({ searchParams, grants }: Props) => {
       <Table.Body>
         {grants.map(async (grant) => {
           return (
-            <Table.Row key={grant.newId}>
+            <Table.Row key={grant.id}>
               <Table.Cell>
-                <Link href={`/dashboard/grants/${grant.newId}`}>
+                <Link href={`/dashboard/grants/${grant.id}`}>
                   {grant.acronym ?? grant.title}
                 </Link>
                 <div className="block md:hidden">

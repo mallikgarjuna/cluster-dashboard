@@ -23,11 +23,11 @@ const LatestGrants = async ({ latestGrants }: Props) => {
       <Table.Root>
         <Table.Body>
           {latestGrants.map((grant) => (
-            <Table.Row key={grant.newId}>
+            <Table.Row key={grant.id}>
               <Table.Cell>
                 <Flex justify="between">
                   <Flex direction="column" gap="2" align="start">
-                    <Link href={`/dashboard/grants/${grant.newId}`}>
+                    <Link href={`/dashboard/grants/${grant.id}`}>
                       {grant.title}
                     </Link>
                     <GrantStatusBadge status={grant.status} />

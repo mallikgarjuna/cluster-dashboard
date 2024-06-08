@@ -22,7 +22,7 @@ const EditGrantPage = async ({ params }: Props) => {
   // if (typeof parseInt(params.id) !== "number") notFound();
 
   const grant = await prisma.grant.findUnique({
-    where: { newId: params.id },
+    where: { id: params.id },
     // where: { id: parseInt(params.id) },
   });
 

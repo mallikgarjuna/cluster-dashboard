@@ -23,22 +23,22 @@ import prisma from "../client";
 //   });
 
 // // // // Rename newId to Id in Department
-// async function main() {
-//     const grants = await prisma.grant.findMany();
+async function main() {
+  const grants = await prisma.grant.findMany();
 
-//     for (const grant of grants) {
-//       await prisma.grant.update({
-//         where: { newId: grant.newId },
-//         data: { id: grant.newId },
-//       });
-//     }
-//   }
+  for (const grant of grants) {
+    await prisma.grant.update({
+      where: { newId: grant.newId },
+      data: { id: grant.newId },
+    });
+  }
+}
 
-//   main()
-//     .catch((e) => {
-//       console.error(e);
-//       process.exit(1);
-//     })
-//     .finally(async () => {
-//       await prisma.$disconnect();
-//     });
+main()
+  .catch((e) => {
+    console.error(e);
+    process.exit(1);
+  })
+  .finally(async () => {
+    await prisma.$disconnect();
+  });
