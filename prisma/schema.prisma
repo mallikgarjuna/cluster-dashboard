@@ -103,6 +103,7 @@ model VerificationToken {
 
 model Department {
   id        Int                   @id @default(autoincrement())
+  newId     String?               @unique
   nameFull  String
   nameShort OSDepartmentShortName
   members   User[]
