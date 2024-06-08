@@ -80,7 +80,7 @@ model User {
   accounts          Account[]
   sessions          Session[]
   assignedGrants    Grant[]
-  relatedDepartment Department? @relation(fields: [departmentId], references: [id])
+  relatedDepartment Department? @relation(fields: [departmentId], references: [newId])
   departmentId      String?
 }
 
@@ -103,8 +103,7 @@ model VerificationToken {
 
 model Department {
   // id        Int?                  @default(autoincrement()) @ignore
-  // newId     String                @id @default(cuid())
-  id        String                @id @default(cuid())
+  newId     String                @id @default(cuid())
   nameFull  String
   nameShort OSDepartmentShortName
   members   User[]
