@@ -159,8 +159,8 @@ const CreateUserForm = () => {
           >
             {departments?.map((department) => (
               <SelectItem
-                key={department.newId}
-                value={department.newId}
+                key={department.id || "0"}
+                value={department.id || "0"}
                 textValue={department.nameShort ?? ""}
               >
                 {department.nameShort}
