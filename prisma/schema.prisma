@@ -14,7 +14,7 @@ datasource db {
 
 model Grant {
   // id               Int         @default(autoincrement()) @ignore
-  newId            String      @default(cuid()) @ignore
+  // newId            String      @default(cuid()) @ignore
   id               String      @id @default(cuid())
   title            String      @default("") @db.VarChar(255)
   description      String      @default("") @db.Text
