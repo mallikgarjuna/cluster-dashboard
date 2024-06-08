@@ -57,7 +57,7 @@ export async function generateMetadata({ params }: Props) {
 
   return {
     title: grant?.title,
-    description: "Details of grant " + grant?.id,
+    description: "Details of grant " + grant?.newId,
   };
 }
 
