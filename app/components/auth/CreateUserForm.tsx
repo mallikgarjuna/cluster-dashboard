@@ -147,8 +147,9 @@ const CreateUserForm = () => {
         render={({ field }) => (
           <Select
             {...field}
-            {...register("departmentId", { valueAsNumber: true })}
-            onChange={(event) => field.onChange(parseInt(event.target.value))}
+            // {...register("departmentId", { valueAsNumber: true })}
+            // onChange={(event) => field.onChange(parseInt(event.target.value))}
+            {...register("departmentId")}
             errorMessage={errors.departmentId?.message}
             isInvalid={!!errors.departmentId}
             label="Department"
@@ -165,7 +166,7 @@ const CreateUserForm = () => {
                 {department.nameShort}
               </SelectItem>
             )) || (
-              <SelectItem key={0} value={0}>
+              <SelectItem key={"0"} value={"0"}>
                 None
               </SelectItem>
             )}
