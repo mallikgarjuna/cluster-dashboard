@@ -43,7 +43,7 @@ const GrantForm = ({ grant }: Props) => {
   ) => {
     try {
       if (grant) {
-        await axios.patch(`/api/grants/${grant.id}`, grantFormData);
+        await axios.patch(`/api/grants/${grant.newId}`, grantFormData);
       } else {
         await axios.post("/api/grants", grantFormData);
       }

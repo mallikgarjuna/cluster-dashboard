@@ -29,7 +29,7 @@ const AssigneeSelect = ({ grant }: Props) => {
 
   const assignGrant = (userId: string) => {
     axios
-      .patch("/api/grants/" + grant.id, {
+      .patch("/api/grants/" + grant.newId, {
         assignedToUserId: userId === "unassigned" ? null : userId,
       })
       .catch(() => toast.error("Changes could not be saved."));

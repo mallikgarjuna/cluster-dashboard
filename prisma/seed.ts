@@ -49,7 +49,7 @@ async function main() {
         notes: faker.lorem.lines(1),
       },
     });
-    console.log(`Created a Grant with id: ${grant.id}`);
+    console.log(`Created a Grant with id: ${grant.newId}`);
   }
 
   console.log("Finish seeding.");

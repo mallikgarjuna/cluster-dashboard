@@ -3,7 +3,7 @@ import { Button } from "@radix-ui/themes";
 import Link from "next/link";
 
 interface Props {
-  grantId: number;
+  grantId: string;
 }
 
 const EditGrantButton = ({ grantId }: Props) => {

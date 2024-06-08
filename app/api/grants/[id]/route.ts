@@ -33,14 +33,14 @@ export async function PATCH(request: NextRequest, { params }: Props) {
   // Validating grant:
   // Make sure that client is updating a valid grant
   const grant = await prisma.grant.findUnique({
-    where: { id: parseInt(params.id) },
+    where: { newId: params.id },
   });
   if (!grant)
     return NextResponse.json({ error: "Invalid grant" }, { status: 404 });
   // 404 = not found
 
   const updatedGrant = await prisma.grant.update({
-    where: { id: grant.id },
+    where: { newId: grant.newId! },
     data: {
       title: body.title,
       description: body.description,
@@ -68,13 +68,13 @@ export async function DELETE(request: NextRequest, { params }: Props) {
   // await delay(2000);
 
   const grant = await prisma.grant.findUnique({
-    where: { id: parseInt(params.id) },
+    where: { newId: params.id },
   });
   if (!grant)
     return NextResponse.json({ error: "Invalid grant" }, { status: 400 });
 
   await prisma.grant.delete({
-    where: { id: grant.id },
+    where: { newId: grant.newId! },
   });
 
   return NextResponse.json({});

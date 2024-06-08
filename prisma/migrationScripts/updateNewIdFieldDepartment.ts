@@ -1,6 +1,7 @@
 // // // Create new column newId in Department
 import prisma from "../client";
 
+// // // Add newId to Department
 // async function main() {
 //   const departments = await prisma.department.findMany();
 

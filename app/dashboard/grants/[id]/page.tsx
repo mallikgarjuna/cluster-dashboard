@@ -41,8 +41,8 @@ const GrantDetailPage = async ({ params }: Props) => {
             session?.user.id === grant.assignedToUserId) && (
             <>
               {/* <AssigneeSelect grant={grant} /> */}
-              <EditGrantButton grantId={grant.id} />
-              <DeleteGrantButton grantId={grant.id} />
+              <EditGrantButton grantId={grant.newId!} />
+              <DeleteGrantButton grantId={grant.newId!} />
             </>
           )}
           <GoBackButton />
