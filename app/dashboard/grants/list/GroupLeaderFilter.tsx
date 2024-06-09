@@ -21,6 +21,7 @@ const GroupLeaderFilter = () => {
 
   if (!session) return null;
 
+  // If a groupleader logged in, filter by group leader
   if (session?.user.role === "GROUPLEADER") {
     return (
       <Select

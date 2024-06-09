@@ -49,6 +49,8 @@ export async function PATCH(request: NextRequest, { params }: Props) {
       submissionDate: body.submissionDate,
       deadline: body.deadline,
       decisionDate: body.decisionDate,
+      projectStartDate:
+        body.projectStartDate === "" ? null : body.projectStartDate,
       notes: body.notes,
       assignedToUserId: body.assignedToUserId,
       status: body.status,

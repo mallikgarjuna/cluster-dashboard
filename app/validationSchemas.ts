@@ -11,6 +11,7 @@ export const grantFormSchema = z.object({
   submissionDate: z.coerce.date().optional(),
   deadline: z.coerce.date().optional(),
   decisionDate: z.coerce.date().optional(),
+  projectStartDate: z.optional(z.union([z.coerce.date(), z.literal("")])),
   notes: z.string().optional(),
   assignedToUserId: z.string().optional(),
   status: z.nativeEnum(StatusGrant),
@@ -33,18 +34,27 @@ export const patchGrantSchema = z.object({
     .min(1, "Description is required.")
     .max(65535)
     .optional(),
+  acronym: z.string().optional(),
+  budgetTotal: z.number().optional(),
+  submissionDate: z.coerce.date().optional(),
+  deadline: z.coerce.date().optional(),
+  decisionDate: z.coerce.date().optional(),
+  projectStartDate: z.optional(z.union([z.coerce.date(), z.literal("")])),
+  notes: z.string().optional(),
   assignedToUserId: z
     .string()
     .min(1, "AssignedToUserId is required")
     .max(255)
     .optional()
     .nullable(),
-  acronym: z.string().optional(),
-  budgetTotal: z.number().optional(),
-  submissionDate: z.coerce.date().optional(),
-  deadline: z.coerce.date().optional(),
-  decisionDate: z.coerce.date().optional(),
-  notes: z.string().optional(),
+  status: z.nativeEnum(StatusGrant),
+  projectNumber: z
+    .number()
+    .refine((value) => String(value).length === 6, {
+      message: "Project number must be exactly 6 digits",
+      path: ["projectNumber"],
+    })
+    .optional(),
 });
 
 export const SigninFormSchema = z.object({

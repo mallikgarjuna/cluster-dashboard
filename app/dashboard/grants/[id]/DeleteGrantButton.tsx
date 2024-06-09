@@ -20,7 +20,7 @@ const DeleteGrantButton = ({ grantId }: Props) => {
       // throw new Error();
       setDeleting(true);
       await axios.delete(`/api/grants/${grantId}`);
-      router.push("/grants/list");
+      router.push("/dashboard/grants/list");
       router.refresh();
     } catch (error) {
       setDeleting(false);

@@ -22,7 +22,7 @@ const fetchGrant = cache((grantId: string) =>
 
 const GrantDetailPage = async ({ params }: Props) => {
   const session = await getServerSession(authOptions);
-  if (typeof parseInt(params.id) !== "number") notFound();
+  // if (typeof parseInt(params.id) !== "number") notFound();
 
   const grant = await fetchGrant(params.id);
   // const grant = await fetchGrant(parseInt(params.id));

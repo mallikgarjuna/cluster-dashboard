@@ -10,11 +10,12 @@ export async function POST(request: NextRequest) {
   // 401 == unauthorized
 
   const body = await request.json();
-  console.log(body);
+  console.log("body: ", body);
   const validation = grantFormSchema.safeParse(body);
   if (!validation.success)
     return NextResponse.json(validation.error.format(), { status: 400 });
   // 400: Bad request, meaning: the client sent invalid data
+  console.log("validation.data: ", validation.data);
 
   const newGrant = await prisma.grant.create({
     data: {
@@ -25,6 +26,8 @@ export async function POST(request: NextRequest) {
       submissionDate: body.submissionDate,
       deadline: body.deadline,
       decisionDate: body.decisionDate,
+      projectStartDate:
+        body.projectStartDate === "" ? null : body.projectStartDate,
       notes: body.notes,
       assignedToUserId: body.assignedToUserId,
       status: body.status,

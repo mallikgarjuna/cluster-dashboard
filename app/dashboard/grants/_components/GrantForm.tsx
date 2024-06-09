@@ -41,6 +41,7 @@ const GrantForm = ({ grant }: Props) => {
   const submitGrantForm: SubmitHandler<GrantFormDataType> = async (
     grantFormData
   ) => {
+    // console.log(grantFormData);
     try {
       if (grant) {
         await axios.patch(`/api/grants/${grant.id}`, grantFormData);
@@ -148,6 +149,16 @@ const GrantForm = ({ grant }: Props) => {
           label="Decision Date"
           // placeholder="Submission date of the grant"
           defaultValue={grant?.decisionDate?.toISOString().substring(0, 10)}
+        />
+
+        <Input
+          {...register("projectStartDate")}
+          // errorMessage={errors.projectStartDate?.message}
+          // isInvalid={false}
+          type="date"
+          label="Project Start Date (post award)"
+          placeholder="Project start date of the grant"
+          defaultValue={grant?.projectStartDate?.toISOString().substring(0, 10)}
         />
 
         <Controller

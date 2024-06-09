@@ -55,6 +55,11 @@ const GrantDetails = async ({ grant }: Props) => {
         fieldInfo={grant.decisionDate?.toDateString() ?? null}
       />
 
+      <CustomFiledDetails
+        subheading="Project start date"
+        fieldInfo={grant.projectStartDate?.toDateString() ?? null}
+      />
+
       <CustomFiledDetails subheading="Notes" fieldInfo={grant.notes} />
 
       <CustomFiledDetails
