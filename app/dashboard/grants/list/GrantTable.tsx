@@ -87,7 +87,10 @@ const GrantTable = async ({ searchParams, grants }: Props) => {
                 <GrantStatusBadge status={grant.status} />
               </Table.Cell>
               <Table.Cell className="hidden md:table-cell">
-                {grant.createdAt.toDateString()}
+                {grant.createdAt.toISOString().split("T")[0]}
+              </Table.Cell>
+              <Table.Cell className="hidden md:table-cell">
+                {grant.projectStartDate?.toISOString().split("T")[0]}
               </Table.Cell>
               <Table.Cell className="hidden md:table-cell">
                 {grant.projectNumber}
@@ -118,6 +121,11 @@ const columnsGrant: {
   { label: "Grant", value: "title" },
   { label: "Status", value: "status", classname: "hidden md:table-cell" },
   { label: "Created", value: "createdAt", classname: "hidden md:table-cell" },
+  {
+    label: "Project start",
+    value: "projectStartDate",
+    classname: "hidden md:table-cell",
+  },
   {
     label: "P-Number",
     value: "projectNumber",
