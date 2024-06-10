@@ -82,9 +82,9 @@ const AuthStatus = () => {
         <Link className="nav-link" href="/auth/signin">
           Sign in
         </Link>
-        <Link className="nav-link" href="/auth/signup">
+        {/* <Link className="nav-link" href="/auth/signup">
           Sign up
-        </Link>
+        </Link> */}
       </>
     );
 
