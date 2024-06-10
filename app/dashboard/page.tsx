@@ -31,10 +31,13 @@ export default async function DashboardPage({ searchParams }: Props) {
   const groupLeader =
     searchParams.groupLeader === "All" ? undefined : searchParams.groupLeader;
 
+  const year = searchParams.year == "All" ? undefined : searchParams.year;
+
   // Filters
   const filters = {
     department: department,
     groupLeader: groupLeader,
+    year: year,
   };
 
   // To get intellisense, implement this condition inside prisma query;
@@ -52,10 +55,26 @@ export default async function DashboardPage({ searchParams }: Props) {
     ? [{ assignedToUser: { id: filters.groupLeader } }]
     : [{}];
 
+  const filterYear = filters.year
+    ? [
+        {
+          projectStartDate: {
+            gte: new Date(`${parseInt(filters.year)}-01-01`),
+            lt: new Date(`${parseInt(filters.year) + 1}-01-01`),
+          },
+        },
+      ]
+    : [{}];
+
   // Prisma queries
   const submittedTotal = await prisma.grant.count({
     where: {
-      AND: [...isGroupLeader, ...filterDepartment, ...filterGroupLeader],
+      AND: [
+        ...isGroupLeader,
+        ...filterDepartment,
+        ...filterGroupLeader,
+        ...filterYear,
+      ],
       OR: [
         { status: "SUBMITTED" },
         { status: "REJECTED" },
@@ -67,13 +86,23 @@ export default async function DashboardPage({ searchParams }: Props) {
   });
   const submittedCurrently = await prisma.grant.count({
     where: {
-      AND: [...isGroupLeader, ...filterDepartment, ...filterGroupLeader],
+      AND: [
+        ...isGroupLeader,
+        ...filterDepartment,
+        ...filterGroupLeader,
+        ...filterYear,
+      ],
       OR: [{ status: "SUBMITTED" }],
     },
   });
   const awardedTotal = await prisma.grant.count({
     where: {
-      AND: [...isGroupLeader, ...filterDepartment, ...filterGroupLeader],
+      AND: [
+        ...isGroupLeader,
+        ...filterDepartment,
+        ...filterGroupLeader,
+        ...filterYear,
+      ],
       OR: [
         { status: "AWARDED" },
         { status: "RUNNING_PROJECT" },
@@ -83,14 +112,24 @@ export default async function DashboardPage({ searchParams }: Props) {
   });
   const rejectedTotal = await prisma.grant.count({
     where: {
-      AND: [...isGroupLeader, ...filterDepartment, ...filterGroupLeader],
+      AND: [
+        ...isGroupLeader,
+        ...filterDepartment,
+        ...filterGroupLeader,
+        ...filterYear,
+      ],
       OR: [{ status: "REJECTED" }],
     },
   });
 
   const latestGrants = await prisma.grant.findMany({
     where: {
-      AND: [...isGroupLeader, ...filterDepartment, ...filterGroupLeader],
+      AND: [
+        ...isGroupLeader,
+        ...filterDepartment,
+        ...filterGroupLeader,
+        ...filterYear,
+      ],
     },
     orderBy: { createdAt: "desc" },
     take: 5,
