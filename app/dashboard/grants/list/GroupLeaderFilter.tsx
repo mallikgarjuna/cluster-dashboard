@@ -86,8 +86,13 @@ const GroupLeaderFilter = () => {
       defaultSelectedKeys={[searchParams.get("groupLeader") || "All"]}
       onChange={(event) => {
         const groupLeader = event.target.value;
+        // console.log("groupLeader: ", groupLeader);
         const params = new URLSearchParams(searchParams);
+
         if (groupLeader) params.set("groupLeader", groupLeader);
+        else params.delete("groupLeader");
+        // console.log("params: ", params.toString());
+
         const query = params.size ? "?" + params.toString() : "";
 
         // router.push("/dashboard/grants/list" + query);

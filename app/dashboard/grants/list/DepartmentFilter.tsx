@@ -26,8 +26,10 @@ const DepartmentFilter = () => {
         const department = event.target.value;
         // console.log("department: ", department);
         const params = new URLSearchParams(searchParams.toString());
-        // console.log("params: ", params);
+
         if (department) params.set("department", department);
+        else params.delete("department");
+        // console.log("params: ", params.toString());
 
         const query = params.size ? "?" + params.toString() : "";
         // console.log("query: ", query);

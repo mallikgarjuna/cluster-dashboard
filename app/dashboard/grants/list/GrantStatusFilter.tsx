@@ -37,7 +37,9 @@ const GrantStatusFilter = () => {
 
         // Instead of creating empty query string, create one from existing 'searchParams' obj;
         const params = new URLSearchParams(searchParams);
+
         if (status) params.set("status", status);
+        else params.delete("status");
 
         // add '?' only if we have at least one param
         const query = params.size ? "?" + params.toString() : "";
