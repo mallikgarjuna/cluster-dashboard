@@ -56,14 +56,16 @@ export default async function DashboardPage({ searchParams }: Props) {
     : [{}];
 
   const filterYear = filters.year
-    ? [
-        {
-          projectStartDate: {
-            gte: new Date(`${parseInt(filters.year)}-01-01`),
-            lt: new Date(`${parseInt(filters.year) + 1}-01-01`),
+    ? filters.year === "AllStarted"
+      ? [{ projectStartDate: { not: null } }]
+      : [
+          {
+            projectStartDate: {
+              gte: new Date(`${parseInt(filters.year)}-01-01`),
+              lt: new Date(`${parseInt(filters.year) + 1}-01-01`),
+            },
           },
-        },
-      ]
+        ]
     : [{}];
 
   // Prisma queries

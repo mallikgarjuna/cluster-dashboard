@@ -39,6 +39,8 @@ const GrantsPage = async ({ searchParams }: Props) => {
 
   const year = searchParams.year == "All" ? undefined : searchParams.year;
 
+  // const year = startYears.includes(searchParams.year) ? searchParams.year : undefined;
+
   const page = parseInt(searchParams.page) || 1;
   const pageSize = 10;
 
@@ -67,14 +69,16 @@ const GrantsPage = async ({ searchParams }: Props) => {
           ? [{ assignedToUser: { id: filters.groupLeader } }]
           : [{}]),
         ...(filters.year
-          ? [
-              {
-                projectStartDate: {
-                  gte: new Date(`${parseInt(filters.year)}-01-01`),
-                  lt: new Date(`${parseInt(filters.year) + 1}-01-01`),
+          ? filters.year === "AllStarted"
+            ? [{ projectStartDate: { not: null } }]
+            : [
+                {
+                  projectStartDate: {
+                    gte: new Date(`${parseInt(filters.year)}-01-01`),
+                    lt: new Date(`${parseInt(filters.year) + 1}-01-01`),
+                  },
                 },
-              },
-            ]
+              ]
           : [{}]),
         ...(session?.user.role === "GROUPLEADER"
           ? [{ assignedToUser: { id: session?.user.id } }]
@@ -112,14 +116,16 @@ const GrantsPage = async ({ searchParams }: Props) => {
           ? [{ assignedToUser: { id: filters.groupLeader } }]
           : [{}]),
         ...(filters.year
-          ? [
-              {
-                projectStartDate: {
-                  gte: new Date(`${parseInt(filters.year)}-01-01`),
-                  lt: new Date(`${parseInt(filters.year) + 1}-01-01`),
+          ? filters.year === "AllStarted"
+            ? [{ projectStartDate: { not: null } }]
+            : [
+                {
+                  projectStartDate: {
+                    gte: new Date(`${parseInt(filters.year)}-01-01`),
+                    lt: new Date(`${parseInt(filters.year) + 1}-01-01`),
+                  },
                 },
-              },
-            ]
+              ]
           : [{}]),
         ...(session?.user.role === "GROUPLEADER"
           ? [{ assignedToUser: { id: session?.user.id } }]
