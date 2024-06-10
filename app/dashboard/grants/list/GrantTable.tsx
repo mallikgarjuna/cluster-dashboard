@@ -20,6 +20,7 @@ export interface GrantQuery {
   sortOrder: "asc" | "desc";
   department: OSDepartmentShortName;
   groupLeader: User["id"]; // this is still a string type; //string;
+  year: string;
 }
 
 interface Props {
