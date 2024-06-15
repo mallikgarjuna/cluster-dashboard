@@ -20,6 +20,7 @@ import {
 } from "react-icons/hi";
 
 const CreateUserForm = () => {
+  const { data: departments, error, isLoading } = useDepartments();
   const router = useRouter();
   const {
     register,
@@ -56,8 +57,6 @@ const CreateUserForm = () => {
       console.error(error);
     }
   };
-
-  const { data: departments, error, isLoading } = useDepartments();
 
   return (
     <form
