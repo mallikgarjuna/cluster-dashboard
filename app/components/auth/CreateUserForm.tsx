@@ -47,7 +47,8 @@ const CreateUserForm = () => {
           "The user created by Admin successfully!" + "\n" + result.message
         );
         reset();
-        router.push("/admin");
+        // router.push("/admin");
+        router.push("/dashboard/grants/list");
         router.refresh();
       }
     } catch (error) {
