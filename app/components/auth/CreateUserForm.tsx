@@ -48,6 +48,7 @@ const CreateUserForm = () => {
         );
         reset();
         router.push("/admin");
+        router.refresh();
       }
     } catch (error) {
       toast.error("Something went wrong...");
