@@ -172,7 +172,7 @@ const GroupLeaderFilter = () => {
 
 const useUsersWithDepartment = () =>
   useQuery<UserWithDepartment[]>({
-    queryKey: ["users"],
+    queryKey: ["usersWithDepartment"],
     queryFn: () =>
       axios.get("/api/users/withdepartment").then((res) => res.data),
     staleTime: 60 * 1000, //60s

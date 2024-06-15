@@ -17,7 +17,7 @@ import { redirect } from "next/navigation";
 import { signIn } from "next-auth/react";
 import { sendActivationEmail, sendResetEmail } from "./mailActions";
 import { getErrorMessage } from "../utils";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 
 // register user action
 export async function registerUser(signupFormData: SignupFormInputType) {
@@ -148,6 +148,7 @@ export async function createUserByAdmin(
     });
 
     revalidatePath(`/dashboard`);
+    revalidateTag("usersWithDepartment");
   } catch (error) {
     return {
       success: false,
