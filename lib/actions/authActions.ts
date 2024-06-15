@@ -161,8 +161,8 @@ export async function createUserByAdmin(
 
   const activationUrl = `${process.env.NEXTAUTH_URL}/auth/activation/${jwtUserId}`;
   const activationData = {
-    toEmail: "mallikgarjuna@gmail.com", //Admin email hardcoded
-    subject: "Activate account: Created new user for" + newUser.email,
+    toEmail: "m.gurram@rug.nl", //Admin email hardcoded
+    subject: "Activate account: Created new user for " + newUser.email,
     firstName: "Admin",
     activationUrl: activationUrl,
   };
