@@ -10,14 +10,18 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React from "react";
 import Skeleton from "react-loading-skeleton";
 
-const GroupLeaderFilter = () => {
+interface Props {
+  users: UserWithDepartment[];
+}
+
+const GroupLeaderFilter = ({ users }: Props) => {
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
   const { data: session, status } = useSession();
 
   // const users = await fetchAllUsers();
-  const { data: users, error } = useUsersWithDepartment();
+  // const { data: users, error } = useUsersWithDepartment();
 
   if (!session) return null;
 
