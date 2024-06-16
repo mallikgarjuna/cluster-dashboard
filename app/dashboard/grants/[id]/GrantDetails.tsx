@@ -31,11 +31,11 @@ const GrantDetails = async ({ grant }: Props) => {
         <Text>{grant.updatedAt.toDateString()}</Text>
       </Flex>
 
+      <CustomFiledDetails subheading="Acronym" fieldInfo={grant.acronym} />
+
       <Card className="prose max-w-full" mt="4">
         <ReactMarkdown>{grant.description}</ReactMarkdown>
       </Card>
-
-      <CustomFiledDetails subheading="Acronym" fieldInfo={grant.acronym} />
 
       <CustomFiledDetails subheading="Budget" fieldInfo={grant.budgetTotal} />
 
@@ -60,8 +60,6 @@ const GrantDetails = async ({ grant }: Props) => {
         fieldInfo={grant.projectStartDate?.toDateString() ?? null}
       />
 
-      <CustomFiledDetails subheading="Notes" fieldInfo={grant.notes} />
-
       <CustomFiledDetails
         subheading="Project Number"
         fieldInfo={grant.projectNumber}
@@ -76,6 +74,8 @@ const GrantDetails = async ({ grant }: Props) => {
         subheading="Grant status"
         fieldInfo={grant.status ?? null}
       />
+
+      <CustomFiledDetails subheading="Notes" fieldInfo={grant.notes} />
     </Flex>
   );
 };
