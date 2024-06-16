@@ -41,22 +41,22 @@ const GrantForm = ({ grant }: Props) => {
   const submitGrantForm: SubmitHandler<GrantFormDataType> = async (
     grantFormData
   ) => {
-    console.log(grantFormData);
-    // try {
-    //   if (grant) {
-    //     await axios.patch(`/api/grants/${grant.id}`, grantFormData);
-    //   } else {
-    //     await axios.post("/api/grants", grantFormData);
-    //   }
-    //   toast.success("The grant was saved successfully!");
-    //   reset();
-    //   router.push("/dashboard/grants/list");
-    //   router.refresh();
-    //   // console.log(grantFormData);
-    // } catch (error) {
-    //   toast.error("Something went wrong...");
-    //   console.log(error);
-    // }
+    // console.log(grantFormData);
+    try {
+      if (grant) {
+        await axios.patch(`/api/grants/${grant.id}`, grantFormData);
+      } else {
+        await axios.post("/api/grants", grantFormData);
+      }
+      toast.success("The grant was saved successfully!");
+      reset();
+      router.push("/dashboard/grants/list");
+      router.refresh();
+      // console.log(grantFormData);
+    } catch (error) {
+      toast.error("Something went wrong...");
+      console.log(error);
+    }
   };
 
   const { data: users, error, isLoading } = useUsers();
@@ -162,13 +162,15 @@ const GrantForm = ({ grant }: Props) => {
         />
 
         <Input
-          {...register("projectNumber", { valueAsNumber: true })}
+          {...register("projectNumber", {
+            setValueAs: (val) => (val === "" ? undefined : parseInt(val, 10)),
+          })}
           errorMessage={errors.projectNumber?.message}
           isInvalid={!!errors.projectNumber}
           type="number"
           label="Project number (UMCG)"
           placeholder="6 digit project number from project controller"
-          defaultValue={grant?.projectNumber?.toString() || "0"}
+          defaultValue={grant?.projectNumber?.toString() || ""} //default is null if not provided
         />
 
         <Controller

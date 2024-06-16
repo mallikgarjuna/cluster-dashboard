@@ -26,7 +26,7 @@ model Grant {
   decisionDate     DateTime?
   projectStartDate DateTime?
   notes            String?     @default("") @db.Text
-  projectNumber    Int?        @default(0)
+  projectNumber    Int? // This field is optional and defaults to null if not provided
   createdAt        DateTime    @default(now())
   updatedAt        DateTime    @updatedAt
   assignedToUserId String?     @db.VarChar(255)

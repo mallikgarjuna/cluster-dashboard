@@ -15,13 +15,11 @@ export const grantFormSchema = z.object({
   notes: z.string().optional(),
   assignedToUserId: z.string(),
   status: z.nativeEnum(StatusGrant),
-  projectNumber: z
-    .number()
-    // .refine((value) => String(value).length === 6, {
-    //   message: "Project number must be exactly 6 digits",
-    //   path: ["projectNumber"],
-    // })
-    .optional(),
+  projectNumber: z.number().optional().nullable(),
+  // .refine((value) => String(value).length === 6, {
+  //   message: "Project number must be exactly 6 digits",
+  //   path: ["projectNumber"],
+  // })
 });
 
 export type GrantFormDataType = z.infer<typeof grantFormSchema>;
@@ -48,13 +46,11 @@ export const patchGrantSchema = z.object({
     .optional()
     .nullable(),
   status: z.nativeEnum(StatusGrant),
-  projectNumber: z
-    .number()
-    // .refine((value) => String(value).length === 6, {
-    //   message: "Project number must be exactly 6 digits",
-    //   path: ["projectNumber"],
-    // })
-    .optional(),
+  projectNumber: z.number().optional().nullable(),
+  // .refine((value) => String(value).length === 6, {
+  //   message: "Project number must be exactly 6 digits",
+  //   path: ["projectNumber"],
+  // })
 });
 
 export const SigninFormSchema = z.object({
