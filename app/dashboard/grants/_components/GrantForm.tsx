@@ -41,22 +41,22 @@ const GrantForm = ({ grant }: Props) => {
   const submitGrantForm: SubmitHandler<GrantFormDataType> = async (
     grantFormData
   ) => {
-    // console.log(grantFormData);
-    try {
-      if (grant) {
-        await axios.patch(`/api/grants/${grant.id}`, grantFormData);
-      } else {
-        await axios.post("/api/grants", grantFormData);
-      }
-      toast.success("The grant was saved successfully!");
-      reset();
-      router.push("/dashboard/grants/list");
-      router.refresh();
-      // console.log(grantFormData);
-    } catch (error) {
-      toast.error("Something went wrong...");
-      console.log(error);
-    }
+    console.log(grantFormData);
+    // try {
+    //   if (grant) {
+    //     await axios.patch(`/api/grants/${grant.id}`, grantFormData);
+    //   } else {
+    //     await axios.post("/api/grants", grantFormData);
+    //   }
+    //   toast.success("The grant was saved successfully!");
+    //   reset();
+    //   router.push("/dashboard/grants/list");
+    //   router.refresh();
+    //   // console.log(grantFormData);
+    // } catch (error) {
+    //   toast.error("Something went wrong...");
+    //   console.log(error);
+    // }
   };
 
   const { data: users, error, isLoading } = useUsers();
@@ -80,6 +80,16 @@ const GrantForm = ({ grant }: Props) => {
           defaultValue={grant?.title}
         />
 
+        <Input
+          {...register("acronym")}
+          errorMessage={errors.acronym?.message}
+          isInvalid={!!errors.acronym}
+          type="text"
+          label="Acronym"
+          placeholder="Acronym of the grant"
+          defaultValue={grant?.acronym || ""}
+        />
+
         <Controller
           name="description"
           control={control}
@@ -98,16 +108,6 @@ const GrantForm = ({ grant }: Props) => {
         {!!errors.description && (
           <p className="text-sm text-red-500">{errors.description.message}</p>
         )}
-
-        <Input
-          {...register("acronym")}
-          errorMessage={errors.acronym?.message}
-          isInvalid={!!errors.acronym}
-          type="text"
-          label="Acronym"
-          placeholder="Acronym of the grant"
-          defaultValue={grant?.acronym || ""}
-        />
 
         <Input
           {...register("budgetTotal", { valueAsNumber: true })}
@@ -153,32 +153,13 @@ const GrantForm = ({ grant }: Props) => {
 
         <Input
           {...register("projectStartDate")}
-          // errorMessage={errors.projectStartDate?.message}
-          // isInvalid={false}
+          errorMessage={errors.projectStartDate?.message}
+          isInvalid={!!errors.projectStartDate}
           type="date"
           label="Project Start Date (post award)"
           placeholder="Project start date of the grant"
           defaultValue={grant?.projectStartDate?.toISOString().substring(0, 10)}
         />
-
-        <Controller
-          name="notes"
-          control={control}
-          render={({ field }) => (
-            <SimpleMdeReact
-              {...field}
-              placeholder="Additional notes"
-              options={{
-                maxHeight: "100px",
-                autofocus: true,
-              }}
-            />
-          )}
-          defaultValue={grant?.notes || ""}
-        />
-        {!!errors.notes && (
-          <p className="text-sm text-red-500">{errors.notes.message}</p>
-        )}
 
         <Input
           {...register("projectNumber", { valueAsNumber: true })}
@@ -250,6 +231,25 @@ const GrantForm = ({ grant }: Props) => {
             );
           }}
         />
+
+        <Controller
+          name="notes"
+          control={control}
+          render={({ field }) => (
+            <SimpleMdeReact
+              {...field}
+              placeholder="Additional notes"
+              options={{
+                maxHeight: "100px",
+                autofocus: true,
+              }}
+            />
+          )}
+          defaultValue={grant?.notes || ""}
+        />
+        {!!errors.notes && (
+          <p className="text-sm text-red-500">{errors.notes.message}</p>
+        )}
 
         <div className="flex justify-between">
           <Button type="submit" color="primary" disabled={isSubmitting}>

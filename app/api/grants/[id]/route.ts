@@ -46,9 +46,9 @@ export async function PATCH(request: NextRequest, { params }: Props) {
       description: body.description,
       acronym: body.acronym,
       budgetTotal: body.budgetTotal,
-      submissionDate: body.submissionDate,
-      deadline: body.deadline,
-      decisionDate: body.decisionDate,
+      submissionDate: body.submissionDate === "" ? null : body.submissionDate,
+      deadline: body.deadline === "" ? null : body.deadline,
+      decisionDate: body.decisionDate === "" ? null : body.decisionDate,
       projectStartDate:
         body.projectStartDate === "" ? null : body.projectStartDate,
       notes: body.notes,

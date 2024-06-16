@@ -8,19 +8,19 @@ export const grantFormSchema = z.object({
   description: z.string().min(1, "Description is required.").max(65535),
   acronym: z.string().optional(),
   budgetTotal: z.number().optional(),
-  submissionDate: z.coerce.date().optional(),
-  deadline: z.coerce.date().optional(),
-  decisionDate: z.coerce.date().optional(),
+  submissionDate: z.optional(z.union([z.coerce.date(), z.literal("")])),
+  deadline: z.optional(z.union([z.coerce.date(), z.literal("")])),
+  decisionDate: z.optional(z.union([z.coerce.date(), z.literal("")])),
   projectStartDate: z.optional(z.union([z.coerce.date(), z.literal("")])),
   notes: z.string().optional(),
-  assignedToUserId: z.string().optional(),
+  assignedToUserId: z.string(),
   status: z.nativeEnum(StatusGrant),
   projectNumber: z
     .number()
-    .refine((value) => String(value).length === 6, {
-      message: "Project number must be exactly 6 digits",
-      path: ["projectNumber"],
-    })
+    // .refine((value) => String(value).length === 6, {
+    //   message: "Project number must be exactly 6 digits",
+    //   path: ["projectNumber"],
+    // })
     .optional(),
 });
 
@@ -36,9 +36,9 @@ export const patchGrantSchema = z.object({
     .optional(),
   acronym: z.string().optional(),
   budgetTotal: z.number().optional(),
-  submissionDate: z.coerce.date().optional(),
-  deadline: z.coerce.date().optional(),
-  decisionDate: z.coerce.date().optional(),
+  submissionDate: z.optional(z.union([z.coerce.date(), z.literal("")])),
+  deadline: z.optional(z.union([z.coerce.date(), z.literal("")])),
+  decisionDate: z.optional(z.union([z.coerce.date(), z.literal("")])),
   projectStartDate: z.optional(z.union([z.coerce.date(), z.literal("")])),
   notes: z.string().optional(),
   assignedToUserId: z
@@ -50,10 +50,10 @@ export const patchGrantSchema = z.object({
   status: z.nativeEnum(StatusGrant),
   projectNumber: z
     .number()
-    .refine((value) => String(value).length === 6, {
-      message: "Project number must be exactly 6 digits",
-      path: ["projectNumber"],
-    })
+    // .refine((value) => String(value).length === 6, {
+    //   message: "Project number must be exactly 6 digits",
+    //   path: ["projectNumber"],
+    // })
     .optional(),
 });
 
