@@ -51,11 +51,17 @@ const CreateUserForm = () => {
         reset();
         // router.push("/admin");
 
-        // Invalidate every query in the cache
+        // Invalidate (and refetch) every query in the cache
         queryClient.invalidateQueries();
-        // Invalidate every query with a key that starts with `users`
+        // Invalidate (and refetch) every query with a key that starts with `users`
         queryClient.invalidateQueries({
           queryKey: ["users"],
+        });
+        queryClient.invalidateQueries({
+          queryKey: ["usersInGrantForm"],
+        });
+        queryClient.invalidateQueries({
+          queryKey: ["usersInAssigneeSelect"],
         });
 
         router.push("/dashboard/grants/list");

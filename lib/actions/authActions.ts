@@ -148,7 +148,11 @@ export async function createUserByAdmin(
     });
 
     revalidatePath(`/dashboard`);
+
+    // revalidate the cache for the react-queries
     revalidateTag("usersWithDepartment");
+    revalidateTag("usersInGrantForm");
+    revalidateTag("usersInAssigneeSelect");
   } catch (error) {
     return {
       success: false,
