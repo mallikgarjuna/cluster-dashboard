@@ -25,8 +25,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.variable}>
-        <Providers>
-          <QueryClientProvider>
+        <QueryClientProvider>
+          <Providers>
             <AuthProvider>
               <Theme>
                 <NavBar />
@@ -37,8 +37,8 @@ export default function RootLayout({
                 </main>
               </Theme>
             </AuthProvider>
-          </QueryClientProvider>
-        </Providers>
+          </Providers>
+        </QueryClientProvider>
       </body>
     </html>
   );
