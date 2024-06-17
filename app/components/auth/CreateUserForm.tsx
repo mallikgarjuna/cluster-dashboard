@@ -3,7 +3,7 @@ import { CreateUserFormInputType } from "@/app/validationSchemas";
 import { createUserByAdmin } from "@/lib/actions/authActions";
 import { Button, Checkbox, Input, Select, SelectItem } from "@nextui-org/react";
 import { Department, UserRole } from "@prisma/client";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -21,6 +21,7 @@ import {
 
 const CreateUserForm = () => {
   const { data: departments, error, isLoading } = useDepartments();
+  const queryClient = useQueryClient();
   const router = useRouter();
   const {
     register,
@@ -49,6 +50,10 @@ const CreateUserForm = () => {
         );
         reset();
         // router.push("/admin");
+
+        //invalidates the users query
+        queryClient.invalidateQueries(["users", "usersWithDepartment"]);
+
         router.push("/dashboard/grants/list");
         router.refresh();
       }
