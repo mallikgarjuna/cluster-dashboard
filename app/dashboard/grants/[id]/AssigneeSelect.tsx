@@ -61,7 +61,7 @@ const AssigneeSelect = ({ grant }: Props) => {
 
 const useUsers = () =>
   useQuery<User[]>({
-    queryKey: ["users"],
+    queryKey: ["usersInAssigneeSelect"],
     queryFn: () => axios.get("/api/users").then((res) => res.data),
     staleTime: 60 * 1000, //60s
     retry: 3,
