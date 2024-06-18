@@ -29,9 +29,19 @@ export async function POST(request: NextRequest) {
       projectStartDate:
         body.projectStartDate === "" ? null : body.projectStartDate,
       notes: body.notes,
-      assignedToUserId: body.assignedToUserId,
+      // assignedToUserId: body.assignedToUserId,
+      assignedToUser: {
+        connect: {
+          id: body.assignedToUserId,
+        },
+      },
       status: body.status,
       projectNumber: body.projectNumber,
+      createdByUser: {
+        connect: {
+          id: session.user.id,
+        },
+      },
     },
   });
 

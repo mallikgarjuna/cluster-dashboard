@@ -30,7 +30,9 @@ model Grant {
   createdAt        DateTime    @default(now())
   updatedAt        DateTime    @updatedAt
   assignedToUserId String?     @db.VarChar(255)
-  assignedToUser   User?       @relation(fields: [assignedToUserId], references: [id])
+  assignedToUser   User?       @relation("GrantAssignedToUser", fields: [assignedToUserId], references: [id])
+  createdByUserId  String?     @db.VarChar(255)
+  createdByUser    User?       @relation("GrantCreatedByUser", fields: [createdByUserId], references: [id])
 }
 
 enum StatusGrant {
@@ -82,9 +84,10 @@ model User {
   role              UserRole    @default(USER)
   accounts          Account[]
   sessions          Session[]
-  assignedGrants    Grant[]
+  assignedGrants    Grant[]     @relation("GrantAssignedToUser")
   relatedDepartment Department? @relation(fields: [departmentId], references: [id])
   departmentId      String?
+  createdGrants     Grant[]     @relation("GrantCreatedByUser")
 }
 
 enum UserRole {
