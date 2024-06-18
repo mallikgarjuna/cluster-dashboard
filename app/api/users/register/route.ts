@@ -12,6 +12,7 @@ import { signJwt } from "@/lib/jwt";
 //   password: z.string().min(5),
 // });
 
+// Instead of this API, use the registerUser() server action;
 export async function POST(request: NextRequest) {
   const body = await request.json();
 

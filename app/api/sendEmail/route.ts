@@ -13,6 +13,7 @@ const WelcomeEmailSchema = z.object({
   activationUrl: z.string().url(),
 });
 
+// Instead of this API, use the sendActivationEmail() server action;
 export async function POST(request: NextRequest) {
   // TODO: addrate limit
   // TODO: add authorization
@@ -25,7 +26,7 @@ export async function POST(request: NextRequest) {
   const { toEmail, subject, firstName, activationUrl } = body;
 
   const { data, error } = await resend.emails.send({
-    from: "Cluster Dashboard <noreply@clusterdashboard.com>", //add custom domain
+    from: "Cluster Dashboard <admin@clusterdashboard.com>", //add custom domain
     to: [toEmail],
     subject: subject,
     // react: WelcomeEmailTemplate({ firstName: firstName }),

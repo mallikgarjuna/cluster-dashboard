@@ -38,7 +38,7 @@ export async function sendActivationEmail(
   const { toEmail, subject, firstName, activationUrl } = validation.data;
 
   const { data, error } = await resend.emails.send({
-    from: "Cluster Dashboard <noreply@clusterdashboard.com>", //add custom domain
+    from: "Cluster Dashboard <admin@clusterdashboard.com>", //add custom domain
     to: [toEmail],
     subject: subject,
     // react: WelcomeEmailTemplate({ firstName: firstName }),
@@ -93,7 +93,7 @@ export async function sendResetEmail(
   const { toEmail, subject, firstName, resetUrl } = validation.data;
 
   const { data, error } = await resend.emails.send({
-    from: "Cluster Dashboard <noreply@clusterdashboard.com>", //add custom domain
+    from: "Cluster Dashboard <admin@clusterdashboard.com>", //add custom domain
     to: [toEmail],
     subject: subject,
     // react: WelcomeEmailTemplate({ firstName: firstName }),
@@ -117,3 +117,6 @@ export async function sendResetEmail(
     status: 200,
   };
 }
+
+// Exported in this action file:
+// sendActivationEmail, sendResetEmail;

@@ -169,7 +169,7 @@ export async function createUserByAdmin(
 
   const activationUrl = `${process.env.NEXTAUTH_URL}/auth/activation/${jwtUserId}`;
   const activationData = {
-    toEmail: "m.gurram@rug.nl", //Admin email hardcoded
+    toEmail: "m.gurram@umcg.nl", //Admin email hardcoded
     subject: "Activate account: Created new user for " + newUser.email,
     firstName: "Admin",
     activationUrl: activationUrl,
@@ -311,3 +311,7 @@ export const resetPassword: ResetPasswordFunc = async (jwtUserId, password) => {
 
   redirect("/");
 };
+
+// Exported in this action file:
+// registerUser, createUserByAdmin, loginUser, activateUser, forgotPassword, resetPassword
+//
