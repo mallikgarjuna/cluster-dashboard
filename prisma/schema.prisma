@@ -21,6 +21,9 @@ model Grant {
   status           StatusGrant @default(DRAFT)
   acronym          String?     @default("") @db.VarChar(255)
   budgetTotal      Int?        @default(0)
+  fundingAgency    String?     @default("") @db.VarChar(255)
+  fundingProgramme String?     @default("") @db.VarChar(255)
+  fundingCall      String?     @default("") @db.VarChar(255)
   submissionDate   DateTime?
   deadline         DateTime?
   decisionDate     DateTime?

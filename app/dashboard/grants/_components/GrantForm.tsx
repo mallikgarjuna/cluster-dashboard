@@ -122,6 +122,36 @@ const GrantForm = ({ grant }: Props) => {
         />
 
         <Input
+          {...register("fundingAgency")}
+          errorMessage={errors.fundingAgency?.message}
+          isInvalid={!!errors.fundingAgency}
+          type="text"
+          label="Funding Agency"
+          placeholder="Funding Agency for the grant"
+          defaultValue={grant?.fundingAgency || ""}
+        />
+
+        <Input
+          {...register("fundingProgramme")}
+          errorMessage={errors.fundingProgramme?.message}
+          isInvalid={!!errors.fundingProgramme}
+          type="text"
+          label="Funding Programme"
+          placeholder="Funding Programme from the funding agency"
+          defaultValue={grant?.fundingProgramme || ""}
+        />
+
+        <Input
+          {...register("fundingCall")}
+          errorMessage={errors.fundingCall?.message}
+          isInvalid={!!errors.fundingCall}
+          type="text"
+          label="Funding Call"
+          placeholder="Funding Call from the funding agency"
+          defaultValue={grant?.fundingCall || ""}
+        />
+
+        <Input
           {...register("submissionDate")}
           errorMessage={errors.submissionDate?.message}
           isInvalid={!!errors.submissionDate}
