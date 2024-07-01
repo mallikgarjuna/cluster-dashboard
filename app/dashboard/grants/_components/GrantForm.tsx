@@ -127,7 +127,7 @@ const GrantForm = ({ grant }: Props) => {
           isInvalid={!!errors.fundingAgency}
           type="text"
           label="Funding Agency"
-          placeholder="Funding Agency for the grant"
+          placeholder="Funding Agency for the grant. E.g., Horizon EU or NWO"
           defaultValue={grant?.fundingAgency || ""}
         />
 
@@ -137,7 +137,7 @@ const GrantForm = ({ grant }: Props) => {
           isInvalid={!!errors.fundingProgramme}
           type="text"
           label="Funding Programme"
-          placeholder="Funding Programme from the funding agency"
+          placeholder="Funding Programme from the funding agency. E.g., ERC or TalentProgramme"
           defaultValue={grant?.fundingProgramme || ""}
         />
 
@@ -147,7 +147,7 @@ const GrantForm = ({ grant }: Props) => {
           isInvalid={!!errors.fundingCall}
           type="text"
           label="Funding Call"
-          placeholder="Funding Call from the funding agency"
+          placeholder="Funding Call from the funding agency. E.g., ERC-Starting-2024 or Veni(Science)-2024"
           defaultValue={grant?.fundingCall || ""}
         />
 
