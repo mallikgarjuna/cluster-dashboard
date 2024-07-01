@@ -55,7 +55,12 @@ export async function PATCH(request: NextRequest, { params }: Props) {
       projectStartDate:
         body.projectStartDate === "" ? null : body.projectStartDate,
       notes: body.notes,
-      assignedToUserId: body.assignedToUserId,
+      // assignedToUserId: body.assignedToUserId,
+      assignedToUser: {
+        connect: {
+          id: body.assignedToUserId,
+        },
+      },
       status: body.status,
       projectNumber: body.projectNumber,
     },
