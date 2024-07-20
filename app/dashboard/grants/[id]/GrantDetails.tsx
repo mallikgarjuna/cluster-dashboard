@@ -76,6 +76,11 @@ const GrantDetails = async ({ grant }: Props) => {
       />
 
       <CustomFiledDetails
+        subheading="Project end date"
+        fieldInfo={grant.projectEndDate?.toISOString().split("T")[0] ?? null}
+      />
+
+      <CustomFiledDetails
         subheading="Project Number"
         fieldInfo={grant.projectNumber}
       />

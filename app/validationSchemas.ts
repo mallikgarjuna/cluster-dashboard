@@ -15,6 +15,7 @@ export const grantFormSchema = z.object({
   deadline: z.optional(z.union([z.coerce.date(), z.literal("")])),
   decisionDate: z.optional(z.union([z.coerce.date(), z.literal("")])),
   projectStartDate: z.optional(z.union([z.coerce.date(), z.literal("")])),
+  projectEndDate: z.optional(z.union([z.coerce.date(), z.literal("")])),
   notes: z.string().optional(),
   assignedToUserId: z.string(),
   status: z.nativeEnum(StatusGrant),
@@ -44,6 +45,7 @@ export const patchGrantSchema = z.object({
   deadline: z.optional(z.union([z.coerce.date(), z.literal("")])),
   decisionDate: z.optional(z.union([z.coerce.date(), z.literal("")])),
   projectStartDate: z.optional(z.union([z.coerce.date(), z.literal("")])),
+  projectEndDate: z.optional(z.union([z.coerce.date(), z.literal("")])),
   notes: z.string().optional(),
   assignedToUserId: z
     .string()

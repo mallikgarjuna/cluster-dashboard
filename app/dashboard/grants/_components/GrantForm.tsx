@@ -192,6 +192,16 @@ const GrantForm = ({ grant }: Props) => {
         />
 
         <Input
+          {...register("projectEndDate")}
+          errorMessage={errors.projectEndDate?.message}
+          isInvalid={!!errors.projectEndDate}
+          type="date"
+          label="Project End Date (post award)"
+          placeholder="End date of the project"
+          defaultValue={grant?.projectEndDate?.toISOString().substring(0, 10)}
+        />
+
+        <Input
           {...register("projectNumber", {
             setValueAs: (val) => (val === "" ? undefined : parseInt(val, 10)),
           })}

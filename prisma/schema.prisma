@@ -28,6 +28,7 @@ model Grant {
   deadline         DateTime?
   decisionDate     DateTime?
   projectStartDate DateTime?
+  projectEndDate   DateTime?
   notes            String?     @default("") @db.Text
   projectNumber    Int? // This field is optional and defaults to null if not provided
   createdAt        DateTime    @default(now())

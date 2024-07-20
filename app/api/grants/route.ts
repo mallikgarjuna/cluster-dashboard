@@ -31,6 +31,7 @@ export async function POST(request: NextRequest) {
       decisionDate: body.decisionDate === "" ? null : body.decisionDate,
       projectStartDate:
         body.projectStartDate === "" ? null : body.projectStartDate,
+      projectEndDate: body.projectEndDate === "" ? null : body.projectEndDate,
       notes: body.notes,
       // assignedToUserId: body.assignedToUserId,
       assignedToUser: {
