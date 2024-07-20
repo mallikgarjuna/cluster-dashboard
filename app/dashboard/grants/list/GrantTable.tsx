@@ -106,6 +106,11 @@ const GrantTable = async ({ searchParams, grants }: Props) => {
                   {grant.projectStartDate?.toISOString().split("T")[0]}
                 </Link>
               </Table.Cell>
+              <Table.Cell>
+                <Link href={`/dashboard/grants/${grant.id}`}>
+                  {grant.projectEndDate?.toISOString().split("T")[0]}
+                </Link>
+              </Table.Cell>
               <Table.Cell className="hidden md:table-cell">
                 <Link href={`/dashboard/grants/${grant.id}`}>
                   {grant.projectNumber}
@@ -145,6 +150,11 @@ const columnsGrant: {
   {
     label: "Project start",
     value: "projectStartDate",
+    classname: "hidden md:table-cell",
+  },
+  {
+    label: "Project end",
+    value: "projectEndDate",
     classname: "hidden md:table-cell",
   },
   {
