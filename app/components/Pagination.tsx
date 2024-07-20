@@ -30,10 +30,15 @@ const Pagination = ({ itemsCount, pageSize, currentPage }: Props) => {
     router.push("?" + params.toString());
   };
 
+  const startGrantNumber = (currentPage - 1) * pageSize + 1;
+  const endGrantNumber =
+    currentPage !== pageCount ? currentPage * pageSize : itemsCount;
+
   return (
     <Flex align="center" gap="2">
       <Text size="2">
-        Page {currentPage} of {pageCount}
+        Page {currentPage} of {pageCount} (Grants {startGrantNumber} -{" "}
+        {endGrantNumber} of {itemsCount})
       </Text>
       <Button
         color="gray"
