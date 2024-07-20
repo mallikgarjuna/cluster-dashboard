@@ -80,24 +80,36 @@ const GrantTable = async ({ searchParams, grants }: Props) => {
                 <Link href={`/dashboard/grants/${grant.id}`}>
                   {grant.acronym ?? grant.title}
                 </Link>
-                <div className="block md:hidden">
+                <span className="block md:hidden">
                   <GrantStatusBadge status={grant.status} />
-                </div>
+                </span>
+              </Table.Cell>
+              <Table.Cell className="hidden md:table-cell cursor-pointer">
+                <Link href={`/dashboard/grants/${grant.id}`}>
+                  <span className="cursor-pointer">
+                    <GrantStatusBadge status={grant.status} />
+                  </span>
+                </Link>
               </Table.Cell>
               <Table.Cell className="hidden md:table-cell">
-                <GrantStatusBadge status={grant.status} />
+                <Link href={`/dashboard/grants/${grant.id}`}>
+                  {grant.createdAt.toISOString().split("T")[0]}
+                </Link>
               </Table.Cell>
               <Table.Cell className="hidden md:table-cell">
-                {grant.createdAt.toISOString().split("T")[0]}
+                <Link href={`/dashboard/grants/${grant.id}`}>
+                  {grant.submissionDate?.toISOString().split("T")[0]}
+                </Link>
               </Table.Cell>
               <Table.Cell className="hidden md:table-cell">
-                {grant.submissionDate?.toISOString().split("T")[0]}
+                <Link href={`/dashboard/grants/${grant.id}`}>
+                  {grant.projectStartDate?.toISOString().split("T")[0]}
+                </Link>
               </Table.Cell>
               <Table.Cell className="hidden md:table-cell">
-                {grant.projectStartDate?.toISOString().split("T")[0]}
-              </Table.Cell>
-              <Table.Cell className="hidden md:table-cell">
-                {grant.projectNumber}
+                <Link href={`/dashboard/grants/${grant.id}`}>
+                  {grant.projectNumber}
+                </Link>
               </Table.Cell>
               <Table.Cell className="hidden md:table-cell">
                 {/* user lastName where user.id = grant.assignedToUserId */}

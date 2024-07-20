@@ -3,7 +3,8 @@ import { Link as RadixLink } from "@radix-ui/themes";
 
 interface Props {
   href: string;
-  children: string;
+  // children: string;
+  children: React.ReactNode;
 }
 
 const Link = ({ href, children }: Props) => {
