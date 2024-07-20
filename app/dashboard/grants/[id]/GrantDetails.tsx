@@ -56,23 +56,23 @@ const GrantDetails = async ({ grant }: Props) => {
 
       <CustomFiledDetails
         subheading="Submission date"
-        fieldInfo={grant.submissionDate?.toDateString() ?? null}
+        fieldInfo={grant.submissionDate?.toISOString().split("T")[0] ?? null}
         //===   fieldInfo={grant.submissionDate ? grant.submissionDate.toDateString() : null}
       />
 
       <CustomFiledDetails
         subheading="Deadline"
-        fieldInfo={grant.deadline?.toDateString() ?? null}
+        fieldInfo={grant.deadline?.toISOString().substring(0, 10) ?? null}
       />
 
       <CustomFiledDetails
         subheading="Decision date"
-        fieldInfo={grant.decisionDate?.toDateString() ?? null}
+        fieldInfo={grant.decisionDate?.toISOString().split("T")[0] ?? null}
       />
 
       <CustomFiledDetails
         subheading="Project start date"
-        fieldInfo={grant.projectStartDate?.toDateString() ?? null}
+        fieldInfo={grant.projectStartDate?.toISOString().split("T")[0] ?? null}
       />
 
       <CustomFiledDetails
