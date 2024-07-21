@@ -1,4 +1,4 @@
-import { StatusGrant, UserRole } from "@prisma/client";
+import { StatusGrant, UserRole, enumApplicantRole } from "@prisma/client";
 import { z } from "zod";
 
 // grant form schema
@@ -20,6 +20,7 @@ export const grantFormSchema = z.object({
   assignedToUserId: z.string(),
   status: z.nativeEnum(StatusGrant),
   projectNumber: z.number().optional().nullable(),
+  applicantRole: z.nativeEnum(enumApplicantRole),
   // .refine((value) => String(value).length === 6, {
   //   message: "Project number must be exactly 6 digits",
   //   path: ["projectNumber"],
@@ -55,6 +56,7 @@ export const patchGrantSchema = z.object({
     .nullable(),
   status: z.nativeEnum(StatusGrant),
   projectNumber: z.number().optional().nullable(),
+  applicantRole: z.nativeEnum(enumApplicantRole),
   // .refine((value) => String(value).length === 6, {
   //   message: "Project number must be exactly 6 digits",
   //   path: ["projectNumber"],

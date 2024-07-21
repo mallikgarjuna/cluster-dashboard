@@ -64,6 +64,7 @@ export async function PATCH(request: NextRequest, { params }: Props) {
       },
       status: body.status,
       projectNumber: body.projectNumber,
+      applicantRole: body.applicantRole,
     },
   });
 

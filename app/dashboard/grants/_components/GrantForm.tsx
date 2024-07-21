@@ -12,7 +12,7 @@ import {
   Select,
   SelectItem,
 } from "@nextui-org/react";
-import { Grant, StatusGrant, User } from "@prisma/client";
+import { Grant, StatusGrant, User, enumApplicantRole } from "@prisma/client";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
@@ -41,7 +41,7 @@ const GrantForm = ({ grant }: Props) => {
   const submitGrantForm: SubmitHandler<GrantFormDataType> = async (
     grantFormData
   ) => {
-    // console.log(grantFormData);
+    console.log(grantFormData);
     try {
       if (grant) {
         await axios.patch(`/api/grants/${grant.id}`, grantFormData);
@@ -62,6 +62,8 @@ const GrantForm = ({ grant }: Props) => {
   const { data: users, error, isLoading } = useUsers();
 
   const statuses = Object.values(StatusGrant);
+
+  const applicantRoles = Object.values(enumApplicantRole);
 
   return (
     <div className="max-w-xl">
@@ -238,6 +240,37 @@ const GrantForm = ({ grant }: Props) => {
                     textValue={user?.lastName ?? ""}
                   >
                     {user?.lastName}
+                  </SelectItem>
+                )) ?? []}
+              </Select>
+            );
+          }}
+        />
+
+        <Controller
+          control={control}
+          name="applicantRole"
+          render={({ field }) => {
+            const selectedKeys = grant?.applicantRole
+              ? [grant.applicantRole]
+              : [];
+            return (
+              <Select
+                label="Applicant Role"
+                placeholder="Select Applecant Role"
+                className="max-w-xs"
+                {...register("applicantRole")}
+                errorMessage={errors.applicantRole?.message}
+                isInvalid={!!errors.applicantRole}
+                defaultSelectedKeys={selectedKeys}
+              >
+                {applicantRoles?.map((role) => (
+                  <SelectItem
+                    key={role}
+                    value={role}
+                    textValue={role.toString()}
+                  >
+                    {role}
                   </SelectItem>
                 )) ?? []}
               </Select>

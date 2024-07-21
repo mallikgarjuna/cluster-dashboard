@@ -15,28 +15,29 @@ datasource db {
 model Grant {
   // id               Int         @default(autoincrement()) @ignore
   // newId            String      @default(cuid()) @ignore
-  id               String      @id @default(cuid())
-  title            String      @default("") @db.VarChar(255)
-  description      String      @default("") @db.Text
-  status           StatusGrant @default(DRAFT)
-  acronym          String?     @default("") @db.VarChar(255)
-  budgetTotal      Int?        @default(0)
-  fundingAgency    String?     @default("") @db.VarChar(255)
-  fundingProgramme String?     @default("") @db.VarChar(255)
-  fundingCall      String?     @default("") @db.VarChar(255)
+  id               String            @id @default(cuid())
+  title            String            @default("") @db.VarChar(255)
+  description      String            @default("") @db.Text
+  status           StatusGrant       @default(DRAFT)
+  acronym          String?           @default("") @db.VarChar(255)
+  budgetTotal      Int?              @default(0)
+  fundingAgency    String?           @default("") @db.VarChar(255)
+  fundingProgramme String?           @default("") @db.VarChar(255)
+  fundingCall      String?           @default("") @db.VarChar(255)
   submissionDate   DateTime?
   deadline         DateTime?
   decisionDate     DateTime?
   projectStartDate DateTime?
   projectEndDate   DateTime?
-  notes            String?     @default("") @db.Text
+  notes            String?           @default("") @db.Text
   projectNumber    Int? // This field is optional and defaults to null if not provided
-  createdAt        DateTime    @default(now())
-  updatedAt        DateTime    @updatedAt
-  assignedToUserId String?     @db.VarChar(255)
-  assignedToUser   User?       @relation("GrantAssignedToUser", fields: [assignedToUserId], references: [id])
-  createdByUserId  String?     @db.VarChar(255)
-  createdByUser    User?       @relation("GrantCreatedByUser", fields: [createdByUserId], references: [id])
+  applicantRole    enumApplicantRole @default(MAIN_APPLICANT)
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  assignedToUserId String?           @db.VarChar(255)
+  assignedToUser   User?             @relation("GrantAssignedToUser", fields: [assignedToUserId], references: [id])
+  createdByUserId  String?           @db.VarChar(255)
+  createdByUser    User?             @relation("GrantCreatedByUser", fields: [createdByUserId], references: [id])
 }
 
 enum StatusGrant {
@@ -47,6 +48,11 @@ enum StatusGrant {
   RUNNING_PROJECT
   DELETED
   ENDED_PROJECT
+}
+
+enum enumApplicantRole {
+  MAIN_APPLICANT
+  CO_APPLICANT
 }
 
 model Account {

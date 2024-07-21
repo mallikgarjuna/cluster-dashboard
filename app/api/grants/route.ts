@@ -41,6 +41,7 @@ export async function POST(request: NextRequest) {
       },
       status: body.status,
       projectNumber: body.projectNumber,
+      applicantRole: body.applicantRole,
       createdByUser: {
         connect: {
           id: session.user.id,

@@ -33,9 +33,14 @@ const GrantDetails = async ({ grant }: Props) => {
 
       <CustomFiledDetails subheading="Acronym" fieldInfo={grant.acronym} />
 
-      <Card className="prose max-w-full" mt="4">
+      {/* <Card className="prose max-w-full" mt="4">
         <ReactMarkdown>{grant.description}</ReactMarkdown>
-      </Card>
+      </Card> */}
+
+      <CustomFiledDetails
+        subheading="Description"
+        fieldInfo={grant.description}
+      />
 
       <CustomFiledDetails subheading="Budget" fieldInfo={grant.budgetTotal} />
 
@@ -88,6 +93,11 @@ const GrantDetails = async ({ grant }: Props) => {
       <CustomFiledDetails
         subheading="Applicant user"
         fieldInfo={user?.lastName ?? null}
+      />
+
+      <CustomFiledDetails
+        subheading="Applicant role"
+        fieldInfo={grant.applicantRole}
       />
 
       <CustomFiledDetails
