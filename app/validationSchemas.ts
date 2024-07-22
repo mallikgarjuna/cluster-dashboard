@@ -1,4 +1,10 @@
-import { StatusGrant, UserRole, enumApplicantRole } from "@prisma/client";
+import {
+  StatusGrant,
+  UserRole,
+  enumApplicantRole,
+  enumLocalityType,
+  enumSectorType,
+} from "@prisma/client";
 import { z } from "zod";
 
 // grant form schema
@@ -173,4 +179,26 @@ export const ForgotPasswordFormSchema = z.object({
 
 export type ForgotPasswordFormInputType = z.infer<
   typeof ForgotPasswordFormSchema
+>;
+
+// Schema for createFundingAgencyForm validation
+// For the prisma model:
+// model FundingAgency {
+//   id                String             @id @default(cuid())
+//   name              String
+//   localityType      enumLocalityType
+//   sectorType        enumSectorType
+//   url               String?
+//   fundingProgrammes FundingProgramme[]
+// }
+export const CreateFundingAgencyFormSchema = z.object({
+  name: z.string().min(1, "Please enter a name").max(45, "Name too long"),
+  localityType: z.nativeEnum(enumLocalityType),
+  sectorType: z.nativeEnum(enumSectorType),
+  url: z.string().url("Please enter a valid URL"),
+});
+
+// Type for createFundingAgencyForm Input
+export type CreateFundingAgencyFormInputType = z.infer<
+  typeof CreateFundingAgencyFormSchema
 >;

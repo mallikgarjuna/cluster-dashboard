@@ -3,21 +3,41 @@ import React from "react";
 
 const AdminPage = () => {
   return (
-    <article className="flex flex-col gap-3">
-      <h2 className="text-3xl">Admin Tasks</h2>
-      <ol className="flex flex-col gap-3">
-        <li>
-          <Link href="/auth/createUser" color="blue" className="text-blue-500">
-            Create new user by Admin
-          </Link>
-        </li>
-        <li>
-          <Link href="/dashboard" color="blue" className="text-blue-500">
-            Dashboard
-          </Link>
-        </li>
-      </ol>
-    </article>
+    <>
+      <article className="flex flex-col gap-3">
+        <h2 className="text-3xl">Admin Tasks</h2>
+        <ol className="flex flex-col gap-3">
+          <li>
+            <Link
+              href="/auth/createUser"
+              color="blue"
+              className="text-blue-500"
+            >
+              Create new user by Admin
+            </Link>
+          </li>
+          <li>
+            <Link href="/dashboard" color="blue" className="text-blue-500">
+              Dashboard
+            </Link>
+          </li>
+        </ol>
+      </article>
+      <article className="flex flex-col gap-3 mt-6">
+        <h2 className="text-3xl">Funders</h2>
+        <ol className="flex flex-col gap-3">
+          <li>
+            <Link
+              href="/dashboard/funders/agency/new"
+              color="blue"
+              className="text-blue-500"
+            >
+              Create a new funding agency
+            </Link>
+          </li>
+        </ol>
+      </article>
+    </>
   );
 };
 
