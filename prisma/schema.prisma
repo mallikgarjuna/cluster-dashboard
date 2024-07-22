@@ -131,3 +131,41 @@ enum OSDepartmentShortName {
   BMS
   ERIBA
 }
+
+model FundingAgency {
+  id                String             @id @default(cuid())
+  name              String
+  localityType      enumLocalityType
+  sectorType        enumSectorType
+  url               String?
+  fundingProgrammes FundingProgramme[]
+}
+
+enum enumLocalityType {
+  REGIONAL
+  NATIONAL
+  EU
+  NON_EU
+}
+
+enum enumSectorType {
+  PUBLIC_SECTOR
+  PRIVATE_SECTOR
+  THIRD_SECTOR
+}
+
+model FundingProgramme {
+  id                    String         @id @default(cuid())
+  name                  String
+  realatedFundingAgency FundingAgency? @relation(fields: [fundingAgencyId], references: [id])
+  fundingAgencyId       String?
+  fundingCalls          FundingCall[]
+}
+
+model FundingCall {
+  id                      String            @id @default(cuid())
+  name                    String
+  url                     String?
+  relatedFundingProgramme FundingProgramme? @relation(fields: [fundingProgrammeId], references: [id])
+  fundingProgrammeId      String?
+}
