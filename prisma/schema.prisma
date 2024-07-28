@@ -155,17 +155,25 @@ enum enumSectorType {
 }
 
 model FundingProgramme {
-  id                    String         @id @default(cuid())
+  id                    String          @id @default(cuid())
   name                  String
-  realatedFundingAgency FundingAgency? @relation(fields: [fundingAgencyId], references: [id])
+  realatedFundingAgency FundingAgency?  @relation(fields: [fundingAgencyId], references: [id])
   fundingAgencyId       String?
-  fundingCalls          FundingCall[]
+  fundingActions        FundingAction[]
+}
+
+model FundingAction {
+  id                      String            @id @default(cuid())
+  name                    String
+  relatedFundingProgramme FundingProgramme? @relation(fields: [fundingProgrammeId], references: [id])
+  fundingProgrammeId      String?
+  fundingCalls            FundingCall[]
 }
 
 model FundingCall {
-  id                      String            @id @default(cuid())
-  name                    String
-  url                     String?
-  relatedFundingProgramme FundingProgramme? @relation(fields: [fundingProgrammeId], references: [id])
-  fundingProgrammeId      String?
+  id                   String         @id @default(cuid())
+  name                 String
+  url                  String?
+  relatedFundingAction FundingAction? @relation(fields: [fundingActionId], references: [id])
+  fundingActionId      String?
 }
