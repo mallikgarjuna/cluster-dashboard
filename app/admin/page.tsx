@@ -35,6 +35,15 @@ const AdminPage = () => {
               Create a new funding agency
             </Link>
           </li>
+          <li>
+            <Link
+              href="/dashboard/funders/programme/new"
+              color="blue"
+              className="text-blue-500"
+            >
+              Create a new funding programme
+            </Link>
+          </li>
         </ol>
       </article>
     </>

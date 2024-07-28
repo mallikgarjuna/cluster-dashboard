@@ -202,3 +202,22 @@ export const CreateFundingAgencyFormSchema = z.object({
 export type CreateFundingAgencyFormInputType = z.infer<
   typeof CreateFundingAgencyFormSchema
 >;
+
+// Schema for FundingProgrammeForm validation
+// Using the prisma mode:
+// model FundingProgramme {
+//   id                    String         @id @default(cuid())
+//   name                  String
+//   realatedFundingAgency FundingAgency? @relation(fields: [fundingAgencyId], references: [id])
+//   fundingAgencyId       String?
+//   fundingCalls          FundingCall[]
+// }
+export const CreateFundingProgrammeFormSchema = z.object({
+  name: z.string().min(1, "Please enter a name").max(45, "Name too long"),
+  fundingAgencyId: z.string().optional(),
+});
+
+// Type for FundingProgrammeForm Input
+export type CreateFundingProgrammeFormFormInputType = z.infer<
+  typeof CreateFundingProgrammeFormSchema
+>;
