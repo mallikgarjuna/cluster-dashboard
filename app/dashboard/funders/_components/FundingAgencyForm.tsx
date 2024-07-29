@@ -29,7 +29,8 @@ const FundingAgencyForm = () => {
   const createFundingAgencyOnSubmit = async (
     createFundingAgencyFormData: CreateFundingAgencyFormInputType
   ) => {
-    console.log("createFundingAgencyOnSubmit: ", createFundingAgencyFormData);
+    // console.log("createFundingAgencyOnSubmit: ", createFundingAgencyFormData);
+
     try {
       const result = await createFundingAgencySA(createFundingAgencyFormData);
       if (!result?.success) {
@@ -68,7 +69,7 @@ const FundingAgencyForm = () => {
         isInvalid={!!errors.name}
         type="text"
         label="Funding Agency Name"
-        placeholder="Enter funding agency name. E.g., EU/EC, NWO, DFG, UKRI, NIH, etc."
+        placeholder="Enter funding agency name. E.g., EU/EC, NL/NWO, DE/DFG, UK/UKRI, US/NIH, etc."
       />
 
       <Controller

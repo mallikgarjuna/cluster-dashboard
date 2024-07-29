@@ -53,6 +53,15 @@ const AdminPage = () => {
               Create a new funding action
             </Link>
           </li>
+          <li>
+            <Link
+              href="/dashboard/funders/call/new"
+              color="blue"
+              className="text-blue-500"
+            >
+              Create a new funding call
+            </Link>
+          </li>
         </ol>
       </article>
     </>

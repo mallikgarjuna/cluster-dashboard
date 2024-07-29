@@ -1,20 +1,20 @@
 "use client";
 
 import {
-  CreateFundingActionFormInputType,
-  CreateFundingActionFormSchema,
+  CreateFundingCallFormInputType,
+  CreateFundingCallFormSchema,
 } from "@/app/validationSchemas";
-import { createFundingActionSA } from "@/lib/actions/funderActions";
+import { createFundingCallSA } from "@/lib/actions/funderActions";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button, Input, Select, SelectItem } from "@nextui-org/react";
-import { FundingProgramme } from "@prisma/client";
+import { FundingAction } from "@prisma/client";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { Controller, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 
-const FundingActionForm = () => {
+const FundingCallForm = () => {
   const router = useRouter();
 
   const {
@@ -23,19 +23,19 @@ const FundingActionForm = () => {
     control,
     handleSubmit,
     reset,
-  } = useForm<CreateFundingActionFormInputType>({
-    resolver: zodResolver(CreateFundingActionFormSchema),
+  } = useForm<CreateFundingCallFormInputType>({
+    resolver: zodResolver(CreateFundingCallFormSchema),
   });
 
-  const { data: fundingProgrammes, isLoading, error } = useFundingProgrammes();
+  const { data: fundingActions, isLoading, error } = useFundingActions();
 
-  const onSubmitCreateFundingActionForm = async (
-    createFundingActionFormData: CreateFundingActionFormInputType
+  const onSubmitCreateFundingCallForm = async (
+    createFundingCallFormData: CreateFundingCallFormInputType
   ) => {
-    // console.log(createFundingActionFormData);
+    // console.log(createFundingCallFormData);
 
     try {
-      const result = await createFundingActionSA(createFundingActionFormData);
+      const result = await createFundingCallSA(createFundingCallFormData);
 
       if (!result?.success) {
         toast.error(result?.message + " ");
@@ -58,37 +58,46 @@ const FundingActionForm = () => {
 
   return (
     <form
-      onSubmit={handleSubmit(onSubmitCreateFundingActionForm)}
+      onSubmit={handleSubmit(onSubmitCreateFundingCallForm)}
       className="space-y-2"
     >
-      <h2 className="font-bold text-xl">Add a new Funding Action</h2>
+      <h2 className="font-bold text-xl">Add a new Funding Call</h2>
 
       <Input
         {...register("name")}
         errorMessage={errors.name?.message}
         isInvalid={!!errors.name}
         type="text"
-        label="Funding Action name (NWO: Funding Instrument/Programme)"
-        placeholder="Enter Funding Action name. E.g., ERC/MSCA/etc., Veni/Vidi/Vici/etc."
+        label="Funding Call ID (NWO: Funding Round ID)"
+        placeholder="Enter Funding Call ID. E.g., MSCA-DN-2024/etc., Veni-ZonMw-2024/etc."
+      />
+
+      <Input
+        {...register("url")}
+        errorMessage={errors.url?.message}
+        isInvalid={!!errors.url}
+        type="text"
+        label="URL of the Funding Call ID"
+        placeholder="Enter a valid URL"
       />
 
       {/* Add an input field for selecting the related funding programme */}
       <Controller
         control={control}
-        name="fundingProgrammeId"
+        name="fundingActionId"
         render={({ field }) => (
           <Select
             {...field}
-            {...register("fundingProgrammeId")}
-            errorMessage={errors.fundingProgrammeId?.message}
-            isInvalid={!!errors.fundingProgrammeId}
-            label="(Related) Funding Programme"
-            placeholder="Select the related funding programme"
+            {...register("fundingActionId")}
+            errorMessage={errors.fundingActionId?.message}
+            isInvalid={!!errors.fundingActionId}
+            label="(Related) Funding Action"
+            placeholder="Select the related funding action"
           >
-            {fundingProgrammes ? (
-              fundingProgrammes.map((program) => (
-                <SelectItem key={program.id} value={program.id}>
-                  {program.name}
+            {fundingActions ? (
+              fundingActions.map((fundingAction) => (
+                <SelectItem key={fundingAction.id} value={fundingAction.id}>
+                  {fundingAction.name}
                 </SelectItem>
               ))
             ) : (
@@ -108,8 +117,8 @@ const FundingActionForm = () => {
           color="primary"
         >
           {isSubmitting
-            ? "Adding Funding Action...  "
-            : "Add Funding Action   "}
+            ? "Adding Funding Call...   "
+            : "Add Funding Call      "}
         </Button>
 
         <Button type="button" color="danger" onClick={() => router.back()}>
@@ -123,21 +132,21 @@ const FundingActionForm = () => {
 // This fetcher is created so that I can use fetch() to add a tag for relvalidating
 // in the SA;
 // https://nextjs.org/docs/app/building-your-application/data-fetching/fetching-caching-and-revalidating#on-demand-revalidation
-const fetchFundingProgrammes = async () => {
-  const res = await fetch("/api/fundingProgrammes", {
-    next: { tags: ["fundingProgrammes-api"] },
+const fetchFundingActions = async () => {
+  const res = await fetch("/api/fundingActions", {
+    next: { tags: ["fundingActions-api"] },
   });
   const data = await res.json();
   return data;
 };
 
-const useFundingProgrammes = () =>
-  useQuery<FundingProgramme[]>({
-    queryKey: ["fundingProgrammes-api"],
-    queryFn: () => fetchFundingProgrammes(),
+const useFundingActions = () =>
+  useQuery<FundingAction[]>({
+    queryKey: ["fundingActions-api"],
+    queryFn: () => fetchFundingActions(),
     // staleTime: 60 * 1000, //60s
     // retry: 3,
     cacheTime: 0,
   });
 
-export default FundingActionForm;
+export default FundingCallForm;

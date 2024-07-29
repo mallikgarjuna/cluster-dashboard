@@ -239,3 +239,22 @@ export const CreateFundingActionFormSchema = z.object({
 export type CreateFundingActionFormInputType = z.infer<
   typeof CreateFundingActionFormSchema
 >;
+
+// Schema for FundingCall model validation
+// model FundingCall {
+//   id                   String         @id @default(cuid())
+//   name                 String
+//   url                  String?
+//   relatedFundingAction FundingAction? @relation(fields: [fundingActionId], references: [id])
+//   fundingActionId      String?
+// }
+export const CreateFundingCallFormSchema = z.object({
+  name: z.string().min(1, "Please enter a name").max(45, "Name too long"),
+  url: z.string().url("Please enter a valid URL"),
+  fundingActionId: z.string().optional(),
+});
+
+// Type for FundingCallForm Input
+export type CreateFundingCallFormInputType = z.infer<
+  typeof CreateFundingCallFormSchema
+>;

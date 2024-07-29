@@ -5,6 +5,8 @@ import {
   CreateFundingActionFormSchema,
   CreateFundingAgencyFormInputType,
   CreateFundingAgencyFormSchema,
+  CreateFundingCallFormInputType,
+  CreateFundingCallFormSchema,
   CreateFundingProgrammeFormFormInputType,
   CreateFundingProgrammeFormSchema,
 } from "@/app/validationSchemas";
@@ -159,7 +161,7 @@ export async function createFundingActionSA(
   }
   const { name, fundingProgrammeId } = validatedFields.data;
 
-  // If valid, make sure that we don't have a funding programme w/ same name
+  // If valid, make sure that we don't have a Funding Action w/ same name
   // Here findUnique() cannot be used b/c its db model doesn't have a
   // unique field other than id;
   const fundingActionEntry = await prisma.fundingAction.findFirst({
@@ -196,6 +198,68 @@ export async function createFundingActionSA(
       success: false,
       message:
         "Database error. Failed to create Funding Action" +
+        "\n" +
+        getErrorMessage(error),
+    };
+  }
+}
+
+// ##########################
+// Create funding Call server action
+export async function createFundingCallSA(
+  createFundingCallFormData: CreateFundingCallFormInputType
+) {
+  // Validate form data
+  const validatedFields = CreateFundingCallFormSchema.safeParse(
+    createFundingCallFormData
+  );
+  if (!validatedFields.success) {
+    return {
+      success: false,
+      message:
+        "Missing fields. Failed to create Funding Call." +
+        "\n" +
+        getErrorMessage(validatedFields.error),
+    };
+  }
+  const { name, fundingActionId } = validatedFields.data;
+
+  // If valid, make sure that we don't have a funding call w/ same name
+  // Here findUnique() cannot be used b/c its db model doesn't have a
+  // unique field other than id;
+  const fundingCallEntry = await prisma.fundingCall.findFirst({
+    where: { name: name },
+  });
+  if (fundingCallEntry) {
+    return {
+      success: false,
+      message: "Funding Call already exists. Failed to create Funding Call.",
+    };
+  }
+
+  //   If funding Call doesn't exists, create a new funding Call
+  try {
+    const newFundingCall = await prisma.fundingCall.create({
+      data: {
+        name: name,
+        fundingActionId: fundingActionId,
+      },
+    });
+
+    // Revalidate the list of funding Actions
+    revalidateTag("fundingActions-api");
+
+    if (newFundingCall) {
+      return {
+        success: true,
+        message: "Funding Call created successfully",
+      };
+    }
+  } catch (error) {
+    return {
+      success: false,
+      message:
+        "Database error. Failed to create Funding Call" +
         "\n" +
         getErrorMessage(error),
     };
