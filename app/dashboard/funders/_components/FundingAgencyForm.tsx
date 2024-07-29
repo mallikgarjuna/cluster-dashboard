@@ -15,6 +15,7 @@ import toast from "react-hot-toast";
 
 const FundingAgencyForm = () => {
   const router = useRouter();
+
   const {
     register,
     formState: { errors, isSubmitting },
@@ -24,6 +25,7 @@ const FundingAgencyForm = () => {
   } = useForm<CreateFundingAgencyFormInputType>({
     resolver: zodResolver(CreateFundingAgencyFormSchema),
   });
+
   const createFundingAgencyOnSubmit = async (
     createFundingAgencyFormData: CreateFundingAgencyFormInputType
   ) => {
@@ -66,7 +68,7 @@ const FundingAgencyForm = () => {
         isInvalid={!!errors.name}
         type="text"
         label="Funding Agency Name"
-        placeholder="Enter funding agency name"
+        placeholder="Enter funding agency name. E.g., EU/EC, NWO, DFG, UKRI, NIH, etc."
       />
 
       <Controller

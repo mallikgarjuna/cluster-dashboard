@@ -9,7 +9,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Button, Input, Select, SelectItem } from "@nextui-org/react";
 import { FundingAgency } from "@prisma/client";
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -33,7 +32,7 @@ const FundingProgrammeForm = () => {
   const onSubmitCreateFundingProgramme = async (
     createFundingProgrammeFormData: CreateFundingProgrammeFormFormInputType
   ) => {
-    console.log(createFundingProgrammeFormData);
+    // console.log(createFundingProgrammeFormData);
 
     try {
       const result = await createFundingProgrammeSA(
@@ -58,67 +57,66 @@ const FundingProgrammeForm = () => {
   };
 
   return (
-    <>
-      <h2>Add a new Funding Programme</h2>
-      <form
-        onSubmit={handleSubmit(onSubmitCreateFundingProgramme)}
-        className="space-y-2"
-      >
-        <Input
-          {...register("name")}
-          errorMessage={errors.name?.message}
-          isInvalid={!!errors.name}
-          type="text"
-          label="Funding Programme Name"
-          placeholder="Enter Funding Programme Name. E.g., EU-ERC, NWO-Talent Programme, etc."
-        />
+    <form
+      onSubmit={handleSubmit(onSubmitCreateFundingProgramme)}
+      className="space-y-2"
+    >
+      <h2 className="font-bold text-xl">Add a new Funding Programme</h2>
 
-        {/* Add an input field for selecting the related funding agency */}
-        <Controller
-          control={control}
-          name="fundingAgencyId"
-          render={({ field }) => (
-            <Select
-              {...field}
-              {...register("fundingAgencyId")}
-              errorMessage={errors.fundingAgencyId?.message}
-              isInvalid={!!errors.fundingAgencyId}
-              label="Funding Agency"
-              placeholder="Select a funding agency"
-            >
-              {fundingAgencies ? (
-                fundingAgencies.map((fundingAgency) => (
-                  <SelectItem key={fundingAgency.id} value={fundingAgency.id}>
-                    {fundingAgency.name}
-                  </SelectItem>
-                ))
-              ) : (
-                <SelectItem key={""} value={""}>
-                  None
-                </SelectItem>
-              )}
-            </Select>
-          )}
-        />
+      <Input
+        {...register("name")}
+        errorMessage={errors.name?.message}
+        isInvalid={!!errors.name}
+        type="text"
+        label="Funding Programme Name (NWO: Funding Lines)"
+        placeholder="Enter Funding Programme Name. E.g., EU-HORIZON, NWO-Talent Development Programme, etc."
+      />
 
-        <div className="flex justify-between">
-          <Button
-            type="submit"
-            disabled={isSubmitting}
-            isLoading={isLoading}
-            color="primary"
+      {/* Add an input field for selecting the related funding agency */}
+      <Controller
+        control={control}
+        name="fundingAgencyId"
+        render={({ field }) => (
+          <Select
+            {...field}
+            {...register("fundingAgencyId")}
+            errorMessage={errors.fundingAgencyId?.message}
+            isInvalid={!!errors.fundingAgencyId}
+            label="(Related) Funding Agency"
+            placeholder="Select the related funding agency"
           >
-            {isSubmitting
-              ? "Adding Funding Programme..."
-              : "Add Funding Programme"}
-          </Button>
+            {fundingAgencies ? (
+              fundingAgencies.map((fundingAgency) => (
+                <SelectItem key={fundingAgency.id} value={fundingAgency.id}>
+                  {fundingAgency.name}
+                </SelectItem>
+              ))
+            ) : (
+              <SelectItem key={""} value={""}>
+                None
+              </SelectItem>
+            )}
+          </Select>
+        )}
+      />
 
-          <Button type="button" color="danger" onClick={() => router.back()}>
-            Cancel
-          </Button>
-        </div>
-      </form>
-    </>
+      <div className="flex justify-between">
+        <Button
+          type="submit"
+          disabled={isSubmitting}
+          isLoading={isSubmitting}
+          color="primary"
+        >
+          {isSubmitting
+            ? "Adding Funding Programme..."
+            : "Add Funding Programme"}
+        </Button>
+
+        <Button type="button" color="danger" onClick={() => router.back()}>
+          Cancel
+        </Button>
+      </div>
+    </form>
   );
 };
 

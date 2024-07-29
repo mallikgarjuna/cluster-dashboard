@@ -1,6 +1,8 @@
 "use server";
 
 import {
+  CreateFundingActionFormInputType,
+  CreateFundingActionFormSchema,
   CreateFundingAgencyFormInputType,
   CreateFundingAgencyFormSchema,
   CreateFundingProgrammeFormFormInputType,
@@ -87,7 +89,7 @@ export async function createFundingProgrammeSA(
     return {
       success: false,
       message:
-        "Missing fields. Failed to create funding agency." +
+        "Missing fields. Failed to create funding programme." +
         "\n" +
         getErrorMessage(validatedFields.error),
     };
@@ -131,6 +133,69 @@ export async function createFundingProgrammeSA(
       success: false,
       message:
         "Database error. Failed to create funding programme" +
+        "\n" +
+        getErrorMessage(error),
+    };
+  }
+}
+
+// ##########################
+// Create funding Action server action
+export async function createFundingActionSA(
+  createFundingActionFormData: CreateFundingActionFormInputType
+) {
+  // Validate form data
+  const validatedFields = CreateFundingActionFormSchema.safeParse(
+    createFundingActionFormData
+  );
+  if (!validatedFields.success) {
+    return {
+      success: false,
+      message:
+        "Missing fields. Failed to create funding action." +
+        "\n" +
+        getErrorMessage(validatedFields.error),
+    };
+  }
+  const { name, fundingProgrammeId } = validatedFields.data;
+
+  // If valid, make sure that we don't have a funding programme w/ same name
+  // Here findUnique() cannot be used b/c its db model doesn't have a
+  // unique field other than id;
+  const fundingActionEntry = await prisma.fundingAction.findFirst({
+    where: { name: name },
+  });
+  if (fundingActionEntry) {
+    return {
+      success: false,
+      message:
+        "Funding Action already exists. Failed to create Funding Action.",
+    };
+  }
+
+  //   If funding Action doesn't exists, create a new funding Action
+  try {
+    const newFundingAction = await prisma.fundingAction.create({
+      data: {
+        name: name,
+        fundingProgrammeId: fundingProgrammeId,
+      },
+    });
+
+    // Revalidate the list of funding programmes
+    revalidateTag("fundingProgrammes-api");
+
+    if (newFundingAction) {
+      return {
+        success: true,
+        message: "Funding Action created successfully",
+      };
+    }
+  } catch (error) {
+    return {
+      success: false,
+      message:
+        "Database error. Failed to create Funding Action" +
         "\n" +
         getErrorMessage(error),
     };
