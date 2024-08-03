@@ -61,6 +61,8 @@
     "@types/bcrypt": "^5.0.2",
     "@types/jsonwebtoken": "^9.0.6",
     "@types/react-datepicker": "^6.0.2",
+    "prettier": "^3.3.3",
+    "prettier-plugin-tailwindcss": "^0.6.5",
     "ts-node": "^10.9.2"
   },
   "prisma": {
