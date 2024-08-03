@@ -18,7 +18,7 @@ const WelcomeEmailSchema = z.object({
 type WelcomeEmailInputType = z.infer<typeof WelcomeEmailSchema>;
 
 export async function sendActivationEmail(
-  activationData: WelcomeEmailInputType
+  activationData: WelcomeEmailInputType,
 ) {
   // TODO: addrate limit
   // TODO: add authorization
@@ -73,7 +73,7 @@ const ResetPasswordEmailSchema = z.object({
 type ResetPasswordEmailInputType = z.infer<typeof ResetPasswordEmailSchema>;
 
 export async function sendResetEmail(
-  resetPasswordData: ResetPasswordEmailInputType
+  resetPasswordData: ResetPasswordEmailInputType,
 ) {
   // TODO: addrate limit
   // TODO: add authorization

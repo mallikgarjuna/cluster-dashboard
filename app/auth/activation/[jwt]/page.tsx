@@ -18,20 +18,20 @@ const ActivationPage = async ({ params }: Props) => {
 
   const result = await activateUser(params.jwt); //use server action instead of API
   return (
-    <div className="h-screen flex flex-col items-center justify-center">
+    <div className="flex h-screen flex-col items-center justify-center">
       <h1>ActivationPage</h1>
       <p>Activation for {params.jwt}</p>
       <p>{result}</p>
       {result === "userNotExist" ? (
-        <p className="text-red-500 text-2xl">The user does not exist.</p>
+        <p className="text-2xl text-red-500">The user does not exist.</p>
       ) : result === "alreadyActivated" ? (
-        <p className="text-red-500 text-2xl">The user is already activated.</p>
+        <p className="text-2xl text-red-500">The user is already activated.</p>
       ) : result === "success" ? (
-        <p className="text-green-500 text-2xl">
+        <p className="text-2xl text-green-500">
           Success! The user is now activated.
         </p>
       ) : (
-        <p className="text-yellow-500 text-2xl">
+        <p className="text-2xl text-yellow-500">
           Oops! Something went wrong...
         </p>
       )}

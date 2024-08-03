@@ -1,9 +1,7 @@
-import React from 'react'
+import React from "react";
 
 const ThesesPage = () => {
-  return (
-    <div>ThesesPage</div>
-  )
-}
+  return <div>ThesesPage</div>;
+};
 
-export default ThesesPage
+export default ThesesPage;

@@ -11,8 +11,8 @@ export default async function HomePage() {
   const session = await getServerSession(authOptions);
 
   return (
-    <main className="flex flex-col min-h-screen p-6 gap-6">
-      <div className="flex h-20 items-end bg-blue-500 rounded-lg p-4 md:h-52">
+    <main className="flex min-h-screen flex-col gap-6 p-6">
+      <div className="flex h-20 items-end rounded-lg bg-blue-500 p-4 md:h-52">
         <ClusterLogo />
       </div>
       <Grid columns={{ initial: "1", md: "2" }} gap="5">

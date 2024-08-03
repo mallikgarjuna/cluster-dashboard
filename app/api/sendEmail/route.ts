@@ -41,6 +41,6 @@ export async function POST(request: NextRequest) {
   //   return NextResponse.json(data, { status: 200 });
   return NextResponse.json(
     { message: "Email sent successfully" },
-    { status: 200 }
+    { status: 200 },
   );
 }

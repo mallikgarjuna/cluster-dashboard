@@ -3,7 +3,7 @@ import { ActivateUserDataType } from "./../../../validationSchemas";
 import { NextRequest, NextResponse } from "next/server";
 
 type ActivateUserFunction = (
-  jwtUserId: string
+  jwtUserId: string,
 ) => Promise<"userNotExist" | "alreadyActivated" | "success">;
 
 const activateUser: ActivateUserFunction = async (jwtUserID) => {

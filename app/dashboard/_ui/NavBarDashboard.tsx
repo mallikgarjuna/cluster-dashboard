@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 
 const NavBarDashboard = () => {
   return (
-    <nav className="border-b mb-5 px-5 pb-3">
+    <nav className="mb-5 border-b px-5 pb-3">
       <Container>
         <Flex justify="between">
           <Flex gap="3" align="center">

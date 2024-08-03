@@ -27,7 +27,7 @@ const FundingAgencyForm = () => {
   });
 
   const createFundingAgencyOnSubmit = async (
-    createFundingAgencyFormData: CreateFundingAgencyFormInputType
+    createFundingAgencyFormData: CreateFundingAgencyFormInputType,
   ) => {
     // console.log("createFundingAgencyOnSubmit: ", createFundingAgencyFormData);
 

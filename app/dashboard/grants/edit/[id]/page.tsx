@@ -10,7 +10,7 @@ const GrantForm = dynamic(
   {
     ssr: false,
     loading: () => <GrantFormSkeleton />,
-  }
+  },
 );
 
 interface Props {

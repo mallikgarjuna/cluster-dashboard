@@ -41,7 +41,7 @@ export const DateInput: FC<InputProps> = ({
               onChange={onChange}
               selected={value}
               maxDate={new Date()}
-              className={`outline-none w-full  text-gray-500 border-2 rounded-md px-4 duration-200 focus:border-blue-600 align-middle`}
+              className={`w-full rounded-md border-2 px-4 align-middle text-gray-500 outline-none duration-200 focus:border-blue-600`}
             />
           )}
         />

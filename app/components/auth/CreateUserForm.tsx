@@ -35,7 +35,7 @@ const CreateUserForm = () => {
   const toggleVisiblePass = () => setIsVisiblePass((prev) => !prev);
 
   const createUserOnSubmit = async (
-    createUserFormData: CreateUserFormInputType
+    createUserFormData: CreateUserFormInputType,
   ) => {
     // Check the type of departmentId returned by the form
     // console.log(createUserFormData);
@@ -46,7 +46,7 @@ const CreateUserForm = () => {
         toast.error(result.message);
       } else {
         toast.success(
-          "The user created by Admin successfully!" + "\n" + result.message
+          "The user created by Admin successfully!" + "\n" + result.message,
         );
         reset();
         // router.push("/admin");
@@ -76,9 +76,9 @@ const CreateUserForm = () => {
   return (
     <form
       onSubmit={handleSubmit(createUserOnSubmit)}
-      className="grid grid-cols-2 gap-3 p-2 place-self-stretch border rounded-md "
+      className="grid grid-cols-2 gap-3 place-self-stretch rounded-md border p-2"
     >
-      <h2 className="col-span-2 flex justify-center font-bold text-lg">
+      <h2 className="col-span-2 flex justify-center text-lg font-bold">
         Create a new user - by Admin
       </h2>
 
@@ -208,7 +208,7 @@ const CreateUserForm = () => {
         )}
       />
       {!!errors.accepted && (
-        <p className="col-span-2 text-red-500 text-xs">
+        <p className="col-span-2 text-xs text-red-500">
           {errors.accepted.message}
         </p>
       )}

@@ -16,11 +16,11 @@ import { revalidateTag } from "next/cache";
 
 // Create FundingAgency server action
 export async function createFundingAgencySA(
-  createFundingAgencyFormData: CreateFundingAgencyFormInputType
+  createFundingAgencyFormData: CreateFundingAgencyFormInputType,
 ) {
   // validate form data
   const validatedFields = CreateFundingAgencyFormSchema.safeParse(
-    createFundingAgencyFormData
+    createFundingAgencyFormData,
   );
   if (!validatedFields.success) {
     return {
@@ -81,11 +81,11 @@ export async function createFundingAgencySA(
 // ##########################
 // Create funding programme server action
 export async function createFundingProgrammeSA(
-  createFundingProgrammeFormData: CreateFundingProgrammeFormFormInputType
+  createFundingProgrammeFormData: CreateFundingProgrammeFormFormInputType,
 ) {
   // Validate form data
   const validatedFields = CreateFundingProgrammeFormSchema.safeParse(
-    createFundingProgrammeFormData
+    createFundingProgrammeFormData,
   );
   if (!validatedFields.success) {
     return {
@@ -144,11 +144,11 @@ export async function createFundingProgrammeSA(
 // ##########################
 // Create funding Action server action
 export async function createFundingActionSA(
-  createFundingActionFormData: CreateFundingActionFormInputType
+  createFundingActionFormData: CreateFundingActionFormInputType,
 ) {
   // Validate form data
   const validatedFields = CreateFundingActionFormSchema.safeParse(
-    createFundingActionFormData
+    createFundingActionFormData,
   );
   if (!validatedFields.success) {
     return {
@@ -207,11 +207,11 @@ export async function createFundingActionSA(
 // ##########################
 // Create funding Call server action
 export async function createFundingCallSA(
-  createFundingCallFormData: CreateFundingCallFormInputType
+  createFundingCallFormData: CreateFundingCallFormInputType,
 ) {
   // Validate form data
   const validatedFields = CreateFundingCallFormSchema.safeParse(
-    createFundingCallFormData
+    createFundingCallFormData,
   );
   if (!validatedFields.success) {
     return {

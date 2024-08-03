@@ -21,7 +21,7 @@ const ResetPasswordEmailTemplate = ({ firstName, resetUrl }: Props) => {
       <Preview>Reset your password</Preview>
       <Tailwind>
         <Body>
-          <Container className="p-4 border border-solid border-gray-300 rounded-md">
+          <Container className="rounded-md border border-solid border-gray-300 p-4">
             <Text>Hello {firstName},</Text>
             <Text>
               We've sent this email because you've forgotten your password!

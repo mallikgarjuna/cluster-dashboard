@@ -84,7 +84,7 @@ const GrantTable = async ({ searchParams, grants }: Props) => {
                   <GrantStatusBadge status={grant.status} />
                 </span>
               </Table.Cell>
-              <Table.Cell className="hidden md:table-cell cursor-pointer">
+              <Table.Cell className="hidden cursor-pointer md:table-cell">
                 <Link href={`/dashboard/grants/${grant.id}`}>
                   <span className="cursor-pointer">
                     <GrantStatusBadge status={grant.status} />

@@ -8,7 +8,7 @@ const GrantForm = dynamic(
   {
     ssr: false,
     loading: () => <GrantFormSkeleton />,
-  }
+  },
 );
 
 const NewGrantPage = () => {

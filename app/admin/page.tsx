@@ -23,7 +23,7 @@ const AdminPage = () => {
           </li>
         </ol>
       </article>
-      <article className="flex flex-col gap-3 mt-6">
+      <article className="mt-6 flex flex-col gap-3">
         <h2 className="text-3xl">Funders</h2>
         <ol className="flex flex-col gap-3">
           <li>

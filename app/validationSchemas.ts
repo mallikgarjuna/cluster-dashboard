@@ -89,7 +89,7 @@ export const SignupFormSchema = z
       .max(45, "First name must be less than 45 characters")
       .regex(
         new RegExp("^[a-zA-Z0-9]+$"),
-        "No special characters are allowed!"
+        "No special characters are allowed!",
       ),
     lastName: z
       .string()
@@ -97,7 +97,7 @@ export const SignupFormSchema = z
       .max(45, "Last name must be less than 45 characters")
       .regex(
         new RegExp("^[a-zA-Z0-9]+$"),
-        "No special characters are allowed!"
+        "No special characters are allowed!",
       ),
     email: z.string().email("Please enter a valid email address"),
     // .endsWith("@umcg.nl", "Please enter a valid UMCG email address"),
@@ -133,7 +133,7 @@ export const CreateUserFormSchema = z
       .max(45, "First name must be less than 45 characters")
       .regex(
         new RegExp("^[a-zA-Z0-9]+$"),
-        "No special characters are allowed!"
+        "No special characters are allowed!",
       ),
     lastName: z
       .string()
@@ -141,7 +141,7 @@ export const CreateUserFormSchema = z
       .max(45, "Last name must be less than 45 characters")
       .regex(
         new RegExp("^[a-zA-Z0-9]+$"),
-        "No special characters are allowed!"
+        "No special characters are allowed!",
       ),
     email: z.string().email("Please enter a valid email address"),
     // .endsWith("@umcg.nl", "Please enter a valid UMCG email address"),

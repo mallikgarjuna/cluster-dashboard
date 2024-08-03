@@ -16,7 +16,7 @@ async function main() {
    * @returns {T[keyof T]} A random value from the enum.
    */
   const getRandomEnumValue = <T extends Record<string, string | number>>(
-    anEnum: T
+    anEnum: T,
   ): T[keyof T] => {
     const values = Object.values(anEnum) as T[keyof T][];
     return values[Math.floor(Math.random() * values.length)];

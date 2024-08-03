@@ -8,7 +8,7 @@ export const InputErrorMessage: FC<InputErrorProps> = ({ errors, name }) => {
       errors={errors}
       name={name}
       render={({ message }) => (
-        <p className="text-red-500 text-sm">{message}</p>
+        <p className="text-sm text-red-500">{message}</p>
       )}
     />
   );

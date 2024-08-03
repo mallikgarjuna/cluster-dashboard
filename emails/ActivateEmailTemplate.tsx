@@ -21,7 +21,7 @@ const ActivateEmailTemplate = ({ firstName, activationUrl }: Props) => {
       <Preview>Activate your account</Preview>
       <Tailwind>
         <Body>
-          <Container className="p-4 border border-solid border-gray-300 rounded-md">
+          <Container className="rounded-md border border-solid border-gray-300 p-4">
             <Text>Hello {firstName},</Text>
             <Text>
               Welcome to cluster-dashbaord. Please click on a link below to

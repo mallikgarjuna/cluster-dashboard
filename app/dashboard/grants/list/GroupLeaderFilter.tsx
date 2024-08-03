@@ -57,10 +57,13 @@ const GroupLeaderFilter = ({ users }: Props) => {
   const departmentUsersObject: Record<
     OSDepartmentShortName,
     UserWithDepartment[]
-  > = departmentShortNames.reduce((obj, department) => {
-    obj[department] = [];
-    return obj;
-  }, {} as Record<OSDepartmentShortName, UserWithDepartment[]>);
+  > = departmentShortNames.reduce(
+    (obj, department) => {
+      obj[department] = [];
+      return obj;
+    },
+    {} as Record<OSDepartmentShortName, UserWithDepartment[]>,
+  );
 
   // console.log("departmentUsersObject: ", departmentUsersObject);
 

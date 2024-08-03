@@ -45,12 +45,12 @@ const ResetPasswordForm = ({ jwtUserId }: Props) => {
   });
 
   const resetPass: SubmitHandler<ResetPasswordFormInputType> = async (
-    resetPasswordFormData
+    resetPasswordFormData,
   ) => {
     try {
       const result = await resetPassword(
         jwtUserId,
-        resetPasswordFormData.password
+        resetPasswordFormData.password,
       );
       if (result === "success")
         toast.success("Your password has been reset successfully.");
@@ -67,7 +67,7 @@ const ResetPasswordForm = ({ jwtUserId }: Props) => {
   return (
     <form
       onSubmit={handleSubmit(resetPass)}
-      className="flex flex-col gap-2 border rounded-md p-2 m-2"
+      className="m-2 flex flex-col gap-2 rounded-md border p-2"
     >
       <div className="text-2xl font-bold">Reset Your Password</div>
       <Input

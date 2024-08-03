@@ -39,7 +39,7 @@ const GrantForm = ({ grant }: Props) => {
   });
 
   const submitGrantForm: SubmitHandler<GrantFormDataType> = async (
-    grantFormData
+    grantFormData,
   ) => {
     console.log(grantFormData);
     try {

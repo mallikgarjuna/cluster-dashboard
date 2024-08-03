@@ -17,7 +17,7 @@ interface Props {
 }
 
 const fetchGrant = cache((grantId: string) =>
-  prisma.grant.findUnique({ where: { id: grantId } })
+  prisma.grant.findUnique({ where: { id: grantId } }),
 );
 
 const GrantDetailPage = async ({ params }: Props) => {

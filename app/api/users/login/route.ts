@@ -30,13 +30,13 @@ export async function POST(request: NextRequest) {
 
   const passwordsMatch = await bcrypt.compare(
     body.password,
-    user?.hashedPassword!
+    user?.hashedPassword!,
   );
 
   if (!passwordsMatch)
     return NextResponse.json(
       { error: "Password is not correct" },
-      { status: 400 }
+      { status: 400 },
     );
   // 400: Bad request, meaning: the client sent invalid data
 

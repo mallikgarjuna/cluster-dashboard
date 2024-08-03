@@ -30,13 +30,13 @@ const FundingProgrammeForm = () => {
   const { data: fundingAgencies, isLoading, error } = useFundingAgencies();
 
   const onSubmitCreateFundingProgramme = async (
-    createFundingProgrammeFormData: CreateFundingProgrammeFormFormInputType
+    createFundingProgrammeFormData: CreateFundingProgrammeFormFormInputType,
   ) => {
     // console.log(createFundingProgrammeFormData);
 
     try {
       const result = await createFundingProgrammeSA(
-        createFundingProgrammeFormData
+        createFundingProgrammeFormData,
       );
 
       if (!result?.success) {
@@ -61,7 +61,7 @@ const FundingProgrammeForm = () => {
       onSubmit={handleSubmit(onSubmitCreateFundingProgramme)}
       className="space-y-2"
     >
-      <h2 className="font-bold text-xl">Add a new Funding Programme</h2>
+      <h2 className="text-xl font-bold">Add a new Funding Programme</h2>
 
       <Input
         {...register("name")}

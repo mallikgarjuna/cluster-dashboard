@@ -27,7 +27,7 @@ const SigninForm = ({ callbackUrl }: Props) => {
   });
 
   const signinUser: SubmitHandler<SigninFormInputType> = async (
-    signinFormData
+    signinFormData,
   ) => {
     // signIn() is a client-side function, cannot wrap it in a server-action; see docs;
     const result = await signIn("credentials", {
@@ -56,7 +56,7 @@ const SigninForm = ({ callbackUrl }: Props) => {
   return (
     <form
       onSubmit={handleSubmit(signinUser)}
-      className="flex flex-col gap-2 justify-center items-center p-2 min-w-96 border rounded-md"
+      className="flex min-w-96 flex-col items-center justify-center gap-2 rounded-md border p-2"
     >
       <div className="text-2xl font-bold">Sign in Form</div>
       <Input

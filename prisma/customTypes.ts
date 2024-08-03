@@ -19,7 +19,7 @@ const grantWithUserWithDepartment = Prisma.validator<Prisma.GrantDefaultArgs>()(
         },
       },
     },
-  }
+  },
 );
 
 export type GrantWithUserWithDepartment = Prisma.GrantGetPayload<

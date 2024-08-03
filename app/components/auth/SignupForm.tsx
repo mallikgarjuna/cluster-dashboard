@@ -27,7 +27,7 @@ const SignupForm = () => {
   const toggleVisiblePass = () => setIsVisiblePass((prev) => !prev);
 
   const saveUser: SubmitHandler<SignupFormInputType> = async (
-    singupFormData
+    singupFormData,
   ) => {
     // const { confirmPassword, accepted, ...user } = singupFormData;
     try {
@@ -37,7 +37,7 @@ const SignupForm = () => {
         toast.error(result.message);
       } else {
         toast.success(
-          "The user registered successfully!" + "\n" + result.message
+          "The user registered successfully!" + "\n" + result.message,
         );
         reset();
         router.push("/auth/signin");
@@ -52,7 +52,7 @@ const SignupForm = () => {
   return (
     <form
       onSubmit={handleSubmit(saveUser)}
-      className="grid grid-cols-2 gap-3 p-2 place-self-stretch border rounded-md"
+      className="grid grid-cols-2 gap-3 place-self-stretch rounded-md border p-2"
     >
       <Input
         {...register("firstName")}
@@ -123,7 +123,7 @@ const SignupForm = () => {
         )}
       />
       {!!errors.accepted && (
-        <p className="col-span-2 text-red-500 text-xs">
+        <p className="col-span-2 text-xs text-red-500">
           {errors.accepted.message}
         </p>
       )}

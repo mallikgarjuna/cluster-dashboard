@@ -6,9 +6,9 @@ import { FaUserPlus } from "react-icons/fa";
 
 const SignupPage = () => {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 place-items-center items-center gap-3">
-      <Box className="md:col-span-2 flex justify-center items-center">
-        <Text className="p-2 ">Already have an account?</Text>
+    <div className="grid grid-cols-1 place-items-center items-center gap-3 md:grid-cols-2">
+      <Box className="flex items-center justify-center md:col-span-2">
+        <Text className="p-2">Already have an account?</Text>
         <Link href="/auth/signin">Sign in</Link>
       </Box>
       <SignupForm />

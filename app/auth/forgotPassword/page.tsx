@@ -24,7 +24,7 @@ const ForgotPasswordPage = () => {
   });
 
   const submitRequest: SubmitHandler<ForgotPasswordFormInputType> = async (
-    ForgotPasswordFormData
+    ForgotPasswordFormData,
   ) => {
     try {
       const result = await forgotPassword(ForgotPasswordFormData);
@@ -37,12 +37,12 @@ const ForgotPasswordPage = () => {
   };
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 items-center place-items-center">
+    <div className="grid grid-cols-1 place-items-center items-center md:grid-cols-2">
       <form
         onSubmit={handleSubmit(submitRequest)}
         className="flex flex-col gap-2 place-self-stretch"
       >
-        <div className="text-2xl text-center font-bold">Enter Your Email</div>
+        <div className="text-center text-2xl font-bold">Enter Your Email</div>
         <Input
           type="email"
           label="Email"

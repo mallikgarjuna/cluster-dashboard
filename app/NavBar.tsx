@@ -19,7 +19,7 @@ import { Skeleton } from "@/app/components";
 
 const NavBar = () => {
   return (
-    <nav className=" border-b mb-0 px-5 py-3">
+    <nav className="mb-0 border-b px-5 py-3">
       <Container>
         <Flex justify="between">
           <Flex gap="3" align="center">

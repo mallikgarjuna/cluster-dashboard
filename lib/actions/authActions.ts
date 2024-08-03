@@ -104,7 +104,7 @@ export async function registerUser(signupFormData: SignupFormInputType) {
 
 // Create user by admin
 export async function createUserByAdmin(
-  createUserFormData: CreateUserFormInputType
+  createUserFormData: CreateUserFormInputType,
 ) {
   // validate
   const validatedFields = CreateUserFormSchema.safeParse(createUserFormData);
@@ -237,7 +237,7 @@ export async function loginUser(signinFormData: SigninFormInputType) {
 
 // Activate user server action (called in auth/activation/[jwt]/page.tsx)
 type ActivateUserFunction = (
-  jwtUserId: string
+  jwtUserId: string,
 ) => Promise<"userNotExist" | "alreadyActivated" | "success">;
 
 export const activateUser: ActivateUserFunction = async (jwtUserID) => {
@@ -265,7 +265,7 @@ export const activateUser: ActivateUserFunction = async (jwtUserID) => {
 
 // forgot Password server action
 export async function forgotPassword(
-  forgotPasswordFormData: ForgotPasswordFormInputType
+  forgotPasswordFormData: ForgotPasswordFormInputType,
 ) {
   const user = await prisma.user.findUnique({
     where: { email: forgotPasswordFormData.email },
@@ -287,7 +287,7 @@ export async function forgotPassword(
 
 type ResetPasswordFunc = (
   jwtUserId: string,
-  password: string
+  password: string,
 ) => Promise<"userNotExist" | "success">;
 
 export const resetPassword: ResetPasswordFunc = async (jwtUserId, password) => {

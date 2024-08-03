@@ -53,7 +53,7 @@ const authOptions: NextAuthOptions = {
         // Check if the entered password is matching with the registered one, if not, throw error
         const passwordsMatch = await bcrypt.compare(
           credentials.password,
-          user?.hashedPassword!
+          user?.hashedPassword!,
         );
         if (!passwordsMatch) throw new Error("Password is not correct");
 

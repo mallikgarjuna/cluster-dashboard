@@ -11,7 +11,7 @@ const DEFAULT_SIGN_OPTION: SignOption = {
 // function for signing jwt token or encrypting payload
 export function signJwt(
   payload: JwtPayload,
-  option: SignOption = DEFAULT_SIGN_OPTION
+  option: SignOption = DEFAULT_SIGN_OPTION,
 ) {
   const secretKey = process.env.JWT_USER_ID_SECRET_KEY!;
   const token = jwt.sign(payload, secretKey, option);

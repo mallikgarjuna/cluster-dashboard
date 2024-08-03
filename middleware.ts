@@ -43,7 +43,7 @@ export default withAuth(
         return !!token;
       },
     },
-  }
+  },
 );
 
 // If you only want to secure certain pages, export a config object with a matcher:

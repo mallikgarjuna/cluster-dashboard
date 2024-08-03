@@ -30,7 +30,7 @@ const FundingCallForm = () => {
   const { data: fundingActions, isLoading, error } = useFundingActions();
 
   const onSubmitCreateFundingCallForm = async (
-    createFundingCallFormData: CreateFundingCallFormInputType
+    createFundingCallFormData: CreateFundingCallFormInputType,
   ) => {
     // console.log(createFundingCallFormData);
 
@@ -61,7 +61,7 @@ const FundingCallForm = () => {
       onSubmit={handleSubmit(onSubmitCreateFundingCallForm)}
       className="space-y-2"
     >
-      <h2 className="font-bold text-xl">Add a new Funding Call</h2>
+      <h2 className="text-xl font-bold">Add a new Funding Call</h2>
 
       <Input
         {...register("name")}

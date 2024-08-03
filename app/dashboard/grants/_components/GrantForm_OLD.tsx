@@ -57,8 +57,8 @@ const GrantForm_OLD = ({ grant }: Props) => {
         </Callout.Root>
       )}
       <FormProvider {...methods}>
-        <form className=" space-y-2" onSubmit={handleSubmit(onSubmit)}>
-          <div className="text-3xl font-bold items-center justify-center">
+        <form className="space-y-2" onSubmit={handleSubmit(onSubmit)}>
+          <div className="items-center justify-center text-3xl font-bold">
             {!!grant ? "Edit grant" : "Create new grant"}
           </div>
           <CustomInput
