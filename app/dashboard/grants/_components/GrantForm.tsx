@@ -123,6 +123,34 @@ const GrantForm = ({ grant }: Props) => {
           // defaultValue={grant?.budgetTotal || 0}
         />
 
+        {/* Add an input field for selecting the related funding agency */}
+        <Controller
+          control={control}
+          name="fundingAgencyId"
+          render={({ field }) => (
+            <Select
+              {...field}
+              {...register("fundingAgencyId")}
+              errorMessage={errors.fundingAgencyId?.message}
+              isInvalid={!!errors.fundingAgencyId}
+              label="(Related) Funding Agency"
+              placeholder="Select the related funding agency"
+            >
+              {fundingAgencies ? (
+                fundingAgencies.map((fundingAgency) => (
+                  <SelectItem key={fundingAgency.id} value={fundingAgency.id}>
+                    {fundingAgency.name}
+                  </SelectItem>
+                ))
+              ) : (
+                <SelectItem key={""} value={""}>
+                  None
+                </SelectItem>
+              )}
+            </Select>
+          )}
+        />
+
         <Input
           {...register("fundingAgency")}
           errorMessage={errors.fundingAgency?.message}
