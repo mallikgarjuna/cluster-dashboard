@@ -4,9 +4,11 @@ import { Card, Flex, Heading, Text, TextField } from "@radix-ui/themes";
 import ReactMarkdown from "react-markdown";
 import CustomFiledDetails from "./CustomFiledDetails";
 import prisma from "@/prisma/client";
+import { GrantWithAllRelatedTypes } from "@/prisma/customTypes";
 
 interface Props {
-  grant: Grant;
+  // grant: Grant;
+  grant: GrantWithAllRelatedTypes;
 }
 
 const GrantDetails = async ({ grant }: Props) => {
@@ -21,6 +23,8 @@ const GrantDetails = async ({ grant }: Props) => {
   const user = await prisma.user.findUnique({
     where: { id: grant.assignedToUserId },
   });
+
+  console.log(grant.assignedToUser?.email);
 
   return (
     <Flex direction="column" gap="3">
@@ -44,10 +48,17 @@ const GrantDetails = async ({ grant }: Props) => {
 
       <CustomFiledDetails subheading="Budget" fieldInfo={grant.budgetTotal} />
 
-      <CustomFiledDetails
-        subheading="Funding Agency"
-        fieldInfo={grant.fundingAgency}
-      />
+      <div className="flex items-center gap-2 rounded-md border border-gray-300">
+        <CustomFiledDetails
+          subheading="Funding Agency (Select)"
+          fieldInfo={grant.relatedFundingAgency?.name ?? "Not specified"}
+        />
+        <span className="self-center">or</span>
+        <CustomFiledDetails
+          subheading="Funding Agency (text input)"
+          fieldInfo={grant.fundingAgency}
+        />
+      </div>
 
       <CustomFiledDetails
         subheading="Funding Programme"

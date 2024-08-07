@@ -65,6 +65,11 @@ export async function PATCH(request: NextRequest, { params }: Props) {
       status: body.status,
       projectNumber: body.projectNumber,
       applicantRole: body.applicantRole,
+      relatedFundingAgency: {
+        connect: {
+          id: body.relatedFundingAgencyId,
+        },
+      },
     },
   });
 

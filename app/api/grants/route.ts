@@ -47,6 +47,11 @@ export async function POST(request: NextRequest) {
           id: session.user.id,
         },
       },
+      relatedFundingAgency: {
+        connect: {
+          id: body.fundingAgencyId,
+        },
+      },
     },
   });
 

@@ -87,7 +87,7 @@ const GroupLeaderFilter = ({ users }: Props) => {
 
   return (
     <Select
-      items={departmentShortNames}
+      items={departmentShortNames as Iterable<object>}
       label="Filter by group leader...."
       className="max-w-xs"
       defaultSelectedKeys={[searchParams.get("groupLeader") || "All"]}

@@ -27,6 +27,10 @@ export const grantFormSchema = z.object({
   status: z.nativeEnum(StatusGrant),
   projectNumber: z.number().optional().nullable(),
   applicantRole: z.nativeEnum(enumApplicantRole),
+  fundingAgencyId: z.string().optional(),
+  fundingProgrammeId: z.string().optional(),
+  fundingActionId: z.string().optional(),
+  fundingCallId: z.string().optional(),
   // .refine((value) => String(value).length === 6, {
   //   message: "Project number must be exactly 6 digits",
   //   path: ["projectNumber"],
@@ -63,6 +67,10 @@ export const patchGrantSchema = z.object({
   status: z.nativeEnum(StatusGrant),
   projectNumber: z.number().optional().nullable(),
   applicantRole: z.nativeEnum(enumApplicantRole),
+  fundingAgencyId: z.string().optional(),
+  fundingProgrammeId: z.string().optional(),
+  fundingActionId: z.string().optional(),
+  fundingCallId: z.string().optional(),
   // .refine((value) => String(value).length === 6, {
   //   message: "Project number must be exactly 6 digits",
   //   path: ["projectNumber"],
