@@ -10,7 +10,7 @@ const grantWithUser = Prisma.validator<Prisma.GrantDefaultArgs>()({
 export type GrantWithUser = Prisma.GrantGetPayload<typeof grantWithUser>;
 
 // Grant with ALL related types
-const grantWihAllRelatedTypes = Prisma.validator<Prisma.GrantDefaultArgs>()({
+const grantWithAllRelatedTypes = Prisma.validator<Prisma.GrantDefaultArgs>()({
   include: {
     assignedToUser: true,
     createdByUser: true,
@@ -22,7 +22,7 @@ const grantWihAllRelatedTypes = Prisma.validator<Prisma.GrantDefaultArgs>()({
 });
 
 export type GrantWithAllRelatedTypes = Prisma.GrantGetPayload<
-  typeof grantWihAllRelatedTypes
+  typeof grantWithAllRelatedTypes
 >;
 
 // Grant with User and User with Department type

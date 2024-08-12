@@ -22,9 +22,11 @@ import "easymde/dist/easymde.min.css";
 import { fetchAllUsers } from "@/lib/actions/user/queries";
 import { useQuery } from "@tanstack/react-query";
 import { useFundingAgencies } from "../../funders/_components/FundingProgrammeForm";
+import { GrantWithAllRelatedTypes } from "@/prisma/customTypes";
 
 interface Props {
-  grant?: Grant;
+  // grant?: Grant;
+  grant?: GrantWithAllRelatedTypes;
 }
 
 const GrantForm = ({ grant }: Props) => {
@@ -38,12 +40,35 @@ const GrantForm = ({ grant }: Props) => {
     watch,
   } = useForm<GrantFormDataType>({
     resolver: zodResolver(grantFormSchema),
+    // defaultValues: {
+    //   title: grant?.title,
+    //   description: grant?.description,
+    //   acronym: grant?.acronym || "",
+    //   budgetTotal: grant?.budgetTotal || 0,
+    //   fundingAgency: grant?.fundingAgency || "",
+    //   fundingProgramme: grant?.fundingProgramme || "",
+    //   fundingCall: grant?.fundingCall || "",
+    //   // submissionDate: grant?.submissionDate ?? undefined,
+    //   // deadline: grant?.deadline || "",
+    //   // decisionDate: grant?.decisionDate || "",
+    //   // projectStartDate: grant?.projectStartDate || "",
+    //   // projectEndDate: grant?.projectEndDate || "",
+    //   projectNumber: grant?.projectNumber ?? null,
+    //   assignedToUserId: grant?.assignedToUserId ?? undefined,
+    //   applicantRole: grant?.applicantRole,
+    //   status: grant?.status,
+    //   notes: grant?.notes ?? "",
+    //   fundingAgencyId: grant?.relatedFundingAgency?.id,
+    //   fundingProgrammeId: grant?.relatedFundingProgramme?.id,
+    //   fundingActionId: grant?.relatedFundingAction?.id,
+    //   fundingCallId: grant?.relatedFundingCall?.id,
+    // },
   });
 
   const submitGrantForm: SubmitHandler<GrantFormDataType> = async (
     grantFormData,
   ) => {
-    console.log(grantFormData);
+    // console.log(grantFormData);
     try {
       if (grant) {
         await axios.patch(`/api/grants/${grant.id}`, grantFormData);
@@ -130,11 +155,12 @@ const GrantForm = ({ grant }: Props) => {
           defaultValue={grant?.budgetTotal?.toString() || "0"}
           // defaultValue={grant?.budgetTotal || 0}
         />
-        <div className="flex gap-2 rounded-md border border-gray-300">
+        <div className="flex gap-2 rounded-md border border-gray-300 py-2">
           {/* Add an input field for selecting the related funding agency */}
           <Controller
             control={control}
             name="fundingAgencyId"
+            defaultValue={grant?.fundingAgencyId ?? undefined}
             render={({ field }) => (
               <Select
                 {...field}
@@ -203,6 +229,7 @@ const GrantForm = ({ grant }: Props) => {
           label="Submission Date"
           // placeholder="Submission date of the grant"
           defaultValue={grant?.submissionDate?.toISOString().substring(0, 10)}
+          // defaultValue={grant?.submissionDate}
         />
 
         <Input
@@ -260,10 +287,8 @@ const GrantForm = ({ grant }: Props) => {
         <Controller
           control={control}
           name="assignedToUserId"
+          defaultValue={grant?.assignedToUserId ?? undefined}
           render={({ field }) => {
-            const selectedKeys = grant?.assignedToUserId
-              ? [grant.assignedToUserId]
-              : [];
             return (
               <Select
                 {...field}
@@ -273,7 +298,9 @@ const GrantForm = ({ grant }: Props) => {
                 {...register("assignedToUserId")}
                 errorMessage={errors.assignedToUserId?.message}
                 isInvalid={!!errors.assignedToUserId}
-                defaultSelectedKeys={selectedKeys}
+                defaultSelectedKeys={
+                  grant?.assignedToUserId ? [grant.assignedToUserId] : []
+                }
               >
                 {users?.map((user) => (
                   <SelectItem
@@ -292,10 +319,11 @@ const GrantForm = ({ grant }: Props) => {
         <Controller
           control={control}
           name="applicantRole"
+          defaultValue={grant?.applicantRole ?? undefined}
           render={({ field }) => {
-            const selectedKeys = grant?.applicantRole
-              ? [grant.applicantRole]
-              : [];
+            // const selectedKeys = grant?.applicantRole
+            //   ? [grant.applicantRole]
+            //   : [];
             return (
               <Select
                 label="Applicant Role"
@@ -304,7 +332,7 @@ const GrantForm = ({ grant }: Props) => {
                 {...register("applicantRole")}
                 errorMessage={errors.applicantRole?.message}
                 isInvalid={!!errors.applicantRole}
-                defaultSelectedKeys={selectedKeys}
+                // defaultSelectedKeys={selectedKeys}
               >
                 {applicantRoles?.map((role) => (
                   <SelectItem
@@ -323,8 +351,9 @@ const GrantForm = ({ grant }: Props) => {
         <Controller
           control={control}
           name="status"
+          defaultValue={grant?.status ?? undefined}
           render={({ field }) => {
-            const selectedKeys = grant?.status ? [grant.status] : [];
+            // const selectedKeys = grant?.status ? [grant.status] : [];
             return (
               <Select
                 label="Applicantion Status"
@@ -333,7 +362,7 @@ const GrantForm = ({ grant }: Props) => {
                 {...register("status")}
                 errorMessage={errors.status?.message}
                 isInvalid={!!errors.status}
-                defaultSelectedKeys={selectedKeys}
+                // defaultSelectedKeys={selectedKeys}
               >
                 {statuses?.map((status) => (
                   <SelectItem

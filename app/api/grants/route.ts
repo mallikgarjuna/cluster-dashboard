@@ -17,31 +17,52 @@ export async function POST(request: NextRequest) {
   // 400: Bad request, meaning: the client sent invalid data
   // console.log("validation.data: ", validation.data);
 
+  // If validation is successful, destructure the data from the validation
+  const {
+    title,
+    description,
+    acronym,
+    budgetTotal,
+    fundingAgency,
+    fundingProgramme,
+    fundingCall,
+    submissionDate,
+    deadline,
+    decisionDate,
+    projectStartDate,
+    projectEndDate,
+    notes,
+    assignedToUserId,
+    status,
+    projectNumber,
+    applicantRole,
+    fundingAgencyId,
+  } = validation.data;
+
   const newGrant = await prisma.grant.create({
     data: {
-      title: body.title,
-      description: body.description,
-      acronym: body.acronym,
-      budgetTotal: body.budgetTotal,
-      fundingAgency: body.fundingAgency,
-      fundingProgramme: body.fundingProgramme,
-      fundingCall: body.fundingCall,
-      submissionDate: body.submissionDate === "" ? null : body.submissionDate,
-      deadline: body.deadline === "" ? null : body.deadline,
-      decisionDate: body.decisionDate === "" ? null : body.decisionDate,
-      projectStartDate:
-        body.projectStartDate === "" ? null : body.projectStartDate,
-      projectEndDate: body.projectEndDate === "" ? null : body.projectEndDate,
-      notes: body.notes,
+      title: title,
+      description: description,
+      acronym: acronym,
+      budgetTotal: budgetTotal,
+      fundingAgency: fundingAgency,
+      fundingProgramme: fundingProgramme,
+      fundingCall: fundingCall,
+      submissionDate: submissionDate === "" ? null : submissionDate,
+      deadline: deadline === "" ? null : deadline,
+      decisionDate: decisionDate === "" ? null : decisionDate,
+      projectStartDate: projectStartDate === "" ? null : projectStartDate,
+      projectEndDate: projectEndDate === "" ? null : projectEndDate,
+      notes: notes,
       // assignedToUserId: body.assignedToUserId,
       assignedToUser: {
         connect: {
-          id: body.assignedToUserId,
+          id: assignedToUserId,
         },
       },
-      status: body.status,
-      projectNumber: body.projectNumber,
-      applicantRole: body.applicantRole,
+      status: status,
+      projectNumber: projectNumber,
+      applicantRole: applicantRole,
       createdByUser: {
         connect: {
           id: session.user.id,
@@ -49,7 +70,7 @@ export async function POST(request: NextRequest) {
       },
       relatedFundingAgency: {
         connect: {
-          id: body.fundingAgencyId,
+          id: fundingAgencyId,
         },
       },
     },

@@ -39,7 +39,7 @@ model Grant {
   createdByUserId         String?           @db.VarChar(255)
   createdByUser           User?             @relation("GrantCreatedByUser", fields: [createdByUserId], references: [id])
   relatedFundingAgency    FundingAgency?    @relation(fields: [fundingAgencyId], references: [id])
-  fundingAgencyId         String?
+  fundingAgencyId         String?           @db.VarChar(255)
   relatedFundingProgramme FundingProgramme? @relation(fields: [fundingProgrammeId], references: [id])
   fundingProgrammeId      String?
   relatedFundingAction    FundingAction?    @relation(fields: [fundingActionId], references: [id])
