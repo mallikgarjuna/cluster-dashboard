@@ -24,7 +24,10 @@ import { useQuery } from "@tanstack/react-query";
 import { useFundingAgencies } from "../../funders/_components/FundingProgrammeForm";
 import { GrantWithAllRelatedTypes } from "@/prisma/customTypes";
 import { useFundingProgrammes } from "../../funders/_components/FundingActionForm";
-import { useFundingActions } from "../../funders/_components/FundingCallForm";
+import {
+  useFundingActions,
+  useFundingCalls,
+} from "../../funders/_components/FundingCallForm";
 
 interface Props {
   // grant?: Grant;
@@ -99,6 +102,8 @@ const GrantForm = ({ grant }: Props) => {
   const { data: fundingProgrammes } = useFundingProgrammes();
 
   const { data: fundingActions } = useFundingActions();
+
+  const { data: fundingCalls } = useFundingCalls();
 
   const statuses = Object.values(StatusGrant);
 
@@ -303,6 +308,53 @@ const GrantForm = ({ grant }: Props) => {
             label="Funding Action"
             placeholder="E.g., ERC, Veni, etc."
             defaultValue={grant?.fundingAction || ""}
+          />
+        </div>
+
+        {/* Related Funding Calls */}
+        <div className="flex gap-2 rounded-md border border-gray-300 py-2">
+          {/* Add an input field for selecting the related funding call */}
+          <Controller
+            control={control}
+            name="fundingCallId"
+            defaultValue={grant?.fundingCallId ?? undefined}
+            render={({ field }) => (
+              <Select
+                {...field}
+                {...register("fundingCallId")}
+                errorMessage={errors.fundingCallId?.message}
+                isInvalid={!!errors.fundingCallId}
+                label="Funding Call - Select"
+                placeholder="Select the related funding call"
+                defaultSelectedKeys={
+                  grant?.fundingCallId ? [grant.fundingCallId] : [] //
+                }
+              >
+                {fundingCalls ? (
+                  fundingCalls.map((fundingCall) => (
+                    <SelectItem key={fundingCall.id} value={fundingCall.id}>
+                      {fundingCall.name}
+                    </SelectItem>
+                  ))
+                ) : (
+                  <SelectItem key={""} value={""}>
+                    None
+                  </SelectItem>
+                )}
+              </Select>
+            )}
+          />
+
+          <span className="self-center">or</span>
+
+          <Input
+            {...register("fundingCall")}
+            errorMessage={errors.fundingCall?.message}
+            isInvalid={!!errors.fundingCall}
+            type="text"
+            label="Funding Call"
+            placeholder="E.g., ERC-StG-2024, Veni-ZonMw-2024, etc."
+            defaultValue={grant?.fundingCall || ""}
           />
         </div>
 

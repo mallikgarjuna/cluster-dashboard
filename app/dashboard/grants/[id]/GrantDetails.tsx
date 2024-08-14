@@ -84,10 +84,17 @@ const GrantDetails = async ({ grant }: Props) => {
         />
       </div>
 
-      <CustomFiledDetails
-        subheading="Funding Call"
-        fieldInfo={grant.fundingCall}
-      />
+      <div className="flex gap-2 rounded-md border border-gray-300 py-2">
+        <CustomFiledDetails
+          subheading="Funding Call (Select)"
+          fieldInfo={grant.relatedFundingCall?.name ?? "Not specified"}
+        />
+        <span className="self-center">or</span>
+        <CustomFiledDetails
+          subheading="Funding Call (text input)"
+          fieldInfo={grant.fundingCall}
+        />
+      </div>
 
       <CustomFiledDetails
         subheading="Submission date"

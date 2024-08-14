@@ -7,7 +7,7 @@ import {
 import { createFundingCallSA } from "@/lib/actions/funderActions";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button, Input, Select, SelectItem } from "@nextui-org/react";
-import { FundingAction } from "@prisma/client";
+import { FundingAction, FundingCall } from "@prisma/client";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import React from "react";
@@ -144,6 +144,25 @@ export const useFundingActions = () =>
   useQuery<FundingAction[]>({
     queryKey: ["fundingActions-api"],
     queryFn: () => fetchFundingActions(),
+    // staleTime: 60 * 1000, //60s
+    // retry: 3,
+    cacheTime: 0,
+  });
+
+// This useFundingCalls() is created to use it in GrantForm.tsx select dropdown
+// There was no place better to create it than here.
+const fetchFundingCalls = async () => {
+  const res = await fetch("/api/fundingCalls", {
+    next: { tags: ["fundingCalls-api"] },
+  });
+  const data = await res.json();
+  return data;
+};
+
+export const useFundingCalls = () =>
+  useQuery<FundingCall[]>({
+    queryKey: ["fundingCalls-api"],
+    queryFn: () => fetchFundingCalls(),
     // staleTime: 60 * 1000, //60s
     // retry: 3,
     cacheTime: 0,
