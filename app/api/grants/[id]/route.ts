@@ -40,6 +40,7 @@ export async function PATCH(request: NextRequest, { params }: Props) {
     applicantRole,
     fundingAgencyId,
     fundingProgrammeId,
+    fundingActionId,
   } = validation.data;
 
   // Validating assignedToUserId:
@@ -95,6 +96,11 @@ export async function PATCH(request: NextRequest, { params }: Props) {
       relatedFundingProgramme: {
         connect: {
           id: fundingProgrammeId,
+        },
+      },
+      relatedFundingAction: {
+        connect: {
+          id: fundingActionId,
         },
       },
     },

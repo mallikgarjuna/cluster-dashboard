@@ -72,6 +72,18 @@ const GrantDetails = async ({ grant }: Props) => {
         />
       </div>
 
+      <div className="flex items-center gap-2 rounded-md border border-gray-300 py-2">
+        <CustomFiledDetails
+          subheading="Funding Action (Select)"
+          fieldInfo={grant.relatedFundingAction?.name ?? "Not specified"}
+        />
+        <span className="self-center">or</span>
+        <CustomFiledDetails
+          subheading="Funding Action (text input)"
+          fieldInfo={grant.fundingAction}
+        />
+      </div>
+
       <CustomFiledDetails
         subheading="Funding Call"
         fieldInfo={grant.fundingCall}

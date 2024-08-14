@@ -140,7 +140,7 @@ const fetchFundingActions = async () => {
   return data;
 };
 
-const useFundingActions = () =>
+export const useFundingActions = () =>
   useQuery<FundingAction[]>({
     queryKey: ["fundingActions-api"],
     queryFn: () => fetchFundingActions(),
