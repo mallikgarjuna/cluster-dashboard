@@ -23,6 +23,7 @@ import { fetchAllUsers } from "@/lib/actions/user/queries";
 import { useQuery } from "@tanstack/react-query";
 import { useFundingAgencies } from "../../funders/_components/FundingProgrammeForm";
 import { GrantWithAllRelatedTypes } from "@/prisma/customTypes";
+import { useFundingProgrammes } from "../../funders/_components/FundingActionForm";
 
 interface Props {
   // grant?: Grant;
@@ -68,7 +69,7 @@ const GrantForm = ({ grant }: Props) => {
   const submitGrantForm: SubmitHandler<GrantFormDataType> = async (
     grantFormData,
   ) => {
-    // console.log(grantFormData);
+    console.log(grantFormData);
     try {
       if (grant) {
         await axios.patch(`/api/grants/${grant.id}`, grantFormData);
@@ -93,6 +94,8 @@ const GrantForm = ({ grant }: Props) => {
     error: fundingAgenciesError,
     isLoading: isLoadingFundingAgencies,
   } = useFundingAgencies();
+
+  const { data: fundingProgrammes } = useFundingProgrammes();
 
   const statuses = Object.values(StatusGrant);
 
@@ -155,6 +158,8 @@ const GrantForm = ({ grant }: Props) => {
           defaultValue={grant?.budgetTotal?.toString() || "0"}
           // defaultValue={grant?.budgetTotal || 0}
         />
+
+        {/* Related Funding Agency */}
         <div className="flex gap-2 rounded-md border border-gray-300 py-2">
           {/* Add an input field for selecting the related funding agency */}
           <Controller
@@ -167,7 +172,7 @@ const GrantForm = ({ grant }: Props) => {
                 {...register("fundingAgencyId")}
                 errorMessage={errors.fundingAgencyId?.message}
                 isInvalid={!!errors.fundingAgencyId}
-                label="(Related) Funding Agency - Select"
+                label="Funding Agency - Select"
                 placeholder="Select the related funding agency"
                 defaultSelectedKeys={
                   grant?.fundingAgencyId ? [grant.fundingAgencyId] : []
@@ -201,15 +206,55 @@ const GrantForm = ({ grant }: Props) => {
           />
         </div>
 
-        <Input
-          {...register("fundingProgramme")}
-          errorMessage={errors.fundingProgramme?.message}
-          isInvalid={!!errors.fundingProgramme}
-          type="text"
-          label="Funding Programme"
-          placeholder="E.g., ERC or TalentProgramme"
-          defaultValue={grant?.fundingProgramme || ""}
-        />
+        {/* Related Funding Programme */}
+        <div className="flex gap-2 rounded-md border border-gray-300 py-2">
+          {/* Add an input field for selecting the related funding agency */}
+          <Controller
+            control={control}
+            name="fundingProgrammeId"
+            defaultValue={grant?.fundingProgrammeId ?? undefined}
+            render={({ field }) => (
+              <Select
+                {...field}
+                {...register("fundingProgrammeId")}
+                errorMessage={errors.fundingProgrammeId?.message}
+                isInvalid={!!errors.fundingProgrammeId}
+                label="Funding Programme - Select"
+                placeholder="Select the related funding programme"
+                defaultSelectedKeys={
+                  grant?.fundingProgrammeId ? [grant.fundingProgrammeId] : []
+                }
+              >
+                {fundingProgrammes ? (
+                  fundingProgrammes.map((fundingProgramme) => (
+                    <SelectItem
+                      key={fundingProgramme.id}
+                      value={fundingProgramme.id}
+                    >
+                      {fundingProgramme.name}
+                    </SelectItem>
+                  ))
+                ) : (
+                  <SelectItem key={""} value={""}>
+                    None
+                  </SelectItem>
+                )}
+              </Select>
+            )}
+          />
+
+          <span className="self-center">or</span>
+
+          <Input
+            {...register("fundingProgramme")}
+            errorMessage={errors.fundingProgramme?.message}
+            isInvalid={!!errors.fundingProgramme}
+            type="text"
+            label="Funding Programme - Text input"
+            placeholder="E.g., ERC or TalentProgramme"
+            defaultValue={grant?.fundingProgramme || ""}
+          />
+        </div>
 
         <Input
           {...register("fundingCall")}

@@ -37,6 +37,7 @@ export async function POST(request: NextRequest) {
     projectNumber,
     applicantRole,
     fundingAgencyId,
+    fundingProgrammeId,
   } = validation.data;
 
   const newGrant = await prisma.grant.create({
@@ -71,6 +72,11 @@ export async function POST(request: NextRequest) {
       relatedFundingAgency: {
         connect: {
           id: fundingAgencyId,
+        },
+      },
+      relatedFundingProgramme: {
+        connect: {
+          id: fundingProgrammeId,
         },
       },
     },
