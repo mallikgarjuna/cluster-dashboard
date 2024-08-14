@@ -186,6 +186,12 @@ const GrantForm = ({ grant }: Props) => {
                 defaultSelectedKeys={
                   grant?.fundingAgencyId ? [grant.fundingAgencyId] : []
                 }
+                // className="bg-gray-600"
+                // listboxProps={{
+                //   itemClasses: {
+                //     base: "bg-gray-600",
+                //   },
+                // }}
               >
                 {fundingAgencies ? (
                   fundingAgencies.map((fundingAgency) => (

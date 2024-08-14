@@ -17,6 +17,47 @@ const config: Config = {
       },
     },
   },
-  plugins: [require("@tailwindcss/typography"), nextui()],
+  plugins: [
+    require("@tailwindcss/typography"),
+    nextui({
+      themes: {
+        light: {
+          colors: {
+            background: "#FFFFFF", // or DEFAULT
+            foreground: "#11181C", // or 50 to 900 DEFAULT
+            primary: {
+              //... 50 to 900
+              foreground: "#FFFFFF",
+              DEFAULT: "#006FEE",
+            },
+            // ... rest of the colors
+          },
+        },
+        dark: {
+          colors: {
+            background: "#000000", // or DEFAULT
+            foreground: "#ECEDEE", // or 50 to 900 DEFAULT
+            primary: {
+              //... 50 to 900
+              foreground: "#FFFFFF",
+              DEFAULT: "#006FEE",
+            },
+          },
+          // ... rest of the colors
+        },
+        mytheme: {
+          // custom theme
+          extend: "dark",
+          colors: {
+            primary: {
+              foreground: "#000000",
+              DEFAULT: "#BEF264",
+            },
+            focus: "#BEF264",
+          },
+        },
+      },
+    }),
+  ],
 };
 export default config;
