@@ -534,7 +534,24 @@ const GrantForm = ({ grant }: Props) => {
               onChange={(e) => field.onChange(e.target.checked)}
               value={String(field.value)}
             >
-              Budget approved by the Project Controller
+              Is Budget approved by the Project Controller?
+            </Checkbox>
+          )}
+        />
+
+        <Controller
+          control={control}
+          name="isDMPSubmitted"
+          defaultValue={grant?.isDMPSubmitted ?? false}
+          render={({ field }) => (
+            <Checkbox
+              {...field}
+              checked={field.value}
+              isSelected={field.value}
+              onChange={(e) => field.onChange(e.target.checked)}
+              value={String(field.value)}
+            >
+              Is DMP created and shared with the Project Manager?
             </Checkbox>
           )}
         />

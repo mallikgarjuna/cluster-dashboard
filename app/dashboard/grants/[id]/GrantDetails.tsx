@@ -27,7 +27,7 @@ const GrantDetails = async ({ grant }: Props) => {
   console.log(grant.assignedToUser?.email);
 
   return (
-    <Flex direction="column" gap="3">
+    <Flex direction="column" gap="3" className="max-w-xl">
       <Heading>{grant.title}</Heading>
 
       <Flex gap="3" my="2">
@@ -96,31 +96,37 @@ const GrantDetails = async ({ grant }: Props) => {
         />
       </div>
 
-      <CustomFiledDetails
-        subheading="Submission date"
-        fieldInfo={grant.submissionDate?.toISOString().split("T")[0] ?? null}
-        //===   fieldInfo={grant.submissionDate ? grant.submissionDate.toDateString() : null}
-      />
+      <div className="flex gap-2 rounded-md border border-gray-300">
+        <CustomFiledDetails
+          subheading="Submission date"
+          fieldInfo={grant.submissionDate?.toISOString().split("T")[0] ?? null}
+          //===   fieldInfo={grant.submissionDate ? grant.submissionDate.toDateString() : null}
+        />
 
-      <CustomFiledDetails
-        subheading="Deadline"
-        fieldInfo={grant.deadline?.toISOString().substring(0, 10) ?? null}
-      />
+        <CustomFiledDetails
+          subheading="Deadline"
+          fieldInfo={grant.deadline?.toISOString().substring(0, 10) ?? null}
+        />
 
-      <CustomFiledDetails
-        subheading="Decision date"
-        fieldInfo={grant.decisionDate?.toISOString().split("T")[0] ?? null}
-      />
+        <CustomFiledDetails
+          subheading="Decision date"
+          fieldInfo={grant.decisionDate?.toISOString().split("T")[0] ?? null}
+        />
+      </div>
 
-      <CustomFiledDetails
-        subheading="Project start date"
-        fieldInfo={grant.projectStartDate?.toISOString().split("T")[0] ?? null}
-      />
+      <div className="flex gap-2 rounded-md border border-gray-300">
+        <CustomFiledDetails
+          subheading="Project start date"
+          fieldInfo={
+            grant.projectStartDate?.toISOString().split("T")[0] ?? null
+          }
+        />
 
-      <CustomFiledDetails
-        subheading="Project end date"
-        fieldInfo={grant.projectEndDate?.toISOString().split("T")[0] ?? null}
-      />
+        <CustomFiledDetails
+          subheading="Project end date"
+          fieldInfo={grant.projectEndDate?.toISOString().split("T")[0] ?? null}
+        />
+      </div>
 
       <CustomFiledDetails
         subheading="Project Number"
@@ -145,6 +151,11 @@ const GrantDetails = async ({ grant }: Props) => {
       <CustomFiledDetails
         subheading="Is Budget approved by the Project Controller?"
         fieldInfo={grant.isBudgetApproved ? "Yes" : "No"}
+      />
+
+      <CustomFiledDetails
+        subheading="Is DMP created and shared with the Project Manager?"
+        fieldInfo={grant.isDMPSubmitted ? "Yes" : "No"}
       />
 
       <CustomFiledDetails subheading="Notes" fieldInfo={grant.notes} />

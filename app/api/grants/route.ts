@@ -41,6 +41,7 @@ export async function POST(request: NextRequest) {
     fundingActionId,
     fundingCallId,
     isBudgetApproved,
+    isDMPSubmitted,
   } = validation.data;
 
   const newGrant = await prisma.grant.create({
@@ -93,6 +94,7 @@ export async function POST(request: NextRequest) {
         },
       },
       isBudgetApproved: isBudgetApproved,
+      isDMPSubmitted: isDMPSubmitted,
     },
   });
 
