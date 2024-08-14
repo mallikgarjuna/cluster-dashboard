@@ -4,6 +4,7 @@ import { GrantFormDataType, grantFormSchema } from "@/app/validationSchemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Button,
+  Checkbox,
   Dropdown,
   DropdownItem,
   DropdownMenu,
@@ -358,56 +359,62 @@ const GrantForm = ({ grant }: Props) => {
           />
         </div>
 
-        <Input
-          {...register("submissionDate")}
-          errorMessage={errors.submissionDate?.message}
-          isInvalid={!!errors.submissionDate}
-          type="date"
-          label="Submission Date"
-          // placeholder="Submission date of the grant"
-          defaultValue={grant?.submissionDate?.toISOString().substring(0, 10)}
-          // defaultValue={grant?.submissionDate}
-        />
+        <div className="flex gap-2 rounded-md border border-gray-300 py-2">
+          <Input
+            {...register("submissionDate")}
+            errorMessage={errors.submissionDate?.message}
+            isInvalid={!!errors.submissionDate}
+            type="date"
+            label="Submission Date"
+            // placeholder="Submission date of the grant"
+            defaultValue={grant?.submissionDate?.toISOString().substring(0, 10)}
+            // defaultValue={grant?.submissionDate}
+          />
 
-        <Input
-          {...register("deadline")}
-          errorMessage={errors.deadline?.message}
-          isInvalid={!!errors.deadline}
-          type="date"
-          label="Deadline Date"
-          // placeholder="Submission date of the grant"
-          defaultValue={grant?.deadline?.toISOString().substring(0, 10)}
-        />
+          <Input
+            {...register("deadline")}
+            errorMessage={errors.deadline?.message}
+            isInvalid={!!errors.deadline}
+            type="date"
+            label="Deadline Date"
+            // placeholder="Submission date of the grant"
+            defaultValue={grant?.deadline?.toISOString().substring(0, 10)}
+          />
 
-        <Input
-          {...register("decisionDate")}
-          errorMessage={errors.decisionDate?.message}
-          isInvalid={!!errors.decisionDate}
-          type="date"
-          label="Decision Date"
-          // placeholder="Submission date of the grant"
-          defaultValue={grant?.decisionDate?.toISOString().substring(0, 10)}
-        />
+          <Input
+            {...register("decisionDate")}
+            errorMessage={errors.decisionDate?.message}
+            isInvalid={!!errors.decisionDate}
+            type="date"
+            label="Decision Date"
+            // placeholder="Submission date of the grant"
+            defaultValue={grant?.decisionDate?.toISOString().substring(0, 10)}
+          />
+        </div>
 
-        <Input
-          {...register("projectStartDate")}
-          errorMessage={errors.projectStartDate?.message}
-          isInvalid={!!errors.projectStartDate}
-          type="date"
-          label="Project Start Date (post award)"
-          placeholder="Project start date of the grant"
-          defaultValue={grant?.projectStartDate?.toISOString().substring(0, 10)}
-        />
+        <div className="flex gap-2 rounded-md border border-gray-300 py-2">
+          <Input
+            {...register("projectStartDate")}
+            errorMessage={errors.projectStartDate?.message}
+            isInvalid={!!errors.projectStartDate}
+            type="date"
+            label="Project Start Date (post award)"
+            placeholder="Project start date of the grant"
+            defaultValue={grant?.projectStartDate
+              ?.toISOString()
+              .substring(0, 10)}
+          />
 
-        <Input
-          {...register("projectEndDate")}
-          errorMessage={errors.projectEndDate?.message}
-          isInvalid={!!errors.projectEndDate}
-          type="date"
-          label="Project End Date (post award)"
-          placeholder="End date of the project"
-          defaultValue={grant?.projectEndDate?.toISOString().substring(0, 10)}
-        />
+          <Input
+            {...register("projectEndDate")}
+            errorMessage={errors.projectEndDate?.message}
+            isInvalid={!!errors.projectEndDate}
+            type="date"
+            label="Project End Date (post award)"
+            placeholder="End date of the project"
+            defaultValue={grant?.projectEndDate?.toISOString().substring(0, 10)}
+          />
+        </div>
 
         <Input
           {...register("projectNumber", {
@@ -513,6 +520,23 @@ const GrantForm = ({ grant }: Props) => {
               </Select>
             );
           }}
+        />
+
+        <Controller
+          control={control}
+          name="isBudgetApproved"
+          defaultValue={grant?.isBudgetApproved ?? false}
+          render={({ field }) => (
+            <Checkbox
+              {...field}
+              checked={field.value}
+              isSelected={field.value}
+              onChange={(e) => field.onChange(e.target.checked)}
+              value={String(field.value)}
+            >
+              Budget approved by the Project Controller
+            </Checkbox>
+          )}
         />
 
         <Controller

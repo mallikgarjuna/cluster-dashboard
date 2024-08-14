@@ -32,6 +32,7 @@ export const grantFormSchema = z.object({
   fundingProgrammeId: z.string().optional(),
   fundingActionId: z.string().optional(),
   fundingCallId: z.string().optional(),
+  isBudgetApproved: z.boolean().optional(),
   // .refine((value) => String(value).length === 6, {
   //   message: "Project number must be exactly 6 digits",
   //   path: ["projectNumber"],
@@ -73,6 +74,7 @@ export const patchGrantSchema = z.object({
   fundingProgrammeId: z.string().optional(),
   fundingActionId: z.string().optional(),
   fundingCallId: z.string().optional(),
+  isBudgetApproved: z.boolean().optional(),
   // .refine((value) => String(value).length === 6, {
   //   message: "Project number must be exactly 6 digits",
   //   path: ["projectNumber"],

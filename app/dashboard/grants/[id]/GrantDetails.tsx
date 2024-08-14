@@ -142,6 +142,11 @@ const GrantDetails = async ({ grant }: Props) => {
         fieldInfo={grant.status ?? null}
       />
 
+      <CustomFiledDetails
+        subheading="Is Budget approved by the Project Controller?"
+        fieldInfo={grant.isBudgetApproved ? "Yes" : "No"}
+      />
+
       <CustomFiledDetails subheading="Notes" fieldInfo={grant.notes} />
     </Flex>
   );

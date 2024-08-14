@@ -42,6 +42,7 @@ export async function PATCH(request: NextRequest, { params }: Props) {
     fundingProgrammeId,
     fundingActionId,
     fundingCallId,
+    isBudgetApproved,
   } = validation.data;
 
   // Validating assignedToUserId:
@@ -109,6 +110,7 @@ export async function PATCH(request: NextRequest, { params }: Props) {
           id: fundingCallId,
         },
       },
+      isBudgetApproved: isBudgetApproved,
     },
   });
 
