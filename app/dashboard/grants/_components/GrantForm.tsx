@@ -13,7 +13,13 @@ import {
   Select,
   SelectItem,
 } from "@nextui-org/react";
-import { Grant, StatusGrant, User, enumApplicantRole } from "@prisma/client";
+import {
+  Grant,
+  StatusGrant,
+  User,
+  enumApplicantRole,
+  enumGroupMemberType,
+} from "@prisma/client";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { Controller, SubmitHandler, useForm, useWatch } from "react-hook-form";
@@ -109,6 +115,8 @@ const GrantForm = ({ grant }: Props) => {
   const statuses = Object.values(StatusGrant);
 
   const applicantRoles = Object.values(enumApplicantRole);
+
+  const groupMemberTypes = Object.values(enumGroupMemberType);
 
   return (
     <div className="max-w-xl">
@@ -413,72 +421,66 @@ const GrantForm = ({ grant }: Props) => {
         </div>
 
         <div className="flex gap-2 rounded-md border border-gray-300 py-2">
-          <Input
-            {...register("projectStartDate")}
-            errorMessage={errors.projectStartDate?.message}
-            isInvalid={!!errors.projectStartDate}
-            type="date"
-            label="Project Start Date (post award)"
-            placeholder="Project start date of the grant"
-            defaultValue={grant?.projectStartDate
-              ?.toISOString()
-              .substring(0, 10)}
+          <Controller
+            control={control}
+            name="assignedToUserId"
+            defaultValue={grant?.assignedToUserId ?? undefined}
+            render={({ field }) => {
+              return (
+                <Select
+                  {...field}
+                  label="Groupleader *"
+                  placeholder="Select groupleader"
+                  className="max-w-xs"
+                  {...register("assignedToUserId")}
+                  errorMessage={errors.assignedToUserId?.message}
+                  isInvalid={!!errors.assignedToUserId}
+                  defaultSelectedKeys={
+                    grant?.assignedToUserId ? [grant.assignedToUserId] : []
+                  }
+                >
+                  {users?.map((user) => (
+                    <SelectItem
+                      key={user?.id}
+                      value={user?.id}
+                      textValue={user?.lastName ?? ""}
+                    >
+                      {user?.lastName}
+                    </SelectItem>
+                  )) ?? []}
+                </Select>
+              );
+            }}
           />
 
-          <Input
-            {...register("projectEndDate")}
-            errorMessage={errors.projectEndDate?.message}
-            isInvalid={!!errors.projectEndDate}
-            type="date"
-            label="Project End Date (post award)"
-            placeholder="End date of the project"
-            defaultValue={grant?.projectEndDate?.toISOString().substring(0, 10)}
+          <Controller
+            control={control}
+            name="groupMemberType"
+            defaultValue={grant?.groupMemberType ?? undefined}
+            render={({ field }) => {
+              return (
+                <Select
+                  label="Group member type *"
+                  placeholder="Select Group member type"
+                  className="max-w-xs"
+                  {...register("groupMemberType")}
+                  errorMessage={errors.groupMemberType?.message}
+                  isInvalid={!!errors.groupMemberType}
+                >
+                  {groupMemberTypes?.map((memberType) => (
+                    <SelectItem
+                      key={memberType}
+                      value={memberType}
+                      textValue={memberType.toString()}
+                    >
+                      {memberType}
+                    </SelectItem>
+                  )) ?? []}
+                </Select>
+              );
+            }}
           />
         </div>
-
-        <Input
-          {...register("projectNumber", {
-            setValueAs: (val) => (val === "" ? undefined : parseInt(val, 10)),
-          })}
-          errorMessage={errors.projectNumber?.message}
-          isInvalid={!!errors.projectNumber}
-          type="number"
-          label="Project number (UMCG)"
-          placeholder="6 digit project number from project controller"
-          defaultValue={grant?.projectNumber?.toString() || ""} //default is null if not provided
-        />
-
-        <Controller
-          control={control}
-          name="assignedToUserId"
-          defaultValue={grant?.assignedToUserId ?? undefined}
-          render={({ field }) => {
-            return (
-              <Select
-                {...field}
-                label="Applicant Groupleader *"
-                placeholder="Select groupleader"
-                className="max-w-xs"
-                {...register("assignedToUserId")}
-                errorMessage={errors.assignedToUserId?.message}
-                isInvalid={!!errors.assignedToUserId}
-                defaultSelectedKeys={
-                  grant?.assignedToUserId ? [grant.assignedToUserId] : []
-                }
-              >
-                {users?.map((user) => (
-                  <SelectItem
-                    key={user?.id}
-                    value={user?.id}
-                    textValue={user?.lastName ?? ""}
-                  >
-                    {user?.lastName}
-                  </SelectItem>
-                )) ?? []}
-              </Select>
-            );
-          }}
-        />
 
         <Controller
           control={control}
@@ -540,6 +542,42 @@ const GrantForm = ({ grant }: Props) => {
               </Select>
             );
           }}
+        />
+
+        <div className="flex gap-2 rounded-md border border-gray-300 py-2">
+          <Input
+            {...register("projectStartDate")}
+            errorMessage={errors.projectStartDate?.message}
+            isInvalid={!!errors.projectStartDate}
+            type="date"
+            label="Project Start Date (post award)"
+            placeholder="Project start date of the grant"
+            defaultValue={grant?.projectStartDate
+              ?.toISOString()
+              .substring(0, 10)}
+          />
+
+          <Input
+            {...register("projectEndDate")}
+            errorMessage={errors.projectEndDate?.message}
+            isInvalid={!!errors.projectEndDate}
+            type="date"
+            label="Project End Date (post award)"
+            placeholder="End date of the project"
+            defaultValue={grant?.projectEndDate?.toISOString().substring(0, 10)}
+          />
+        </div>
+
+        <Input
+          {...register("projectNumber", {
+            setValueAs: (val) => (val === "" ? undefined : parseInt(val, 10)),
+          })}
+          errorMessage={errors.projectNumber?.message}
+          isInvalid={!!errors.projectNumber}
+          type="number"
+          label="Project number (UMCG)"
+          placeholder="6 digit project number from project controller"
+          defaultValue={grant?.projectNumber?.toString() || ""} //default is null if not provided
         />
 
         <Controller

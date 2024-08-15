@@ -121,6 +121,28 @@ const GrantDetails = async ({ grant }: Props) => {
         />
       </div>
 
+      <div className="flex gap-2 rounded-md border border-gray-300 py-2">
+        <CustomFiledDetails
+          subheading="Group Leader"
+          fieldInfo={user?.lastName ?? null}
+        />
+
+        <CustomFiledDetails
+          subheading="Group member type"
+          fieldInfo={grant.groupMemberType}
+        />
+      </div>
+
+      <CustomFiledDetails
+        subheading="Applicant role"
+        fieldInfo={grant.applicantRole}
+      />
+
+      <CustomFiledDetails
+        subheading="Grant status"
+        fieldInfo={grant.status ?? null}
+      />
+
       <div className="flex gap-2 rounded-md border border-gray-300">
         <CustomFiledDetails
           subheading="Project start date"
@@ -138,21 +160,6 @@ const GrantDetails = async ({ grant }: Props) => {
       <CustomFiledDetails
         subheading="Project Number"
         fieldInfo={grant.projectNumber}
-      />
-
-      <CustomFiledDetails
-        subheading="Applicant user"
-        fieldInfo={user?.lastName ?? null}
-      />
-
-      <CustomFiledDetails
-        subheading="Applicant role"
-        fieldInfo={grant.applicantRole}
-      />
-
-      <CustomFiledDetails
-        subheading="Grant status"
-        fieldInfo={grant.status ?? null}
       />
 
       <CustomFiledDetails

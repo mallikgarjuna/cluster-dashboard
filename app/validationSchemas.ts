@@ -2,6 +2,7 @@ import {
   StatusGrant,
   UserRole,
   enumApplicantRole,
+  enumGroupMemberType,
   enumLocalityType,
   enumSectorType,
 } from "@prisma/client";
@@ -27,6 +28,7 @@ export const grantFormSchema = z.object({
   projectEndDate: z.optional(z.union([z.coerce.date(), z.literal("")])),
   notes: z.string().optional(),
   assignedToUserId: z.string(),
+  groupMemberType: z.nativeEnum(enumGroupMemberType).optional(),
   status: z.nativeEnum(StatusGrant),
   projectNumber: z.number().optional().nullable(),
   applicantRole: z.nativeEnum(enumApplicantRole),
@@ -71,6 +73,7 @@ export const patchGrantSchema = z.object({
     .max(255)
     .optional()
     .nullable(),
+  groupMemberType: z.nativeEnum(enumGroupMemberType).optional(),
   status: z.nativeEnum(StatusGrant),
   projectNumber: z.number().optional().nullable(),
   applicantRole: z.nativeEnum(enumApplicantRole),

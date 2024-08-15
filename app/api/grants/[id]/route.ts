@@ -36,6 +36,7 @@ export async function PATCH(request: NextRequest, { params }: Props) {
     projectEndDate,
     notes,
     assignedToUserId,
+    groupMemberType,
     status,
     projectNumber,
     applicantRole,
@@ -90,6 +91,7 @@ export async function PATCH(request: NextRequest, { params }: Props) {
           id: assignedToUserId!, // ! because assignedToUserId can be null (Check this later, TODO)
         },
       },
+      groupMemberType: groupMemberType,
       status: status,
       projectNumber: projectNumber,
       applicantRole: applicantRole,
