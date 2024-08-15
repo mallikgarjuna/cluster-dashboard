@@ -21,6 +21,7 @@ model Grant {
   status                  StatusGrant       @default(DRAFT)
   acronym                 String?           @default("") @db.VarChar(255)
   budgetTotal             Int?              @default(0)
+  budgetAssignedToPI      Int?              @default(0)
   isBudgetApproved        Boolean?          @default(false)
   isDMPSubmitted          Boolean?          @default(false)
   fundingAgency           String?           @default("") @db.VarChar(255) //text input

@@ -156,17 +156,31 @@ const GrantForm = ({ grant }: Props) => {
           <p className="text-sm text-red-500">{errors.description.message}</p>
         )}
 
-        <Input
-          {...register("budgetTotal", { valueAsNumber: true })}
-          errorMessage={errors.budgetTotal?.message}
-          isInvalid={!!errors.budgetTotal}
-          type="number"
-          label="Budget Total"
-          placeholder="Total budget of the grant"
-          // defaultValue is uncontrolled (if not below, may need to use Controlled comp;)
-          defaultValue={grant?.budgetTotal?.toString() || "0"}
-          // defaultValue={grant?.budgetTotal || 0}
-        />
+        <div className="flex gap-2 rounded-md border border-gray-300 py-2">
+          <Input
+            {...register("budgetTotal", { valueAsNumber: true })}
+            errorMessage={errors.budgetTotal?.message}
+            isInvalid={!!errors.budgetTotal}
+            type="number"
+            label="Budget Total"
+            placeholder="Total budget of the grant"
+            // defaultValue is uncontrolled (if not below, may need to use Controlled comp;)
+            defaultValue={grant?.budgetTotal?.toString() || "0"}
+            // defaultValue={grant?.budgetTotal || 0}
+          />
+
+          <Input
+            {...register("budgetAssignedToPI", { valueAsNumber: true })}
+            errorMessage={errors.budgetAssignedToPI?.message}
+            isInvalid={!!errors.budgetAssignedToPI}
+            type="number"
+            label="Budget Assigned to the PI (applicant)"
+            placeholder="Budget Assigned to the PI (applicant)"
+            // defaultValue is uncontrolled (if not below, may need to use Controlled comp;)
+            defaultValue={grant?.budgetAssignedToPI?.toString() || "0"}
+            // defaultValue={grant?.budgetTotal || 0}
+          />
+        </div>
 
         {/* Related Funding Agency */}
         <div className="flex gap-2 rounded-md border border-gray-300 py-2">
