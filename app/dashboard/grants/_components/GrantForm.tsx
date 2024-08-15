@@ -165,6 +165,117 @@ const GrantForm = ({ grant }: Props) => {
         )}
 
         <div className="flex gap-2 rounded-md border border-gray-300 py-2">
+          <Controller
+            control={control}
+            name="assignedToUserId"
+            defaultValue={grant?.assignedToUserId ?? undefined}
+            render={({ field }) => {
+              return (
+                <Select
+                  {...field}
+                  label="Groupleader *"
+                  placeholder="Select groupleader"
+                  className="max-w-xs"
+                  {...register("assignedToUserId")}
+                  errorMessage={errors.assignedToUserId?.message}
+                  isInvalid={!!errors.assignedToUserId}
+                  defaultSelectedKeys={
+                    grant?.assignedToUserId ? [grant.assignedToUserId] : []
+                  }
+                >
+                  {users?.map((user) => (
+                    <SelectItem
+                      key={user?.id}
+                      value={user?.id}
+                      textValue={user?.lastName ?? ""}
+                    >
+                      {user?.lastName}
+                    </SelectItem>
+                  )) ?? []}
+                </Select>
+              );
+            }}
+          />
+
+          <Controller
+            control={control}
+            name="groupMemberType"
+            defaultValue={grant?.groupMemberType ?? undefined}
+            render={({ field }) => {
+              return (
+                <Select
+                  label="Group member type *"
+                  placeholder="Select Group member type"
+                  className="max-w-xs"
+                  {...register("groupMemberType")}
+                  errorMessage={errors.groupMemberType?.message}
+                  isInvalid={!!errors.groupMemberType}
+                >
+                  {groupMemberTypes?.map((memberType) => (
+                    <SelectItem
+                      key={memberType}
+                      value={memberType}
+                      textValue={memberType.toString()}
+                    >
+                      {memberType}
+                    </SelectItem>
+                  )) ?? []}
+                </Select>
+              );
+            }}
+          />
+        </div>
+
+        <Controller
+          control={control}
+          name="applicantRole"
+          defaultValue={grant?.applicantRole ?? undefined}
+          render={({ field }) => {
+            // const selectedKeys = grant?.applicantRole
+            //   ? [grant.applicantRole]
+            //   : [];
+            return (
+              <Select
+                label="Applicant Role *"
+                placeholder="Select Applecant Role"
+                className="max-w-xs"
+                {...register("applicantRole")}
+                errorMessage={errors.applicantRole?.message}
+                isInvalid={!!errors.applicantRole}
+                // defaultSelectedKeys={selectedKeys}
+              >
+                {applicantRoles?.map((role) => (
+                  <SelectItem
+                    key={role}
+                    value={role}
+                    textValue={role.toString()}
+                  >
+                    {role}
+                  </SelectItem>
+                )) ?? []}
+              </Select>
+            );
+          }}
+        />
+
+        <Controller
+          control={control}
+          name="isBudgetApproved"
+          defaultValue={grant?.isBudgetApproved ?? false}
+          render={({ field }) => (
+            <Checkbox
+              {...field}
+              checked={field.value}
+              isSelected={field.value}
+              onChange={(e) => field.onChange(e.target.checked)}
+              value={String(field.value)}
+            >
+              Is Budget approved by the Project Controller?
+            </Checkbox>
+          )}
+        />
+
+        <div className="flex gap-2 rounded-md border border-gray-300 py-2">
           <Input
             {...register("budgetTotal", { valueAsNumber: true })}
             errorMessage={errors.budgetTotal?.message}
@@ -419,101 +530,6 @@ const GrantForm = ({ grant }: Props) => {
             defaultValue={grant?.decisionDate?.toISOString().substring(0, 10)}
           />
         </div>
-
-        <div className="flex gap-2 rounded-md border border-gray-300 py-2">
-          <Controller
-            control={control}
-            name="assignedToUserId"
-            defaultValue={grant?.assignedToUserId ?? undefined}
-            render={({ field }) => {
-              return (
-                <Select
-                  {...field}
-                  label="Groupleader *"
-                  placeholder="Select groupleader"
-                  className="max-w-xs"
-                  {...register("assignedToUserId")}
-                  errorMessage={errors.assignedToUserId?.message}
-                  isInvalid={!!errors.assignedToUserId}
-                  defaultSelectedKeys={
-                    grant?.assignedToUserId ? [grant.assignedToUserId] : []
-                  }
-                >
-                  {users?.map((user) => (
-                    <SelectItem
-                      key={user?.id}
-                      value={user?.id}
-                      textValue={user?.lastName ?? ""}
-                    >
-                      {user?.lastName}
-                    </SelectItem>
-                  )) ?? []}
-                </Select>
-              );
-            }}
-          />
-
-          <Controller
-            control={control}
-            name="groupMemberType"
-            defaultValue={grant?.groupMemberType ?? undefined}
-            render={({ field }) => {
-              return (
-                <Select
-                  label="Group member type *"
-                  placeholder="Select Group member type"
-                  className="max-w-xs"
-                  {...register("groupMemberType")}
-                  errorMessage={errors.groupMemberType?.message}
-                  isInvalid={!!errors.groupMemberType}
-                >
-                  {groupMemberTypes?.map((memberType) => (
-                    <SelectItem
-                      key={memberType}
-                      value={memberType}
-                      textValue={memberType.toString()}
-                    >
-                      {memberType}
-                    </SelectItem>
-                  )) ?? []}
-                </Select>
-              );
-            }}
-          />
-        </div>
-
-        <Controller
-          control={control}
-          name="applicantRole"
-          defaultValue={grant?.applicantRole ?? undefined}
-          render={({ field }) => {
-            // const selectedKeys = grant?.applicantRole
-            //   ? [grant.applicantRole]
-            //   : [];
-            return (
-              <Select
-                label="Applicant Role *"
-                placeholder="Select Applecant Role"
-                className="max-w-xs"
-                {...register("applicantRole")}
-                errorMessage={errors.applicantRole?.message}
-                isInvalid={!!errors.applicantRole}
-                // defaultSelectedKeys={selectedKeys}
-              >
-                {applicantRoles?.map((role) => (
-                  <SelectItem
-                    key={role}
-                    value={role}
-                    textValue={role.toString()}
-                  >
-                    {role}
-                  </SelectItem>
-                )) ?? []}
-              </Select>
-            );
-          }}
-        />
-
         <Controller
           control={control}
           name="status"
@@ -579,24 +595,6 @@ const GrantForm = ({ grant }: Props) => {
           placeholder="6 digit project number from project controller"
           defaultValue={grant?.projectNumber?.toString() || ""} //default is null if not provided
         />
-
-        <Controller
-          control={control}
-          name="isBudgetApproved"
-          defaultValue={grant?.isBudgetApproved ?? false}
-          render={({ field }) => (
-            <Checkbox
-              {...field}
-              checked={field.value}
-              isSelected={field.value}
-              onChange={(e) => field.onChange(e.target.checked)}
-              value={String(field.value)}
-            >
-              Is Budget approved by the Project Controller?
-            </Checkbox>
-          )}
-        />
-
         <Controller
           control={control}
           name="isDMPSubmitted"

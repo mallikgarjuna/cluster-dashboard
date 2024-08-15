@@ -39,11 +39,33 @@ const GrantDetails = async ({ grant }: Props) => {
 
       {/* <Card className="prose max-w-full" mt="4">
         <ReactMarkdown>{grant.description}</ReactMarkdown>
-      </Card> */}
+        </Card> */}
 
       <CustomFiledDetails
         subheading="Description"
         fieldInfo={grant.description}
+      />
+
+      <div className="flex gap-2 rounded-md border border-gray-300 py-2">
+        <CustomFiledDetails
+          subheading="Group Leader"
+          fieldInfo={user?.lastName ?? null}
+        />
+
+        <CustomFiledDetails
+          subheading="Group member type"
+          fieldInfo={grant.groupMemberType}
+        />
+      </div>
+
+      <CustomFiledDetails
+        subheading="Applicant role"
+        fieldInfo={grant.applicantRole}
+      />
+
+      <CustomFiledDetails
+        subheading="Is Budget approved by the Project Controller?"
+        fieldInfo={grant.isBudgetApproved ? "Yes" : "No"}
       />
 
       <div className="flex gap-2 rounded-md border border-gray-300 py-2">
@@ -120,24 +142,6 @@ const GrantDetails = async ({ grant }: Props) => {
           fieldInfo={grant.decisionDate?.toISOString().split("T")[0] ?? null}
         />
       </div>
-
-      <div className="flex gap-2 rounded-md border border-gray-300 py-2">
-        <CustomFiledDetails
-          subheading="Group Leader"
-          fieldInfo={user?.lastName ?? null}
-        />
-
-        <CustomFiledDetails
-          subheading="Group member type"
-          fieldInfo={grant.groupMemberType}
-        />
-      </div>
-
-      <CustomFiledDetails
-        subheading="Applicant role"
-        fieldInfo={grant.applicantRole}
-      />
-
       <CustomFiledDetails
         subheading="Grant status"
         fieldInfo={grant.status ?? null}
@@ -161,12 +165,6 @@ const GrantDetails = async ({ grant }: Props) => {
         subheading="Project Number"
         fieldInfo={grant.projectNumber}
       />
-
-      <CustomFiledDetails
-        subheading="Is Budget approved by the Project Controller?"
-        fieldInfo={grant.isBudgetApproved ? "Yes" : "No"}
-      />
-
       <CustomFiledDetails
         subheading="Is DMP created and shared with the Project Manager?"
         fieldInfo={grant.isDMPSubmitted ? "Yes" : "No"}
