@@ -7,6 +7,7 @@ import DepartmentFilter from "./DepartmentFilter";
 import GroupLeaderFilter from "./GroupLeaderFilter";
 import GrantStartYearFilter from "./GrantStartYearFilter";
 import prisma from "@/prisma/client";
+import ButtonWithSpinner from "./ButtonWithSpinner";
 
 const GrantActions = async () => {
   const usersWithDepartment = await prisma.user.findMany({
@@ -21,9 +22,10 @@ const GrantActions = async () => {
       <DepartmentFilter />
       <GroupLeaderFilter users={usersWithDepartment} />
       <GrantStartYearFilter />
-      <Button>
+      {/* <Button>
         <Link href="/dashboard/grants/new">New Grant</Link>
-      </Button>
+      </Button> */}
+      <ButtonWithSpinner hrefProp="/dashboard/grants/new" name="New Grant" />
     </Flex>
   );
 };
