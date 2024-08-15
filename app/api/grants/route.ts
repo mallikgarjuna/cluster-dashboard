@@ -60,11 +60,13 @@ export async function POST(request: NextRequest) {
       projectEndDate: projectEndDate === "" ? null : projectEndDate,
       notes: notes,
       // assignedToUserId: body.assignedToUserId,
+      // ...(assignedToUserId && {
       assignedToUser: {
         connect: {
           id: assignedToUserId,
         },
       },
+      // }),
       status: status,
       projectNumber: projectNumber,
       applicantRole: applicantRole,
@@ -73,26 +75,34 @@ export async function POST(request: NextRequest) {
           id: session.user.id,
         },
       },
-      relatedFundingAgency: {
-        connect: {
-          id: fundingAgencyId,
+      ...(fundingAgencyId && {
+        relatedFundingAgency: {
+          connect: {
+            id: fundingAgencyId,
+          },
         },
-      },
-      relatedFundingProgramme: {
-        connect: {
-          id: fundingProgrammeId,
+      }),
+      ...(fundingProgrammeId && {
+        relatedFundingProgramme: {
+          connect: {
+            id: fundingProgrammeId,
+          },
         },
-      },
-      relatedFundingAction: {
-        connect: {
-          id: fundingActionId,
+      }),
+      ...(fundingActionId && {
+        relatedFundingAction: {
+          connect: {
+            id: fundingActionId,
+          },
         },
-      },
-      relatedFundingCall: {
-        connect: {
-          id: fundingCallId,
+      }),
+      ...(fundingCallId && {
+        relatedFundingCall: {
+          connect: {
+            id: fundingCallId,
+          },
         },
-      },
+      }),
       isBudgetApproved: isBudgetApproved,
       isDMPSubmitted: isDMPSubmitted,
     },

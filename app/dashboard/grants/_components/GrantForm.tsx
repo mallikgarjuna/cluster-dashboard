@@ -122,7 +122,7 @@ const GrantForm = ({ grant }: Props) => {
           errorMessage={errors.title?.message}
           isInvalid={!!errors.title}
           type="text"
-          label="Title"
+          label="Title *"
           placeholder="Title of the grant"
           defaultValue={grant?.title}
         />
@@ -132,7 +132,7 @@ const GrantForm = ({ grant }: Props) => {
           errorMessage={errors.acronym?.message}
           isInvalid={!!errors.acronym}
           type="text"
-          label="Acronym"
+          label="Acronym *"
           placeholder="Acronym of the grant"
           defaultValue={grant?.acronym || ""}
         />
@@ -143,7 +143,7 @@ const GrantForm = ({ grant }: Props) => {
           render={({ field }) => (
             <SimpleMdeReact
               {...field}
-              placeholder="Description of grant"
+              placeholder="Description of grant *"
               options={{
                 maxHeight: "100px",
                 autofocus: true,
@@ -442,7 +442,7 @@ const GrantForm = ({ grant }: Props) => {
             return (
               <Select
                 {...field}
-                label="Applicant Groupleader"
+                label="Applicant Groupleader *"
                 placeholder="Select groupleader"
                 className="max-w-xs"
                 {...register("assignedToUserId")}
@@ -476,7 +476,7 @@ const GrantForm = ({ grant }: Props) => {
             //   : [];
             return (
               <Select
-                label="Applicant Role"
+                label="Applicant Role *"
                 placeholder="Select Applecant Role"
                 className="max-w-xs"
                 {...register("applicantRole")}
@@ -506,7 +506,7 @@ const GrantForm = ({ grant }: Props) => {
             // const selectedKeys = grant?.status ? [grant.status] : [];
             return (
               <Select
-                label="Applicantion Status"
+                label="Applicantion Status *"
                 placeholder="Select status"
                 className="max-w-xs"
                 {...register("status")}
