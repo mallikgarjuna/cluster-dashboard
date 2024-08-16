@@ -9,6 +9,22 @@ const grantWithUser = Prisma.validator<Prisma.GrantDefaultArgs>()({
 
 export type GrantWithUser = Prisma.GrantGetPayload<typeof grantWithUser>;
 
+// Grant with ALL related types
+const grantWithAllRelatedTypes = Prisma.validator<Prisma.GrantDefaultArgs>()({
+  include: {
+    assignedToUser: true,
+    createdByUser: true,
+    relatedFundingAgency: true,
+    relatedFundingProgramme: true,
+    relatedFundingAction: true,
+    relatedFundingCall: true,
+  },
+});
+
+export type GrantWithAllRelatedTypes = Prisma.GrantGetPayload<
+  typeof grantWithAllRelatedTypes
+>;
+
 // Grant with User and User with Department type
 const grantWithUserWithDepartment = Prisma.validator<Prisma.GrantDefaultArgs>()(
   {

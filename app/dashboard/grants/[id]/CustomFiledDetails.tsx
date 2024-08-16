@@ -3,7 +3,7 @@ import React from "react";
 
 interface Props {
   subheading: string;
-  fieldInfo: string | number | null;
+  fieldInfo: string | number | null | boolean;
 }
 const CustomFiledDetails = ({ subheading, fieldInfo }: Props) => {
   return (

@@ -4,9 +4,11 @@ import { Card, Flex, Heading, Text, TextField } from "@radix-ui/themes";
 import ReactMarkdown from "react-markdown";
 import CustomFiledDetails from "./CustomFiledDetails";
 import prisma from "@/prisma/client";
+import { GrantWithAllRelatedTypes } from "@/prisma/customTypes";
 
 interface Props {
-  grant: Grant;
+  // grant: Grant;
+  grant: GrantWithAllRelatedTypes;
 }
 
 const GrantDetails = async ({ grant }: Props) => {
@@ -22,8 +24,10 @@ const GrantDetails = async ({ grant }: Props) => {
     where: { id: grant.assignedToUserId },
   });
 
+  console.log(grant.assignedToUser?.email);
+
   return (
-    <Flex direction="column" gap="3">
+    <Flex direction="column" gap="3" className="max-w-xl">
       <Heading>{grant.title}</Heading>
 
       <Flex gap="3" my="2">
@@ -35,65 +39,24 @@ const GrantDetails = async ({ grant }: Props) => {
 
       {/* <Card className="prose max-w-full" mt="4">
         <ReactMarkdown>{grant.description}</ReactMarkdown>
-      </Card> */}
+        </Card> */}
 
       <CustomFiledDetails
         subheading="Description"
         fieldInfo={grant.description}
       />
 
-      <CustomFiledDetails subheading="Budget" fieldInfo={grant.budgetTotal} />
+      <div className="flex gap-2 rounded-md border border-gray-300 py-2">
+        <CustomFiledDetails
+          subheading="Group Leader"
+          fieldInfo={user?.lastName ?? null}
+        />
 
-      <CustomFiledDetails
-        subheading="Funding Agency"
-        fieldInfo={grant.fundingAgency}
-      />
-
-      <CustomFiledDetails
-        subheading="Funding Programme"
-        fieldInfo={grant.fundingProgramme}
-      />
-
-      <CustomFiledDetails
-        subheading="Funding Call"
-        fieldInfo={grant.fundingCall}
-      />
-
-      <CustomFiledDetails
-        subheading="Submission date"
-        fieldInfo={grant.submissionDate?.toISOString().split("T")[0] ?? null}
-        //===   fieldInfo={grant.submissionDate ? grant.submissionDate.toDateString() : null}
-      />
-
-      <CustomFiledDetails
-        subheading="Deadline"
-        fieldInfo={grant.deadline?.toISOString().substring(0, 10) ?? null}
-      />
-
-      <CustomFiledDetails
-        subheading="Decision date"
-        fieldInfo={grant.decisionDate?.toISOString().split("T")[0] ?? null}
-      />
-
-      <CustomFiledDetails
-        subheading="Project start date"
-        fieldInfo={grant.projectStartDate?.toISOString().split("T")[0] ?? null}
-      />
-
-      <CustomFiledDetails
-        subheading="Project end date"
-        fieldInfo={grant.projectEndDate?.toISOString().split("T")[0] ?? null}
-      />
-
-      <CustomFiledDetails
-        subheading="Project Number"
-        fieldInfo={grant.projectNumber}
-      />
-
-      <CustomFiledDetails
-        subheading="Applicant user"
-        fieldInfo={user?.lastName ?? null}
-      />
+        <CustomFiledDetails
+          subheading="Group member type"
+          fieldInfo={grant.groupMemberType}
+        />
+      </div>
 
       <CustomFiledDetails
         subheading="Applicant role"
@@ -101,8 +64,110 @@ const GrantDetails = async ({ grant }: Props) => {
       />
 
       <CustomFiledDetails
+        subheading="Is Budget approved by the Project Controller?"
+        fieldInfo={grant.isBudgetApproved ? "Yes" : "No"}
+      />
+
+      <div className="flex gap-2 rounded-md border border-gray-300 py-2">
+        <CustomFiledDetails subheading="Budget" fieldInfo={grant.budgetTotal} />
+
+        <CustomFiledDetails
+          subheading="Budget Assigned to the PI (applicant)"
+          fieldInfo={grant.budgetAssignedToPI}
+        />
+      </div>
+
+      <div className="flex items-center gap-2 rounded-md border border-gray-300 py-2">
+        <CustomFiledDetails
+          subheading="Funding Agency (Select)"
+          fieldInfo={grant.relatedFundingAgency?.name ?? "Not specified"}
+        />
+        <span className="self-center">or</span>
+        <CustomFiledDetails
+          subheading="Funding Agency (text input)"
+          fieldInfo={grant.fundingAgency}
+        />
+      </div>
+
+      <div className="flex items-center gap-2 rounded-md border border-gray-300 py-2">
+        <CustomFiledDetails
+          subheading="Funding Programme (Select)"
+          fieldInfo={grant.relatedFundingProgramme?.name ?? "Not specified"}
+        />
+        <span className="self-center">or</span>
+        <CustomFiledDetails
+          subheading="Funding Programme (text input)"
+          fieldInfo={grant.fundingProgramme}
+        />
+      </div>
+
+      <div className="flex items-center gap-2 rounded-md border border-gray-300 py-2">
+        <CustomFiledDetails
+          subheading="Funding Action (Select)"
+          fieldInfo={grant.relatedFundingAction?.name ?? "Not specified"}
+        />
+        <span className="self-center">or</span>
+        <CustomFiledDetails
+          subheading="Funding Action (text input)"
+          fieldInfo={grant.fundingAction}
+        />
+      </div>
+
+      <div className="flex gap-2 rounded-md border border-gray-300 py-2">
+        <CustomFiledDetails
+          subheading="Funding Call (Select)"
+          fieldInfo={grant.relatedFundingCall?.name ?? "Not specified"}
+        />
+        <span className="self-center">or</span>
+        <CustomFiledDetails
+          subheading="Funding Call (text input)"
+          fieldInfo={grant.fundingCall}
+        />
+      </div>
+
+      <div className="flex gap-2 rounded-md border border-gray-300">
+        <CustomFiledDetails
+          subheading="Submission date"
+          fieldInfo={grant.submissionDate?.toISOString().split("T")[0] ?? null}
+          //===   fieldInfo={grant.submissionDate ? grant.submissionDate.toDateString() : null}
+        />
+
+        <CustomFiledDetails
+          subheading="Deadline"
+          fieldInfo={grant.deadline?.toISOString().substring(0, 10) ?? null}
+        />
+
+        <CustomFiledDetails
+          subheading="Decision date"
+          fieldInfo={grant.decisionDate?.toISOString().split("T")[0] ?? null}
+        />
+      </div>
+      <CustomFiledDetails
         subheading="Grant status"
         fieldInfo={grant.status ?? null}
+      />
+
+      <div className="flex gap-2 rounded-md border border-gray-300">
+        <CustomFiledDetails
+          subheading="Project start date"
+          fieldInfo={
+            grant.projectStartDate?.toISOString().split("T")[0] ?? null
+          }
+        />
+
+        <CustomFiledDetails
+          subheading="Project end date"
+          fieldInfo={grant.projectEndDate?.toISOString().split("T")[0] ?? null}
+        />
+      </div>
+
+      <CustomFiledDetails
+        subheading="Project Number"
+        fieldInfo={grant.projectNumber}
+      />
+      <CustomFiledDetails
+        subheading="Is DMP created and shared with the Project Manager?"
+        fieldInfo={grant.isDMPSubmitted ? "Yes" : "No"}
       />
 
       <CustomFiledDetails subheading="Notes" fieldInfo={grant.notes} />

@@ -2,9 +2,11 @@ import {
   StatusGrant,
   UserRole,
   enumApplicantRole,
+  enumGroupMemberType,
   enumLocalityType,
   enumSectorType,
 } from "@prisma/client";
+import { isDataView } from "util/types";
 import { z } from "zod";
 
 // grant form schema
@@ -14,8 +16,10 @@ export const grantFormSchema = z.object({
   description: z.string().min(1, "Description is required.").max(65535),
   acronym: z.string().optional(),
   budgetTotal: z.number().optional(),
+  budgetAssignedToPI: z.number().optional(),
   fundingAgency: z.string().optional(),
   fundingProgramme: z.string().optional(),
+  fundingAction: z.string().optional(),
   fundingCall: z.string().optional(),
   submissionDate: z.optional(z.union([z.coerce.date(), z.literal("")])),
   deadline: z.optional(z.union([z.coerce.date(), z.literal("")])),
@@ -24,9 +28,16 @@ export const grantFormSchema = z.object({
   projectEndDate: z.optional(z.union([z.coerce.date(), z.literal("")])),
   notes: z.string().optional(),
   assignedToUserId: z.string(),
+  groupMemberType: z.nativeEnum(enumGroupMemberType).optional(),
   status: z.nativeEnum(StatusGrant),
   projectNumber: z.number().optional().nullable(),
   applicantRole: z.nativeEnum(enumApplicantRole),
+  fundingAgencyId: z.string().optional(),
+  fundingProgrammeId: z.string().optional(),
+  fundingActionId: z.string().optional(),
+  fundingCallId: z.string().optional(),
+  isBudgetApproved: z.boolean().optional(),
+  isDMPSubmitted: z.boolean().optional(),
   // .refine((value) => String(value).length === 6, {
   //   message: "Project number must be exactly 6 digits",
   //   path: ["projectNumber"],
@@ -45,8 +56,10 @@ export const patchGrantSchema = z.object({
     .optional(),
   acronym: z.string().optional(),
   budgetTotal: z.number().optional(),
+  budgetAssignedToPI: z.number().optional(),
   fundingAgency: z.string().optional(),
   fundingProgramme: z.string().optional(),
+  fundingAction: z.string().optional(),
   fundingCall: z.string().optional(),
   submissionDate: z.optional(z.union([z.coerce.date(), z.literal("")])),
   deadline: z.optional(z.union([z.coerce.date(), z.literal("")])),
@@ -60,9 +73,16 @@ export const patchGrantSchema = z.object({
     .max(255)
     .optional()
     .nullable(),
+  groupMemberType: z.nativeEnum(enumGroupMemberType).optional(),
   status: z.nativeEnum(StatusGrant),
   projectNumber: z.number().optional().nullable(),
   applicantRole: z.nativeEnum(enumApplicantRole),
+  fundingAgencyId: z.string().optional(),
+  fundingProgrammeId: z.string().optional(),
+  fundingActionId: z.string().optional(),
+  fundingCallId: z.string().optional(),
+  isBudgetApproved: z.boolean().optional(),
+  isDMPSubmitted: z.boolean().optional(),
   // .refine((value) => String(value).length === 6, {
   //   message: "Project number must be exactly 6 digits",
   //   path: ["projectNumber"],

@@ -131,7 +131,7 @@ const fetchFundingProgrammes = async () => {
   return data;
 };
 
-const useFundingProgrammes = () =>
+export const useFundingProgrammes = () =>
   useQuery<FundingProgramme[]>({
     queryKey: ["fundingProgrammes-api"],
     queryFn: () => fetchFundingProgrammes(),

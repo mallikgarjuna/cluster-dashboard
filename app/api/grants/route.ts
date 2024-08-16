@@ -17,36 +17,98 @@ export async function POST(request: NextRequest) {
   // 400: Bad request, meaning: the client sent invalid data
   // console.log("validation.data: ", validation.data);
 
+  // If validation is successful, destructure the data from the validation
+  const {
+    title,
+    description,
+    acronym,
+    budgetTotal,
+    budgetAssignedToPI,
+    fundingAgency,
+    fundingProgramme,
+    fundingCall,
+    submissionDate,
+    deadline,
+    decisionDate,
+    projectStartDate,
+    projectEndDate,
+    notes,
+    assignedToUserId,
+    groupMemberType,
+    status,
+    projectNumber,
+    applicantRole,
+    fundingAgencyId,
+    fundingProgrammeId,
+    fundingActionId,
+    fundingCallId,
+    isBudgetApproved,
+    isDMPSubmitted,
+  } = validation.data;
+
   const newGrant = await prisma.grant.create({
     data: {
-      title: body.title,
-      description: body.description,
-      acronym: body.acronym,
-      budgetTotal: body.budgetTotal,
-      fundingAgency: body.fundingAgency,
-      fundingProgramme: body.fundingProgramme,
-      fundingCall: body.fundingCall,
-      submissionDate: body.submissionDate === "" ? null : body.submissionDate,
-      deadline: body.deadline === "" ? null : body.deadline,
-      decisionDate: body.decisionDate === "" ? null : body.decisionDate,
-      projectStartDate:
-        body.projectStartDate === "" ? null : body.projectStartDate,
-      projectEndDate: body.projectEndDate === "" ? null : body.projectEndDate,
-      notes: body.notes,
+      title: title,
+      description: description,
+      acronym: acronym,
+      budgetTotal: budgetTotal,
+      budgetAssignedToPI: budgetAssignedToPI,
+      fundingAgency: fundingAgency,
+      fundingProgramme: fundingProgramme,
+      fundingCall: fundingCall,
+      submissionDate: submissionDate === "" ? null : submissionDate,
+      deadline: deadline === "" ? null : deadline,
+      decisionDate: decisionDate === "" ? null : decisionDate,
+      projectStartDate: projectStartDate === "" ? null : projectStartDate,
+      projectEndDate: projectEndDate === "" ? null : projectEndDate,
+      notes: notes,
       // assignedToUserId: body.assignedToUserId,
+      // ...(assignedToUserId && {
       assignedToUser: {
         connect: {
-          id: body.assignedToUserId,
+          id: assignedToUserId,
         },
       },
-      status: body.status,
-      projectNumber: body.projectNumber,
-      applicantRole: body.applicantRole,
+      // }),
+      groupMemberType: groupMemberType,
+      status: status,
+      projectNumber: projectNumber,
+      applicantRole: applicantRole,
       createdByUser: {
         connect: {
           id: session.user.id,
         },
       },
+      ...(fundingAgencyId && {
+        relatedFundingAgency: {
+          connect: {
+            id: fundingAgencyId,
+          },
+        },
+      }),
+      ...(fundingProgrammeId && {
+        relatedFundingProgramme: {
+          connect: {
+            id: fundingProgrammeId,
+          },
+        },
+      }),
+      ...(fundingActionId && {
+        relatedFundingAction: {
+          connect: {
+            id: fundingActionId,
+          },
+        },
+      }),
+      ...(fundingCallId && {
+        relatedFundingCall: {
+          connect: {
+            id: fundingCallId,
+          },
+        },
+      }),
+      isBudgetApproved: isBudgetApproved,
+      isDMPSubmitted: isDMPSubmitted,
     },
   });
 

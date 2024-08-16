@@ -131,7 +131,7 @@ const fetchFundingAgencies = async () => {
   return data;
 };
 
-const useFundingAgencies = () =>
+export const useFundingAgencies = () =>
   useQuery<FundingAgency[]>({
     queryKey: ["fundingAgencies-api"], // can this tag be revalidated in SA?
     // queryFn: () => axios.get("/api/fundingAgencies").then((res) => res.data),

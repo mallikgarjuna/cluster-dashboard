@@ -5,11 +5,9 @@ import Link from "next/link";
 
 const ClusterLogo = () => {
   return (
-    <div
-      className={`${lusitana.className} flex flex-row items-center gap-3 text-white`}
-    >
+    <div className={`${lusitana.className} flex flex-row items-center gap-3`}>
       <Link href="/">
-        <GrCluster style={{ color: "white" }} />
+        <GrCluster style={{ color: "black" }} />
       </Link>
       <span className="text-3xl">Cluster Dashboard</span>
     </div>

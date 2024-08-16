@@ -12,7 +12,7 @@ export default async function HomePage() {
 
   return (
     <main className="flex min-h-screen flex-col gap-6 p-6">
-      <div className="flex h-20 items-end rounded-lg bg-blue-500 p-4 md:h-52">
+      <div className="flex h-20 items-end rounded-lg bg-blue-200 p-4 md:h-52">
         <ClusterLogo />
       </div>
       <Grid columns={{ initial: "1", md: "2" }} gap="5">

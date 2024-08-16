@@ -15,29 +15,42 @@ datasource db {
 model Grant {
   // id               Int         @default(autoincrement()) @ignore
   // newId            String      @default(cuid()) @ignore
-  id               String            @id @default(cuid())
-  title            String            @default("") @db.VarChar(255)
-  description      String            @default("") @db.Text
-  status           StatusGrant       @default(DRAFT)
-  acronym          String?           @default("") @db.VarChar(255)
-  budgetTotal      Int?              @default(0)
-  fundingAgency    String?           @default("") @db.VarChar(255)
-  fundingProgramme String?           @default("") @db.VarChar(255)
-  fundingCall      String?           @default("") @db.VarChar(255)
-  submissionDate   DateTime?
-  deadline         DateTime?
-  decisionDate     DateTime?
-  projectStartDate DateTime?
-  projectEndDate   DateTime?
-  notes            String?           @default("") @db.Text
-  projectNumber    Int? // This field is optional and defaults to null if not provided
-  applicantRole    enumApplicantRole @default(MAIN_APPLICANT)
-  createdAt        DateTime          @default(now())
-  updatedAt        DateTime          @updatedAt
-  assignedToUserId String?           @db.VarChar(255)
-  assignedToUser   User?             @relation("GrantAssignedToUser", fields: [assignedToUserId], references: [id])
-  createdByUserId  String?           @db.VarChar(255)
-  createdByUser    User?             @relation("GrantCreatedByUser", fields: [createdByUserId], references: [id])
+  id                      String               @id @default(cuid())
+  title                   String               @default("") @db.VarChar(255)
+  description             String               @default("") @db.Text
+  status                  StatusGrant          @default(DRAFT)
+  acronym                 String?              @default("") @db.VarChar(255)
+  budgetTotal             Int?                 @default(0)
+  budgetAssignedToPI      Int?                 @default(0)
+  isBudgetApproved        Boolean?             @default(false)
+  isDMPSubmitted          Boolean?             @default(false)
+  fundingAgency           String?              @default("") @db.VarChar(255) //text input
+  fundingProgramme        String?              @default("") @db.VarChar(255) //text input
+  fundingAction           String?              @default("") @db.VarChar(255) //text input
+  fundingCall             String?              @default("") @db.VarChar(255) //text input
+  submissionDate          DateTime?
+  deadline                DateTime?
+  decisionDate            DateTime?
+  projectStartDate        DateTime?
+  projectEndDate          DateTime?
+  notes                   String?              @default("") @db.Text
+  projectNumber           Int? // This field is optional and defaults to null if not provided
+  applicantRole           enumApplicantRole    @default(MAIN_APPLICANT)
+  createdAt               DateTime             @default(now())
+  updatedAt               DateTime             @updatedAt
+  assignedToUserId        String?              @db.VarChar(255)
+  assignedToUser          User?                @relation("GrantAssignedToUser", fields: [assignedToUserId], references: [id])
+  groupMemberType         enumGroupMemberType? @default(PI)
+  createdByUserId         String?              @db.VarChar(255)
+  createdByUser           User?                @relation("GrantCreatedByUser", fields: [createdByUserId], references: [id])
+  relatedFundingAgency    FundingAgency?       @relation(fields: [fundingAgencyId], references: [id])
+  fundingAgencyId         String?              @db.VarChar(255)
+  relatedFundingProgramme FundingProgramme?    @relation(fields: [fundingProgrammeId], references: [id])
+  fundingProgrammeId      String?
+  relatedFundingAction    FundingAction?       @relation(fields: [fundingActionId], references: [id])
+  fundingActionId         String?
+  relatedFundingCall      FundingCall?         @relation(fields: [fundingCallId], references: [id])
+  fundingCallId           String?
 }
 
 enum StatusGrant {
@@ -53,6 +66,13 @@ enum StatusGrant {
 enum enumApplicantRole {
   MAIN_APPLICANT
   CO_APPLICANT
+}
+
+enum enumGroupMemberType {
+  PI
+  POSTDOC
+  PHD
+  TECHNICIAN
 }
 
 model Account {
@@ -139,6 +159,7 @@ model FundingAgency {
   sectorType        enumSectorType
   url               String?
   fundingProgrammes FundingProgramme[]
+  grants            Grant[]
 }
 
 enum enumLocalityType {
@@ -160,6 +181,7 @@ model FundingProgramme {
   realatedFundingAgency FundingAgency?  @relation(fields: [fundingAgencyId], references: [id])
   fundingAgencyId       String?
   fundingActions        FundingAction[]
+  grants                Grant[]
 }
 
 model FundingAction {
@@ -168,6 +190,7 @@ model FundingAction {
   relatedFundingProgramme FundingProgramme? @relation(fields: [fundingProgrammeId], references: [id])
   fundingProgrammeId      String?
   fundingCalls            FundingCall[]
+  grants                  Grant[]
 }
 
 model FundingCall {
@@ -176,4 +199,5 @@ model FundingCall {
   url                  String?
   relatedFundingAction FundingAction? @relation(fields: [fundingActionId], references: [id])
   fundingActionId      String?
+  grants               Grant[]
 }
