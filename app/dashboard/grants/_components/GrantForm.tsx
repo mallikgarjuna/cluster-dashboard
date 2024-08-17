@@ -141,7 +141,7 @@ const GrantForm = ({ grant }: Props) => {
           isInvalid={!!errors.acronym}
           type="text"
           label="Acronym *"
-          placeholder="Acronym of the grant"
+          placeholder="Maximum 20 characters (If none, add two keywords from the title)"
           defaultValue={grant?.acronym || ""}
         />
 
