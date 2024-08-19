@@ -125,6 +125,11 @@ const GrantDetails = async ({ grant }: Props) => {
         />
       </div>
 
+      <CustomFiledDetails
+        subheading="URL of the Funding Call (text input)"
+        fieldInfo={grant.urlFundingCall}
+      />
+
       <div className="flex gap-2 rounded-md border border-gray-300">
         <CustomFiledDetails
           subheading="Submission date"

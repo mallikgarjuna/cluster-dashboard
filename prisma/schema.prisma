@@ -28,6 +28,7 @@ model Grant {
   fundingProgramme        String?              @default("") @db.VarChar(255) //text input
   fundingAction           String?              @default("") @db.VarChar(255) //text input
   fundingCall             String?              @default("") @db.VarChar(255) //text input
+  urlFundingCall          String?              @default("") @db.VarChar(255) //text input
   submissionDate          DateTime?
   deadline                DateTime?
   decisionDate            DateTime?

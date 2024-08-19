@@ -80,7 +80,7 @@ const GrantForm = ({ grant }: Props) => {
   const submitGrantForm: SubmitHandler<GrantFormDataType> = async (
     grantFormData,
   ) => {
-    console.log(grantFormData);
+    // console.log(grantFormData);
     try {
       if (grant) {
         await axios.patch(`/api/grants/${grant.id}`, grantFormData);
@@ -141,7 +141,7 @@ const GrantForm = ({ grant }: Props) => {
           isInvalid={!!errors.acronym}
           type="text"
           label="Acronym *"
-          placeholder="Acronym of the grant"
+          placeholder="Maximum 20 characters (If none, add two keywords from the title)"
           defaultValue={grant?.acronym || ""}
         />
 
@@ -497,6 +497,16 @@ const GrantForm = ({ grant }: Props) => {
             defaultValue={grant?.fundingCall || ""}
           />
         </div>
+
+        <Input
+          {...register("urlFundingCall")}
+          errorMessage={errors.urlFundingCall?.message}
+          isInvalid={!!errors.urlFundingCall}
+          type="text"
+          label="URL of the Funding Call"
+          placeholder="E.g., https://ec.europa.eu/info/funding-tenders/opportunities/portal/screen/opportunities/topic-details/erc-2024-stg"
+          defaultValue={grant?.urlFundingCall || ""}
+        />
 
         <div className="flex gap-2 rounded-md border border-gray-300 py-2">
           <Input
