@@ -2,7 +2,7 @@ import { StatusGrant } from "@prisma/client";
 import { Card, Flex, Text } from "@radix-ui/themes";
 import Link from "next/link";
 import React from "react";
-import { GrantQuery } from "./dashboard/grants/list/GrantTable";
+import { GrantQuery } from "../grants/list/GrantTable";
 import classNames from "classnames";
 
 interface Props {

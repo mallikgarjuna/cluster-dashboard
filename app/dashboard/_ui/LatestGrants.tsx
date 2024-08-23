@@ -1,10 +1,10 @@
 import React from "react";
 import prisma from "@/prisma/client";
 import { Button, Card, Flex, Heading, Table } from "@radix-ui/themes";
-import { GrantStatusBadge } from "./components";
+import { GrantStatusBadge } from "@/app/components";
 import Link from "next/link";
 import { getServerSession } from "next-auth";
-import authOptions from "./auth/authOptions";
+import authOptions from "@/app/auth/authOptions";
 import { Grant } from "@prisma/client";
 import { GrantWithUser } from "@/prisma/customTypes";
 

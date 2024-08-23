@@ -1,14 +1,15 @@
 import prisma from "@/prisma/client";
 import { Flex, Grid } from "@radix-ui/themes";
 import { Metadata } from "next";
-import GrantChart from "../GrantChart";
-import GrantSummary from "../GrantSummary";
-import LatestGrants from "../LatestGrants";
+import GrantChart from "./_ui/GrantChart";
+import GrantSummary from "./_ui/GrantSummary";
+import LatestGrants from "./_ui/LatestGrants";
 import { getServerSession } from "next-auth";
 import authOptions from "../auth/authOptions";
 import DashboardActions from "./_ui/DashboardActions";
 import { GrantQuery } from "./grants/list/GrantTable";
 import { OSDepartmentShortName } from "@prisma/client";
+import PIGrantsTable from "./_ui/PIGrantsTable";
 
 interface Props {
   searchParams: GrantQuery;
@@ -159,6 +160,7 @@ export default async function DashboardPage({ searchParams }: Props) {
         </Flex>
         <LatestGrants latestGrants={latestGrants} />
       </Grid>
+      <PIGrantsTable />
     </Flex>
   );
 }
