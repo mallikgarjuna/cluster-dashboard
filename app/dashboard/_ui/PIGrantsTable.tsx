@@ -8,10 +8,13 @@ import {
   TableHeader,
   TableRow,
 } from "@nextui-org/react";
+import { OSDepartmentShortName } from "@prisma/client";
 import { useEffect, useState } from "react";
 
+// type APIResponseData = {
 type RowData = {
   piID: string;
+  piDepartment: OSDepartmentShortName | "Unknown";
   pi: string | null;
   submitted: number;
   awaiting: number;
@@ -22,10 +25,14 @@ type RowData = {
   budgetAwarded: number;
 };
 
+// type RowData = Omit<APIResponseData, "piDepartment">;
+// type RowData = APIResponseData;
+
 // Sample data if no data is fetched
 const initialRowData: RowData[] = [
   {
     piID: "1",
+    piDepartment: "Unknown",
     pi: "PI Name",
     submitted: 1,
     awaiting: 1,
@@ -60,27 +67,39 @@ const PIGrantsTable = () => {
     { key: "budgetAwarded", label: "Budget Awarded" },
   ];
 
+  const departments = Object.values(OSDepartmentShortName);
+
   return (
     <div>
-      <h1 className="text-xl font-bold">PI Grants Table</h1>
-      <Table aria-label="PI Grants Table" className="mb-40 mt-2">
-        <TableHeader columns={columns}>
-          {(column) => (
-            <TableColumn key={column.key}>{column.label}</TableColumn>
-          )}
-        </TableHeader>
-        <TableBody items={rows}>
-          {(row) => (
-            <TableRow key={row.piID}>
-              {(columnKey) => (
-                <TableCell>
-                  {columnKey !== "piID" && row[columnKey as keyof RowData]}
-                </TableCell>
+      {departments.map((dept) => (
+        <div key={dept}>
+          <h1 className="text-xl font-bold">{`PI Grants Table - ${dept}`}</h1>
+          <Table
+            aria-label={`PI Grants Table for ${dept}`}
+            className="mb-4"
+            key={dept}
+          >
+            <TableHeader columns={columns}>
+              {(column) => (
+                <TableColumn key={column.key}>{column.label}</TableColumn>
               )}
-            </TableRow>
-          )}
-        </TableBody>
-      </Table>
+            </TableHeader>
+            <TableBody items={rows.filter((row) => row.piDepartment === dept)}>
+              {(item) => (
+                <TableRow key={item.piID}>
+                  {(columnKey) => (
+                    <TableCell>
+                      {columnKey !== "piID" &&
+                        // item[columnKey as keyof RowData] === dept &&
+                        item[columnKey as keyof RowData]}
+                    </TableCell>
+                  )}
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </div>
+      ))}
     </div>
   );
 };

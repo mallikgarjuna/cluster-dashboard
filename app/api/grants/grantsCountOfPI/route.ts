@@ -8,6 +8,7 @@ export async function GET(request: NextRequest) {
       select: {
         id: true,
         name: true,
+        relatedDepartment: { select: { nameShort: true } },
         assignedGrants: {
           select: { status: true, budgetTotal: true, budgetAssignedToPI: true },
         },
@@ -53,6 +54,7 @@ export async function GET(request: NextRequest) {
 
       return {
         piID: pi.id,
+        piDepartment: pi.relatedDepartment?.nameShort ?? "Unknown",
         pi: pi.name,
         submitted,
         awaiting,
