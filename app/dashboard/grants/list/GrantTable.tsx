@@ -21,6 +21,7 @@ export interface GrantQuery {
   department: OSDepartmentShortName;
   groupLeader: User["id"]; // this is still a string type; //string;
   year: string;
+  submitYear: string;
 }
 
 interface Props {
