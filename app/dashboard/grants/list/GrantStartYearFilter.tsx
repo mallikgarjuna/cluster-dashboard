@@ -11,7 +11,7 @@ const GrantStartYearFilter = () => {
 
   return (
     <Select
-      label="Filter by project start date..."
+      label="Filter by start year..."
       className="max-w-xs"
       defaultSelectedKeys={[searchParams.get("year") || "All"]}
       onChange={(event) => {
