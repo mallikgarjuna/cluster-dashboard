@@ -104,12 +104,35 @@ export default async function DashboardPage({ searchParams }: Props) {
       },
     });
   };
-  const submittedTotal = (await getSubmittedGrantsForUser(filters.groupLeader))
-    .length;
+  // const submittedTotal = (await getSubmittedGrantsForUser(filters.groupLeader))
+  //   .length;
+  const getSubmittedCountForUser = async (userId?: string) => {
+    return await prisma.grant.count({
+      where: {
+        AND: [
+          ...isGroupLeader,
+          // ...filterGroupLeader,
+          // { assignedToUser: { id: userId } },
+          ...(userId ? [{ assignedToUser: { id: userId } }] : [{}]),
+          ...filterDepartment,
+          ...filterYear,
+          ...filterSubmitYear,
+        ],
+        OR: [
+          { status: "SUBMITTED" },
+          { status: "REJECTED" },
+          { status: "AWARDED" },
+          { status: "RUNNING_PROJECT" },
+          { status: "ENDED_PROJECT" },
+        ],
+      },
+    });
+  };
+  const submittedTotal = await getSubmittedCountForUser(filters.groupLeader);
   // console.log("submittedTotal: ", submittedTotal);
 
-  const getAwaitingGrantsForUser = async (userId?: string) => {
-    return await prisma.grant.findMany({
+  const getAwaitingCountForUser = async (userId?: string) => {
+    return await prisma.grant.count({
       where: {
         AND: [
           ...isGroupLeader,
@@ -123,8 +146,7 @@ export default async function DashboardPage({ searchParams }: Props) {
       },
     });
   };
-  const awaitingTotal = (await getAwaitingGrantsForUser(filters.groupLeader))
-    .length;
+  const awaitingTotal = await getAwaitingCountForUser(filters.groupLeader);
 
   const getAwardedGrantsForUser = async (userId?: string) => {
     return await prisma.grant.findMany({
@@ -145,11 +167,29 @@ export default async function DashboardPage({ searchParams }: Props) {
       },
     });
   };
-  const awardedTotal = (await getAwardedGrantsForUser(filters.groupLeader))
-    .length;
+  const getAwardedCountForUser = async (userId?: string) => {
+    return await prisma.grant.count({
+      where: {
+        AND: [
+          ...isGroupLeader,
+          // ...filterGroupLeader,
+          ...(userId ? [{ assignedToUser: { id: userId } }] : [{}]),
+          ...filterDepartment,
+          ...filterYear,
+          ...filterSubmitYear,
+        ],
+        OR: [
+          { status: "AWARDED" },
+          { status: "RUNNING_PROJECT" },
+          { status: "ENDED_PROJECT" },
+        ],
+      },
+    });
+  };
+  const awardedTotal = await getAwardedCountForUser(filters.groupLeader);
 
-  const getRejectedGrantsForUser = async (userId?: string) => {
-    return await prisma.grant.findMany({
+  const getRejectedCountForUser = async (userId?: string) => {
+    return await prisma.grant.count({
       where: {
         AND: [
           ...isGroupLeader,
@@ -163,8 +203,7 @@ export default async function DashboardPage({ searchParams }: Props) {
       },
     });
   };
-  const rejectedTotal = (await getRejectedGrantsForUser(filters.groupLeader))
-    .length;
+  const rejectedTotal = await getRejectedCountForUser(filters.groupLeader);
 
   const getLatestGrantsForUser = async (userId?: string) => {
     return await prisma.grant.findMany({
@@ -197,32 +236,40 @@ export default async function DashboardPage({ searchParams }: Props) {
 
   // Get grants count of PI (an array of objects, [{}]) for PIGrantsTable
   const grantsCountOfPIData = await Promise.all(
-    groupLeaders.map(async (groupLeader) => ({
-      piID: groupLeader.id,
-      piDepartment: groupLeader.relatedDepartment?.nameShort ?? "Unknown",
-      pi: groupLeader.name,
-      submitted: (await getSubmittedGrantsForUser(groupLeader.id)).length,
-      awaiting: (await getAwaitingGrantsForUser(groupLeader.id)).length,
-      awarded: (await getAwardedGrantsForUser(groupLeader.id)).length,
-      rejected: (await getRejectedGrantsForUser(groupLeader.id)).length,
-      successRate: Number(
-        (
-          ((await getAwardedGrantsForUser(groupLeader.id)).length /
-            (await getSubmittedGrantsForUser(groupLeader.id)).length) *
-          100
-        ).toFixed(2),
-      ),
-      budgetAppliedFor: (
+    groupLeaders.map(async (groupLeader) => {
+      const piSubmitted = await getSubmittedCountForUser(groupLeader.id);
+      const piAwaiting = await getAwaitingCountForUser(groupLeader.id);
+      const piAwarded = await getAwardedCountForUser(groupLeader.id);
+      const piRejected = await getRejectedCountForUser(groupLeader.id);
+      const piSuccessRate = Number(
+        ((piAwarded / piSubmitted) * 100).toFixed(2),
+      );
+      const piBudgetAppliedFor = (
         await getSubmittedGrantsForUser(groupLeader.id)
       ).reduce(
         (accumulator, grant) => accumulator + (grant.budgetTotal ?? 0),
         0,
-      ),
-      budgetAwarded: (await getAwardedGrantsForUser(groupLeader.id)).reduce(
+      );
+      const piBudgetAwarded = (
+        await getAwardedGrantsForUser(groupLeader.id)
+      ).reduce(
         (accumulator, grant) => accumulator + (grant.budgetAssignedToPI ?? 0),
         0,
-      ),
-    })),
+      );
+
+      return {
+        piID: groupLeader.id,
+        piDepartment: groupLeader.relatedDepartment?.nameShort ?? "Unknown",
+        pi: groupLeader.name,
+        submitted: piSubmitted,
+        awaiting: piAwaiting,
+        awarded: piAwarded,
+        rejected: piRejected,
+        successRate: piSuccessRate,
+        budgetAppliedFor: piBudgetAppliedFor,
+        budgetAwarded: piBudgetAwarded,
+      };
+    }),
   );
 
   return (
