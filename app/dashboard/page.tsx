@@ -82,79 +82,148 @@ export default async function DashboardPage({ searchParams }: Props) {
     : [{}];
 
   // Prisma queries
-  const submittedTotal = await prisma.grant.count({
-    where: {
-      AND: [
-        ...isGroupLeader,
-        ...filterDepartment,
-        ...filterGroupLeader,
-        ...filterYear,
-        ...filterSubmitYear,
-      ],
-      OR: [
-        { status: "SUBMITTED" },
-        { status: "REJECTED" },
-        { status: "AWARDED" },
-        { status: "RUNNING_PROJECT" },
-        { status: "ENDED_PROJECT" },
-      ],
-    },
-  });
-  const submittedCurrently = await prisma.grant.count({
-    where: {
-      AND: [
-        ...isGroupLeader,
-        ...filterDepartment,
-        ...filterGroupLeader,
-        ...filterYear,
-        ...filterSubmitYear,
-      ],
-      OR: [{ status: "SUBMITTED" }],
-    },
-  });
-  const awardedTotal = await prisma.grant.count({
-    where: {
-      AND: [
-        ...isGroupLeader,
-        ...filterDepartment,
-        ...filterGroupLeader,
-        ...filterYear,
-        ...filterSubmitYear,
-      ],
-      OR: [
-        { status: "AWARDED" },
-        { status: "RUNNING_PROJECT" },
-        { status: "ENDED_PROJECT" },
-      ],
-    },
-  });
-  const rejectedTotal = await prisma.grant.count({
-    where: {
-      AND: [
-        ...isGroupLeader,
-        ...filterDepartment,
-        ...filterGroupLeader,
-        ...filterYear,
-        ...filterSubmitYear,
-      ],
-      OR: [{ status: "REJECTED" }],
+  const getSubmittedGrantsForUser = async (userId?: string) => {
+    return await prisma.grant.findMany({
+      where: {
+        AND: [
+          ...isGroupLeader,
+          // ...filterGroupLeader,
+          // { assignedToUser: { id: userId } },
+          ...(userId ? [{ assignedToUser: { id: userId } }] : [{}]),
+          ...filterDepartment,
+          ...filterYear,
+          ...filterSubmitYear,
+        ],
+        OR: [
+          { status: "SUBMITTED" },
+          { status: "REJECTED" },
+          { status: "AWARDED" },
+          { status: "RUNNING_PROJECT" },
+          { status: "ENDED_PROJECT" },
+        ],
+      },
+    });
+  };
+  const submittedTotal = (await getSubmittedGrantsForUser(filters.groupLeader))
+    .length;
+  // console.log("submittedTotal: ", submittedTotal);
+
+  const getAwaitingGrantsForUser = async (userId?: string) => {
+    return await prisma.grant.findMany({
+      where: {
+        AND: [
+          ...isGroupLeader,
+          // ...filterGroupLeader,
+          ...(userId ? [{ assignedToUser: { id: userId } }] : [{}]),
+          ...filterDepartment,
+          ...filterYear,
+          ...filterSubmitYear,
+        ],
+        OR: [{ status: "SUBMITTED" }],
+      },
+    });
+  };
+  const awaitingTotal = (await getAwaitingGrantsForUser(filters.groupLeader))
+    .length;
+
+  const getAwardedGrantsForUser = async (userId?: string) => {
+    return await prisma.grant.findMany({
+      where: {
+        AND: [
+          ...isGroupLeader,
+          // ...filterGroupLeader,
+          ...(userId ? [{ assignedToUser: { id: userId } }] : [{}]),
+          ...filterDepartment,
+          ...filterYear,
+          ...filterSubmitYear,
+        ],
+        OR: [
+          { status: "AWARDED" },
+          { status: "RUNNING_PROJECT" },
+          { status: "ENDED_PROJECT" },
+        ],
+      },
+    });
+  };
+  const awardedTotal = (await getAwardedGrantsForUser(filters.groupLeader))
+    .length;
+
+  const getRejectedGrantsForUser = async (userId?: string) => {
+    return await prisma.grant.findMany({
+      where: {
+        AND: [
+          ...isGroupLeader,
+          // ...filterGroupLeader,
+          ...(userId ? [{ assignedToUser: { id: userId } }] : [{}]),
+          ...filterDepartment,
+          ...filterYear,
+          ...filterSubmitYear,
+        ],
+        OR: [{ status: "REJECTED" }],
+      },
+    });
+  };
+  const rejectedTotal = (await getRejectedGrantsForUser(filters.groupLeader))
+    .length;
+
+  const getLatestGrantsForUser = async (userId?: string) => {
+    return await prisma.grant.findMany({
+      where: {
+        AND: [
+          ...isGroupLeader,
+          // ...filterGroupLeader,
+          ...(userId ? [{ assignedToUser: { id: userId } }] : [{}]),
+          ...filterDepartment,
+          ...filterYear,
+          ...filterSubmitYear,
+        ],
+      },
+      orderBy: { createdAt: "desc" },
+      take: 5,
+      include: { assignedToUser: true },
+    });
+  };
+  const latestGrants = await getLatestGrantsForUser(filters.groupLeader);
+
+  // Get all group leaders - for grantsCountOfPIData for PIGrantsTable
+  const groupLeaders = await prisma.user.findMany({
+    where: { role: "GROUPLEADER" },
+    select: {
+      id: true,
+      name: true,
+      relatedDepartment: { select: { nameShort: true } },
     },
   });
 
-  const latestGrants = await prisma.grant.findMany({
-    where: {
-      AND: [
-        ...isGroupLeader,
-        ...filterDepartment,
-        ...filterGroupLeader,
-        ...filterYear,
-        ...filterSubmitYear,
-      ],
-    },
-    orderBy: { createdAt: "desc" },
-    take: 5,
-    include: { assignedToUser: true },
-  });
+  // Get grants count of PI (an array of objects, [{}]) for PIGrantsTable
+  const grantsCountOfPIData = await Promise.all(
+    groupLeaders.map(async (groupLeader) => ({
+      piID: groupLeader.id,
+      piDepartment: groupLeader.relatedDepartment?.nameShort ?? "Unknown",
+      pi: groupLeader.name,
+      submitted: (await getSubmittedGrantsForUser(groupLeader.id)).length,
+      awaiting: (await getAwaitingGrantsForUser(groupLeader.id)).length,
+      awarded: (await getAwardedGrantsForUser(groupLeader.id)).length,
+      rejected: (await getRejectedGrantsForUser(groupLeader.id)).length,
+      successRate: Number(
+        (
+          ((await getAwardedGrantsForUser(groupLeader.id)).length /
+            (await getSubmittedGrantsForUser(groupLeader.id)).length) *
+          100
+        ).toFixed(2),
+      ),
+      budgetAppliedFor: (
+        await getSubmittedGrantsForUser(groupLeader.id)
+      ).reduce(
+        (accumulator, grant) => accumulator + (grant.budgetTotal ?? 0),
+        0,
+      ),
+      budgetAwarded: (await getAwardedGrantsForUser(groupLeader.id)).reduce(
+        (accumulator, grant) => accumulator + (grant.budgetAssignedToPI ?? 0),
+        0,
+      ),
+    })),
+  );
 
   return (
     <Flex direction="column" gap="5">
@@ -162,14 +231,14 @@ export default async function DashboardPage({ searchParams }: Props) {
       <Grid columns={{ initial: "1", md: "2" }} gap="5">
         <Flex direction="column" gap="5">
           <GrantSummary
-            awaiting={submittedCurrently}
+            awaiting={awaitingTotal}
             submitted={submittedTotal}
             awarded={awardedTotal}
             rejected={rejectedTotal}
             searchParams={searchParams}
           />
           <GrantChart
-            awaiting={submittedCurrently}
+            awaiting={awaitingTotal}
             submitted={submittedTotal}
             awarded={awardedTotal}
             rejected={rejectedTotal}
@@ -177,7 +246,7 @@ export default async function DashboardPage({ searchParams }: Props) {
         </Flex>
         <LatestGrants latestGrants={latestGrants} />
       </Grid>
-      <PIGrantsTable />
+      <PIGrantsTable grantsCountOfPIData={grantsCountOfPIData} />
     </Flex>
   );
 }

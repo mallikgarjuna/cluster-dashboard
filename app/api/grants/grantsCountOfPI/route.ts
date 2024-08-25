@@ -4,20 +4,20 @@ import { GrantQuery } from "@/app/dashboard/grants/list/GrantTable";
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
-  console.log("searchParams: ", searchParams); //searchParams:  URLSearchParams { 'submitYear' => '2023' }
+  // console.log("searchParams: ", searchParams); //searchParams:  URLSearchParams { 'submitYear' => '2023' }
 
   const params = new URLSearchParams(searchParams);
-  console.log("params: ", params); //params:  URLSearchParams { 'submitYear' => '2023' }
-  console.log("params.get('submitYear'): ", params.get("submitYear")); //params.get('submitYear'):  2023
+  // console.log("params: ", params); //params:  URLSearchParams { 'submitYear' => '2023' }
+  // console.log("params.get('submitYear'): ", params.get("submitYear")); //params.get('submitYear'):  2023
 
   const queryObject: Partial<GrantQuery> = Object.fromEntries(searchParams);
-  console.log("queryObject: ", queryObject); //queryObject:  { submitYear: '2023' }
-  console.log("queryObject.submitYear: ", queryObject.submitYear); //queryObject.submitYear:  2023
+  // console.log("queryObject: ", queryObject); //queryObject:  { submitYear: '2023' }
+  // console.log("queryObject.submitYear: ", queryObject.submitYear); //queryObject.submitYear:  2023
 
   const submitYear = queryObject.submitYear
     ? parseInt(queryObject.submitYear)
     : undefined;
-  console.log("submitYear: ", submitYear);
+  // console.log("submitYear: ", submitYear);
 
   try {
     const PIs = await prisma.user.findMany({
