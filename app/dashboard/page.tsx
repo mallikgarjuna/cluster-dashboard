@@ -39,6 +39,7 @@ export default async function DashboardPage({ searchParams }: Props) {
     department: department,
     groupLeader: groupLeader,
     year: year,
+    submitYear: searchParams.submitYear,
   };
 
   // To get intellisense, implement this condition inside prisma query;
@@ -69,6 +70,17 @@ export default async function DashboardPage({ searchParams }: Props) {
         ]
     : [{}];
 
+  const filterSubmitYear = filters.submitYear
+    ? [
+        {
+          submissionDate: {
+            gte: new Date(`${parseInt(filters.submitYear)}-01-01`),
+            lt: new Date(`${parseInt(filters.submitYear) + 1}-01-01`),
+          },
+        },
+      ]
+    : [{}];
+
   // Prisma queries
   const submittedTotal = await prisma.grant.count({
     where: {
@@ -77,6 +89,7 @@ export default async function DashboardPage({ searchParams }: Props) {
         ...filterDepartment,
         ...filterGroupLeader,
         ...filterYear,
+        ...filterSubmitYear,
       ],
       OR: [
         { status: "SUBMITTED" },
@@ -94,6 +107,7 @@ export default async function DashboardPage({ searchParams }: Props) {
         ...filterDepartment,
         ...filterGroupLeader,
         ...filterYear,
+        ...filterSubmitYear,
       ],
       OR: [{ status: "SUBMITTED" }],
     },
@@ -105,6 +119,7 @@ export default async function DashboardPage({ searchParams }: Props) {
         ...filterDepartment,
         ...filterGroupLeader,
         ...filterYear,
+        ...filterSubmitYear,
       ],
       OR: [
         { status: "AWARDED" },
@@ -120,6 +135,7 @@ export default async function DashboardPage({ searchParams }: Props) {
         ...filterDepartment,
         ...filterGroupLeader,
         ...filterYear,
+        ...filterSubmitYear,
       ],
       OR: [{ status: "REJECTED" }],
     },
@@ -132,6 +148,7 @@ export default async function DashboardPage({ searchParams }: Props) {
         ...filterDepartment,
         ...filterGroupLeader,
         ...filterYear,
+        ...filterSubmitYear,
       ],
     },
     orderBy: { createdAt: "desc" },

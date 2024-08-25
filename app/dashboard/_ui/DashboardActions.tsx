@@ -3,6 +3,7 @@ import DepartmentFilter from "../grants/list/DepartmentFilter";
 import GroupLeaderFilter from "../grants/list/GroupLeaderFilter";
 import GrantStartYearFilter from "../grants/list/GrantStartYearFilter";
 import prisma from "@/prisma/client";
+import GrantSubmissionYearFilter from "../grants/list/GrantSubmissionYearFilter";
 
 const DashboardActions = async () => {
   const usersWithDepartment = await prisma.user.findMany({
@@ -16,6 +17,7 @@ const DashboardActions = async () => {
       <DepartmentFilter />
       <GroupLeaderFilter users={usersWithDepartment} />
       <GrantStartYearFilter />
+      <GrantSubmissionYearFilter />
     </div>
   );
 };
