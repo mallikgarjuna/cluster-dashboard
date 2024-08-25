@@ -39,6 +39,8 @@ const GrantsPage = async ({ searchParams }: Props) => {
 
   const year = searchParams.year == "All" ? undefined : searchParams.year;
 
+  const submitYear = searchParams.submitYear;
+
   // const year = startYears.includes(searchParams.year) ? searchParams.year : undefined;
 
   const page = parseInt(searchParams.page) || 1;
@@ -49,6 +51,7 @@ const GrantsPage = async ({ searchParams }: Props) => {
     department: department,
     groupLeader: groupLeader,
     year: year,
+    submitYear: submitYear,
   };
 
   const grants = await prisma.grant.findMany({
@@ -79,6 +82,16 @@ const GrantsPage = async ({ searchParams }: Props) => {
                   },
                 },
               ]
+          : [{}]),
+        ...(filters.submitYear
+          ? [
+              {
+                submissionDate: {
+                  gte: new Date(`${parseInt(filters.submitYear)}-01-01`),
+                  lt: new Date(`${parseInt(filters.submitYear) + 1}-01-01`),
+                },
+              },
+            ]
           : [{}]),
         ...(session?.user.role === "GROUPLEADER"
           ? [{ assignedToUser: { id: session?.user.id } }]
@@ -126,6 +139,16 @@ const GrantsPage = async ({ searchParams }: Props) => {
                   },
                 },
               ]
+          : [{}]),
+        ...(filters.submitYear
+          ? [
+              {
+                submissionDate: {
+                  gte: new Date(`${parseInt(filters.submitYear)}-01-01`),
+                  lt: new Date(`${parseInt(filters.submitYear) + 1}-01-01`),
+                },
+              },
+            ]
           : [{}]),
         ...(session?.user.role === "GROUPLEADER"
           ? [{ assignedToUser: { id: session?.user.id } }]

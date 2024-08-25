@@ -9,12 +9,13 @@ import {
   TableRow,
 } from "@nextui-org/react";
 import { OSDepartmentShortName } from "@prisma/client";
+import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
 // type APIResponseData = {
 type RowData = {
   piID: string;
-  piDepartment: OSDepartmentShortName | "Unknown";
+  piDepartment: string; //OSDepartmentShortName | "Unknown";
   pi: string | null;
   submitted: number;
   awaiting: number;
@@ -44,17 +45,32 @@ const initialRowData: RowData[] = [
   },
 ];
 
-const PIGrantsTable = () => {
-  const [rows, setRows] = useState<RowData[]>(initialRowData);
+interface Props {
+  grantsCountOfPIData: RowData[];
+}
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const response = await fetch("/api/grants/grantsCountOfPI");
-      const data = await response.json();
-      setRows(data);
-    };
-    fetchData();
-  }, []);
+const PIGrantsTable = ({ grantsCountOfPIData: rows }: Props) => {
+  // const [rows, setRows] = useState<RowData[]>(initialRowData);
+  // const searchParams = useSearchParams();
+  // const params = new URLSearchParams(searchParams);
+  // const queryString = params.size ? "?" + params.toString() : "";
+
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const response = await fetch(
+  //         `/api/grants/grantsCountOfPI${queryString}`,
+  //       );
+  //       if (!response.ok)
+  //         throw new Error("Failed to fetch grantsCountOfPI API");
+  //       const data = await response.json();
+  //       setRows(data);
+  //     } catch (error) {
+  //       console.error("Error fetching grantsCountOfPI API: ", error);
+  //     }
+  //   };
+  //   fetchData();
+  // }, [queryString]);
 
   const columns: { key: keyof RowData; label: string }[] = [
     { key: "pi", label: "PI Name" },
@@ -71,9 +87,10 @@ const PIGrantsTable = () => {
 
   return (
     <div>
+      <h1 className="mb-2 text-xl font-bold">{`PI Grants Overview - Tables`}</h1>
       {departments.map((dept) => (
         <div key={dept}>
-          <h1 className="text-xl font-bold">{`PI Grants Table - ${dept}`}</h1>
+          <h1 className="text-lg font-bold">{`${dept}:`}</h1>
           <Table
             aria-label={`PI Grants Table for ${dept}`}
             className="mb-4"
