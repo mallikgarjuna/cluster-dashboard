@@ -224,53 +224,53 @@ export default async function DashboardPage({ searchParams }: Props) {
   };
   const latestGrants = await getLatestGrantsForUser(filters.groupLeader);
 
-  // Get all group leaders - for grantsCountOfPIData for PIGrantsTable
-  const groupLeaders = await prisma.user.findMany({
-    where: { role: "GROUPLEADER" },
-    select: {
-      id: true,
-      name: true,
-      relatedDepartment: { select: { nameShort: true } },
-    },
-  });
+  // // Get all group leaders - for grantsCountOfPIData for PIGrantsTable
+  // const groupLeaders = await prisma.user.findMany({
+  //   where: { role: "GROUPLEADER" },
+  //   select: {
+  //     id: true,
+  //     name: true,
+  //     relatedDepartment: { select: { nameShort: true } },
+  //   },
+  // });
 
-  // Get grants count of PI (an array of objects, [{}]) for PIGrantsTable
-  const grantsCountOfPIData = await Promise.all(
-    groupLeaders.map(async (groupLeader) => {
-      const piSubmitted = await getSubmittedCountForUser(groupLeader.id);
-      const piAwaiting = await getAwaitingCountForUser(groupLeader.id);
-      const piAwarded = await getAwardedCountForUser(groupLeader.id);
-      const piRejected = await getRejectedCountForUser(groupLeader.id);
-      const piSuccessRate = Number(
-        ((piAwarded / piSubmitted) * 100).toFixed(2),
-      );
-      const piBudgetAppliedFor = (
-        await getSubmittedGrantsForUser(groupLeader.id)
-      ).reduce(
-        (accumulator, grant) => accumulator + (grant.budgetTotal ?? 0),
-        0,
-      );
-      const piBudgetAwarded = (
-        await getAwardedGrantsForUser(groupLeader.id)
-      ).reduce(
-        (accumulator, grant) => accumulator + (grant.budgetAssignedToPI ?? 0),
-        0,
-      );
+  // // Get grants count of PI (an array of objects, [{}]) for PIGrantsTable
+  // const grantsCountOfPIData = await Promise.all(
+  //   groupLeaders.map(async (groupLeader) => {
+  //     const piSubmitted = await getSubmittedCountForUser(groupLeader.id);
+  //     const piAwaiting = await getAwaitingCountForUser(groupLeader.id);
+  //     const piAwarded = await getAwardedCountForUser(groupLeader.id);
+  //     const piRejected = await getRejectedCountForUser(groupLeader.id);
+  //     const piSuccessRate = Number(
+  //       ((piAwarded / piSubmitted) * 100).toFixed(2),
+  //     );
+  //     const piBudgetAppliedFor = (
+  //       await getSubmittedGrantsForUser(groupLeader.id)
+  //     ).reduce(
+  //       (accumulator, grant) => accumulator + (grant.budgetTotal ?? 0),
+  //       0,
+  //     );
+  //     const piBudgetAwarded = (
+  //       await getAwardedGrantsForUser(groupLeader.id)
+  //     ).reduce(
+  //       (accumulator, grant) => accumulator + (grant.budgetAssignedToPI ?? 0),
+  //       0,
+  //     );
 
-      return {
-        piID: groupLeader.id,
-        piDepartment: groupLeader.relatedDepartment?.nameShort ?? "Unknown",
-        pi: groupLeader.name,
-        submitted: piSubmitted,
-        awaiting: piAwaiting,
-        awarded: piAwarded,
-        rejected: piRejected,
-        successRate: piSuccessRate,
-        budgetAppliedFor: piBudgetAppliedFor,
-        budgetAwarded: piBudgetAwarded,
-      };
-    }),
-  );
+  //     return {
+  //       piID: groupLeader.id,
+  //       piDepartment: groupLeader.relatedDepartment?.nameShort ?? "Unknown",
+  //       pi: groupLeader.name,
+  //       submitted: piSubmitted,
+  //       awaiting: piAwaiting,
+  //       awarded: piAwarded,
+  //       rejected: piRejected,
+  //       successRate: piSuccessRate,
+  //       budgetAppliedFor: piBudgetAppliedFor,
+  //       budgetAwarded: piBudgetAwarded,
+  //     };
+  //   }),
+  // );
 
   return (
     <Flex direction="column" gap="5">
@@ -293,7 +293,8 @@ export default async function DashboardPage({ searchParams }: Props) {
         </Flex>
         <LatestGrants latestGrants={latestGrants} />
       </Grid>
-      <PIGrantsTable grantsCountOfPIData={grantsCountOfPIData} />
+      {/* <PIGrantsTable grantsCountOfPIData={grantsCountOfPIData} /> */}
+      <PIGrantsTable />
     </Flex>
   );
 }

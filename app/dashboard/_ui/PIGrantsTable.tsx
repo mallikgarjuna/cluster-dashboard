@@ -46,31 +46,32 @@ const initialRowData: RowData[] = [
 ];
 
 interface Props {
-  grantsCountOfPIData: RowData[];
+  grantsCountOfPIData?: RowData[];
 }
 
-const PIGrantsTable = ({ grantsCountOfPIData: rows }: Props) => {
-  // const [rows, setRows] = useState<RowData[]>(initialRowData);
-  // const searchParams = useSearchParams();
-  // const params = new URLSearchParams(searchParams);
-  // const queryString = params.size ? "?" + params.toString() : "";
+// const PIGrantsTable = ({ grantsCountOfPIData: rows }: Props) => {
+const PIGrantsTable = () => {
+  const [rows, setRows] = useState<RowData[]>(initialRowData);
+  const searchParams = useSearchParams();
+  const params = new URLSearchParams(searchParams);
+  const queryString = params.size ? "?" + params.toString() : "";
 
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     try {
-  //       const response = await fetch(
-  //         `/api/grants/grantsCountOfPI${queryString}`,
-  //       );
-  //       if (!response.ok)
-  //         throw new Error("Failed to fetch grantsCountOfPI API");
-  //       const data = await response.json();
-  //       setRows(data);
-  //     } catch (error) {
-  //       console.error("Error fetching grantsCountOfPI API: ", error);
-  //     }
-  //   };
-  //   fetchData();
-  // }, [queryString]);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(
+          `/api/grants/grantsCountOfPI${queryString}`,
+        );
+        if (!response.ok)
+          throw new Error("Failed to fetch grantsCountOfPI API");
+        const data = await response.json();
+        setRows(data);
+      } catch (error) {
+        console.error("Error fetching grantsCountOfPI API: ", error);
+      }
+    };
+    fetchData();
+  }, [queryString]);
 
   const columns: { key: keyof RowData; label: string }[] = [
     { key: "pi", label: "PI Name" },
