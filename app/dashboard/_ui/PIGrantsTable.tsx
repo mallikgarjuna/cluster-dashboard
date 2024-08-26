@@ -96,6 +96,9 @@ const PIGrantsTable = () => {
             aria-label={`PI Grants Table for ${dept}`}
             className="mb-4"
             key={dept}
+            classNames={{
+              tr: "hover:bg-gray-200 transition-colors",
+            }}
           >
             <TableHeader columns={columns}>
               {(column) => (
