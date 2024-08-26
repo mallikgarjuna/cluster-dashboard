@@ -415,8 +415,8 @@ const GrantForm = ({ grant }: Props) => {
               <Select
                 {...field}
                 {...register("fundingActionId")}
-                errorMessage={errors.fundingProgrammeId?.message}
-                isInvalid={!!errors.fundingProgrammeId}
+                errorMessage={errors.fundingActionId?.message}
+                isInvalid={!!errors.fundingActionId}
                 label="Funding Action - Select"
                 placeholder="Select the related funding action"
                 defaultSelectedKeys={

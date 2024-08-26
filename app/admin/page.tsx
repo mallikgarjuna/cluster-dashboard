@@ -1,3 +1,4 @@
+import { Metadata } from "next";
 import Link from "next/link";
 import React from "react";
 
@@ -66,6 +67,11 @@ const AdminPage = () => {
       </article>
     </>
   );
+};
+
+export const metadata: Metadata = {
+  title: "Cluster Dashboard - Admin",
+  description: "Admin tasks",
 };
 
 export default AdminPage;
