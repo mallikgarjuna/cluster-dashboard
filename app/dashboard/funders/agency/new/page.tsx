@@ -4,11 +4,13 @@
 
 import React from "react";
 import FundingAgencyForm from "../../_components/FundingAgencyForm";
+import FundingAgencyTable from "../../_components/FundingAgencyTable";
 
 const CreateFundingAgencyPage = () => {
   return (
-    <div>
+    <div className="flex flex-col gap-y-12">
       <FundingAgencyForm />
+      <FundingAgencyTable />
     </div>
   );
 };

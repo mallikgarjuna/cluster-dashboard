@@ -1,11 +1,13 @@
 import React from "react";
 import FundingActionForm from "../../_components/FundingActionForm";
 import { Metadata } from "next";
+import FundingActionTable from "../../_components/FundingActionTable";
 
 const CreateFundingActionPage = () => {
   return (
-    <div>
+    <div className="flex flex-col gap-y-12">
       <FundingActionForm />
+      <FundingActionTable />
     </div>
   );
 };

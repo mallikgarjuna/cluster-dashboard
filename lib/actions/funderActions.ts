@@ -222,7 +222,7 @@ export async function createFundingCallSA(
         getErrorMessage(validatedFields.error),
     };
   }
-  const { name, fundingActionId } = validatedFields.data;
+  const { name, fundingActionId, url } = validatedFields.data;
 
   // If valid, make sure that we don't have a funding call w/ same name
   // Here findUnique() cannot be used b/c its db model doesn't have a
@@ -242,6 +242,7 @@ export async function createFundingCallSA(
     const newFundingCall = await prisma.fundingCall.create({
       data: {
         name: name,
+        url: url,
         fundingActionId: fundingActionId,
       },
     });

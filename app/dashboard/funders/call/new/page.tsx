@@ -1,11 +1,13 @@
 // import React from "react";
 import { Metadata } from "next";
 import FundingCallForm from "../../_components/FundingCallForm";
+import FundingCallTable from "../../_components/FundingCallTable";
 
 const FundingCallPage = () => {
   return (
-    <div>
+    <div className="flex flex-col gap-y-12">
       <FundingCallForm />
+      <FundingCallTable />
     </div>
   );
 };
