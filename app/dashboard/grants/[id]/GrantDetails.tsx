@@ -53,13 +53,13 @@ const GrantDetails = async ({ grant }: Props) => {
         />
 
         <CustomFiledDetails
-          subheading="Applicant's Groupleader"
-          fieldInfo={user?.lastName ?? null}
+          subheading="Applicant's Designation (Group member type)"
+          fieldInfo={grant.groupMemberType}
         />
 
         <CustomFiledDetails
-          subheading="Applicant's Designation (Group member type)"
-          fieldInfo={grant.groupMemberType}
+          subheading="Applicant's Groupleader"
+          fieldInfo={user?.lastName ?? null}
         />
       </div>
 

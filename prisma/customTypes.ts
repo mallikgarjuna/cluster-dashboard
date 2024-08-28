@@ -34,6 +34,7 @@ const grantWithUserWithDepartment = Prisma.validator<Prisma.GrantDefaultArgs>()(
           relatedDepartment: true,
         },
       },
+      relatedFundingCall: true,
     },
   },
 );

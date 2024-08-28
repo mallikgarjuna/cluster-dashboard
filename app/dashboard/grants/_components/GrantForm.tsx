@@ -181,12 +181,45 @@ const GrantForm = ({ grant }: Props) => {
             isInvalid={!!errors.applicantFullName}
             type="text"
             label="Applicant's Full Name - Text input *"
-            placeholder="Applicant's Full Name"
+            placeholder="Applicant's FirstName + LastName"
             defaultValue={grant?.applicantFullName}
             classNames={{
               input: [
                 "placeholder:text-default-700/50 dark:placeholder:text-default-400",
               ],
+            }}
+          />
+
+          <Controller
+            control={control}
+            name="groupMemberType"
+            defaultValue={grant?.groupMemberType ?? undefined}
+            render={({ field }) => {
+              return (
+                <Select
+                  label="Applicant's Designation (Group member type) *"
+                  placeholder="Select Applicant's Designation"
+                  // className="max-w-xs"
+                  {...register("groupMemberType")}
+                  errorMessage={errors.groupMemberType?.message}
+                  isInvalid={!!errors.groupMemberType}
+                  classNames={{
+                    value: grant?.groupMemberType
+                      ? "text-black"
+                      : "text-gray-400",
+                  }}
+                >
+                  {groupMemberTypes?.map((memberType) => (
+                    <SelectItem
+                      key={memberType}
+                      value={memberType}
+                      textValue={memberType.toString()}
+                    >
+                      {memberType}
+                    </SelectItem>
+                  )) ?? []}
+                </Select>
+              );
             }}
           />
 
@@ -220,39 +253,6 @@ const GrantForm = ({ grant }: Props) => {
                       textValue={user?.lastName ?? ""}
                     >
                       {user?.lastName}
-                    </SelectItem>
-                  )) ?? []}
-                </Select>
-              );
-            }}
-          />
-
-          <Controller
-            control={control}
-            name="groupMemberType"
-            defaultValue={grant?.groupMemberType ?? undefined}
-            render={({ field }) => {
-              return (
-                <Select
-                  label="Applicant's Designation (Group member type) *"
-                  placeholder="Select Applicant's Designation"
-                  // className="max-w-xs"
-                  {...register("groupMemberType")}
-                  errorMessage={errors.groupMemberType?.message}
-                  isInvalid={!!errors.groupMemberType}
-                  classNames={{
-                    value: grant?.groupMemberType
-                      ? "text-black"
-                      : "text-gray-400",
-                  }}
-                >
-                  {groupMemberTypes?.map((memberType) => (
-                    <SelectItem
-                      key={memberType}
-                      value={memberType}
-                      textValue={memberType.toString()}
-                    >
-                      {memberType}
                     </SelectItem>
                   )) ?? []}
                 </Select>
