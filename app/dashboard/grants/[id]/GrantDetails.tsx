@@ -27,7 +27,7 @@ const GrantDetails = async ({ grant }: Props) => {
   console.log(grant.assignedToUser?.email);
 
   return (
-    <Flex direction="column" gap="3" className="max-w-xl">
+    <Flex direction="column" gap="3" className="max-w-full">
       <Heading>{grant.title}</Heading>
 
       <Flex gap="3" my="2">
@@ -48,18 +48,23 @@ const GrantDetails = async ({ grant }: Props) => {
 
       <div className="flex gap-2 rounded-md border border-gray-300 py-2">
         <CustomFiledDetails
-          subheading="Group Leader"
-          fieldInfo={user?.lastName ?? null}
+          subheading="Applicant's Full Name"
+          fieldInfo={grant.applicantFullName}
         />
 
         <CustomFiledDetails
-          subheading="Group member type"
+          subheading="Applicant's Designation (Group member type)"
           fieldInfo={grant.groupMemberType}
+        />
+
+        <CustomFiledDetails
+          subheading="Applicant's Groupleader"
+          fieldInfo={user?.lastName ?? null}
         />
       </div>
 
       <CustomFiledDetails
-        subheading="Applicant role"
+        subheading="Applicant's Grant Application Role"
         fieldInfo={grant.applicantRole}
       />
 
@@ -69,10 +74,13 @@ const GrantDetails = async ({ grant }: Props) => {
       />
 
       <div className="flex gap-2 rounded-md border border-gray-300 py-2">
-        <CustomFiledDetails subheading="Budget" fieldInfo={grant.budgetTotal} />
+        <CustomFiledDetails
+          subheading="Budget Total of the grant application"
+          fieldInfo={grant.budgetTotal}
+        />
 
         <CustomFiledDetails
-          subheading="Budget Assigned to the PI (applicant)"
+          subheading="Budget Assigned to the applicant (or UMCG)"
           fieldInfo={grant.budgetAssignedToPI}
         />
       </div>
@@ -167,7 +175,7 @@ const GrantDetails = async ({ grant }: Props) => {
       </div>
 
       <CustomFiledDetails
-        subheading="Project Number"
+        subheading="Project Number (UMCG, post award)"
         fieldInfo={grant.projectNumber}
       />
       <CustomFiledDetails

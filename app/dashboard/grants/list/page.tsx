@@ -26,7 +26,7 @@ const GrantsPage = async ({ searchParams }: Props) => {
 
   const orderBy = columnNamesGrant.includes(searchParams.orderBy)
     ? { [searchParams.orderBy]: searchParams.sortOrder }
-    : { createdAt: "desc" as "desc" | "asc" }; //default sortorder of table
+    : { updatedAt: "desc" as "desc" | "asc" }; //default sortorder of table
   // : undefined;
 
   const departments = Object.values(OSDepartmentShortName);
@@ -104,6 +104,7 @@ const GrantsPage = async ({ searchParams }: Props) => {
           relatedDepartment: true,
         },
       },
+      relatedFundingCall: true,
     },
     orderBy: orderBy, //this is an obj;
     skip: (page - 1) * pageSize,

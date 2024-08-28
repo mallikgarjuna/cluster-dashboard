@@ -7,7 +7,7 @@ interface Props {
 }
 const CustomFiledDetails = ({ subheading, fieldInfo }: Props) => {
   return (
-    <Flex direction="column">
+    <Flex direction="column" width="100%">
       <Text weight="bold">{subheading}</Text>
       <Card>
         <Text style={{ border: " 2px solid gray-500" }}>{fieldInfo}</Text>

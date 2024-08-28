@@ -119,7 +119,7 @@ const GrantForm = ({ grant }: Props) => {
   const groupMemberTypes = Object.values(enumGroupMemberType);
 
   return (
-    <div className="max-w-xl">
+    <div className="max-w-full">
       <form onSubmit={handleSubmit(submitGrantForm)} className="space-y-2">
         <div className="text-3xl font-bold">
           {!!grant ? "Edit Grant" : "Create New Grant"}
@@ -133,6 +133,11 @@ const GrantForm = ({ grant }: Props) => {
           label="Title *"
           placeholder="Title of the grant"
           defaultValue={grant?.title}
+          classNames={{
+            input: [
+              "placeholder:text-default-700/50 dark:placeholder:text-default-400",
+            ],
+          }}
         />
 
         <Input
@@ -143,6 +148,11 @@ const GrantForm = ({ grant }: Props) => {
           label="Acronym *"
           placeholder="Maximum 20 characters (If none, add two keywords from the title)"
           defaultValue={grant?.acronym || ""}
+          classNames={{
+            input: [
+              "placeholder:text-default-700/50 dark:placeholder:text-default-400",
+            ],
+          }}
         />
 
         <Controller
@@ -165,35 +175,18 @@ const GrantForm = ({ grant }: Props) => {
         )}
 
         <div className="flex gap-2 rounded-md border border-gray-300 py-2">
-          <Controller
-            control={control}
-            name="assignedToUserId"
-            defaultValue={grant?.assignedToUserId ?? undefined}
-            render={({ field }) => {
-              return (
-                <Select
-                  {...field}
-                  label="Groupleader *"
-                  placeholder="Select groupleader"
-                  className="max-w-xs"
-                  {...register("assignedToUserId")}
-                  errorMessage={errors.assignedToUserId?.message}
-                  isInvalid={!!errors.assignedToUserId}
-                  defaultSelectedKeys={
-                    grant?.assignedToUserId ? [grant.assignedToUserId] : []
-                  }
-                >
-                  {users?.map((user) => (
-                    <SelectItem
-                      key={user?.id}
-                      value={user?.id}
-                      textValue={user?.lastName ?? ""}
-                    >
-                      {user?.lastName}
-                    </SelectItem>
-                  )) ?? []}
-                </Select>
-              );
+          <Input
+            {...register("applicantFullName")}
+            errorMessage={errors.applicantFullName?.message}
+            isInvalid={!!errors.applicantFullName}
+            type="text"
+            label="Applicant's Full Name - Text input *"
+            placeholder="Applicant's FirstName + LastName"
+            defaultValue={grant?.applicantFullName}
+            classNames={{
+              input: [
+                "placeholder:text-default-700/50 dark:placeholder:text-default-400",
+              ],
             }}
           />
 
@@ -204,12 +197,17 @@ const GrantForm = ({ grant }: Props) => {
             render={({ field }) => {
               return (
                 <Select
-                  label="Group member type *"
-                  placeholder="Select Group member type"
-                  className="max-w-xs"
+                  label="Applicant's Designation (Group member type) *"
+                  placeholder="Select Applicant's Designation"
+                  // className="max-w-xs"
                   {...register("groupMemberType")}
                   errorMessage={errors.groupMemberType?.message}
                   isInvalid={!!errors.groupMemberType}
+                  classNames={{
+                    value: grant?.groupMemberType
+                      ? "text-black"
+                      : "text-gray-400",
+                  }}
                 >
                   {groupMemberTypes?.map((memberType) => (
                     <SelectItem
@@ -218,6 +216,43 @@ const GrantForm = ({ grant }: Props) => {
                       textValue={memberType.toString()}
                     >
                       {memberType}
+                    </SelectItem>
+                  )) ?? []}
+                </Select>
+              );
+            }}
+          />
+
+          <Controller
+            control={control}
+            name="assignedToUserId"
+            defaultValue={grant?.assignedToUserId ?? undefined}
+            render={({ field }) => {
+              return (
+                <Select
+                  {...field}
+                  label="Applicant's Groupleader *"
+                  placeholder="Select groupleader"
+                  // className="max-w-xs"
+                  {...register("assignedToUserId")}
+                  errorMessage={errors.assignedToUserId?.message}
+                  isInvalid={!!errors.assignedToUserId}
+                  defaultSelectedKeys={
+                    grant?.assignedToUserId ? [grant.assignedToUserId] : []
+                  }
+                  classNames={{
+                    value: grant?.assignedToUserId
+                      ? "text-black"
+                      : "text-gray-400",
+                  }}
+                >
+                  {users?.map((user) => (
+                    <SelectItem
+                      key={user?.id}
+                      value={user?.id}
+                      textValue={user?.lastName ?? ""}
+                    >
+                      {user?.lastName}
                     </SelectItem>
                   )) ?? []}
                 </Select>
@@ -236,13 +271,16 @@ const GrantForm = ({ grant }: Props) => {
             //   : [];
             return (
               <Select
-                label="Applicant Role *"
+                label="Applicant's Grant Application Role *"
                 placeholder="Select Applecant Role"
-                className="max-w-xs"
+                // className="max-w-xs"
                 {...register("applicantRole")}
                 errorMessage={errors.applicantRole?.message}
                 isInvalid={!!errors.applicantRole}
                 // defaultSelectedKeys={selectedKeys}
+                classNames={{
+                  value: grant?.applicantRole ? "text-black" : "text-gray-400",
+                }}
               >
                 {applicantRoles?.map((role) => (
                   <SelectItem
@@ -281,11 +319,16 @@ const GrantForm = ({ grant }: Props) => {
             errorMessage={errors.budgetTotal?.message}
             isInvalid={!!errors.budgetTotal}
             type="number"
-            label="Budget Total"
+            label="Budget Total of the grant application"
             placeholder="Total budget of the grant"
             // defaultValue is uncontrolled (if not below, may need to use Controlled comp;)
             defaultValue={grant?.budgetTotal?.toString() || "0"}
             // defaultValue={grant?.budgetTotal || 0}
+            classNames={{
+              input: [
+                "placeholder:text-default-700/50 dark:placeholder:text-default-400",
+              ],
+            }}
           />
 
           <Input
@@ -293,11 +336,16 @@ const GrantForm = ({ grant }: Props) => {
             errorMessage={errors.budgetAssignedToPI?.message}
             isInvalid={!!errors.budgetAssignedToPI}
             type="number"
-            label="Budget Assigned to the PI (applicant)"
-            placeholder="Budget Assigned to the PI (applicant)"
+            label="Budget Assigned to the applicant (or UMCG)"
+            placeholder="Budget Assigned to the applicant (or UMCG)"
             // defaultValue is uncontrolled (if not below, may need to use Controlled comp;)
             defaultValue={grant?.budgetAssignedToPI?.toString() || "0"}
             // defaultValue={grant?.budgetTotal || 0}
+            classNames={{
+              input: [
+                "placeholder:text-default-700/50 dark:placeholder:text-default-400",
+              ],
+            }}
           />
         </div>
 
@@ -325,6 +373,11 @@ const GrantForm = ({ grant }: Props) => {
                 //     base: "bg-gray-600",
                 //   },
                 // }}
+                classNames={{
+                  value: grant?.fundingAgencyId
+                    ? "text-black"
+                    : "text-gray-400",
+                }}
               >
                 {fundingAgencies ? (
                   fundingAgencies.map((fundingAgency) => (
@@ -351,6 +404,11 @@ const GrantForm = ({ grant }: Props) => {
             label="Funding Agency - Text input"
             placeholder="E.g., EU/EC, NL/NWO, USA/NSF-NIH, DE/DFG, etc."
             defaultValue={grant?.fundingAgency || ""}
+            classNames={{
+              input: [
+                "placeholder:text-default-700/50 dark:placeholder:text-default-400",
+              ],
+            }}
           />
         </div>
 
@@ -372,6 +430,11 @@ const GrantForm = ({ grant }: Props) => {
                 defaultSelectedKeys={
                   grant?.fundingProgrammeId ? [grant.fundingProgrammeId] : []
                 }
+                classNames={{
+                  value: grant?.fundingProgrammeId
+                    ? "text-black"
+                    : "text-gray-400",
+                }}
               >
                 {fundingProgrammes ? (
                   fundingProgrammes.map((fundingProgramme) => (
@@ -401,6 +464,11 @@ const GrantForm = ({ grant }: Props) => {
             label="Funding Programme - Text input"
             placeholder="E.g., HORIZON-EU, Talent-Development-Programme, etc."
             defaultValue={grant?.fundingProgramme || ""}
+            classNames={{
+              input: [
+                "placeholder:text-default-700/50 dark:placeholder:text-default-400",
+              ],
+            }}
           />
         </div>
 
@@ -422,6 +490,11 @@ const GrantForm = ({ grant }: Props) => {
                 defaultSelectedKeys={
                   grant?.fundingActionId ? [grant.fundingActionId] : [] //
                 }
+                classNames={{
+                  value: grant?.fundingActionId
+                    ? "text-black"
+                    : "text-gray-400",
+                }}
               >
                 {fundingActions ? (
                   fundingActions.map((fundingAction) => (
@@ -445,9 +518,14 @@ const GrantForm = ({ grant }: Props) => {
             errorMessage={errors.fundingAction?.message}
             isInvalid={!!errors.fundingAction}
             type="text"
-            label="Funding Action"
+            label="Funding Action - Text input"
             placeholder="E.g., ERC, Veni, etc."
             defaultValue={grant?.fundingAction || ""}
+            classNames={{
+              input: [
+                "placeholder:text-default-700/50 dark:placeholder:text-default-400",
+              ],
+            }}
           />
         </div>
 
@@ -469,6 +547,9 @@ const GrantForm = ({ grant }: Props) => {
                 defaultSelectedKeys={
                   grant?.fundingCallId ? [grant.fundingCallId] : [] //
                 }
+                classNames={{
+                  value: grant?.fundingCallId ? "text-black" : "text-gray-400",
+                }}
               >
                 {fundingCalls ? (
                   fundingCalls.map((fundingCall) => (
@@ -492,9 +573,14 @@ const GrantForm = ({ grant }: Props) => {
             errorMessage={errors.fundingCall?.message}
             isInvalid={!!errors.fundingCall}
             type="text"
-            label="Funding Call"
+            label="Funding Call - Text input"
             placeholder="E.g., ERC-StG-2024, Veni-ZonMw-2024, etc."
             defaultValue={grant?.fundingCall || ""}
+            classNames={{
+              input: [
+                "placeholder:text-default-700/50 dark:placeholder:text-default-400",
+              ],
+            }}
           />
         </div>
 
@@ -504,8 +590,13 @@ const GrantForm = ({ grant }: Props) => {
           isInvalid={!!errors.urlFundingCall}
           type="text"
           label="URL of the Funding Call"
-          placeholder="E.g., https://ec.europa.eu/info/funding-tenders/opportunities/portal/screen/opportunities/topic-details/erc-2024-stg"
+          placeholder="E.g., https://ec.europa.eu/info/funding-tenders/topic-details/erc-2024-stg"
           defaultValue={grant?.urlFundingCall || ""}
+          classNames={{
+            input: [
+              "placeholder:text-default-700/50 dark:placeholder:text-default-400",
+            ],
+          }}
         />
 
         <div className="flex gap-2 rounded-md border border-gray-300 py-2">
@@ -518,6 +609,11 @@ const GrantForm = ({ grant }: Props) => {
             // placeholder="Submission date of the grant"
             defaultValue={grant?.submissionDate?.toISOString().substring(0, 10)}
             // defaultValue={grant?.submissionDate}
+            classNames={{
+              input: [
+                "placeholder:text-default-700/50 dark:placeholder:text-default-400",
+              ],
+            }}
           />
 
           <Input
@@ -528,6 +624,11 @@ const GrantForm = ({ grant }: Props) => {
             label="Deadline Date"
             // placeholder="Submission date of the grant"
             defaultValue={grant?.deadline?.toISOString().substring(0, 10)}
+            classNames={{
+              input: [
+                "placeholder:text-default-700/50 dark:placeholder:text-default-400",
+              ],
+            }}
           />
 
           <Input
@@ -538,6 +639,11 @@ const GrantForm = ({ grant }: Props) => {
             label="Decision Date"
             // placeholder="Submission date of the grant"
             defaultValue={grant?.decisionDate?.toISOString().substring(0, 10)}
+            classNames={{
+              input: [
+                "placeholder:text-default-700/50 dark:placeholder:text-default-400",
+              ],
+            }}
           />
         </div>
         <Controller
@@ -555,6 +661,9 @@ const GrantForm = ({ grant }: Props) => {
                 errorMessage={errors.status?.message}
                 isInvalid={!!errors.status}
                 // defaultSelectedKeys={selectedKeys}
+                classNames={{
+                  value: grant?.status ? "text-black" : "text-gray-400",
+                }}
               >
                 {statuses?.map((status) => (
                   <SelectItem
@@ -581,6 +690,11 @@ const GrantForm = ({ grant }: Props) => {
             defaultValue={grant?.projectStartDate
               ?.toISOString()
               .substring(0, 10)}
+            classNames={{
+              input: [
+                "placeholder:text-default-700/50 dark:placeholder:text-default-400",
+              ],
+            }}
           />
 
           <Input
@@ -591,6 +705,11 @@ const GrantForm = ({ grant }: Props) => {
             label="Project End Date (post award)"
             placeholder="End date of the project"
             defaultValue={grant?.projectEndDate?.toISOString().substring(0, 10)}
+            classNames={{
+              input: [
+                "placeholder:text-default-700/50 dark:placeholder:text-default-400",
+              ],
+            }}
           />
         </div>
 
@@ -601,10 +720,16 @@ const GrantForm = ({ grant }: Props) => {
           errorMessage={errors.projectNumber?.message}
           isInvalid={!!errors.projectNumber}
           type="number"
-          label="Project number (UMCG)"
+          label="Project number (UMCG, post award)"
           placeholder="6 digit project number from project controller"
           defaultValue={grant?.projectNumber?.toString() || ""} //default is null if not provided
+          classNames={{
+            input: [
+              "placeholder:text-default-700/50 dark:placeholder:text-default-400",
+            ],
+          }}
         />
+
         <Controller
           control={control}
           name="isDMPSubmitted"
@@ -617,7 +742,8 @@ const GrantForm = ({ grant }: Props) => {
               onChange={(e) => field.onChange(e.target.checked)}
               value={String(field.value)}
             >
-              Is DMP created and shared with the Project Manager?
+              Is DMP created, reviewed by the DCC-UMCG, and shared with the
+              Project Manager?
             </Checkbox>
           )}
         />

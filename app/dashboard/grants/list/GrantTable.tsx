@@ -36,7 +36,7 @@ const GrantTable = async ({ searchParams, grants }: Props) => {
   };
 
   return (
-    <Table.Root variant="surface">
+    <Table.Root variant="surface" size={"1"}>
       <Table.Header>
         <Table.Row>
           {columnsGrant.map((column) => (
@@ -85,6 +85,7 @@ const GrantTable = async ({ searchParams, grants }: Props) => {
                   <GrantStatusBadge status={grant.status} />
                 </span>
               </Table.Cell>
+
               <Table.Cell className="hidden cursor-pointer md:table-cell">
                 <Link href={`/dashboard/grants/${grant.id}`}>
                   <span className="cursor-pointer">
@@ -92,36 +93,61 @@ const GrantTable = async ({ searchParams, grants }: Props) => {
                   </span>
                 </Link>
               </Table.Cell>
+
               <Table.Cell className="hidden md:table-cell">
                 <Link href={`/dashboard/grants/${grant.id}`}>
-                  {grant.createdAt.toISOString().split("T")[0]}
+                  {grant.fundingCall || grant.relatedFundingCall?.name}
                 </Link>
               </Table.Cell>
+
+              <Table.Cell className="hidden md:table-cell">
+                {grant.budgetAssignedToPI}
+              </Table.Cell>
+
+              <Table.Cell className="hidden md:table-cell">
+                <Link href={`/dashboard/grants/${grant.id}`}>
+                  {grant.updatedAt.toISOString().split("T")[0]}
+                </Link>
+              </Table.Cell>
+
               <Table.Cell className="hidden md:table-cell">
                 <Link href={`/dashboard/grants/${grant.id}`}>
                   {grant.submissionDate?.toISOString().split("T")[0]}
                 </Link>
               </Table.Cell>
+
               <Table.Cell className="hidden md:table-cell">
                 <Link href={`/dashboard/grants/${grant.id}`}>
                   {grant.projectStartDate?.toISOString().split("T")[0]}
                 </Link>
               </Table.Cell>
+
               <Table.Cell>
                 <Link href={`/dashboard/grants/${grant.id}`}>
                   {grant.projectEndDate?.toISOString().split("T")[0]}
                 </Link>
               </Table.Cell>
+
               <Table.Cell className="hidden md:table-cell">
                 <Link href={`/dashboard/grants/${grant.id}`}>
                   {grant.projectNumber}
                 </Link>
               </Table.Cell>
+
+              <Table.Cell className="hidden md:table-cell">
+                {grant.isDMPSubmitted ? "Yes" : "No"}
+              </Table.Cell>
+
               <Table.Cell className="hidden md:table-cell">
                 {/* user lastName where user.id = grant.assignedToUserId */}
                 {/* {user?.lastName} */}
                 {grant.assignedToUser?.lastName}
               </Table.Cell>
+
+              <Table.Cell className="hidden md:table-cell">
+                {grant.groupMemberType}
+              </Table.Cell>
+
               <Table.Cell className="hidden md:table-cell">
                 {/* user lastName where user.id = grant.assignedToUserId */}
                 {/* {dept?.nameShort} */}
@@ -142,7 +168,17 @@ const columnsGrant: {
 }[] = [
   { label: "Grant", value: "title" },
   { label: "Status", value: "status", classname: "hidden md:table-cell" },
-  { label: "Created", value: "createdAt", classname: "hidden md:table-cell" },
+  {
+    label: "Funding Call",
+    value: "fundingCall",
+    classname: "hidden md:table-cell",
+  },
+  {
+    label: "Budget",
+    value: "budgetAssignedToPI",
+    classname: "hidden md:table-cell",
+  },
+  { label: "Updated", value: "updatedAt", classname: "hidden md:table-cell" },
   {
     label: "Submitted",
     value: "submissionDate",
@@ -163,7 +199,21 @@ const columnsGrant: {
     value: "projectNumber",
     classname: "hidden md:table-cell",
   },
-  { label: "PI", value: "assignedToUserId", classname: "hidden md:table-cell" },
+  {
+    label: "DMP?",
+    value: "isDMPSubmitted",
+    classname: "hidden md:table-cell",
+  },
+  {
+    label: "Gr.leader",
+    value: "assignedToUserId",
+    classname: "hidden md:table-cell",
+  },
+  {
+    label: "Applicant",
+    value: "groupMemberType",
+    classname: "hidden md:table-cell",
+  },
 ];
 
 const columnsNonGrant: {

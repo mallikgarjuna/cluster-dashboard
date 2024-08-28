@@ -2,6 +2,7 @@
 import { Button, Spinner } from "@nextui-org/react";
 // import { Spinner } from "@/app/components";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import React, { ComponentType, ReactElement, useState } from "react";
 
 interface Props {
@@ -15,6 +16,7 @@ const ButtonWithSpinner = ({
   iconComponent: IconComponent,
 }: Props) => {
   const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
 
   // a function to handle different possible types of 'IconComponent'
   const renderIcon = () => {
@@ -24,9 +26,17 @@ const ButtonWithSpinner = ({
     return null;
   };
 
+  // This way. clicking anywhere on the button will
+  // trigger the loading spinner and navigation
+  const handleClick = () => {
+    setIsLoading(true);
+    router.push(hrefProp);
+  };
+
   return (
     <Button
-      onClick={() => setIsLoading(true)}
+      // onClick={() => setIsLoading(true)}
+      onClick={handleClick}
       disabled={isLoading}
       isLoading={isLoading}
       spinner={<Spinner color="white" size="sm" />}
@@ -36,7 +46,8 @@ const ButtonWithSpinner = ({
     >
       {/* {isLoading && <Spinner size="sm" />} */}
       {renderIcon()}
-      <Link href={hrefProp}>{name}</Link>
+      {name}
+      {/* <Link href={hrefProp}>{name}</Link> */}
     </Button>
   );
 };

@@ -18,6 +18,7 @@ model Grant {
   id                      String               @id @default(cuid())
   title                   String               @default("") @db.VarChar(255)
   description             String               @default("") @db.Text
+  applicantFullName       String               @default("") @db.VarChar(255)
   status                  StatusGrant          @default(DRAFT)
   acronym                 String?              @default("") @db.VarChar(255)
   budgetTotal             Int?                 @default(0)
