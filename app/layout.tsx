@@ -30,10 +30,10 @@ export default function RootLayout({
             <AuthProvider>
               <Theme>
                 <NavBar />
-                <main className="p-5">
-                  <Container>
-                    <Toaster /> {children}
-                  </Container>
+                <main className="mx-auto w-full max-w-[1400px] p-5">
+                  {/* <Container> */}
+                  <Toaster /> {children}
+                  {/* </Container> */}
                 </main>
               </Theme>
             </AuthProvider>
