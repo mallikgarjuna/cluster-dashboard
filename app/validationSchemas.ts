@@ -15,6 +15,7 @@ export const grantFormSchema = z.object({
   title: z.string().min(1, "Title is required.").max(255),
   description: z.string().min(1, "Description is required.").max(65535),
   acronym: z.string().optional(),
+  applicantFullName: z.string().optional(),
   budgetTotal: z.number().optional(),
   budgetAssignedToPI: z.number().optional(),
   fundingAgency: z.string().optional(),
@@ -56,6 +57,7 @@ export const patchGrantSchema = z.object({
     .max(65535)
     .optional(),
   acronym: z.string().optional(),
+  applicantFullName: z.string().optional(),
   budgetTotal: z.number().optional(),
   budgetAssignedToPI: z.number().optional(),
   fundingAgency: z.string().optional(),
