@@ -11,6 +11,7 @@ import QueryClientProvider from "./QueryClientProvider";
 import { Providers } from "./providers";
 import { Toaster } from "react-hot-toast";
 import { inter } from "./ui/fonts";
+import NextTopLoader from "nextjs-toploader";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -32,7 +33,7 @@ export default function RootLayout({
                 <NavBar />
                 <main className="mx-auto w-full max-w-[1400px] p-5">
                   {/* <Container> */}
-                  <Toaster /> {children}
+                  <Toaster /> <NextTopLoader /> {children}
                   {/* </Container> */}
                 </main>
               </Theme>
