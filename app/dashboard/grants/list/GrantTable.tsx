@@ -42,7 +42,7 @@ const GrantTable = async ({ searchParams, grants }: Props) => {
           {columnsGrant.map((column) => (
             <Table.ColumnHeaderCell
               key={column.value}
-              className={column.classname}
+              className={`${column.classname} min-w-[80px]`}
             >
               <NextLink
                 href={{
@@ -185,17 +185,17 @@ const columnsGrant: {
     classname: "hidden md:table-cell",
   },
   {
-    label: "Project start",
+    label: "Project.start",
     value: "projectStartDate",
     classname: "hidden md:table-cell",
   },
   {
-    label: "Project end",
+    label: "Project.end",
     value: "projectEndDate",
     classname: "hidden md:table-cell",
   },
   {
-    label: "P-Number",
+    label: "P.Number",
     value: "projectNumber",
     classname: "hidden md:table-cell",
   },
