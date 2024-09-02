@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import React from "react";
+import React, { useState } from "react";
 import { GrCluster } from "react-icons/gr";
 import classnames from "classnames";
 import { Avatar, Box, Container, Flex, Text } from "@radix-ui/themes";
@@ -12,6 +12,7 @@ import {
   DropdownTrigger,
   DropdownMenu,
   DropdownItem,
+  Spinner,
 } from "@nextui-org/react";
 import { signIn, useSession } from "next-auth/react";
 import { CaretDownIcon } from "@radix-ui/react-icons";
@@ -39,12 +40,16 @@ const NavBar = () => {
 
 const NavLinks = () => {
   const currentPath = usePathname();
+  const [loading, setLoading] = useState("");
 
   const links = [
     { label: "Home", href: "/" },
     { label: "Dashboard", href: "/dashboard" },
     { label: "Admin", href: "/admin" },
   ];
+
+  console.log("Current path: ", currentPath);
+  console.log("Loading: ", loading);
 
   return (
     <ul className="flex space-x-6">
@@ -56,8 +61,12 @@ const NavLinks = () => {
               "!text-blue-900": link.href === currentPath,
             })}
             href={link.href}
+            onClick={() => setLoading(link.href)}
           >
             {link.label}
+            {/* {loading === link.href && currentPath !== link.href ? (
+              <Spinner size="sm" />
+            ) : null} */}
           </Link>
         </li>
       ))}
