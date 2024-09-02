@@ -8,6 +8,7 @@ import {
   DoubleArrowRightIcon,
 } from "@radix-ui/react-icons";
 import { Button, Flex, Text } from "@radix-ui/themes";
+import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import React from "react";
 
@@ -30,6 +31,12 @@ const Pagination = ({ itemsCount, pageSize, currentPage }: Props) => {
     router.push("?" + params.toString());
   };
 
+  const getPageUrl = (page: number) => {
+    const params = new URLSearchParams(searchParams);
+    params.set("page", page.toString());
+    return "?" + params.toString();
+  };
+
   const startGrantNumber = (currentPage - 1) * pageSize + 1;
   const endGrantNumber =
     currentPage !== pageCount ? currentPage * pageSize : itemsCount;
@@ -40,38 +47,49 @@ const Pagination = ({ itemsCount, pageSize, currentPage }: Props) => {
         Page {currentPage} of {pageCount} (Grants {startGrantNumber} -{" "}
         {endGrantNumber} of {itemsCount})
       </Text>
-      <Button
-        color="gray"
-        variant="soft"
-        disabled={currentPage === 1}
-        onClick={() => changePage(1)}
-      >
-        <DoubleArrowLeftIcon />
-      </Button>
-      <Button
-        color="gray"
-        variant="soft"
-        disabled={currentPage === 1}
-        onClick={() => changePage(currentPage - 1)}
-      >
-        <ChevronLeftIcon />
-      </Button>
-      <Button
-        color="gray"
-        variant="soft"
-        disabled={currentPage === pageCount}
-        onClick={() => changePage(currentPage + 1)}
-      >
-        <ChevronRightIcon />
-      </Button>
-      <Button
-        color="gray"
-        variant="soft"
-        disabled={currentPage === pageCount}
-        onClick={() => changePage(pageCount)}
-      >
-        <DoubleArrowRightIcon />
-      </Button>
+      <Link href={getPageUrl(1)}>
+        <Button
+          color="gray"
+          variant="soft"
+          disabled={currentPage === 1}
+          onClick={() => changePage(1)}
+        >
+          <DoubleArrowLeftIcon />
+        </Button>
+      </Link>
+
+      <Link href={getPageUrl(currentPage - 1)}>
+        <Button
+          color="gray"
+          variant="soft"
+          disabled={currentPage === 1}
+          onClick={() => changePage(currentPage - 1)}
+        >
+          <ChevronLeftIcon />
+        </Button>
+      </Link>
+
+      <Link href={getPageUrl(currentPage + 1)}>
+        <Button
+          color="gray"
+          variant="soft"
+          disabled={currentPage === pageCount}
+          onClick={() => changePage(currentPage + 1)}
+        >
+          <ChevronRightIcon />
+        </Button>
+      </Link>
+
+      <Link href={getPageUrl(pageCount)}>
+        <Button
+          color="gray"
+          variant="soft"
+          disabled={currentPage === pageCount}
+          onClick={() => changePage(pageCount)}
+        >
+          <DoubleArrowRightIcon />
+        </Button>
+      </Link>
     </Flex>
   );
 };
