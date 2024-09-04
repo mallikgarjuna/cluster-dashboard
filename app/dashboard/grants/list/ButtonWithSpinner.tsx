@@ -34,21 +34,23 @@ const ButtonWithSpinner = ({
   };
 
   return (
-    <Button
-      // onClick={() => setIsLoading(true)}
-      onClick={handleClick}
-      disabled={isLoading}
-      isLoading={isLoading}
-      spinner={<Spinner color="white" size="sm" />}
-      spinnerPlacement="start"
-      color="primary"
-      className="px-16"
-    >
-      {/* {isLoading && <Spinner size="sm" />} */}
-      {renderIcon()}
-      {name}
-      {/* <Link href={hrefProp}>{name}</Link> */}
-    </Button>
+    <Link href={hrefProp}>
+      <Button
+        // onClick={() => setIsLoading(true)}
+        onClick={handleClick}
+        disabled={isLoading}
+        isLoading={isLoading}
+        spinner={<Spinner color="white" size="sm" />}
+        spinnerPlacement="start"
+        color="primary"
+        className="w-full px-16"
+      >
+        {/* {isLoading && <Spinner size="sm" />} */}
+        {renderIcon()}
+        {name}
+        {/* <Link href={hrefProp}>{name}</Link> */}
+      </Button>
+    </Link>
   );
 };
 
