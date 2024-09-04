@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/prisma/client";
 import { GrantQuery } from "@/app/dashboard/grants/list/GrantTable";
-import { OSDepartmentShortName } from "@prisma/client";
+import { OSDepartmentShortName, User } from "@prisma/client";
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
@@ -28,6 +28,9 @@ export async function GET(request: NextRequest) {
       ? queryObject.department
       : undefined);
 
+  const groupLeader =
+    queryObject.groupLeader === "All" ? undefined : queryObject.groupLeader;
+
   try {
     const PIs = await prisma.user.findMany({
       where: { role: "GROUPLEADER" },
@@ -43,6 +46,7 @@ export async function GET(request: NextRequest) {
             submissionDate: true,
             assignedToUser: {
               select: {
+                id: true,
                 relatedDepartment: {
                   select: {
                     nameShort: true,
@@ -68,7 +72,9 @@ export async function GET(request: NextRequest) {
           ].includes(grant.status) &&
           (!submitYear || grant.submissionDate?.getFullYear() === submitYear) &&
           (!department ||
-            grant.assignedToUser?.relatedDepartment?.nameShort === department),
+            grant.assignedToUser?.relatedDepartment?.nameShort ===
+              department) &&
+          (!groupLeader || grant.assignedToUser?.id === groupLeader),
       );
       const submitted = totalSubmittedGrants.length;
 
@@ -77,7 +83,9 @@ export async function GET(request: NextRequest) {
           grant.status === "SUBMITTED" &&
           (!submitYear || grant.submissionDate?.getFullYear() === submitYear) &&
           (!department ||
-            grant.assignedToUser?.relatedDepartment?.nameShort === department),
+            grant.assignedToUser?.relatedDepartment?.nameShort ===
+              department) &&
+          (!groupLeader || grant.assignedToUser?.id === groupLeader),
       );
       const awaiting = totalAwaitingGrants.length;
 
@@ -88,7 +96,9 @@ export async function GET(request: NextRequest) {
           ) &&
           (!submitYear || grant.submissionDate?.getFullYear() === submitYear) &&
           (!department ||
-            grant.assignedToUser?.relatedDepartment?.nameShort === department),
+            grant.assignedToUser?.relatedDepartment?.nameShort ===
+              department) &&
+          (!groupLeader || grant.assignedToUser?.id === groupLeader),
       );
       const awarded = totalAwardedGrants.length;
 
@@ -97,7 +107,9 @@ export async function GET(request: NextRequest) {
           grant.status === "REJECTED" &&
           (!submitYear || grant.submissionDate?.getFullYear() === submitYear) &&
           (!department ||
-            grant.assignedToUser?.relatedDepartment?.nameShort === department),
+            grant.assignedToUser?.relatedDepartment?.nameShort ===
+              department) &&
+          (!groupLeader || grant.assignedToUser?.id === groupLeader),
       );
       const rejected = totalRejectedGrants.length;
 
