@@ -24,7 +24,7 @@ const GrantDetails = async ({ grant }: Props) => {
     where: { id: grant.assignedToUserId },
   });
 
-  console.log(grant.assignedToUser?.email);
+  // console.log(grant.assignedToUser?.email);
 
   return (
     <Flex direction="column" gap="3" className="max-w-full">

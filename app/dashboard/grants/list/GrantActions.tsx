@@ -18,7 +18,7 @@ const GrantActions = async () => {
   });
 
   return (
-    <Flex justify="between" gap="3">
+    <Flex justify="between" gap="3" align="center">
       <GrantStatusFilter />
       <DepartmentFilter />
       <GroupLeaderFilter users={usersWithDepartment} />

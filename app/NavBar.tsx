@@ -48,8 +48,8 @@ const NavLinks = () => {
     { label: "Admin", href: "/admin" },
   ];
 
-  console.log("Current path: ", currentPath);
-  console.log("Loading: ", loading);
+  // console.log("Current path: ", currentPath);
+  // console.log("Loading: ", loading);
 
   return (
     <ul className="flex space-x-6">
