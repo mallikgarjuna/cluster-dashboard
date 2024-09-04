@@ -20,6 +20,12 @@ export async function GET(request: NextRequest) {
     : undefined;
   // console.log("submitYear: ", submitYear);
 
+  const startYear =
+    queryObject.year && queryObject.year === "All"
+      ? undefined
+      : parseInt(queryObject.year as string);
+  // console.log("startYear: ", startYear);
+
   // Validate searchparam's department
   const departments = Object.values(OSDepartmentShortName);
   const department =
@@ -44,6 +50,7 @@ export async function GET(request: NextRequest) {
             budgetTotal: true,
             budgetAssignedToPI: true,
             submissionDate: true,
+            projectStartDate: true,
             assignedToUser: {
               select: {
                 id: true,
@@ -71,6 +78,7 @@ export async function GET(request: NextRequest) {
             "ENDED_PROJECT",
           ].includes(grant.status) &&
           (!submitYear || grant.submissionDate?.getFullYear() === submitYear) &&
+          (!startYear || grant.projectStartDate?.getFullYear() === startYear) &&
           (!department ||
             grant.assignedToUser?.relatedDepartment?.nameShort ===
               department) &&
@@ -82,6 +90,7 @@ export async function GET(request: NextRequest) {
         (grant) =>
           grant.status === "SUBMITTED" &&
           (!submitYear || grant.submissionDate?.getFullYear() === submitYear) &&
+          (!startYear || grant.projectStartDate?.getFullYear() === startYear) &&
           (!department ||
             grant.assignedToUser?.relatedDepartment?.nameShort ===
               department) &&
@@ -95,6 +104,7 @@ export async function GET(request: NextRequest) {
             grant.status,
           ) &&
           (!submitYear || grant.submissionDate?.getFullYear() === submitYear) &&
+          (!startYear || grant.projectStartDate?.getFullYear() === startYear) &&
           (!department ||
             grant.assignedToUser?.relatedDepartment?.nameShort ===
               department) &&
@@ -106,6 +116,7 @@ export async function GET(request: NextRequest) {
         (grant) =>
           grant.status === "REJECTED" &&
           (!submitYear || grant.submissionDate?.getFullYear() === submitYear) &&
+          (!startYear || grant.projectStartDate?.getFullYear() === startYear) &&
           (!department ||
             grant.assignedToUser?.relatedDepartment?.nameShort ===
               department) &&
