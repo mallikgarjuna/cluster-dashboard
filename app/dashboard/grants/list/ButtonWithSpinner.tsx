@@ -43,7 +43,7 @@ const ButtonWithSpinner = ({
         spinner={<Spinner color="white" size="sm" />}
         spinnerPlacement="start"
         color="primary"
-        className="px-16"
+        className="w-full px-16"
       >
         {/* {isLoading && <Spinner size="sm" />} */}
         {renderIcon()}

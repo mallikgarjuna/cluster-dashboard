@@ -76,7 +76,10 @@ const GrantTable = async ({ searchParams, grants }: Props) => {
       <Table.Body>
         {grants.map(async (grant) => {
           return (
-            <Table.Row key={grant.id}>
+            <Table.Row
+              key={grant.id}
+              className="transition-colors hover:bg-gray-200"
+            >
               <Tooltip content={grant.title}>
                 <Table.Cell className="max-w-[150px] truncate">
                   <Link href={`/dashboard/grants/${grant.id}`}>
