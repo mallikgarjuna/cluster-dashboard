@@ -9,7 +9,7 @@ import {
   User,
 } from "@prisma/client";
 import { ArrowDownIcon, ArrowUpIcon } from "@radix-ui/react-icons";
-import { Table } from "@radix-ui/themes";
+import { Table, Tooltip } from "@radix-ui/themes";
 import NextLink from "next/link";
 import React from "react";
 
@@ -42,7 +42,7 @@ const GrantTable = async ({ searchParams, grants }: Props) => {
           {columnsGrant.map((column) => (
             <Table.ColumnHeaderCell
               key={column.value}
-              className={`${column.classname} min-w-[80px]`}
+              className={`${column.classname}`} //min-w-[80px]
             >
               <NextLink
                 href={{
@@ -77,14 +77,16 @@ const GrantTable = async ({ searchParams, grants }: Props) => {
         {grants.map(async (grant) => {
           return (
             <Table.Row key={grant.id}>
-              <Table.Cell>
-                <Link href={`/dashboard/grants/${grant.id}`}>
-                  {grant.acronym ?? grant.title}
-                </Link>
-                <span className="block md:hidden">
-                  <GrantStatusBadge status={grant.status} />
-                </span>
-              </Table.Cell>
+              <Tooltip content={grant.title}>
+                <Table.Cell className="max-w-[150px] truncate">
+                  <Link href={`/dashboard/grants/${grant.id}`}>
+                    {(grant.acronym ?? grant.title).slice(0, 20)}
+                  </Link>
+                  <span className="block md:hidden">
+                    <GrantStatusBadge status={grant.status} />
+                  </span>
+                </Table.Cell>
+              </Tooltip>
 
               <Table.Cell className="hidden cursor-pointer md:table-cell">
                 <Link href={`/dashboard/grants/${grant.id}`}>
@@ -94,11 +96,20 @@ const GrantTable = async ({ searchParams, grants }: Props) => {
                 </Link>
               </Table.Cell>
 
-              <Table.Cell className="hidden md:table-cell">
-                <Link href={`/dashboard/grants/${grant.id}`}>
-                  {grant.fundingCall || grant.relatedFundingCall?.name}
-                </Link>
-              </Table.Cell>
+              <Tooltip
+                content={
+                  grant.fundingCall ?? grant.relatedFundingCall?.name ?? ""
+                }
+              >
+                <Table.Cell className="hidden max-w-[150px] truncate md:table-cell">
+                  <Link
+                    href={`/dashboard/grants/${grant.id}`}
+                    className="inline-block"
+                  >
+                    {grant.fundingCall || grant.relatedFundingCall?.name}
+                  </Link>
+                </Table.Cell>
+              </Tooltip>
 
               <Table.Cell className="hidden md:table-cell">
                 {grant.budgetAssignedToPI}
