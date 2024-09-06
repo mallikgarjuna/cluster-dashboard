@@ -9,6 +9,7 @@ import {
   TableRow,
 } from "@nextui-org/react";
 import { OSDepartmentShortName } from "@prisma/client";
+import { useSession } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -56,6 +57,8 @@ const PIGrantsTable = () => {
   const params = new URLSearchParams(searchParams);
   const queryString = params.size ? "?" + params.toString() : "";
 
+  const { data: session, status } = useSession();
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -79,12 +82,24 @@ const PIGrantsTable = () => {
     { key: "awaiting", label: "Awaiting" },
     { key: "awarded", label: "Awarded" },
     { key: "rejected", label: "Rejected" },
-    { key: "successRate", label: "Success Rate" },
+    { key: "successRate", label: "Success Rate %" },
     { key: "budgetAppliedFor", label: "Budget Applied For" },
     { key: "budgetAwarded", label: "Budget Awarded" },
   ];
 
-  const departments = Object.values(OSDepartmentShortName);
+  // let departments = Object.values(OSDepartmentShortName);
+  let departments =
+    searchParams.get("department") && searchParams.get("department") !== "All"
+      ? [searchParams.get("department")]
+      : Object.values(OSDepartmentShortName);
+
+  // If a groupleader logged in, Show the corresponding dept, not all depts;
+  if (session?.user.role === "GROUPLEADER") {
+    departments = departments.filter(
+      (dept) => dept === session.user.relatedDepartment?.nameShort,
+    );
+  }
+  // console.log("Departmetns: ", departments);
 
   return (
     <div>
