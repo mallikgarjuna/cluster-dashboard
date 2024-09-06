@@ -6,6 +6,7 @@ import { NextAuthOptions } from "next-auth";
 import axios from "axios";
 import { User } from "@prisma/client";
 import toast from "react-hot-toast";
+import { UserWithDepartment } from "@/prisma/customTypes";
 
 const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
@@ -47,7 +48,10 @@ const authOptions: NextAuthOptions = {
         // Check if the user exists, if not, throw error
         const user = await prisma.user.findUnique({
           where: { email: credentials.email },
+          include: { relatedDepartment: true },
         });
+        // console.log("User from authorize: ", user);
+
         if (!user) throw new Error("User does not exist");
 
         // Check if the entered password is matching with the registered one, if not, throw error
@@ -72,12 +76,19 @@ const authOptions: NextAuthOptions = {
   },
   callbacks: {
     async jwt({ token, user }) {
-      if (user) token.user = user as User;
+      // if (user) token.user = user as User;
+      if (user) {
+        token.user = user as UserWithDepartment;
+      }
+      // console.log("JWT Token: ", token);
       return token;
     },
 
     async session({ session, token }) {
-      if (token.user) session.user = token.user;
+      if (token.user) {
+        session.user = token.user as UserWithDepartment;
+      }
+      // console.log("Session Data: ", session);
       return session;
     },
   },

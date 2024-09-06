@@ -1,11 +1,12 @@
 "use client";
 import { Select, SelectItem } from "@nextui-org/react";
 import { OSDepartmentShortName } from "@prisma/client";
+import { useSession } from "next-auth/react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React from "react";
 
 const departShortNames = Object.values(OSDepartmentShortName);
-const departments: { label: string; value?: OSDepartmentShortName }[] = [
+let departments: { label: string; value?: OSDepartmentShortName }[] = [
   { label: "All depts" },
   { label: "BBT dept", value: "BBT" },
   { label: "BMS dept", value: "BMS" },
@@ -17,11 +18,37 @@ const DepartmentFilter = () => {
   // console.log("searchParams: ", searchParams.toString());
   const router = useRouter();
   const pathname = usePathname();
+  const { data: session, status } = useSession();
+
+  if (!session) return null;
+
+  // console.log("Session user: ", session.user);
+  // console.log("Department : ", session.user.relatedDepartment?.nameShort);
+
+  // If a groupleader logged in, Show the corresponding dept, not all depts;
+  if (session.user.role === "GROUPLEADER") {
+    departments = departments.filter(
+      (dept) =>
+        dept.value && dept.value === session.user.relatedDepartment?.nameShort,
+    );
+
+    // defaultSelectedKeys = []
+  }
+  // console.log("Departments: ", departments);
 
   return (
     <Select
       label="Filter by department..."
-      defaultSelectedKeys={[searchParams.get("department") || "All"]}
+      defaultSelectedKeys={[
+        session.user.role === "GROUPLEADER"
+          ? session.user.relatedDepartment?.nameShort || "All"
+          : searchParams.get("department") || "All",
+      ]}
+      selectedKeys={[
+        session.user.role === "GROUPLEADER"
+          ? session.user.relatedDepartment?.nameShort || "All"
+          : searchParams.get("department") || "All",
+      ]}
       onChange={(event) => {
         const department = event.target.value;
         // console.log("department: ", department);
