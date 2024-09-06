@@ -2,8 +2,16 @@ import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/prisma/client";
 import { GrantQuery } from "@/app/dashboard/grants/list/GrantTable";
 import { OSDepartmentShortName, User } from "@prisma/client";
+import { getServerSession } from "next-auth";
+import authOptions from "@/app/auth/authOptions";
 
 export async function GET(request: NextRequest) {
+  const session = await getServerSession(authOptions);
+  if (!session) return NextResponse.json({}, { status: 401 });
+
+  const isCurrentUserAGroupLeader =
+    session.user.role === "GROUPLEADER" ? [{ id: session.user.id }] : [{}];
+
   const searchParams = request.nextUrl.searchParams;
   // console.log("searchParams: ", searchParams); //searchParams:  URLSearchParams { 'submitYear' => '2023' }
 
@@ -39,7 +47,7 @@ export async function GET(request: NextRequest) {
 
   try {
     const PIs = await prisma.user.findMany({
-      where: { role: "GROUPLEADER" },
+      where: { role: "GROUPLEADER", AND: [...isCurrentUserAGroupLeader] },
       select: {
         id: true,
         name: true,
