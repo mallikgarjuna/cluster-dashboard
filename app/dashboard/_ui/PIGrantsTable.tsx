@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "@/app/components/Link";
 import {
   Table,
   TableBody,
@@ -125,9 +126,21 @@ const PIGrantsTable = () => {
                 <TableRow key={item.piID}>
                   {(columnKey) => (
                     <TableCell>
-                      {columnKey !== "piID" &&
-                        // item[columnKey as keyof RowData] === dept &&
-                        item[columnKey as keyof RowData]}
+                      {/* {columnKey !== "piID" && item[columnKey as keyof RowData]} */}
+                      {columnKey !== "piID" && (
+                        <>
+                          {columnKey === "pi" ? (
+                            <Link
+                              href={`/dashboard/grants/list?groupLeader=${item.piID}`}
+                              className="text-blue-600"
+                            >
+                              {item[columnKey as keyof RowData]}
+                            </Link>
+                          ) : (
+                            item[columnKey as keyof RowData]
+                          )}
+                        </>
+                      )}
                     </TableCell>
                   )}
                 </TableRow>
