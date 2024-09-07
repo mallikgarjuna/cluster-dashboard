@@ -4,6 +4,7 @@ import {
   ForgotPasswordFormSchema,
 } from "@/app/validationSchemas";
 import { forgotPassword } from "@/lib/actions/authActions";
+import { getErrorMessage } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button, Input } from "@nextui-org/react";
 import React from "react";
@@ -31,8 +32,8 @@ const ForgotPasswordPage = () => {
       toast.success("Reset password link was sent to your email.");
       reset();
     } catch (error) {
-      console.log(error);
-      toast.error("Something went wrong...");
+      // console.log(error);
+      toast.error("Something went wrong..." + "\n" + getErrorMessage(error));
     }
   };
 

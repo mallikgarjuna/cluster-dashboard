@@ -213,7 +213,7 @@ const CreateUserForm = () => {
         </p>
       )}
 
-      <div className="col-span-2 flex justify-center">
+      <div className="col-span-2 flex flex-col items-center justify-center gap-2">
         <Button
           type="submit"
           disabled={isSubmitting}
@@ -223,6 +223,7 @@ const CreateUserForm = () => {
         >
           {isSubmitting ? "Creating User..." : "Create User"}
         </Button>
+        <em>Note: An activation email will be sent to the Web Admin</em>
       </div>
     </form>
   );
