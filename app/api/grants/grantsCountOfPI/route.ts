@@ -45,9 +45,17 @@ export async function GET(request: NextRequest) {
   const groupLeader =
     queryObject.groupLeader === "All" ? undefined : queryObject.groupLeader;
 
+  const isGroupLeaderSelected =
+    queryObject.groupLeader && queryObject.groupLeader !== "All"
+      ? [{ id: queryObject.groupLeader }]
+      : [{}];
+
   try {
     const PIs = await prisma.user.findMany({
-      where: { role: "GROUPLEADER", AND: [...isCurrentUserAGroupLeader] },
+      where: {
+        role: "GROUPLEADER",
+        AND: [...isCurrentUserAGroupLeader, ...isGroupLeaderSelected],
+      },
       select: {
         id: true,
         name: true,
