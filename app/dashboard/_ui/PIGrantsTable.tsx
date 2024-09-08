@@ -13,7 +13,6 @@ import { OSDepartmentShortName } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import prisma from "@/prisma/client";
 
 // type APIResponseData = {
 type RowData = {

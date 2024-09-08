@@ -1,9 +1,9 @@
-import { NextRequest, NextResponse } from "next/server";
-import prisma from "@/prisma/client";
-import { GrantQuery } from "@/app/dashboard/grants/list/GrantTable";
-import { OSDepartmentShortName, User } from "@prisma/client";
-import { getServerSession } from "next-auth";
 import authOptions from "@/app/auth/authOptions";
+import { GrantQuery } from "@/app/dashboard/grants/list/GrantTable";
+import prisma from "@/prisma/client";
+import { OSDepartmentShortName } from "@prisma/client";
+import { getServerSession } from "next-auth";
+import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
   const session = await getServerSession(authOptions);
@@ -45,9 +45,17 @@ export async function GET(request: NextRequest) {
   const groupLeader =
     queryObject.groupLeader === "All" ? undefined : queryObject.groupLeader;
 
+  const isGroupLeaderSelected =
+    queryObject.groupLeader && queryObject.groupLeader !== "All"
+      ? [{ id: queryObject.groupLeader }]
+      : [{}];
+
   try {
     const PIs = await prisma.user.findMany({
-      where: { role: "GROUPLEADER", AND: [...isCurrentUserAGroupLeader] },
+      where: {
+        role: "GROUPLEADER",
+        AND: [...isCurrentUserAGroupLeader, ...isGroupLeaderSelected],
+      },
       select: {
         id: true,
         name: true,
