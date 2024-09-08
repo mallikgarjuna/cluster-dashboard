@@ -14,7 +14,7 @@ const AdminPage = () => {
               color="blue"
               className="text-blue-500"
             >
-              Create new user by Admin
+              Create new user by Web-Admin
             </Link>
           </li>
           <li>

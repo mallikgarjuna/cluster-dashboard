@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "@/app/components/Link";
 import {
   Table,
   TableBody,
@@ -9,8 +10,10 @@ import {
   TableRow,
 } from "@nextui-org/react";
 import { OSDepartmentShortName } from "@prisma/client";
+import { useSession } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import prisma from "@/prisma/client";
 
 // type APIResponseData = {
 type RowData = {
@@ -52,9 +55,24 @@ interface Props {
 // const PIGrantsTable = ({ grantsCountOfPIData: rows }: Props) => {
 const PIGrantsTable = () => {
   const [rows, setRows] = useState<RowData[]>(initialRowData);
+  const [departments, setDepartments] = useState<OSDepartmentShortName[]>([]);
+
   const searchParams = useSearchParams();
   const params = new URLSearchParams(searchParams);
   const queryString = params.size ? "?" + params.toString() : "";
+
+  const { data: session, status } = useSession();
+
+  const columns: { key: keyof RowData; label: string }[] = [
+    { key: "pi", label: "PI Name" },
+    { key: "submitted", label: "Submitted" },
+    { key: "awaiting", label: "Awaiting" },
+    { key: "awarded", label: "Awarded" },
+    { key: "rejected", label: "Rejected" },
+    { key: "successRate", label: "Success Rate %" },
+    { key: "budgetAppliedFor", label: "Budget Applied For" },
+    { key: "budgetAwarded", label: "Budget Awarded" },
+  ];
 
   useEffect(() => {
     const fetchData = async () => {
@@ -73,18 +91,63 @@ const PIGrantsTable = () => {
     fetchData();
   }, [queryString]);
 
-  const columns: { key: keyof RowData; label: string }[] = [
-    { key: "pi", label: "PI Name" },
-    { key: "submitted", label: "Submitted" },
-    { key: "awaiting", label: "Awaiting" },
-    { key: "awarded", label: "Awarded" },
-    { key: "rejected", label: "Rejected" },
-    { key: "successRate", label: "Success Rate" },
-    { key: "budgetAppliedFor", label: "Budget Applied For" },
-    { key: "budgetAwarded", label: "Budget Awarded" },
-  ];
+  // let departments = Object.values(OSDepartmentShortName);
+  // Initialize departments state
+  useEffect(() => {
+    const initialDepartments =
+      searchParams.get("department") && searchParams.get("department") !== "All"
+        ? [searchParams.get("department")]
+        : Object.values(OSDepartmentShortName);
+    setDepartments(initialDepartments as OSDepartmentShortName[]); // Cast to OSDepartmentShortName[]
+  }, [searchParams]);
 
-  const departments = Object.values(OSDepartmentShortName);
+  // If a groupLeader dropdown is selected, Show the corresponding dept, not all depts;
+  useEffect(() => {
+    const handleGroupLeader = async () => {
+      if (
+        searchParams.get("groupLeader") &&
+        searchParams.get("groupLeader") !== "All"
+      ) {
+        // Find the groupLeader's related department
+        const groupLeaderId = searchParams.get("groupLeader");
+
+        //  Fech from the API route instead of using prisma directly in this client component
+        const response = await fetch(
+          `/api/users/withdepartment/${groupLeaderId}`,
+        );
+        const groupLeaderUser = await response.json();
+
+        if (response.ok) {
+          // Show the corresponding dept, not all depts;
+          setDepartments((prevDepartments) =>
+            prevDepartments.filter(
+              (dept) => dept === groupLeaderUser?.relatedDepartment?.nameShort,
+            ),
+          );
+        } else {
+          console.error(
+            "Error fetching groupLeader with department: ",
+            groupLeaderUser.error,
+          );
+        }
+      }
+    };
+    handleGroupLeader();
+  }, [searchParams]);
+
+  console.log("Departmetns: ", departments);
+
+  // If a groupleader logged in, Show the corresponding dept, not all depts;
+  useEffect(() => {
+    if (session?.user.role === "GROUPLEADER") {
+      setDepartments((prevDepartments) =>
+        prevDepartments.filter(
+          (dept) => dept === session.user.relatedDepartment?.nameShort,
+        ),
+      );
+    }
+  }, [session]); // Add session as a dependency
+  // console.log("Departmetns: ", departments);
 
   return (
     <div>
@@ -110,9 +173,21 @@ const PIGrantsTable = () => {
                 <TableRow key={item.piID}>
                   {(columnKey) => (
                     <TableCell>
-                      {columnKey !== "piID" &&
-                        // item[columnKey as keyof RowData] === dept &&
-                        item[columnKey as keyof RowData]}
+                      {/* {columnKey !== "piID" && item[columnKey as keyof RowData]} */}
+                      {columnKey !== "piID" && (
+                        <>
+                          {columnKey === "pi" ? (
+                            <Link
+                              href={`/dashboard/grants/list?groupLeader=${item.piID}`}
+                              className="text-blue-600"
+                            >
+                              {item[columnKey as keyof RowData]}
+                            </Link>
+                          ) : (
+                            item[columnKey as keyof RowData]
+                          )}
+                        </>
+                      )}
                     </TableCell>
                   )}
                 </TableRow>
