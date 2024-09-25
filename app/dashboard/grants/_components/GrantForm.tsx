@@ -332,6 +332,11 @@ const GrantForm = ({ grant }: Props) => {
                 "placeholder:text-default-700/50 dark:placeholder:text-default-400",
               ],
             }}
+            onKeyDown={(e) => {
+              if (e.key === "ArrowUp" || e.key === "ArrowDown") {
+                e.preventDefault();
+              }
+            }}
           />
 
           <Input
@@ -348,6 +353,11 @@ const GrantForm = ({ grant }: Props) => {
               input: [
                 "placeholder:text-default-700/50 dark:placeholder:text-default-400",
               ],
+            }}
+            onKeyDown={(e) => {
+              if (e.key === "ArrowUp" || e.key === "ArrowDown") {
+                e.preventDefault();
+              }
             }}
           />
         </div>
@@ -744,6 +754,11 @@ const GrantForm = ({ grant }: Props) => {
             input: [
               "placeholder:text-default-700/50 dark:placeholder:text-default-400",
             ],
+          }}
+          onKeyDown={(e) => {
+            if (e.key === "ArrowUp" || e.key === "ArrowDown") {
+              e.preventDefault();
+            }
           }}
         />
 
