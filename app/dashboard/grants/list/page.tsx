@@ -269,7 +269,7 @@ const GrantsPage = async ({ searchParams }: Props) => {
   );
 };
 
-export const dynamic = "force-dynamic";
+// export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Cluster Dashboard - Grants List",

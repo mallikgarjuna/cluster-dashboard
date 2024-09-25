@@ -3,6 +3,7 @@
 import { Input } from "@nextui-org/react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { HiMagnifyingGlass } from "react-icons/hi2";
+import { useDebouncedCallback } from "use-debounce";
 import React from "react";
 
 const GrantSearch = () => {
@@ -10,7 +11,7 @@ const GrantSearch = () => {
   const pathname = usePathname();
   const router = useRouter();
 
-  const handleSearch = (searchQuery: string) => {
+  const handleSearch = useDebouncedCallback((searchQuery: string) => {
     // console.log("searchQuery: ", searchQuery);
 
     const params = new URLSearchParams(searchParams);
@@ -21,7 +22,7 @@ const GrantSearch = () => {
     const query = params.size ? "?" + params.toString() : "";
 
     router.replace(`${pathname}${query}`);
-  };
+  }, 1000);
 
   return (
     <div>
