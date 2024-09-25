@@ -315,11 +315,12 @@ const GrantForm = ({ grant }: Props) => {
 
         <div className="flex gap-2 rounded-md border border-gray-300 py-2">
           <Input
+            disabled={true}
             {...register("budgetTotal", { valueAsNumber: true })}
             errorMessage={errors.budgetTotal?.message}
             isInvalid={!!errors.budgetTotal}
             type="number"
-            label="Budget Total of the grant application"
+            label="<Disabled, to be removed> Budget Total of the grant application"
             placeholder="Total budget of the grant"
             // defaultValue is uncontrolled (if not below, may need to use Controlled comp;)
             defaultValue={grant?.budgetTotal?.toString() || "0"}
@@ -754,7 +755,8 @@ const GrantForm = ({ grant }: Props) => {
           render={({ field }) => (
             <SimpleMdeReact
               {...field}
-              placeholder="Additional notes"
+              contentEditable={false}
+              placeholder="<Disabled, to be removed> Additional notes"
               options={{
                 maxHeight: "100px",
                 autofocus: true,
