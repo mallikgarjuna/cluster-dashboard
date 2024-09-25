@@ -29,7 +29,7 @@ const GrantSearch = () => {
       <Input
         placeholder="Search grants"
         onChange={(event) => handleSearch(event.target.value)}
-        defaultValue={searchParams.get("searchQuery")?.toString()}
+        defaultValue={searchParams.get("searchQuery")?.toString() || ""}
         startContent={<HiMagnifyingGlass />}
       />
     </div>

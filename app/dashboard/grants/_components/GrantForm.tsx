@@ -716,7 +716,7 @@ const GrantForm = ({ grant }: Props) => {
 
         <Input
           {...register("projectNumber", {
-            setValueAs: (val) => (val === "" ? undefined : parseInt(val, 10)),
+            setValueAs: (val) => (val === "" ? null : parseInt(val, 10)),
           })}
           errorMessage={errors.projectNumber?.message}
           isInvalid={!!errors.projectNumber}
