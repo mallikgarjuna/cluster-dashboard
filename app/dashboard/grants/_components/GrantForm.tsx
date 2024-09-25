@@ -182,8 +182,8 @@ const GrantForm = ({ grant }: Props) => {
             errorMessage={errors.applicantFullName?.message}
             isInvalid={!!errors.applicantFullName}
             type="text"
-            label="Applicant's Full Name - Text input *"
-            placeholder="Applicant's FirstName + LastName"
+            label="Applicant's LastName + FirstName - Text input *"
+            placeholder="Applicant's LastName + FirstName"
             defaultValue={grant?.applicantFullName}
             classNames={{
               input: [

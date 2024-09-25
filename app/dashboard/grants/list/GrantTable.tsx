@@ -163,6 +163,12 @@ const GrantTable = async ({ searchParams, grants }: Props) => {
                 {grant.groupMemberType}
               </Table.Cell>
 
+              <Tooltip content={grant.applicantFullName}>
+                <Table.Cell className="hidden md:table-cell">
+                  {grant.applicantFullName.slice(0, 10)}
+                </Table.Cell>
+              </Tooltip>
+
               <Table.Cell className="hidden md:table-cell">
                 {/* user lastName where user.id = grant.assignedToUserId */}
                 {/* {dept?.nameShort} */}
@@ -227,6 +233,11 @@ const columnsGrant: {
   {
     label: "Applicant",
     value: "groupMemberType",
+    classname: "hidden md:table-cell",
+  },
+  {
+    label: "Name",
+    value: "applicantFullName",
     classname: "hidden md:table-cell",
   },
 ];
