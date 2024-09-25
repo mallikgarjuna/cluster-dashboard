@@ -140,7 +140,9 @@ export async function GET(request: NextRequest) {
       );
       const rejected = totalRejectedGrants.length;
 
-      const successRate = Number(((awarded / submitted) * 100).toFixed(2));
+      const successRate = Number(
+        ((awarded / (submitted - awaiting)) * 100).toFixed(2),
+      );
 
       const budgetAppliedFor = totalSubmittedGrants.reduce(
         (accumulator, grant) => accumulator + (grant.budgetTotal ?? 0),

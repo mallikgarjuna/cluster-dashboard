@@ -150,7 +150,11 @@ const PIGrantsTable = () => {
 
   return (
     <div>
-      <h1 className="mb-2 text-xl font-bold">{`PI Grants Overview - Tables`}</h1>
+      <h1 className="text-xl font-bold">{`PI Grants Overview - Tables`}</h1>
+      <em className="mb-2 text-xs">
+        {" "}
+        * Success Rate % = (# of Awarded) / (# of Submitted - # of Awaiting){" "}
+      </em>
       {departments.map((dept) => (
         <div key={dept}>
           <h1 className="text-lg font-bold">{`${dept}:`}</h1>
