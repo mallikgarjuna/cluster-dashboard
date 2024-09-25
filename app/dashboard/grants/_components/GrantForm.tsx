@@ -35,6 +35,7 @@ import {
   useFundingActions,
   useFundingCalls,
 } from "../../funders/_components/FundingCallForm";
+import { useEffect } from "react";
 
 interface Props {
   // grant?: Grant;
@@ -50,6 +51,7 @@ const GrantForm = ({ grant }: Props) => {
     reset,
     formState: { errors, isSubmitting },
     watch,
+    setValue,
   } = useForm<GrantFormDataType>({
     resolver: zodResolver(grantFormSchema),
     // defaultValues: {
@@ -110,7 +112,7 @@ const GrantForm = ({ grant }: Props) => {
 
   const { data: fundingActions } = useFundingActions();
 
-  const { data: fundingCalls } = useFundingCalls();
+  const { data: fundingCallsData } = useFundingCalls();
 
   const statuses = Object.values(StatusGrant);
 
@@ -545,6 +547,17 @@ const GrantForm = ({ grant }: Props) => {
                 isInvalid={!!errors.fundingCallId}
                 label="Funding Call - Select"
                 placeholder="Select the related funding call"
+                onChange={(event) => {
+                  field.onChange(event.target.value);
+                  const selectedCall = fundingCallsData?.find(
+                    (item) => item.id === event.target.value,
+                  );
+                  if (selectedCall) {
+                    setValue("urlFundingCall", selectedCall.url || "");
+                  } else {
+                    setValue("urlFundingCall", "");
+                  }
+                }}
                 defaultSelectedKeys={
                   grant?.fundingCallId ? [grant.fundingCallId] : [] //
                 }
@@ -552,10 +565,13 @@ const GrantForm = ({ grant }: Props) => {
                   value: grant?.fundingCallId ? "text-black" : "text-gray-400",
                 }}
               >
-                {fundingCalls ? (
-                  fundingCalls.map((fundingCall) => (
-                    <SelectItem key={fundingCall.id} value={fundingCall.id}>
-                      {fundingCall.name}
+                {fundingCallsData ? (
+                  fundingCallsData.map((fundingCallItem) => (
+                    <SelectItem
+                      key={fundingCallItem.id}
+                      value={fundingCallItem.id}
+                    >
+                      {fundingCallItem.name}
                     </SelectItem>
                   ))
                 ) : (
