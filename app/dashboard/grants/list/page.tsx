@@ -9,6 +9,7 @@ import { Metadata } from "next";
 import { getServerSession } from "next-auth";
 import authOptions from "@/app/auth/authOptions";
 import { select } from "@nextui-org/react";
+import GrantSearch from "./GrantSearch";
 
 interface Props {
   searchParams: GrantQuery; // an obj w/ prop called 'status'
@@ -166,6 +167,7 @@ const GrantsPage = async ({ searchParams }: Props) => {
   return (
     <Flex direction="column" gap="3">
       <GrantActions />
+      <GrantSearch />
       <GrantTable searchParams={searchParams} grants={grants} />
       <Pagination
         itemsCount={grantsCount}
