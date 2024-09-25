@@ -42,6 +42,8 @@ const GrantsPage = async ({ searchParams }: Props) => {
 
   const submitYear = searchParams.submitYear;
 
+  const searchQuery = searchParams.searchQuery;
+
   // const year = startYears.includes(searchParams.year) ? searchParams.year : undefined;
 
   const page = parseInt(searchParams.page) || 1;
@@ -53,6 +55,7 @@ const GrantsPage = async ({ searchParams }: Props) => {
     groupLeader: groupLeader,
     year: year,
     submitYear: submitYear,
+    searchQuery: searchQuery,
   };
 
   const grants = await prisma.grant.findMany({
@@ -97,6 +100,50 @@ const GrantsPage = async ({ searchParams }: Props) => {
         ...(session?.user.role === "GROUPLEADER"
           ? [{ assignedToUser: { id: session?.user.id } }]
           : [{}]),
+      ],
+      OR: [
+        { title: { contains: searchQuery, mode: "insensitive" } },
+        { acronym: { contains: searchQuery, mode: "insensitive" } },
+        { description: { contains: searchQuery, mode: "insensitive" } },
+        {
+          applicantFullName: {
+            contains: searchQuery,
+            mode: "insensitive",
+          },
+        },
+        {
+          assignedToUser: {
+            OR: [
+              { lastName: { contains: searchQuery, mode: "insensitive" } },
+              { firstName: { contains: searchQuery, mode: "insensitive" } },
+            ],
+          },
+        },
+        {
+          relatedFundingAgency: {
+            name: { contains: searchQuery, mode: "insensitive" },
+          },
+        },
+        {
+          relatedFundingProgramme: {
+            name: { contains: searchQuery, mode: "insensitive" },
+          },
+        },
+        {
+          relatedFundingAction: {
+            name: { contains: searchQuery, mode: "insensitive" },
+          },
+        },
+        {
+          relatedFundingCall: {
+            name: { contains: searchQuery, mode: "insensitive" },
+          },
+        },
+        { fundingAgency: { contains: searchQuery, mode: "insensitive" } },
+        { fundingProgramme: { contains: searchQuery, mode: "insensitive" } },
+        { fundingAction: { contains: searchQuery, mode: "insensitive" } },
+        { fundingCall: { contains: searchQuery, mode: "insensitive" } },
+        { projectNumber: { equals: parseInt(searchQuery) } },
       ],
     },
     include: {
@@ -155,6 +202,50 @@ const GrantsPage = async ({ searchParams }: Props) => {
         ...(session?.user.role === "GROUPLEADER"
           ? [{ assignedToUser: { id: session?.user.id } }]
           : [{}]),
+      ],
+      OR: [
+        { title: { contains: searchQuery, mode: "insensitive" } },
+        { acronym: { contains: searchQuery, mode: "insensitive" } },
+        { description: { contains: searchQuery, mode: "insensitive" } },
+        {
+          applicantFullName: {
+            contains: searchQuery,
+            mode: "insensitive",
+          },
+        },
+        {
+          assignedToUser: {
+            OR: [
+              { lastName: { contains: searchQuery, mode: "insensitive" } },
+              { firstName: { contains: searchQuery, mode: "insensitive" } },
+            ],
+          },
+        },
+        {
+          relatedFundingAgency: {
+            name: { contains: searchQuery, mode: "insensitive" },
+          },
+        },
+        {
+          relatedFundingProgramme: {
+            name: { contains: searchQuery, mode: "insensitive" },
+          },
+        },
+        {
+          relatedFundingAction: {
+            name: { contains: searchQuery, mode: "insensitive" },
+          },
+        },
+        {
+          relatedFundingCall: {
+            name: { contains: searchQuery, mode: "insensitive" },
+          },
+        },
+        { fundingAgency: { contains: searchQuery, mode: "insensitive" } },
+        { fundingProgramme: { contains: searchQuery, mode: "insensitive" } },
+        { fundingAction: { contains: searchQuery, mode: "insensitive" } },
+        { fundingCall: { contains: searchQuery, mode: "insensitive" } },
+        { projectNumber: { equals: parseInt(searchQuery) } },
       ],
     },
 

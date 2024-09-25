@@ -2,6 +2,7 @@
 
 import { Input } from "@nextui-org/react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { HiMagnifyingGlass } from "react-icons/hi2";
 import React from "react";
 
 const GrantSearch = () => {
@@ -28,6 +29,7 @@ const GrantSearch = () => {
         placeholder="Search grants"
         onChange={(event) => handleSearch(event.target.value)}
         defaultValue={searchParams.get("searchQuery")?.toString()}
+        startContent={<HiMagnifyingGlass />}
       />
     </div>
   );

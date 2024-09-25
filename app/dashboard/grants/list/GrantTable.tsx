@@ -22,6 +22,7 @@ export interface GrantQuery {
   groupLeader: User["id"]; // this is still a string type; //string;
   year: string;
   submitYear: string;
+  searchQuery: string;
 }
 
 interface Props {
