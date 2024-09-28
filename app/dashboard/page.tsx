@@ -9,7 +9,16 @@ import authOptions from "../auth/authOptions";
 import DashboardActions from "./_ui/DashboardActions";
 import { GrantQuery } from "./grants/list/GrantTable";
 import { OSDepartmentShortName } from "@prisma/client";
-import PIGrantsTable from "./_ui/PIGrantsTable";
+import dynamic from "next/dynamic";
+import PIGrantTableSkeleton from "./_ui/PIGrantTableSkeleton";
+// import PIGrantsTable from "./_ui/PIGrantsTable";
+const PIGrantsTable = dynamic(
+  () => import("@/app/dashboard/_ui/PIGrantsTable"),
+  {
+    ssr: false,
+    loading: () => <PIGrantTableSkeleton />,
+  },
+);
 
 interface Props {
   searchParams: GrantQuery;
