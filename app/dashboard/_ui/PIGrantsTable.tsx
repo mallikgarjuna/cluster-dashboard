@@ -13,6 +13,7 @@ import { OSDepartmentShortName } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import PIGrantTableSkeleton from "./PIGrantTableSkeleton";
 
 // type APIResponseData = {
 type RowData = {
@@ -55,6 +56,7 @@ interface Props {
 const PIGrantsTable = () => {
   const [rows, setRows] = useState<RowData[]>(initialRowData);
   const [departments, setDepartments] = useState<OSDepartmentShortName[]>([]);
+  const [loading, setLoading] = useState(true);
 
   const searchParams = useSearchParams();
   const params = new URLSearchParams(searchParams);
@@ -85,6 +87,8 @@ const PIGrantsTable = () => {
         setRows(data);
       } catch (error) {
         console.error("Error fetching grantsCountOfPI API: ", error);
+      } finally {
+        setLoading(false); // Set loading state to false after fetching data
       }
     };
     fetchData();
@@ -134,7 +138,7 @@ const PIGrantsTable = () => {
     handleGroupLeader();
   }, [searchParams]);
 
-  console.log("Departmetns: ", departments);
+  // console.log("Departmetns: ", departments);
 
   // If a groupleader logged in, Show the corresponding dept, not all depts;
   useEffect(() => {
@@ -147,6 +151,11 @@ const PIGrantsTable = () => {
     }
   }, [session]); // Add session as a dependency
   // console.log("Departmetns: ", departments);
+
+  if (loading) {
+    return <div>Loading...</div>; // Render a loading state while data is being fetched
+    // return <PIGrantTableSkeleton />; // Render a skeleton UI while data is being fetched
+  }
 
   return (
     <div>
