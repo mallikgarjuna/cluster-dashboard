@@ -43,6 +43,8 @@ interface Props {
 }
 
 const GrantForm = ({ grant }: Props) => {
+  console.log("GrantForm rendered");
+
   const router = useRouter();
   const {
     register,
@@ -52,6 +54,7 @@ const GrantForm = ({ grant }: Props) => {
     formState: { errors, isSubmitting },
     watch,
     setValue,
+    getValues,
   } = useForm<GrantFormDataType>({
     resolver: zodResolver(grantFormSchema),
     // defaultValues: {
@@ -126,7 +129,6 @@ const GrantForm = ({ grant }: Props) => {
         <div className="text-3xl font-bold">
           {!!grant ? "Edit Grant" : "Create New Grant"}
         </div>
-
         <Input
           {...register("title")}
           errorMessage={errors.title?.message}
@@ -141,7 +143,6 @@ const GrantForm = ({ grant }: Props) => {
             ],
           }}
         />
-
         <Input
           {...register("acronym")}
           errorMessage={errors.acronym?.message}
@@ -156,7 +157,6 @@ const GrantForm = ({ grant }: Props) => {
             ],
           }}
         />
-
         <Controller
           name="description"
           control={control}
@@ -175,7 +175,6 @@ const GrantForm = ({ grant }: Props) => {
         {!!errors.description && (
           <p className="text-sm text-red-500">{errors.description.message}</p>
         )}
-
         <div className="flex gap-2 rounded-md border border-gray-300 py-2">
           <Input
             {...register("applicantFullName")}
@@ -183,7 +182,7 @@ const GrantForm = ({ grant }: Props) => {
             isInvalid={!!errors.applicantFullName}
             type="text"
             label="Applicant's LastName + FirstName - Text input *"
-            placeholder="Applicant's LastName + FirstName"
+            placeholder="(If not a PI): Applicant's LastName + FirstName"
             defaultValue={grant?.applicantFullName}
             classNames={{
               input: [
@@ -242,6 +241,33 @@ const GrantForm = ({ grant }: Props) => {
                   defaultSelectedKeys={
                     grant?.assignedToUserId ? [grant.assignedToUserId] : []
                   }
+                  onChange={(event) => {
+                    const newValue = event.target.value;
+                    field.onChange(newValue);
+                    if (
+                      newValue &&
+                      getValues("applicantFullName") === "" &&
+                      getValues("groupMemberType") === "PI"
+                    ) {
+                      const selectedUser = users?.find(
+                        (user) => user.id === newValue,
+                      );
+                      setValue(
+                        "applicantFullName",
+                        selectedUser?.lastName || "",
+                      );
+                    }
+
+                    // console.log(
+                    //   "applicantFullName: ",
+                    //   getValues("applicantFullName"),
+                    // );
+                    // console.log(
+                    //   "groupMemberType: ",
+                    //   getValues("groupMemberType"),
+                    // );
+                    // console.log("event.target.value: ", event.target.value);
+                  }}
                   classNames={{
                     value: grant?.assignedToUserId
                       ? "text-black"
@@ -262,7 +288,6 @@ const GrantForm = ({ grant }: Props) => {
             }}
           />
         </div>
-
         <Controller
           control={control}
           name="applicantRole"
@@ -297,7 +322,6 @@ const GrantForm = ({ grant }: Props) => {
             );
           }}
         />
-
         <Controller
           control={control}
           name="isBudgetApproved"
@@ -314,7 +338,6 @@ const GrantForm = ({ grant }: Props) => {
             </Checkbox>
           )}
         />
-
         <div className="flex gap-2 rounded-md border border-gray-300 py-2">
           <Input
             disabled={true}
@@ -361,7 +384,6 @@ const GrantForm = ({ grant }: Props) => {
             }}
           />
         </div>
-
         {/* Related Funding Agency */}
         <div className="flex gap-2 rounded-md border border-gray-300 py-2">
           {/* Add an input field for selecting the related funding agency */}
@@ -424,7 +446,6 @@ const GrantForm = ({ grant }: Props) => {
             }}
           />
         </div>
-
         {/* Related Funding Programme */}
         <div className="flex gap-2 rounded-md border border-gray-300 py-2">
           {/* Add an input field for selecting the related funding agency */}
@@ -484,7 +505,6 @@ const GrantForm = ({ grant }: Props) => {
             }}
           />
         </div>
-
         {/* Related Funding Actions */}
         <div className="flex gap-2 rounded-md border border-gray-300 py-2">
           {/* Add an input field for selecting the related funding agency */}
@@ -541,7 +561,6 @@ const GrantForm = ({ grant }: Props) => {
             }}
           />
         </div>
-
         {/* Related Funding Calls */}
         <div className="flex gap-2 rounded-md border border-gray-300 py-2">
           {/* Add an input field for selecting the related funding call */}
@@ -610,7 +629,6 @@ const GrantForm = ({ grant }: Props) => {
             }}
           />
         </div>
-
         <Input
           {...register("urlFundingCall")}
           errorMessage={errors.urlFundingCall?.message}
@@ -625,7 +643,6 @@ const GrantForm = ({ grant }: Props) => {
             ],
           }}
         />
-
         <div className="flex gap-2 rounded-md border border-gray-300 py-2">
           <Input
             {...register("submissionDate")}
@@ -705,7 +722,6 @@ const GrantForm = ({ grant }: Props) => {
             );
           }}
         />
-
         <div className="flex gap-2 rounded-md border border-gray-300 py-2">
           <Input
             {...register("projectStartDate")}
@@ -739,7 +755,6 @@ const GrantForm = ({ grant }: Props) => {
             }}
           />
         </div>
-
         <Input
           {...register("projectNumber", {
             setValueAs: (val) => (val === "" ? null : parseInt(val, 10)),
@@ -761,7 +776,6 @@ const GrantForm = ({ grant }: Props) => {
             }
           }}
         />
-
         <Controller
           control={control}
           name="isDMPSubmitted"
@@ -779,7 +793,6 @@ const GrantForm = ({ grant }: Props) => {
             </Checkbox>
           )}
         />
-
         <Controller
           name="notes"
           control={control}
@@ -799,7 +812,6 @@ const GrantForm = ({ grant }: Props) => {
         {!!errors.notes && (
           <p className="text-sm text-red-500">{errors.notes.message}</p>
         )}
-
         <div className="flex justify-between">
           <Button type="submit" color="primary" disabled={isSubmitting}>
             {grant ? "Update Grant" : "Create New Grant"}
