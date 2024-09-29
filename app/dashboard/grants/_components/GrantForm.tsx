@@ -273,6 +273,11 @@ const GrantForm = ({ grant }: Props) => {
                       ? "text-black"
                       : "text-gray-400",
                   }}
+                  scrollShadowProps={{ isEnabled: false }}
+                  showScrollIndicators={true}
+                  listboxProps={{
+                    className: "max-h-[300px] overflow-y-auto ",
+                  }}
                 >
                   {users?.map((user) => (
                     <SelectItem

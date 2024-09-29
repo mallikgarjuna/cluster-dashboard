@@ -153,8 +153,8 @@ const PIGrantsTable = () => {
   // console.log("Departmetns: ", departments);
 
   if (loading) {
-    return <div>Loading...</div>; // Render a loading state while data is being fetched
-    // return <PIGrantTableSkeleton />; // Render a skeleton UI while data is being fetched
+    // return <div>Loading...</div>; // Render a loading state while data is being fetched
+    return <PIGrantTableSkeleton />; // Render a skeleton UI while data is being fetched
   }
 
   return (

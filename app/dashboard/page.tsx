@@ -303,7 +303,7 @@ export default async function DashboardPage({ searchParams }: Props) {
         <LatestGrants latestGrants={latestGrants} />
       </Grid>
       {/* <PIGrantsTable grantsCountOfPIData={grantsCountOfPIData} /> */}
-      {/* <PIGrantsTable /> */}
+      <PIGrantsTable />
     </Flex>
   );
 }
