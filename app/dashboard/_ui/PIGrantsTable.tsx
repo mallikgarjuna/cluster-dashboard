@@ -175,35 +175,57 @@ const PIGrantsTable = () => {
               tr: "hover:bg-gray-200 transition-colors",
             }}
           >
-            <TableHeader columns={columns}>
-              {(column) => (
+            <TableHeader>
+              {columns.map((column) => (
                 <TableColumn key={column.key}>{column.label}</TableColumn>
-              )}
+              ))}
             </TableHeader>
-            <TableBody items={rows.filter((row) => row.piDepartment === dept)}>
-              {(item) => (
-                <TableRow key={item.piID}>
-                  {(columnKey) => (
-                    <TableCell>
-                      {/* {columnKey !== "piID" && item[columnKey as keyof RowData]} */}
-                      {columnKey !== "piID" && (
+            <TableBody>
+              <>
+                {rows
+                  .filter((row) => row.piDepartment === dept)
+                  .map((row: RowData) => (
+                    <TableRow key={row.piID}>
+                      {columns.map((column) => (
+                        <TableCell key={column.key}>
+                          <>
+                            {column.key === "pi" ? (
+                              <Link
+                                href={`/dashboard/grants/list?groupLeader=${row.piID}`}
+                                className="text-blue-600"
+                              >
+                                {row[column.key as keyof RowData]}
+                              </Link>
+                            ) : (
+                              row[column.key as keyof RowData]
+                            )}
+                          </>
+                        </TableCell>
+                      ))}
+                    </TableRow>
+                  ))}
+                <TableRow>
+                  <>
+                    <TableCell>Total</TableCell>
+                    {columns.slice(1).map((column) => (
+                      <TableCell key={column.key}>
                         <>
-                          {columnKey === "pi" ? (
-                            <Link
-                              href={`/dashboard/grants/list?groupLeader=${item.piID}`}
-                              className="text-blue-600"
-                            >
-                              {item[columnKey as keyof RowData]}
-                            </Link>
-                          ) : (
-                            item[columnKey as keyof RowData]
-                          )}
+                          {rows
+                            .filter((row) => row.piDepartment === dept)
+                            .reduce((acc, row) => {
+                              const value = row[column.key as keyof RowData];
+                              if (typeof value === "number") {
+                                return acc + value;
+                              }
+                              return acc;
+                            }, 0)
+                            .toString()}
                         </>
-                      )}
-                    </TableCell>
-                  )}
+                      </TableCell>
+                    ))}
+                  </>
                 </TableRow>
-              )}
+              </>
             </TableBody>
           </Table>
         </div>
