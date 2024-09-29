@@ -50,11 +50,22 @@ export async function GET(request: NextRequest) {
       ? [{ id: queryObject.groupLeader }]
       : [{}];
 
+  // If a department is selected, filter by department
+  const isDepartmentSelected =
+    queryObject.department &&
+    queryObject.department !== ("All" as OSDepartmentShortName)
+      ? [{ relatedDepartment: { nameShort: queryObject.department } }]
+      : [{}];
+
   try {
     const PIs = await prisma.user.findMany({
       where: {
         role: "GROUPLEADER",
-        AND: [...isCurrentUserAGroupLeader, ...isGroupLeaderSelected],
+        AND: [
+          ...isCurrentUserAGroupLeader,
+          ...isGroupLeaderSelected,
+          ...isDepartmentSelected,
+        ],
       },
       select: {
         id: true,
