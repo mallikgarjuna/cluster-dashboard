@@ -24,6 +24,7 @@ const NavLinks = () => {
   const links = [
     // { label: "Dashboard", href: "/dashboard" },
     { label: "Grants", href: "/dashboard/grants/list" },
+    { label: "Funders", href: "/dashboard/funders" },
     { label: "Contracts", href: "/dashboard/contracts" },
     { label: "Theses", href: "/dashboard/theses" },
     { label: "Courses", href: "/dashboard/courses" },
