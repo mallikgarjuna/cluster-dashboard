@@ -169,63 +169,60 @@ const PIGrantsTable = () => {
           <h1 className="text-lg font-bold">{`${dept}:`}</h1>
           <Table
             aria-label={`PI Grants Table for ${dept}`}
-            className="mb-4"
+            // className="mb-4"
             key={dept}
             classNames={{
               tr: "hover:bg-gray-200 transition-colors",
             }}
           >
-            <TableHeader>
-              {columns.map((column) => (
+            <TableHeader columns={columns}>
+              {(column) => (
                 <TableColumn key={column.key}>{column.label}</TableColumn>
-              ))}
+              )}
             </TableHeader>
             <TableBody>
-              <>
-                {rows
-                  .filter((row) => row.piDepartment === dept)
-                  .map((row: RowData) => (
-                    <TableRow key={row.piID}>
-                      {columns.map((column) => (
-                        <TableCell key={column.key}>
-                          <>
-                            {column.key === "pi" ? (
-                              <Link
-                                href={`/dashboard/grants/list?groupLeader=${row.piID}`}
-                                className="text-blue-600"
-                              >
-                                {row[column.key as keyof RowData]}
-                              </Link>
-                            ) : (
-                              row[column.key as keyof RowData]
-                            )}
-                          </>
-                        </TableCell>
-                      ))}
-                    </TableRow>
-                  ))}
-                <TableRow>
-                  <>
-                    <TableCell>Total</TableCell>
-                    {columns.slice(1).map((column) => (
+              {rows
+                .filter((row) => row.piDepartment === dept)
+                .map((row: RowData) => (
+                  <TableRow key={row.piID}>
+                    {columns.map((column) => (
                       <TableCell key={column.key}>
-                        <>
-                          {rows
-                            .filter((row) => row.piDepartment === dept)
-                            .reduce((acc, row) => {
-                              const value = row[column.key as keyof RowData];
-                              if (typeof value === "number") {
-                                return acc + value;
-                              }
-                              return acc;
-                            }, 0)
-                            .toString()}
-                        </>
+                        {column.key !== "piID" &&
+                          column.key !== "piDepartment" && (
+                            <>
+                              {column.key === "pi" ? (
+                                <Link
+                                  href={`/dashboard/grants/list?groupLeader=${row.piID}`}
+                                  className="text-blue-600"
+                                >
+                                  {row[column.key as keyof RowData]}
+                                </Link>
+                              ) : (
+                                row[column.key as keyof RowData]
+                              )}
+                            </>
+                          )}
                       </TableCell>
                     ))}
-                  </>
-                </TableRow>
-              </>
+                  </TableRow>
+                ))}
+              <TableRow>
+                <TableCell>Total</TableCell>
+                {columns.slice(1).map((column) => (
+                  <TableCell key={column.key}>
+                    {rows
+                      .filter((row) => row.piDepartment === dept)
+                      .reduce((acc, row) => {
+                        const value = row[column.key as keyof RowData];
+                        if (typeof value === "number") {
+                          return acc + value;
+                        }
+                        return acc;
+                      }, 0)
+                      .toString()}
+                  </TableCell>
+                ))}
+              </TableRow>
             </TableBody>
           </Table>
         </div>
