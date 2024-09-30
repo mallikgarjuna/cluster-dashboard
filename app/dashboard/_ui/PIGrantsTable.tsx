@@ -1,14 +1,7 @@
 "use client";
 
 import Link from "@/app/components/Link";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableColumn,
-  TableHeader,
-  TableRow,
-} from "@nextui-org/react";
+import { Table } from "@radix-ui/themes";
 import { OSDepartmentShortName } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
@@ -157,36 +150,47 @@ const PIGrantsTable = () => {
     return <PIGrantTableSkeleton />; // Render a skeleton UI while data is being fetched
   }
 
+  // Check that the departments array is always defined and has the same length on both server and client. If it can be empty, consider adding a conditional rendering to handle that case.
+  if (!departments || departments.length === 0) {
+    return <div>No data available for departments.</div>;
+  }
+
   return (
     <div>
       <h1 className="text-xl font-bold">{`PI Grants Overview - Tables`}</h1>
-      <em className="mb-2 text-xs">
+      <em className="mb-5 text-xs">
         {" "}
         * Success Rate % = (# of Awarded) / (# of Submitted - # of Awaiting){" "}
       </em>
       {departments.map((dept) => (
-        <div key={dept}>
+        <div key={dept} className="mt-5">
           <h1 className="text-lg font-bold">{`${dept}:`}</h1>
-          <Table
+          <Table.Root
             aria-label={`PI Grants Table for ${dept}`}
-            // className="mb-4"
+            className="mb-10"
             key={dept}
-            classNames={{
-              tr: "hover:bg-gray-200 transition-colors",
-            }}
+            variant="surface"
+            size={"1"}
           >
-            <TableHeader columns={columns}>
-              {(column) => (
-                <TableColumn key={column.key}>{column.label}</TableColumn>
-              )}
-            </TableHeader>
-            <TableBody>
+            <Table.Header>
+              <Table.Row>
+                {columns.map((column) => (
+                  <Table.ColumnHeaderCell key={column.key}>
+                    {column.label}
+                  </Table.ColumnHeaderCell>
+                ))}
+              </Table.Row>
+            </Table.Header>
+            <Table.Body>
               {rows
                 .filter((row) => row.piDepartment === dept)
                 .map((row: RowData) => (
-                  <TableRow key={row.piID}>
+                  <Table.Row
+                    key={row.piID}
+                    className="transition-colors hover:bg-gray-200"
+                  >
                     {columns.map((column) => (
-                      <TableCell key={column.key}>
+                      <Table.Cell key={column.key}>
                         {column.key !== "piID" &&
                           column.key !== "piDepartment" && (
                             <>
@@ -202,29 +206,45 @@ const PIGrantsTable = () => {
                               )}
                             </>
                           )}
-                      </TableCell>
+                      </Table.Cell>
                     ))}
-                  </TableRow>
+                  </Table.Row>
                 ))}
-              <TableRow>
-                <TableCell>Total</TableCell>
+              <Table.Row className="bg-gray-300">
+                <Table.Cell className="font-bold">Total</Table.Cell>
                 {columns.slice(1).map((column) => (
-                  <TableCell key={column.key}>
-                    {rows
-                      .filter((row) => row.piDepartment === dept)
-                      .reduce((acc, row) => {
-                        const value = row[column.key as keyof RowData];
-                        if (typeof value === "number") {
-                          return acc + value;
-                        }
-                        return acc;
-                      }, 0)
-                      .toString()}
-                  </TableCell>
+                  <Table.Cell key={column.key} className="font-bold">
+                    {column.key === "successRate"
+                      ? (
+                          rows
+                            .filter((row) => row.piDepartment === dept)
+                            .reduce((acc, row) => {
+                              const submitted = row.submitted;
+                              const awaiting = row.awaiting;
+                              return submitted - awaiting > 0
+                                ? acc +
+                                    (row.awarded / (submitted - awaiting)) * 100
+                                : acc;
+                            }, 0) /
+                          rows.filter((row) => row.piDepartment === dept).length
+                        )
+                          .toFixed(2)
+                          .toString()
+                      : rows
+                          .filter((row) => row.piDepartment === dept)
+                          .reduce((acc, row) => {
+                            const value = row[column.key as keyof RowData];
+                            if (typeof value === "number") {
+                              return acc + value;
+                            }
+                            return acc;
+                          }, 0)
+                          .toString()}
+                  </Table.Cell>
                 ))}
-              </TableRow>
-            </TableBody>
-          </Table>
+              </Table.Row>
+            </Table.Body>
+          </Table.Root>
         </div>
       ))}
     </div>
