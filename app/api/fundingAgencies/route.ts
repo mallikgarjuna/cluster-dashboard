@@ -9,6 +9,17 @@ export async function GET(request: NextRequest) {
     orderBy: {
       name: "asc",
     },
+    include: {
+      fundingProgrammes: {
+        include: {
+          fundingActions: {
+            include: {
+              fundingCalls: true,
+            },
+          },
+        },
+      },
+    },
   });
 
   return NextResponse.json(fundingAgencies);

@@ -54,3 +54,24 @@ const userWithDepartment = Prisma.validator<Prisma.UserDefaultArgs>()({
 export type UserWithDepartment = Prisma.UserGetPayload<
   typeof userWithDepartment
 >;
+
+// FundingAgency with fundingProgrammes type
+const fundingAgencyWithProgrammesAgenciesCalls =
+  Prisma.validator<Prisma.FundingAgencyDefaultArgs>()({
+    include: {
+      fundingProgrammes: {
+        include: {
+          fundingActions: {
+            include: {
+              fundingCalls: true,
+            },
+          },
+        },
+      },
+    },
+  });
+
+export type fundingAgencyWithProgrammesAgenciesCalls =
+  Prisma.FundingAgencyGetPayload<
+    typeof fundingAgencyWithProgrammesAgenciesCalls
+  >;

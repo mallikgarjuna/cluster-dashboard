@@ -1,11 +1,13 @@
 import { Metadata } from "next";
 import Link from "next/link";
+import FundersTable from "./_components/FundersTable";
 
 const FundersPage = () => {
   return (
-    <div>
-      FundersPage
+    <div className="flex flex-col gap-y-10">
+      {/* FundersPage */}
       <FundersLinks />
+      <FundersTable />
     </div>
   );
 };
