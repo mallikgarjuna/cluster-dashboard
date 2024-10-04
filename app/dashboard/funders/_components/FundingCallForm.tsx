@@ -5,6 +5,7 @@ import {
   CreateFundingCallFormSchema,
 } from "@/app/validationSchemas";
 import { createFundingCallSA } from "@/lib/actions/funderActions";
+import { FundingActionWithCalls } from "@/prisma/customTypes";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button, Input, Select, SelectItem } from "@nextui-org/react";
 import { FundingAction, FundingCall } from "@prisma/client";
@@ -141,7 +142,7 @@ const fetchFundingActions = async () => {
 };
 
 export const useFundingActions = () =>
-  useQuery<FundingAction[]>({
+  useQuery<FundingActionWithCalls[]>({
     queryKey: ["fundingActions-api"],
     queryFn: () => fetchFundingActions(),
     // staleTime: 60 * 1000, //60s

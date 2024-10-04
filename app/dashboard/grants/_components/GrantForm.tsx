@@ -14,6 +14,9 @@ import {
   SelectItem,
 } from "@nextui-org/react";
 import {
+  FundingAction,
+  FundingCall,
+  FundingProgramme,
   Grant,
   StatusGrant,
   User,
@@ -29,13 +32,17 @@ import "easymde/dist/easymde.min.css";
 import { fetchAllUsers } from "@/lib/actions/user/queries";
 import { useQuery } from "@tanstack/react-query";
 import { useFundingAgencies } from "../../funders/_components/FundingProgrammeForm";
-import { GrantWithAllRelatedTypes } from "@/prisma/customTypes";
+import {
+  FundingActionWithCalls,
+  FundingProgrammeWithActionsCalls,
+  GrantWithAllRelatedTypes,
+} from "@/prisma/customTypes";
 import { useFundingProgrammes } from "../../funders/_components/FundingActionForm";
 import {
   useFundingActions,
   useFundingCalls,
 } from "../../funders/_components/FundingCallForm";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 interface Props {
   // grant?: Grant;
@@ -57,30 +64,39 @@ const GrantForm = ({ grant }: Props) => {
     getValues,
   } = useForm<GrantFormDataType>({
     resolver: zodResolver(grantFormSchema),
-    // defaultValues: {
-    //   title: grant?.title,
-    //   description: grant?.description,
-    //   acronym: grant?.acronym || "",
-    //   budgetTotal: grant?.budgetTotal || 0,
-    //   fundingAgency: grant?.fundingAgency || "",
-    //   fundingProgramme: grant?.fundingProgramme || "",
-    //   fundingCall: grant?.fundingCall || "",
-    //   // submissionDate: grant?.submissionDate ?? undefined,
-    //   // deadline: grant?.deadline || "",
-    //   // decisionDate: grant?.decisionDate || "",
-    //   // projectStartDate: grant?.projectStartDate || "",
-    //   // projectEndDate: grant?.projectEndDate || "",
-    //   projectNumber: grant?.projectNumber ?? null,
-    //   assignedToUserId: grant?.assignedToUserId ?? undefined,
-    //   applicantRole: grant?.applicantRole,
-    //   status: grant?.status,
-    //   notes: grant?.notes ?? "",
-    //   fundingAgencyId: grant?.relatedFundingAgency?.id,
-    //   fundingProgrammeId: grant?.relatedFundingProgramme?.id,
-    //   fundingActionId: grant?.relatedFundingAction?.id,
-    //   fundingCallId: grant?.relatedFundingCall?.id,
-    // },
   });
+
+  const { data: users, error, isLoading } = useUsers();
+
+  const [fundingProgrammes, setFundingProgrammes] = useState<
+    FundingProgrammeWithActionsCalls[]
+  >([]);
+  const [fundingActions, setFundingActions] = useState<
+    FundingActionWithCalls[]
+  >([]);
+  const [fundingCalls, setFundingCalls] = useState<FundingCall[]>([]);
+
+  const { data: fetchedFundingAgencies } = useFundingAgencies();
+  const { data: fetchedFundingProgrammes } = useFundingProgrammes();
+  const { data: fetchedFundingActions } = useFundingActions();
+  const { data: fetchedFundingCalls } = useFundingCalls();
+
+  useEffect(() => {
+    if (fetchedFundingProgrammes)
+      setFundingProgrammes(fetchedFundingProgrammes);
+  }, [fetchedFundingProgrammes]);
+  useEffect(() => {
+    if (fetchedFundingActions) setFundingActions(fetchedFundingActions);
+  }, [fetchedFundingActions]);
+  useEffect(() => {
+    if (fetchedFundingCalls) setFundingCalls(fetchedFundingCalls);
+  }, [fetchedFundingCalls]);
+
+  const statuses = Object.values(StatusGrant);
+
+  const applicantRoles = Object.values(enumApplicantRole);
+
+  const groupMemberTypes = Object.values(enumGroupMemberType);
 
   const submitGrantForm: SubmitHandler<GrantFormDataType> = async (
     grantFormData,
@@ -102,26 +118,6 @@ const GrantForm = ({ grant }: Props) => {
       console.log(error);
     }
   };
-
-  const { data: users, error, isLoading } = useUsers();
-
-  const {
-    data: fundingAgencies,
-    error: fundingAgenciesError,
-    isLoading: isLoadingFundingAgencies,
-  } = useFundingAgencies();
-
-  const { data: fundingProgrammes } = useFundingProgrammes();
-
-  const { data: fundingActions } = useFundingActions();
-
-  const { data: fundingCallsData } = useFundingCalls();
-
-  const statuses = Object.values(StatusGrant);
-
-  const applicantRoles = Object.values(enumApplicantRole);
-
-  const groupMemberTypes = Object.values(enumGroupMemberType);
 
   return (
     <div className="max-w-full">
@@ -418,9 +414,22 @@ const GrantForm = ({ grant }: Props) => {
                     ? "text-black"
                     : "text-gray-400",
                 }}
+                // on selecting the fundingAgency, update fundingProgrammes to only show the ones related to the selected agency
+                onChange={(event) => {
+                  const selectedFundingAgencyId = event.target.value;
+                  // console.log("onchange fAgency:", selectedFundingAgencyId);
+                  setFundingProgrammes(
+                    fetchedFundingAgencies?.find(
+                      (fAgency) => fAgency.id === selectedFundingAgencyId,
+                    )?.fundingProgrammes || [], // Ensure it defaults to an empty array
+                  );
+                  // useEffect(() => {
+                  //   console.log("count: ", fundingProgrammes?.length);
+                  // }, [fundingProgrammes]);
+                }}
               >
-                {fundingAgencies ? (
-                  fundingAgencies.map((fundingAgency) => (
+                {fetchedFundingAgencies ? (
+                  fetchedFundingAgencies.map((fundingAgency) => (
                     <SelectItem key={fundingAgency.id} value={fundingAgency.id}>
                       {fundingAgency.name}
                     </SelectItem>
@@ -474,8 +483,16 @@ const GrantForm = ({ grant }: Props) => {
                     ? "text-black"
                     : "text-gray-400",
                 }}
+                onChange={(event) => {
+                  const selectedFundingProgrammeId = event.target.value;
+                  setFundingActions(
+                    fundingProgrammes?.find(
+                      (fp) => fp.id === selectedFundingProgrammeId,
+                    )?.fundingActions || [], // Ensure it defaults to an empty array
+                  );
+                }}
               >
-                {fundingProgrammes ? (
+                {fundingProgrammes.length ? (
                   fundingProgrammes.map((fundingProgramme) => (
                     <SelectItem
                       key={fundingProgramme.id}
@@ -486,7 +503,7 @@ const GrantForm = ({ grant }: Props) => {
                   ))
                 ) : (
                   <SelectItem key={""} value={""}>
-                    None
+                    None (or) Select a funding agency first
                   </SelectItem>
                 )}
               </Select>
@@ -532,6 +549,14 @@ const GrantForm = ({ grant }: Props) => {
                   value: grant?.fundingActionId
                     ? "text-black"
                     : "text-gray-400",
+                }}
+                onChange={(event) => {
+                  const selectedFundingActionId = event.target.value;
+                  setFundingCalls(
+                    fundingActions?.find(
+                      (fa) => fa.id === selectedFundingActionId,
+                    )?.fundingCalls || [], // Ensure it defaults to an empty array
+                  );
                 }}
               >
                 {fundingActions ? (
@@ -583,11 +608,12 @@ const GrantForm = ({ grant }: Props) => {
                 placeholder="Select the related funding call"
                 onChange={(event) => {
                   field.onChange(event.target.value);
-                  const selectedCall = fundingCallsData?.find(
-                    (item) => item.id === event.target.value,
+                  const selectedFundingCallId = event.target.value;
+                  const selectedFundingCall = fundingCalls?.find(
+                    (fc) => fc.id === selectedFundingCallId,
                   );
-                  if (selectedCall) {
-                    setValue("urlFundingCall", selectedCall.url || "");
+                  if (selectedFundingCall) {
+                    setValue("urlFundingCall", selectedFundingCall.url || "");
                   } else {
                     setValue("urlFundingCall", "");
                   }
@@ -599,8 +625,8 @@ const GrantForm = ({ grant }: Props) => {
                   value: grant?.fundingCallId ? "text-black" : "text-gray-400",
                 }}
               >
-                {fundingCallsData ? (
-                  fundingCallsData.map((fundingCallItem) => (
+                {fundingCalls ? (
+                  fundingCalls.map((fundingCallItem) => (
                     <SelectItem
                       key={fundingCallItem.id}
                       value={fundingCallItem.id}

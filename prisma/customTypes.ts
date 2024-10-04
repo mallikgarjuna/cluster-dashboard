@@ -55,7 +55,8 @@ export type UserWithDepartment = Prisma.UserGetPayload<
   typeof userWithDepartment
 >;
 
-// FundingAgency with fundingProgrammes type
+////////////////////////// Funder types //////////////////////////
+// FundingAgency with all its relations(fundingProgrammes, fundingActions, fundingCalls) type
 const fundingAgencyWithProgrammesAgenciesCalls =
   Prisma.validator<Prisma.FundingAgencyDefaultArgs>()({
     include: {
@@ -71,7 +72,34 @@ const fundingAgencyWithProgrammesAgenciesCalls =
     },
   });
 
-export type fundingAgencyWithProgrammesAgenciesCalls =
+export type FundingAgencyWithProgrammesAgenciesCalls =
   Prisma.FundingAgencyGetPayload<
     typeof fundingAgencyWithProgrammesAgenciesCalls
   >;
+
+// FundingProgramme with all its relations(fundingActions, fundingCalls) type
+const fundingProgrammeWithActionsCalls =
+  Prisma.validator<Prisma.FundingProgrammeDefaultArgs>()({
+    include: {
+      fundingActions: {
+        include: {
+          fundingCalls: true,
+        },
+      },
+    },
+  });
+
+export type FundingProgrammeWithActionsCalls =
+  Prisma.FundingProgrammeGetPayload<typeof fundingProgrammeWithActionsCalls>;
+
+// FundingAction with all its relations(fundingCalls) type
+const fundingActionWithCalls =
+  Prisma.validator<Prisma.FundingActionDefaultArgs>()({
+    include: {
+      fundingCalls: true,
+    },
+  });
+
+export type FundingActionWithCalls = Prisma.FundingActionGetPayload<
+  typeof fundingActionWithCalls
+>;
