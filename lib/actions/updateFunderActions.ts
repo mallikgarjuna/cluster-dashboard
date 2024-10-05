@@ -5,12 +5,14 @@ import {
   CreateFundingActionFormSchema,
   CreateFundingAgencyFormInputType,
   CreateFundingAgencyFormSchema,
+  CreateFundingCallFormInputType,
+  CreateFundingCallFormSchema,
   CreateFundingProgrammeFormFormInputType,
   CreateFundingProgrammeFormSchema,
 } from "@/app/validationSchemas";
 import prisma from "@/prisma/client";
-import { getErrorMessage } from "../utils";
 import { revalidateTag } from "next/cache";
+import { getErrorMessage } from "../utils";
 
 // Update funding agency server action
 async function updateFundingAgencySA(
@@ -206,9 +208,75 @@ async function updateFundingActionSA(
   }
 }
 
+// Update funding call server action
+async function updateFundingCallSA(
+  id: string,
+  formData: CreateFundingCallFormInputType,
+) {
+  // Validating form data
+  const validatedFields = CreateFundingCallFormSchema.safeParse(formData);
+  if (!validatedFields.success) {
+    return {
+      success: false,
+      message:
+        "Missing fields. Failed to update funding call." +
+        "\n" +
+        getErrorMessage(validatedFields.error),
+    };
+  }
+  const { name, url, fundingActionId } = validatedFields.data;
+
+  // Validating funding call
+  // Make sure that client is updating a valid funding call
+  const fCallEntry = await prisma.fundingCall.findUnique({
+    where: { id: id },
+  });
+  if (!fCallEntry) {
+    return {
+      success: false,
+      message: "Funding call not found or invalid.",
+    };
+  }
+
+  // If funding call exists, update it
+  try {
+    const updatedFundingCall = await prisma.fundingCall.update({
+      where: { id: fCallEntry.id },
+      data: {
+        name,
+        url,
+        fundingActionId,
+      },
+    });
+
+    // Revalidate the list of funding calls
+    revalidateTag("fundingAgencies-api");
+    revalidateTag("fundingProgrammes-api");
+    revalidateTag("fundingActions-api");
+    revalidateTag("fundingCalls-api");
+
+    if (updatedFundingCall) {
+      return {
+        success: true,
+        message:
+          "Funding call updated successfully" + "\n" + updatedFundingCall.name,
+      };
+    }
+  } catch (error) {
+    return {
+      success: false,
+      message:
+        "Database error. Failed to update funding call" +
+        "\n" +
+        getErrorMessage(error),
+    };
+  }
+}
+
 // Single export statement to export all functions (variables, etc., if any)
 export {
-  updateFundingAgencySA,
-  updateFundingProgrammeSA,
   updateFundingActionSA,
+  updateFundingAgencySA,
+  updateFundingCallSA,
+  updateFundingProgrammeSA,
 };

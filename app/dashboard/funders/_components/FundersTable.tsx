@@ -2,9 +2,9 @@
 
 import { Table } from "@radix-ui/themes";
 // import { TableCellProps } from "@radix-ui/react-table";
-import { useFundingAgencies } from "./FundingProgrammeForm";
-import React from "react";
 import { Link } from "@/app/components";
+import React from "react";
+import { useFundingAgencies } from "./FundingProgrammeForm";
 
 const FundersTable = () => {
   const columnsFundersTable: { key: string; value: string }[] = [
@@ -78,7 +78,13 @@ const FundersTable = () => {
                                     </Link>
                                   ) : null}
                                 </Table.Cell>
-                                <Table.Cell>{fc.name}</Table.Cell>
+                                <Table.Cell>
+                                  <Link
+                                    href={`/dashboard/funders/call/edit/${fc.id}`}
+                                  >
+                                    {fc.name}
+                                  </Link>
+                                </Table.Cell>
                               </BorderedRow>
                             ))
                           ) : (
