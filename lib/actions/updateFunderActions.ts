@@ -3,10 +3,14 @@
 import {
   CreateFundingAgencyFormInputType,
   CreateFundingAgencyFormSchema,
+  CreateFundingProgrammeFormFormInputType,
+  CreateFundingProgrammeFormSchema,
 } from "@/app/validationSchemas";
 import prisma from "@/prisma/client";
 import { getErrorMessage } from "../utils";
+import { revalidateTag } from "next/cache";
 
+// Update funding agency server action
 async function updateFundingAgencySA(
   id: string,
   formData: CreateFundingAgencyFormInputType,
@@ -48,6 +52,9 @@ async function updateFundingAgencySA(
       },
     });
 
+    // Revalidate the list of funding agencies
+    revalidateTag("fundingAgencies-api");
+
     if (updatedFundingAgency) {
       return {
         success: true,
@@ -68,5 +75,69 @@ async function updateFundingAgencySA(
   }
 }
 
+// Update funding programme server action
+async function updateFundingProgrammeSA(
+  id: string,
+  formData: CreateFundingProgrammeFormFormInputType,
+) {
+  //  Validating form data
+  const validatedFields = CreateFundingProgrammeFormSchema.safeParse(formData);
+  if (!validatedFields.success) {
+    return {
+      success: false,
+      message:
+        "Missing fields. Failed to update funding programme." +
+        "\n" +
+        getErrorMessage(validatedFields.error),
+    };
+  }
+  const { name, fundingAgencyId } = validatedFields.data;
+
+  // Validating funding programme
+  // Make sure that client is updating a valid funding programme
+  const fProgrammeEntry = await prisma.fundingProgramme.findUnique({
+    where: { id: id },
+  });
+  if (!fProgrammeEntry) {
+    return {
+      success: false,
+      message: "Funding programme not found or invalid.",
+    };
+  }
+
+  // If funding programme exists, update it
+  try {
+    const updatedFundingProgramme = await prisma.fundingProgramme.update({
+      where: { id: fProgrammeEntry.id },
+      data: {
+        name,
+        fundingAgencyId,
+      },
+    });
+
+    // Revalidate the list of funding programmes
+    revalidateTag("fundingAgencies-api");
+    revalidateTag("fundingProgrammes-api");
+
+    if (updatedFundingProgramme) {
+      return {
+        success: true,
+        message:
+          "Funding programme updated successfully" +
+          "\n" +
+          updatedFundingProgramme.name,
+      };
+    }
+  } catch (error) {
+    return {
+      success: false,
+      message:
+        "Database error. Failed to update funding programme" +
+        "\n" +
+        getErrorMessage(error),
+    };
+  }
+}
+
 // Single export statement to export all functions (variables, etc., if any)
-export { updateFundingAgencySA };
+export { updateFundingAgencySA, updateFundingProgrammeSA };

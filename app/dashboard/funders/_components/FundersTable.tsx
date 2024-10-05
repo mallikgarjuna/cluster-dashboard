@@ -61,9 +61,13 @@ const FundersTable = () => {
                                   ) : null}
                                 </Table.Cell>
                                 <Table.Cell>
-                                  {fcIndex === 0 && faIndex == 0
-                                    ? fp.name
-                                    : null}
+                                  {fcIndex === 0 && faIndex == 0 ? (
+                                    <Link
+                                      href={`/dashboard/funders/programme/edit/${fp.id}`}
+                                    >
+                                      {fp.name}
+                                    </Link>
+                                  ) : null}
                                 </Table.Cell>
                                 <Table.Cell>
                                   {fcIndex === 0 ? fa.name : null}
@@ -83,7 +87,13 @@ const FundersTable = () => {
                                 ) : null}
                               </Table.Cell>
                               <Table.Cell>
-                                {faIndex == 0 ? fp.name : null}
+                                {faIndex == 0 ? (
+                                  <Link
+                                    href={`/dashboard/funders/programme/edit/${fp.id}`}
+                                  >
+                                    {fp.name}
+                                  </Link>
+                                ) : null}
                               </Table.Cell>
                               <Table.Cell>{fa.name}</Table.Cell>
                               <Table.Cell>No Funding Calls</Table.Cell>
@@ -102,7 +112,15 @@ const FundersTable = () => {
                             </Link>
                           ) : null}
                         </Table.Cell>
-                        <Table.Cell>{fp.name}</Table.Cell>
+                        <Table.Cell>
+                          {
+                            <Link
+                              href={`/dashboard/funders/programme/edit/${fp.id}`}
+                            >
+                              {fp.name}
+                            </Link>
+                          }
+                        </Table.Cell>
                         <Table.Cell>No Funding Actions</Table.Cell>
                         <Table.Cell>No Funding Calls</Table.Cell>
                       </BorderedRow>
