@@ -2,6 +2,7 @@
 
 import React from "react";
 import { useFundingProgrammes } from "./FundingActionForm";
+import { Link } from "@/app/components";
 
 const FundingProgrammeTable = () => {
   const { data: fundingProgrammes, isLoading, error } = useFundingProgrammes();
@@ -14,7 +15,11 @@ const FundingProgrammeTable = () => {
       <h2 className="text-xl font-bold">Created Funding Programmes - List</h2>
       <ol className="list-decimal space-y-2 pl-6">
         {fundingProgrammes?.map((programme) => (
-          <li key={programme.id}>{programme.name}</li>
+          <li key={programme.id}>
+            <Link href={`/dashboard/funders/programme/edit/${programme.id}`}>
+              {programme.name}
+            </Link>
+          </li>
         ))}
       </ol>
     </div>
