@@ -4,6 +4,7 @@ import { Table } from "@radix-ui/themes";
 // import { TableCellProps } from "@radix-ui/react-table";
 import { useFundingAgencies } from "./FundingProgrammeForm";
 import React from "react";
+import { Link } from "@/app/components";
 
 const FundersTable = () => {
   const columnsFundersTable: { key: string; value: string }[] = [
@@ -51,9 +52,13 @@ const FundersTable = () => {
                                 <Table.Cell>
                                   {fcIndex === 0 &&
                                   faIndex === 0 &&
-                                  fpIndex === 0
-                                    ? fagency.name
-                                    : null}
+                                  fpIndex === 0 ? (
+                                    <Link
+                                      href={`/dashboard/funders/agency/edit/${fagency.id}`}
+                                    >
+                                      {fagency.name}
+                                    </Link>
+                                  ) : null}
                                 </Table.Cell>
                                 <Table.Cell>
                                   {fcIndex === 0 && faIndex == 0
@@ -69,9 +74,13 @@ const FundersTable = () => {
                           ) : (
                             <BorderedRow key={fa.id}>
                               <Table.Cell>
-                                {faIndex === 0 && fpIndex === 0
-                                  ? fagency.name
-                                  : null}
+                                {faIndex === 0 && fpIndex === 0 ? (
+                                  <Link
+                                    href={`/dashboard/funders/agency/edit/${fagency.id}`}
+                                  >
+                                    {fagency.name}
+                                  </Link>
+                                ) : null}
                               </Table.Cell>
                               <Table.Cell>
                                 {faIndex == 0 ? fp.name : null}
@@ -85,7 +94,13 @@ const FundersTable = () => {
                     ) : (
                       <BorderedRow key={fp.id}>
                         <Table.Cell>
-                          {fpIndex === 0 ? fagency.name : null}
+                          {fpIndex === 0 ? (
+                            <Link
+                              href={`/dashboard/funders/agency/edit/${fagency.id}`}
+                            >
+                              {fagency.name}
+                            </Link>
+                          ) : null}
                         </Table.Cell>
                         <Table.Cell>{fp.name}</Table.Cell>
                         <Table.Cell>No Funding Actions</Table.Cell>
@@ -96,7 +111,15 @@ const FundersTable = () => {
                 ))
               ) : (
                 <BorderedRow key={fagency.id}>
-                  <Table.Cell>{fagency.name}</Table.Cell>
+                  <Table.Cell>
+                    {
+                      <Link
+                        href={`/dashboard/funders/agency/edit/${fagency.id}`}
+                      >
+                        {fagency.name}
+                      </Link>
+                    }
+                  </Table.Cell>
                   <Table.Cell>No Funding Programmes</Table.Cell>
                   <Table.Cell>No Funding Actions</Table.Cell>
                   <Table.Cell>No Funding Calls</Table.Cell>

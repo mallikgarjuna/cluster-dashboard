@@ -1,7 +1,10 @@
+"use server";
+
 import {
   CreateFundingAgencyFormInputType,
   CreateFundingAgencyFormSchema,
 } from "@/app/validationSchemas";
+import prisma from "@/prisma/client";
 import { getErrorMessage } from "../utils";
 
 async function updateFundingAgencySA(
@@ -23,7 +26,7 @@ async function updateFundingAgencySA(
 
   // Validating funding agency
   //   Make sure that client is updating a valid funding agency
-  const fAgencyEntry = await prisma?.fundingAgency.findUnique({
+  const fAgencyEntry = await prisma.fundingAgency.findUnique({
     where: { id: id },
   });
   if (!fAgencyEntry) {
@@ -35,7 +38,7 @@ async function updateFundingAgencySA(
 
   //   If funding agency exists, update it
   try {
-    const updatedFundingAgency = await prisma?.fundingAgency.update({
+    const updatedFundingAgency = await prisma.fundingAgency.update({
       where: { id: fAgencyEntry.id },
       data: {
         name,
