@@ -7,13 +7,20 @@ import {
 import { createFundingAgencySA } from "@/lib/actions/funderActions";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button, Input, Select, SelectItem } from "@nextui-org/react";
-import { enumLocalityType, enumSectorType } from "@prisma/client";
+import {
+  enumLocalityType,
+  enumSectorType,
+  FundingAgency,
+} from "@prisma/client";
 import { useRouter } from "next/navigation";
-import React from "react";
 import { Controller, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 
-const FundingAgencyForm = () => {
+interface Props {
+  fAgency?: FundingAgency;
+}
+
+const FundingAgencyForm = ({ fAgency }: Props) => {
   const router = useRouter();
 
   const {
