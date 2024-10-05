@@ -61,7 +61,10 @@ const FundingProgrammeForm = ({ fProgramme }: Props) => {
         router.refresh();
         router.push("/dashboard/funders");
       }
-    } catch (error) {}
+    } catch (error) {
+      toast.error("Something went wrong..." + "\n" + error);
+      console.log(error);
+    }
   };
 
   return (

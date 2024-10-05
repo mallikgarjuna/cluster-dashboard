@@ -70,7 +70,13 @@ const FundersTable = () => {
                                   ) : null}
                                 </Table.Cell>
                                 <Table.Cell>
-                                  {fcIndex === 0 ? fa.name : null}
+                                  {fcIndex === 0 ? (
+                                    <Link
+                                      href={`/dashboard/funders/action/edit/${fa.id}`}
+                                    >
+                                      {fa.name}
+                                    </Link>
+                                  ) : null}
                                 </Table.Cell>
                                 <Table.Cell>{fc.name}</Table.Cell>
                               </BorderedRow>
@@ -95,7 +101,15 @@ const FundersTable = () => {
                                   </Link>
                                 ) : null}
                               </Table.Cell>
-                              <Table.Cell>{fa.name}</Table.Cell>
+                              <Table.Cell>
+                                {
+                                  <Link
+                                    href={`/dashboard/funders/action/edit/${fa.id}`}
+                                  >
+                                    {fa.name}
+                                  </Link>
+                                }
+                              </Table.Cell>
                               <Table.Cell>No Funding Calls</Table.Cell>
                             </BorderedRow>
                           )}

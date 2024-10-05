@@ -1,6 +1,8 @@
 "use server";
 
 import {
+  CreateFundingActionFormInputType,
+  CreateFundingActionFormSchema,
   CreateFundingAgencyFormInputType,
   CreateFundingAgencyFormSchema,
   CreateFundingProgrammeFormFormInputType,
@@ -139,5 +141,74 @@ async function updateFundingProgrammeSA(
   }
 }
 
+// Update funding action server action
+async function updateFundingActionSA(
+  id: string,
+  formData: CreateFundingActionFormInputType,
+) {
+  // Validating form data
+  const validatedFields = CreateFundingActionFormSchema.safeParse(formData);
+  if (!validatedFields.success) {
+    return {
+      success: false,
+      message:
+        "Missing fields. Failed to update funding action." +
+        "\n" +
+        getErrorMessage(validatedFields.error),
+    };
+  }
+  const { name, fundingProgrammeId } = validatedFields.data;
+
+  // Validating funding action
+  // Make sure that client is updating a valid funding action
+  const fActionEntry = await prisma.fundingAction.findUnique({
+    where: { id: id },
+  });
+  if (!fActionEntry) {
+    return {
+      success: false,
+      message: "Funding action not found or invalid.",
+    };
+  }
+
+  // If funding action exists, update it
+  try {
+    const updatedFundingAction = await prisma.fundingAction.update({
+      where: { id: fActionEntry.id },
+      data: {
+        name,
+        fundingProgrammeId,
+      },
+    });
+
+    // Revalidate the list of funding actions
+    revalidateTag("fundingAgencies-api");
+    revalidateTag("fundingProgrammes-api");
+    revalidateTag("fundingActions-api");
+
+    if (updatedFundingAction) {
+      return {
+        success: true,
+        message:
+          "Funding action updated successfully" +
+          "\n" +
+          updatedFundingAction.name,
+      };
+    }
+  } catch (error) {
+    return {
+      success: false,
+      message:
+        "Database error. Failed to update funding action" +
+        "\n" +
+        getErrorMessage(error),
+    };
+  }
+}
+
 // Single export statement to export all functions (variables, etc., if any)
-export { updateFundingAgencySA, updateFundingProgrammeSA };
+export {
+  updateFundingAgencySA,
+  updateFundingProgrammeSA,
+  updateFundingActionSA,
+};
