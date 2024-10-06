@@ -14,6 +14,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { Controller, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
+import React from "react";
 
 interface Props {
   fCall?: FundingCall;
@@ -100,26 +101,35 @@ const FundingCallForm = ({ fCall }: Props) => {
         name="fundingActionId"
         defaultValue={fCall?.fundingActionId ?? undefined}
         render={({ field }) => (
-          <Select
-            {...field}
-            {...register("fundingActionId")}
-            errorMessage={errors.fundingActionId?.message}
-            isInvalid={!!errors.fundingActionId}
-            label="(Related) Funding Action"
-            placeholder="Select the related funding action"
-          >
+          <>
             {fundingActions ? (
-              fundingActions.map((fundingAction) => (
-                <SelectItem key={fundingAction.id} value={fundingAction.id}>
-                  {fundingAction.name}
-                </SelectItem>
-              ))
+              <Select
+                {...field}
+                {...register("fundingActionId")}
+                errorMessage={errors.fundingActionId?.message}
+                isInvalid={!!errors.fundingActionId}
+                label="(Related) Funding Action"
+                placeholder="Select the related funding action"
+                // defaultSelectedKeys={
+                //   fCall?.fundingActionId ? [fCall.fundingActionId] : []
+                // }
+              >
+                {fundingActions ? (
+                  fundingActions.map((fundingAction) => (
+                    <SelectItem key={fundingAction.id} value={fundingAction.id}>
+                      {fundingAction.name}
+                    </SelectItem>
+                  ))
+                ) : (
+                  <SelectItem key={""} value={""}>
+                    None
+                  </SelectItem>
+                )}
+              </Select>
             ) : (
-              <SelectItem key={""} value={""}>
-                None
-              </SelectItem>
-            )}
-          </Select>
+              <p>Loading funding actions...</p>
+            )}{" "}
+          </>
         )}
       />
 

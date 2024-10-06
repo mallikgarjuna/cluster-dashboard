@@ -7,16 +7,13 @@ interface Props {
 }
 
 const EditFundingCallPage = async ({ params }: Props) => {
-  try {
-    const fCall = await prisma.fundingCall.findUnique({
-      where: { id: params.id },
-    });
-    if (!fCall) return notFound(); // null check
+  const fCall = await prisma?.fundingCall.findUnique({
+    where: { id: params.id },
+  });
 
-    return <FundingCallForm fCall={fCall} />;
-  } catch (error) {
-    return notFound();
-  }
+  if (!fCall) return notFound(); // null check
+
+  return <FundingCallForm fCall={fCall} />;
 };
 
 export default EditFundingCallPage;

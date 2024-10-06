@@ -7,17 +7,13 @@ interface Props {
 }
 
 const EditFundingActionPage = async ({ params }: Props) => {
-  try {
-    const fAction = await prisma.fundingAction.findUnique({
-      where: { id: params.id },
-    });
+  const fAction = await prisma?.fundingAction.findUnique({
+    where: { id: params.id },
+  });
 
-    if (!fAction) return notFound(); // null check
+  if (!fAction) return notFound(); // null check
 
-    return <FundingActionForm fAction={fAction} />;
-  } catch (error) {
-    return notFound();
-  }
+  return <FundingActionForm fAction={fAction} />;
 };
 
 export default EditFundingActionPage;

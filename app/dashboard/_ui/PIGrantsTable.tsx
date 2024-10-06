@@ -5,7 +5,7 @@ import { Table } from "@radix-ui/themes";
 import { OSDepartmentShortName } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import PIGrantTableSkeleton from "./PIGrantTableSkeleton";
 
 // type APIResponseData = {
@@ -152,11 +152,11 @@ const PIGrantsTable = () => {
 
   // Check that the departments array is always defined and has the same length on both server and client. If it can be empty, consider adding a conditional rendering to handle that case.
   if (!departments || departments.length === 0) {
-    return <div>No data available for departments.</div>;
+    return <>No data available for departments.</>;
   }
 
   return (
-    <div>
+    <React.Fragment>
       <h1 className="text-xl font-bold">{`PI Grants Overview - Tables`}</h1>
       <em className="mb-5 text-xs">
         {" "}
@@ -192,20 +192,17 @@ const PIGrantsTable = () => {
                     {columns.map((column) => (
                       <Table.Cell key={column.key}>
                         {column.key !== "piID" &&
-                          column.key !== "piDepartment" && (
-                            <>
-                              {column.key === "pi" ? (
-                                <Link
-                                  href={`/dashboard/grants/list?groupLeader=${row.piID}`}
-                                  className="text-blue-600"
-                                >
-                                  {row[column.key as keyof RowData]}
-                                </Link>
-                              ) : (
-                                row[column.key as keyof RowData]
-                              )}
-                            </>
-                          )}
+                          column.key !== "piDepartment" &&
+                          (column.key === "pi" ? (
+                            <Link
+                              href={`/dashboard/grants/list?groupLeader=${row.piID}`}
+                              className="text-blue-600"
+                            >
+                              {row[column.key as keyof RowData]}
+                            </Link>
+                          ) : (
+                            row[column.key as keyof RowData]
+                          ))}
                       </Table.Cell>
                     ))}
                   </Table.Row>
@@ -247,7 +244,7 @@ const PIGrantsTable = () => {
           </Table.Root>
         </div>
       ))}
-    </div>
+    </React.Fragment>
   );
 };
 

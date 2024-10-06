@@ -14,6 +14,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { Controller, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
+import React from "react";
 
 interface Props {
   fAction?: FundingAction;
@@ -88,28 +89,39 @@ const FundingActionForm = ({ fAction }: Props) => {
       <Controller
         control={control}
         name="fundingProgrammeId"
-        defaultValue={fAction?.fundingProgrammeId ?? ""}
+        defaultValue={fAction?.fundingProgrammeId ?? undefined}
         render={({ field }) => (
-          <Select
-            {...field}
-            {...register("fundingProgrammeId")}
-            errorMessage={errors.fundingProgrammeId?.message}
-            isInvalid={!!errors.fundingProgrammeId}
-            label="(Related) Funding Programme"
-            placeholder="Select the related funding programme"
-          >
+          <>
             {fundingProgrammes ? (
-              fundingProgrammes.map((program) => (
-                <SelectItem key={program.id} value={program.id}>
-                  {program.name}
-                </SelectItem>
-              ))
+              <Select
+                {...field}
+                {...register("fundingProgrammeId")}
+                errorMessage={errors.fundingProgrammeId?.message}
+                isInvalid={!!errors.fundingProgrammeId}
+                label="(Related) Funding Programme"
+                placeholder="Select the related funding programme"
+                // defaultSelectedKeys={
+                //   fAction?.fundingProgrammeId
+                //     ? [fAction.fundingProgrammeId]
+                //     : []
+                // }
+              >
+                {fundingProgrammes ? (
+                  fundingProgrammes.map((program) => (
+                    <SelectItem key={program.id} value={program.id}>
+                      {program.name}
+                    </SelectItem>
+                  ))
+                ) : (
+                  <SelectItem key={""} value={""}>
+                    None
+                  </SelectItem>
+                )}
+              </Select>
             ) : (
-              <SelectItem key={""} value={""}>
-                None
-              </SelectItem>
+              <p>Loading funding programs...</p>
             )}
-          </Select>
+          </>
         )}
       />
 

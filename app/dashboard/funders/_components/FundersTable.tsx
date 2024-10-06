@@ -25,7 +25,7 @@ const FundersTable = () => {
   );
 
   return (
-    <div>
+    <>
       <h2 className="text-3xl">Funders Table</h2>
       <Table.Root variant="surface" size={"1"}>
         <Table.Header>
@@ -167,7 +167,7 @@ const FundersTable = () => {
           ))}
         </Table.Body>
       </Table.Root>
-    </div>
+    </>
   );
 };
 
