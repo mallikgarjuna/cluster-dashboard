@@ -5,6 +5,12 @@ import { Table } from "@radix-ui/themes";
 import { Link } from "@/app/components";
 import React from "react";
 import { useFundingAgencies } from "./FundingProgrammeForm";
+import {
+  FundingAction,
+  FundingAgency,
+  FundingCall,
+  FundingProgramme,
+} from "@prisma/client";
 
 const FundersTable = () => {
   const columnsFundersTable: { key: string; value: string }[] = [
@@ -23,6 +29,32 @@ const FundersTable = () => {
   const BorderedRow = (props: any) => (
     <Table.Row {...props} style={{ borderBottom: "1px solid #e5e5e5" }} />
   );
+
+  const fAgencyCellContent = (fAgency: FundingAgency) => {
+    return (
+      <Link href={`/dashboard/funders/agency/edit/${fAgency.id}`}>
+        {fAgency.name}
+      </Link>
+    );
+  };
+
+  const fProgrammeCellContent = (fP: FundingProgramme) => {
+    return (
+      <Link href={`/dashboard/funders/programme/edit/${fP.id}`}>{fP.name}</Link>
+    );
+  };
+
+  const fActionCellContent = (fA: FundingAction) => {
+    return (
+      <Link href={`/dashboard/funders/action/edit/${fA.id}`}>{fA.name}</Link>
+    );
+  };
+
+  const fCallCellContent = (fC: FundingCall) => {
+    return (
+      <Link href={`/dashboard/funders/call/edit/${fC.id}`}>{fC.name}</Link>
+    );
+  };
 
   return (
     <>
@@ -52,70 +84,36 @@ const FundersTable = () => {
                                 <Table.Cell>
                                   {fcIndex === 0 &&
                                   faIndex === 0 &&
-                                  fpIndex === 0 ? (
-                                    <Link
-                                      href={`/dashboard/funders/agency/edit/${fagency.id}`}
-                                    >
-                                      {fagency.name}
-                                    </Link>
-                                  ) : null}
+                                  fpIndex === 0
+                                    ? fAgencyCellContent(fagency)
+                                    : null}
                                 </Table.Cell>
                                 <Table.Cell>
-                                  {fcIndex === 0 && faIndex == 0 ? (
-                                    <Link
-                                      href={`/dashboard/funders/programme/edit/${fp.id}`}
-                                    >
-                                      {fp.name}
-                                    </Link>
-                                  ) : null}
+                                  {fcIndex === 0 && faIndex == 0
+                                    ? fProgrammeCellContent(fp)
+                                    : null}
                                 </Table.Cell>
                                 <Table.Cell>
-                                  {fcIndex === 0 ? (
-                                    <Link
-                                      href={`/dashboard/funders/action/edit/${fa.id}`}
-                                    >
-                                      {fa.name}
-                                    </Link>
-                                  ) : null}
+                                  {fcIndex === 0
+                                    ? fActionCellContent(fa)
+                                    : null}
                                 </Table.Cell>
-                                <Table.Cell>
-                                  <Link
-                                    href={`/dashboard/funders/call/edit/${fc.id}`}
-                                  >
-                                    {fc.name}
-                                  </Link>
-                                </Table.Cell>
+                                <Table.Cell>{fCallCellContent(fc)}</Table.Cell>
                               </BorderedRow>
                             ))
                           ) : (
                             <BorderedRow key={fa.id}>
                               <Table.Cell>
-                                {faIndex === 0 && fpIndex === 0 ? (
-                                  <Link
-                                    href={`/dashboard/funders/agency/edit/${fagency.id}`}
-                                  >
-                                    {fagency.name}
-                                  </Link>
-                                ) : null}
+                                {faIndex === 0 && fpIndex === 0
+                                  ? fAgencyCellContent(fagency)
+                                  : null}
                               </Table.Cell>
                               <Table.Cell>
-                                {faIndex == 0 ? (
-                                  <Link
-                                    href={`/dashboard/funders/programme/edit/${fp.id}`}
-                                  >
-                                    {fp.name}
-                                  </Link>
-                                ) : null}
+                                {faIndex == 0
+                                  ? fProgrammeCellContent(fp)
+                                  : null}
                               </Table.Cell>
-                              <Table.Cell>
-                                {
-                                  <Link
-                                    href={`/dashboard/funders/action/edit/${fa.id}`}
-                                  >
-                                    {fa.name}
-                                  </Link>
-                                }
-                              </Table.Cell>
+                              <Table.Cell>{fActionCellContent(fa)}</Table.Cell>
                               <Table.Cell>No Funding Calls</Table.Cell>
                             </BorderedRow>
                           )}
@@ -124,23 +122,9 @@ const FundersTable = () => {
                     ) : (
                       <BorderedRow key={fp.id}>
                         <Table.Cell>
-                          {fpIndex === 0 ? (
-                            <Link
-                              href={`/dashboard/funders/agency/edit/${fagency.id}`}
-                            >
-                              {fagency.name}
-                            </Link>
-                          ) : null}
+                          {fpIndex === 0 ? fAgencyCellContent(fagency) : null}
                         </Table.Cell>
-                        <Table.Cell>
-                          {
-                            <Link
-                              href={`/dashboard/funders/programme/edit/${fp.id}`}
-                            >
-                              {fp.name}
-                            </Link>
-                          }
-                        </Table.Cell>
+                        <Table.Cell>{fProgrammeCellContent(fp)}</Table.Cell>
                         <Table.Cell>No Funding Actions</Table.Cell>
                         <Table.Cell>No Funding Calls</Table.Cell>
                       </BorderedRow>
@@ -149,15 +133,7 @@ const FundersTable = () => {
                 ))
               ) : (
                 <BorderedRow key={fagency.id}>
-                  <Table.Cell>
-                    {
-                      <Link
-                        href={`/dashboard/funders/agency/edit/${fagency.id}`}
-                      >
-                        {fagency.name}
-                      </Link>
-                    }
-                  </Table.Cell>
+                  <Table.Cell>{fAgencyCellContent(fagency)}</Table.Cell>
                   <Table.Cell>No Funding Programmes</Table.Cell>
                   <Table.Cell>No Funding Actions</Table.Cell>
                   <Table.Cell>No Funding Calls</Table.Cell>
