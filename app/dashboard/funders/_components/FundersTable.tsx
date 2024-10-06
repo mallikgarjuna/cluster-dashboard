@@ -11,6 +11,12 @@ import {
   FundingCall,
   FundingProgramme,
 } from "@prisma/client";
+import {
+  FundingActionWithAllRelatedTypes,
+  FundingAgencyWithAllRelatedTypes,
+  FundingCallWithAllRelatedTypes,
+  FundingProgrammeWithAllRelatedTypes,
+} from "@/prisma/customTypes";
 
 const FundersTable = () => {
   const columnsFundersTable: { key: string; value: string }[] = [
@@ -20,7 +26,11 @@ const FundersTable = () => {
     { key: "fundingCall", value: "Funding Call" },
   ];
 
-  const { data: fundingAgencies, isLoading, error } = useFundingAgencies();
+  const {
+    data: fetchedFundingAgencies,
+    isLoading,
+    error,
+  } = useFundingAgencies();
 
   const BorderedCell = (props: any) => (
     <Table.Cell {...props} style={{ borderBottom: "1px solid #e5e5e5" }} />
@@ -30,29 +40,43 @@ const FundersTable = () => {
     <Table.Row {...props} style={{ borderBottom: "1px solid #e5e5e5" }} />
   );
 
-  const fAgencyCellContent = (fAgency: FundingAgency) => {
+  const fAgencyCellContent = (fAgency: FundingAgencyWithAllRelatedTypes) => {
     return (
-      <Link href={`/dashboard/funders/agency/edit/${fAgency.id}`}>
-        {fAgency.name}
-      </Link>
+      <div className="flex gap-2">
+        <Link href={`/dashboard/funders/agency/edit/${fAgency.id}`}>
+          {fAgency.name}
+        </Link>
+        <p>({fAgency.grants.length})</p>
+      </div>
     );
   };
 
-  const fProgrammeCellContent = (fP: FundingProgramme) => {
+  const fProgrammeCellContent = (fP: FundingProgrammeWithAllRelatedTypes) => {
     return (
-      <Link href={`/dashboard/funders/programme/edit/${fP.id}`}>{fP.name}</Link>
+      <div className="flex gap-2">
+        <Link href={`/dashboard/funders/programme/edit/${fP.id}`}>
+          {fP.name}
+        </Link>
+        <p>({fP.grants.length})</p>
+      </div>
     );
   };
 
-  const fActionCellContent = (fA: FundingAction) => {
+  const fActionCellContent = (fA: FundingActionWithAllRelatedTypes) => {
     return (
-      <Link href={`/dashboard/funders/action/edit/${fA.id}`}>{fA.name}</Link>
+      <div className="flex gap-2">
+        <Link href={`/dashboard/funders/action/edit/${fA.id}`}>{fA.name}</Link>
+        <p>({fA.grants.length})</p>
+      </div>
     );
   };
 
-  const fCallCellContent = (fC: FundingCall) => {
+  const fCallCellContent = (fC: FundingCallWithAllRelatedTypes) => {
     return (
-      <Link href={`/dashboard/funders/call/edit/${fC.id}`}>{fC.name}</Link>
+      <div className="flex gap-2">
+        <Link href={`/dashboard/funders/call/edit/${fC.id}`}>{fC.name}</Link>
+        <p>({fC.grants.length})</p>
+      </div>
     );
   };
 
@@ -70,7 +94,7 @@ const FundersTable = () => {
           </Table.Row>
         </Table.Header>
         <Table.Body>
-          {fundingAgencies?.map((fagency, fagIndex) => (
+          {fetchedFundingAgencies?.map((fagency, fagIndex) => (
             <React.Fragment key={fagency.id}>
               {fagency.fundingProgrammes.length > 0 ? (
                 fagency.fundingProgrammes.map((fp, fpIndex) => (

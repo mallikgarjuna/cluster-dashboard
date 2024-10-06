@@ -10,11 +10,18 @@ export async function GET(request: NextRequest) {
       name: "asc",
     },
     include: {
+      grants: true,
       fundingProgrammes: {
         include: {
+          grants: true,
           fundingActions: {
             include: {
-              fundingCalls: true,
+              grants: true,
+              fundingCalls: {
+                include: {
+                  grants: true,
+                },
+              },
             },
           },
         },

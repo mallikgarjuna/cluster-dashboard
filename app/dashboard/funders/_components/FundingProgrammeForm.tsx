@@ -6,7 +6,7 @@ import {
 } from "@/app/validationSchemas";
 import { createFundingProgrammeSA } from "@/lib/actions/funderActions";
 import { updateFundingProgrammeSA } from "@/lib/actions/updateFunderActions";
-import { FundingAgencyWithProgrammesAgenciesCalls } from "@/prisma/customTypes";
+import { FundingAgencyWithProgrammesActionsCallsAndGrants } from "@/prisma/customTypes";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button, Input, Select, SelectItem } from "@nextui-org/react";
 import { FundingProgramme } from "@prisma/client";
@@ -157,7 +157,7 @@ const fetchFundingAgencies = async () => {
 };
 
 export const useFundingAgencies = () =>
-  useQuery<FundingAgencyWithProgrammesAgenciesCalls[]>({
+  useQuery<FundingAgencyWithProgrammesActionsCallsAndGrants[]>({
     queryKey: ["fundingAgencies-api"], // can this tag be revalidated in SA?
     // queryFn: () => axios.get("/api/fundingAgencies").then((res) => res.data),
     queryFn: () => fetchFundingAgencies(),
