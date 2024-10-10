@@ -11,6 +11,7 @@ import { GrantQuery } from "./grants/list/GrantTable";
 import { OSDepartmentShortName } from "@prisma/client";
 import dynamic from "next/dynamic";
 import PIGrantTableSkeleton from "./_ui/PIGrantTableSkeleton";
+import FundersTable from "./funders/_components/FundersTable";
 // import PIGrantsTable from "./_ui/PIGrantsTable";
 const PIGrantsTable = dynamic(
   () => import("@/app/dashboard/_ui/PIGrantsTable"),
@@ -282,7 +283,7 @@ export default async function DashboardPage({ searchParams }: Props) {
   // );
 
   return (
-    <Flex direction="column" gap="5">
+    <Flex direction="column" gap="5" mb="9">
       <DashboardActions />
       <Grid columns={{ initial: "1", md: "2" }} gap="5">
         <Flex direction="column" gap="5">
@@ -304,6 +305,7 @@ export default async function DashboardPage({ searchParams }: Props) {
       </Grid>
       {/* <PIGrantsTable grantsCountOfPIData={grantsCountOfPIData} /> */}
       <PIGrantsTable />
+      <FundersTable />
     </Flex>
   );
 }

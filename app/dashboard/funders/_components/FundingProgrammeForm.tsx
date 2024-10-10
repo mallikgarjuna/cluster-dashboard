@@ -153,6 +153,7 @@ const fetchFundingAgencies = async () => {
     next: { tags: ["fundingAgencies-api"] },
   });
   const data = await res.json();
+  // console.log("Calling useFundingAgencies");
   return data;
 };
 
