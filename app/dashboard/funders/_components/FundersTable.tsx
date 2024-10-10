@@ -18,7 +18,7 @@ import {
   FundingCallWithAllRelatedTypes,
   FundingProgrammeWithAllRelatedTypes,
 } from "@/prisma/customTypes";
-import { useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 
 const columnsFundersTable: { key: string; value: string }[] = [
   { key: "fundingAgency", value: "Funding Agency" },
@@ -30,6 +30,9 @@ const columnsFundersTable: { key: string; value: string }[] = [
 const FundersTable = () => {
   const [fetchedFundingAgencies, setFetchedFundingAgencies] =
     useState<any>(null);
+
+  const pathname = usePathname();
+  console.log("pathname: ", pathname);
 
   const searchParams = useSearchParams();
   const params = new URLSearchParams(searchParams);
@@ -120,9 +123,8 @@ const FundersTable = () => {
         </Table.Header>
         <Table.Body>
           {fetchedFundingAgencies
-            ?.filter(
-              (fAg: FundingAgencyWithProgrammesActionsCallsAndGrants) =>
-                fAg.grants.length > 0,
+            ?.filter((fAg: FundingAgencyWithProgrammesActionsCallsAndGrants) =>
+              pathname === "/dashboard" ? fAg.grants.length > 0 : true,
             )
             .map(
               (
@@ -132,17 +134,27 @@ const FundersTable = () => {
                 <React.Fragment key={fagency.id}>
                   {fagency.fundingProgrammes.length > 0 ? (
                     fagency.fundingProgrammes
-                      .filter((fp) => fp.grants.length > 0)
+                      .filter((fp) =>
+                        pathname === "/dashboard" ? fp.grants.length > 0 : true,
+                      )
                       .map((fp, fpIndex) => (
                         <React.Fragment key={fp.id}>
                           {fp.fundingActions.length > 0 ? (
                             fp.fundingActions
-                              .filter((fa) => fa.grants.length > 0)
+                              .filter((fa) =>
+                                pathname === "/dashboard"
+                                  ? fa.grants.length > 0
+                                  : true,
+                              )
                               .map((fa, faIndex) => (
                                 <React.Fragment key={fa.id}>
                                   {fa.fundingCalls.length > 0 ? (
                                     fa.fundingCalls
-                                      .filter((fc) => fc.grants.length > 0)
+                                      .filter((fc) =>
+                                        pathname === "/dashboard"
+                                          ? fc.grants.length > 0
+                                          : true,
+                                      )
                                       .map((fc, fcIndex) => (
                                         <BorderedRow key={fc.id}>
                                           <Table.Cell>
