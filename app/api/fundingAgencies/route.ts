@@ -17,8 +17,13 @@ export async function GET(request: NextRequest) {
       ? queryObject.department
       : undefined;
 
-  const filters = { department };
-  console.log("filters.department: ", filters.department);
+  // Validate searchParams' groupLeader id
+  // But didn't validate it's a valid user id (need to fetch all users and check, not sure if it's worth it)
+  const groupLeader =
+    queryObject.groupLeader === "All" ? undefined : queryObject.groupLeader;
+
+  const filters = { department, groupLeader };
+  // console.log("filters.department: ", filters.department);
 
   const departmentFilter = filters.department
     ? {
@@ -28,28 +33,40 @@ export async function GET(request: NextRequest) {
       }
     : {};
 
+  const groupLeaderFilter = filters.groupLeader
+    ? { assignedToUserId: filters.groupLeader }
+    : {};
+
   const fundingAgencies = await prisma.fundingAgency.findMany({
     orderBy: {
       name: "asc",
     },
     include: {
       grants: {
-        where: departmentFilter,
+        where: {
+          AND: [departmentFilter, groupLeaderFilter],
+        },
       },
       fundingProgrammes: {
         include: {
           grants: {
-            where: departmentFilter,
+            where: {
+              AND: [departmentFilter, groupLeaderFilter],
+            },
           },
           fundingActions: {
             include: {
               grants: {
-                where: departmentFilter,
+                where: {
+                  AND: [departmentFilter, groupLeaderFilter],
+                },
               },
               fundingCalls: {
                 include: {
                   grants: {
-                    where: departmentFilter,
+                    where: {
+                      AND: [departmentFilter, groupLeaderFilter],
+                    },
                   },
                 },
               },

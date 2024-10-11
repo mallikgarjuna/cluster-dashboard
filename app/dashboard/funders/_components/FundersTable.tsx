@@ -32,7 +32,7 @@ const FundersTable = () => {
     useState<any>(null);
 
   const pathname = usePathname();
-  console.log("pathname: ", pathname);
+  // console.log("pathname: ", pathname);
 
   const searchParams = useSearchParams();
   const params = new URLSearchParams(searchParams);
