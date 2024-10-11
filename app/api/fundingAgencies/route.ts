@@ -22,7 +22,14 @@ export async function GET(request: NextRequest) {
   const groupLeader =
     queryObject.groupLeader === "All" ? undefined : queryObject.groupLeader;
 
-  const filters = { department, groupLeader };
+  // Validate searchParams' startYear
+  const startYear =
+    queryObject.year && queryObject.year === "All"
+      ? undefined
+      : parseInt(queryObject.year as string);
+
+  // Collect all filters into one object
+  const filters = { department, groupLeader, startYear };
   // console.log("filters.department: ", filters.department);
 
   const departmentFilter = filters.department
@@ -37,6 +44,15 @@ export async function GET(request: NextRequest) {
     ? { assignedToUserId: filters.groupLeader }
     : {};
 
+  const startYearFilter = filters.startYear
+    ? {
+        projectStartDate: {
+          gte: new Date(`${filters.startYear}-01-01`),
+          lt: new Date(`${filters.startYear + 1}-01-01`),
+        },
+      }
+    : {};
+
   const fundingAgencies = await prisma.fundingAgency.findMany({
     orderBy: {
       name: "asc",
@@ -44,28 +60,32 @@ export async function GET(request: NextRequest) {
     include: {
       grants: {
         where: {
-          AND: [departmentFilter, groupLeaderFilter],
+          AND: [departmentFilter, groupLeaderFilter, startYearFilter],
         },
       },
       fundingProgrammes: {
         include: {
           grants: {
             where: {
-              AND: [departmentFilter, groupLeaderFilter],
+              AND: [departmentFilter, groupLeaderFilter, startYearFilter],
             },
           },
           fundingActions: {
             include: {
               grants: {
                 where: {
-                  AND: [departmentFilter, groupLeaderFilter],
+                  AND: [departmentFilter, groupLeaderFilter, startYearFilter],
                 },
               },
               fundingCalls: {
                 include: {
                   grants: {
                     where: {
-                      AND: [departmentFilter, groupLeaderFilter],
+                      AND: [
+                        departmentFilter,
+                        groupLeaderFilter,
+                        startYearFilter,
+                      ],
                     },
                   },
                 },
