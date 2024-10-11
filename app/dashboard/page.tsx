@@ -283,7 +283,7 @@ export default async function DashboardPage({ searchParams }: Props) {
   // );
 
   return (
-    <Flex direction="column" gap="5" mb="9">
+    <Flex direction="column" gap="5" className="mb-32">
       <DashboardActions />
       <Grid columns={{ initial: "1", md: "2" }} gap="5">
         <Flex direction="column" gap="5">

@@ -157,93 +157,97 @@ const PIGrantsTable = () => {
 
   return (
     <React.Fragment>
-      <h1 className="text-xl font-bold">{`PI Grants Overview - Tables`}</h1>
-      <em className="mb-5 text-xs">
-        {" "}
-        * Success Rate % = (# of Awarded) / (# of Submitted - # of Awaiting){" "}
-      </em>
-      {departments.map((dept) => (
-        <div key={dept} className="mt-5">
-          <h1 className="text-lg font-bold">{`${dept}:`}</h1>
-          <Table.Root
-            aria-label={`PI Grants Table for ${dept}`}
-            className="mb-10"
-            key={dept}
-            variant="surface"
-            size={"1"}
-          >
-            <Table.Header>
-              <Table.Row>
-                {columns.map((column) => (
-                  <Table.ColumnHeaderCell key={column.key}>
-                    {column.label}
-                  </Table.ColumnHeaderCell>
-                ))}
-              </Table.Row>
-            </Table.Header>
-            <Table.Body>
-              {rows
-                .filter((row) => row.piDepartment === dept)
-                .map((row: RowData) => (
-                  <Table.Row
-                    key={row.piID}
-                    className="transition-colors hover:bg-gray-200"
-                  >
-                    {columns.map((column) => (
-                      <Table.Cell key={column.key}>
-                        {column.key !== "piID" &&
-                          column.key !== "piDepartment" &&
-                          (column.key === "pi" ? (
-                            <Link
-                              href={`/dashboard/grants/list?groupLeader=${row.piID}`}
-                              className="text-blue-600"
-                            >
-                              {row[column.key as keyof RowData]}
-                            </Link>
-                          ) : (
-                            row[column.key as keyof RowData]
-                          ))}
-                      </Table.Cell>
-                    ))}
-                  </Table.Row>
-                ))}
-              <Table.Row className="bg-gray-300">
-                <Table.Cell className="font-bold">Total</Table.Cell>
-                {columns.slice(1).map((column) => (
-                  <Table.Cell key={column.key} className="font-bold">
-                    {column.key === "successRate"
-                      ? (
-                          rows
+      <div className="mt-8 flex flex-col gap-5">
+        <h1 className="text-3xl font-bold">{`PI Grants Overview - Tables`}</h1>
+        <em className="text-xs">
+          {" "}
+          * Success Rate % = (# of Awarded) / (# of Submitted - # of Awaiting){" "}
+        </em>
+        {departments.map((dept) => (
+          <div key={dept} className="">
+            <h1 className="text-lg font-bold">{`${dept}:`}</h1>
+            <Table.Root
+              aria-label={`PI Grants Table for ${dept}`}
+              className=""
+              key={dept}
+              variant="surface"
+              size={"1"}
+            >
+              <Table.Header>
+                <Table.Row>
+                  {columns.map((column) => (
+                    <Table.ColumnHeaderCell key={column.key}>
+                      {column.label}
+                    </Table.ColumnHeaderCell>
+                  ))}
+                </Table.Row>
+              </Table.Header>
+              <Table.Body>
+                {rows
+                  .filter((row) => row.piDepartment === dept)
+                  .map((row: RowData) => (
+                    <Table.Row
+                      key={row.piID}
+                      className="transition-colors hover:bg-gray-200"
+                    >
+                      {columns.map((column) => (
+                        <Table.Cell key={column.key}>
+                          {column.key !== "piID" &&
+                            column.key !== "piDepartment" &&
+                            (column.key === "pi" ? (
+                              <Link
+                                href={`/dashboard/grants/list?groupLeader=${row.piID}`}
+                                className="text-blue-600"
+                              >
+                                {row[column.key as keyof RowData]}
+                              </Link>
+                            ) : (
+                              row[column.key as keyof RowData]
+                            ))}
+                        </Table.Cell>
+                      ))}
+                    </Table.Row>
+                  ))}
+                <Table.Row className="bg-gray-300">
+                  <Table.Cell className="font-bold">Total</Table.Cell>
+                  {columns.slice(1).map((column) => (
+                    <Table.Cell key={column.key} className="font-bold">
+                      {column.key === "successRate"
+                        ? (
+                            rows
+                              .filter((row) => row.piDepartment === dept)
+                              .reduce((acc, row) => {
+                                const submitted = row.submitted;
+                                const awaiting = row.awaiting;
+                                return submitted - awaiting > 0
+                                  ? acc +
+                                      (row.awarded / (submitted - awaiting)) *
+                                        100
+                                  : acc;
+                              }, 0) /
+                            rows.filter((row) => row.piDepartment === dept)
+                              .length
+                          )
+                            .toFixed(2)
+                            .toString()
+                        : rows
                             .filter((row) => row.piDepartment === dept)
                             .reduce((acc, row) => {
-                              const submitted = row.submitted;
-                              const awaiting = row.awaiting;
-                              return submitted - awaiting > 0
-                                ? acc +
-                                    (row.awarded / (submitted - awaiting)) * 100
-                                : acc;
-                            }, 0) /
-                          rows.filter((row) => row.piDepartment === dept).length
-                        )
-                          .toFixed(2)
-                          .toString()
-                      : rows
-                          .filter((row) => row.piDepartment === dept)
-                          .reduce((acc, row) => {
-                            const value = row[column.key as keyof RowData];
-                            if (typeof value === "number") {
-                              return acc + value;
-                            }
-                            return acc;
-                          }, 0)
-                          .toString()}
-                  </Table.Cell>
-                ))}
-              </Table.Row>
-            </Table.Body>
-          </Table.Root>
-        </div>
-      ))}
+                              const value = row[column.key as keyof RowData];
+                              if (typeof value === "number") {
+                                return acc + value;
+                              }
+                              return acc;
+                            }, 0)
+                            .toString()}
+                    </Table.Cell>
+                  ))}
+                </Table.Row>
+              </Table.Body>
+            </Table.Root>
+          </div>
+        ))}
+      </div>
     </React.Fragment>
   );
 };

@@ -28,8 +28,13 @@ export async function GET(request: NextRequest) {
       ? undefined
       : parseInt(queryObject.year as string);
 
+  // Validate searchParams' submitYear
+  const submitYear = queryObject.submitYear
+    ? parseInt(queryObject.submitYear)
+    : undefined;
+
   // Collect all filters into one object
-  const filters = { department, groupLeader, startYear };
+  const filters = { department, groupLeader, startYear, submitYear };
   // console.log("filters.department: ", filters.department);
 
   const departmentFilter = filters.department
@@ -53,6 +58,15 @@ export async function GET(request: NextRequest) {
       }
     : {};
 
+  const submitYearFilter = filters.submitYear
+    ? {
+        submissionDate: {
+          gte: new Date(`${filters.submitYear}-01-01`),
+          lt: new Date(`${filters.submitYear + 1}-01-01`),
+        },
+      }
+    : {};
+
   const fundingAgencies = await prisma.fundingAgency.findMany({
     orderBy: {
       name: "asc",
@@ -60,21 +74,36 @@ export async function GET(request: NextRequest) {
     include: {
       grants: {
         where: {
-          AND: [departmentFilter, groupLeaderFilter, startYearFilter],
+          AND: [
+            departmentFilter,
+            groupLeaderFilter,
+            startYearFilter,
+            submitYearFilter,
+          ],
         },
       },
       fundingProgrammes: {
         include: {
           grants: {
             where: {
-              AND: [departmentFilter, groupLeaderFilter, startYearFilter],
+              AND: [
+                departmentFilter,
+                groupLeaderFilter,
+                startYearFilter,
+                submitYearFilter,
+              ],
             },
           },
           fundingActions: {
             include: {
               grants: {
                 where: {
-                  AND: [departmentFilter, groupLeaderFilter, startYearFilter],
+                  AND: [
+                    departmentFilter,
+                    groupLeaderFilter,
+                    startYearFilter,
+                    submitYearFilter,
+                  ],
                 },
               },
               fundingCalls: {
@@ -85,6 +114,7 @@ export async function GET(request: NextRequest) {
                         departmentFilter,
                         groupLeaderFilter,
                         startYearFilter,
+                        submitYearFilter,
                       ],
                     },
                   },
