@@ -25,6 +25,10 @@ const DynamicPagination = dynamic(() => import("@/app/components/Pagination"), {
   ssr: false,
   loading: () => <div>Loading...</div>,
 });
+const DynamicGrantTable = dynamic(
+  () => import("@/app/dashboard/grants/list/GrantTable"),
+  { ssr: false, loading: () => <div>Loading...</div> },
+);
 
 interface Props {
   searchParams: GrantQuery; // an obj w/ prop called 'status'
@@ -275,7 +279,7 @@ const GrantsPage = async ({ searchParams }: Props) => {
       <Flex direction="column" gap="3">
         <DynamicGrantActions />
         <DynamicGrantSearch />
-        <GrantTable searchParams={searchParams} grants={grants} />
+        <DynamicGrantTable searchParams={searchParams} grants={grants} />
         <DynamicPagination
           itemsCount={grantsCount}
           pageSize={pageSize}
