@@ -10,6 +10,21 @@ import { getServerSession } from "next-auth";
 import authOptions from "@/app/auth/authOptions";
 import { select } from "@nextui-org/react";
 import GrantSearch from "./GrantSearch";
+import { Suspense } from "react";
+import dynamic from "next/dynamic";
+
+const DynamicGrantActions = dynamic(
+  () => import("@/app/dashboard/grants/list/GrantActions"),
+  { ssr: false, loading: () => <div>Loading...</div> },
+);
+const DynamicGrantSearch = dynamic(
+  () => import("@/app/dashboard/grants/list/GrantSearch"),
+  { ssr: false, loading: () => <div>Loading...</div> },
+);
+const DynamicPagination = dynamic(() => import("@/app/components/Pagination"), {
+  ssr: false,
+  loading: () => <div>Loading...</div>,
+});
 
 interface Props {
   searchParams: GrantQuery; // an obj w/ prop called 'status'
@@ -257,10 +272,10 @@ const GrantsPage = async ({ searchParams }: Props) => {
 
   return (
     <Flex direction="column" gap="3">
-      <GrantActions />
-      <GrantSearch />
+      <DynamicGrantActions />
+      <DynamicGrantSearch />
       <GrantTable searchParams={searchParams} grants={grants} />
-      <Pagination
+      <DynamicPagination
         itemsCount={grantsCount}
         pageSize={pageSize}
         currentPage={page}

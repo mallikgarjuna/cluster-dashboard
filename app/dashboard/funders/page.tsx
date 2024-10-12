@@ -1,13 +1,20 @@
 import { Metadata } from "next";
 import Link from "next/link";
 import FundersTable from "./_components/FundersTable";
+import { Suspense } from "react";
+import dynamic from "next/dynamic";
+
+const DynamicFundersTable = dynamic(
+  () => import("@/app/dashboard/funders/_components/FundersTable"),
+  { ssr: false, loading: () => <div>Loading...</div> },
+);
 
 const FundersPage = () => {
   return (
     <div className="flex flex-col gap-y-10">
       {/* FundersPage */}
       <FundersLinks />
-      <FundersTable />
+      <DynamicFundersTable />
     </div>
   );
 };

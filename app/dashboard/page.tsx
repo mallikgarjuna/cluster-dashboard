@@ -12,13 +12,19 @@ import { OSDepartmentShortName } from "@prisma/client";
 import dynamic from "next/dynamic";
 import PIGrantTableSkeleton from "./_ui/PIGrantTableSkeleton";
 import FundersTable from "./funders/_components/FundersTable";
+import { Suspense } from "react";
 // import PIGrantsTable from "./_ui/PIGrantsTable";
-const PIGrantsTable = dynamic(
+const DynamicPIGrantsTable = dynamic(
   () => import("@/app/dashboard/_ui/PIGrantsTable"),
   {
     ssr: false,
     loading: () => <PIGrantTableSkeleton />,
   },
+);
+
+const DynamicFundersTable = dynamic(
+  () => import("@/app/dashboard/funders/_components/FundersTable"),
+  { ssr: false, loading: () => <div>Loading...</div> },
 );
 
 interface Props {
@@ -304,8 +310,8 @@ export default async function DashboardPage({ searchParams }: Props) {
         <LatestGrants latestGrants={latestGrants} />
       </Grid>
       {/* <PIGrantsTable grantsCountOfPIData={grantsCountOfPIData} /> */}
-      <PIGrantsTable />
-      <FundersTable />
+      <DynamicPIGrantsTable />
+      <DynamicFundersTable />
     </Flex>
   );
 }
