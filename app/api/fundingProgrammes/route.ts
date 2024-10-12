@@ -9,6 +9,13 @@ export async function GET(request: NextRequest) {
     orderBy: {
       name: "asc",
     },
+    include: {
+      fundingActions: {
+        include: {
+          fundingCalls: true,
+        },
+      },
+    },
   });
   return NextResponse.json(fundingProgrammes);
 }

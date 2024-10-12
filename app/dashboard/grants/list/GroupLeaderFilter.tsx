@@ -106,6 +106,11 @@ const GroupLeaderFilter = ({ users }: Props) => {
         // Add 'pathname' instead of explicitly adding it so that this comp can be added to all pages;
         router.push(pathname + query);
       }}
+      scrollShadowProps={{ isEnabled: false }}
+      showScrollIndicators={true}
+      listboxProps={{
+        className: "max-h-[300px] overflow-y-auto ",
+      }}
     >
       <SelectSection title="All" showDivider>
         <SelectItem key="All" value="All" textValue="All">

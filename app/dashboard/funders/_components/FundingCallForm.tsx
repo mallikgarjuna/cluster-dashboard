@@ -5,16 +5,22 @@ import {
   CreateFundingCallFormSchema,
 } from "@/app/validationSchemas";
 import { createFundingCallSA } from "@/lib/actions/funderActions";
+import { updateFundingCallSA } from "@/lib/actions/updateFunderActions";
+import { FundingActionWithCalls } from "@/prisma/customTypes";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button, Input, Select, SelectItem } from "@nextui-org/react";
-import { FundingAction, FundingCall } from "@prisma/client";
+import { FundingCall } from "@prisma/client";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import React from "react";
 import { Controller, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
+import React from "react";
 
-const FundingCallForm = () => {
+interface Props {
+  fCall?: FundingCall;
+}
+
+const FundingCallForm = ({ fCall }: Props) => {
   const router = useRouter();
 
   const {
@@ -29,14 +35,19 @@ const FundingCallForm = () => {
 
   const { data: fundingActions, isLoading, error } = useFundingActions();
 
-  const onSubmitCreateFundingCallForm = async (
-    createFundingCallFormData: CreateFundingCallFormInputType,
+  const onSubmitCreateUpdateFundingCallForm = async (
+    fundingCallFormData: CreateFundingCallFormInputType,
   ) => {
-    // console.log(createFundingCallFormData);
+    // console.log(fundingCallFormData);
 
     try {
-      const result = await createFundingCallSA(createFundingCallFormData);
+      const result = fCall
+        ? await updateFundingCallSA(fCall.id, fundingCallFormData)
+        : await createFundingCallSA(fundingCallFormData);
 
+      //
+      //
+      //
       if (!result?.success) {
         toast.error(result?.message + " ");
       } else {
@@ -49,16 +60,17 @@ const FundingCallForm = () => {
         // queryClient.invalidateQueries();
 
         router.refresh();
-        router.push("/dashboard");
+        router.push("/dashboard/funders");
       }
     } catch (error) {
       toast.error("Something went wrong..." + "\n" + error);
+      console.log(error);
     }
   };
 
   return (
     <form
-      onSubmit={handleSubmit(onSubmitCreateFundingCallForm)}
+      onSubmit={handleSubmit(onSubmitCreateUpdateFundingCallForm)}
       className="space-y-2"
     >
       <h2 className="text-xl font-bold">Add a new Funding Call</h2>
@@ -70,6 +82,7 @@ const FundingCallForm = () => {
         type="text"
         label="Funding Call ID (NWO: Funding Round ID)"
         placeholder="Enter Funding Call ID. E.g., MSCA-DN-2024/etc., Veni-ZonMw-2024/etc."
+        defaultValue={fCall?.name}
       />
 
       <Input
@@ -79,33 +92,44 @@ const FundingCallForm = () => {
         type="text"
         label="URL of the Funding Call ID"
         placeholder="Enter a valid URL"
+        defaultValue={fCall?.url ?? ""}
       />
 
       {/* Add an input field for selecting the related funding programme */}
       <Controller
         control={control}
         name="fundingActionId"
+        defaultValue={fCall?.fundingActionId ?? undefined}
         render={({ field }) => (
-          <Select
-            {...field}
-            {...register("fundingActionId")}
-            errorMessage={errors.fundingActionId?.message}
-            isInvalid={!!errors.fundingActionId}
-            label="(Related) Funding Action"
-            placeholder="Select the related funding action"
-          >
+          <>
             {fundingActions ? (
-              fundingActions.map((fundingAction) => (
-                <SelectItem key={fundingAction.id} value={fundingAction.id}>
-                  {fundingAction.name}
-                </SelectItem>
-              ))
+              <Select
+                {...field}
+                {...register("fundingActionId")}
+                errorMessage={errors.fundingActionId?.message}
+                isInvalid={!!errors.fundingActionId}
+                label="(Related) Funding Action"
+                placeholder="Select the related funding action"
+                // defaultSelectedKeys={
+                //   fCall?.fundingActionId ? [fCall.fundingActionId] : []
+                // }
+              >
+                {fundingActions ? (
+                  fundingActions.map((fundingAction) => (
+                    <SelectItem key={fundingAction.id} value={fundingAction.id}>
+                      {fundingAction.name}
+                    </SelectItem>
+                  ))
+                ) : (
+                  <SelectItem key={""} value={""}>
+                    None
+                  </SelectItem>
+                )}
+              </Select>
             ) : (
-              <SelectItem key={""} value={""}>
-                None
-              </SelectItem>
-            )}
-          </Select>
+              <p>Loading funding actions...</p>
+            )}{" "}
+          </>
         )}
       />
 
@@ -116,9 +140,7 @@ const FundingCallForm = () => {
           isLoading={isSubmitting}
           color="primary"
         >
-          {isSubmitting
-            ? "Adding Funding Call...   "
-            : "Add Funding Call      "}
+          {fCall ? "Update Funding Call" : "Create New Funding Call"}
         </Button>
 
         <Button type="button" color="danger" onClick={() => router.back()}>
@@ -141,11 +163,11 @@ const fetchFundingActions = async () => {
 };
 
 export const useFundingActions = () =>
-  useQuery<FundingAction[]>({
+  useQuery<FundingActionWithCalls[]>({
     queryKey: ["fundingActions-api"],
     queryFn: () => fetchFundingActions(),
-    // staleTime: 60 * 1000, //60s
-    // retry: 3,
+    staleTime: 60 * 1000, //60s
+    retry: 3,
     cacheTime: 0,
   });
 
@@ -163,8 +185,8 @@ export const useFundingCalls = () =>
   useQuery<FundingCall[]>({
     queryKey: ["fundingCalls-api"],
     queryFn: () => fetchFundingCalls(),
-    // staleTime: 60 * 1000, //60s
-    // retry: 3,
+    staleTime: 60 * 1000, //60s
+    retry: 3,
     cacheTime: 0,
   });
 

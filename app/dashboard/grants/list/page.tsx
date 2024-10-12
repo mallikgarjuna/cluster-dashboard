@@ -9,6 +9,22 @@ import { Metadata } from "next";
 import { getServerSession } from "next-auth";
 import authOptions from "@/app/auth/authOptions";
 import { select } from "@nextui-org/react";
+import GrantSearch from "./GrantSearch";
+import { Suspense } from "react";
+import dynamic from "next/dynamic";
+
+const DynamicGrantActions = dynamic(
+  () => import("@/app/dashboard/grants/list/GrantActions"),
+  { ssr: false, loading: () => <div>Loading...</div> },
+);
+const DynamicGrantSearch = dynamic(
+  () => import("@/app/dashboard/grants/list/GrantSearch"),
+  { ssr: false, loading: () => <div>Loading...</div> },
+);
+const DynamicPagination = dynamic(() => import("@/app/components/Pagination"), {
+  ssr: false,
+  loading: () => <div>Loading...</div>,
+});
 
 interface Props {
   searchParams: GrantQuery; // an obj w/ prop called 'status'
@@ -41,6 +57,8 @@ const GrantsPage = async ({ searchParams }: Props) => {
 
   const submitYear = searchParams.submitYear;
 
+  const searchQuery = searchParams.searchQuery;
+
   // const year = startYears.includes(searchParams.year) ? searchParams.year : undefined;
 
   const page = parseInt(searchParams.page) || 1;
@@ -52,6 +70,7 @@ const GrantsPage = async ({ searchParams }: Props) => {
     groupLeader: groupLeader,
     year: year,
     submitYear: submitYear,
+    searchQuery: searchQuery,
   };
 
   const grants = await prisma.grant.findMany({
@@ -96,6 +115,50 @@ const GrantsPage = async ({ searchParams }: Props) => {
         ...(session?.user.role === "GROUPLEADER"
           ? [{ assignedToUser: { id: session?.user.id } }]
           : [{}]),
+      ],
+      OR: [
+        { title: { contains: searchQuery, mode: "insensitive" } },
+        { acronym: { contains: searchQuery, mode: "insensitive" } },
+        { description: { contains: searchQuery, mode: "insensitive" } },
+        {
+          applicantFullName: {
+            contains: searchQuery,
+            mode: "insensitive",
+          },
+        },
+        {
+          assignedToUser: {
+            OR: [
+              { lastName: { contains: searchQuery, mode: "insensitive" } },
+              { firstName: { contains: searchQuery, mode: "insensitive" } },
+            ],
+          },
+        },
+        {
+          relatedFundingAgency: {
+            name: { contains: searchQuery, mode: "insensitive" },
+          },
+        },
+        {
+          relatedFundingProgramme: {
+            name: { contains: searchQuery, mode: "insensitive" },
+          },
+        },
+        {
+          relatedFundingAction: {
+            name: { contains: searchQuery, mode: "insensitive" },
+          },
+        },
+        {
+          relatedFundingCall: {
+            name: { contains: searchQuery, mode: "insensitive" },
+          },
+        },
+        { fundingAgency: { contains: searchQuery, mode: "insensitive" } },
+        { fundingProgramme: { contains: searchQuery, mode: "insensitive" } },
+        { fundingAction: { contains: searchQuery, mode: "insensitive" } },
+        { fundingCall: { contains: searchQuery, mode: "insensitive" } },
+        { projectNumber: { equals: parseInt(searchQuery) } },
       ],
     },
     include: {
@@ -155,6 +218,50 @@ const GrantsPage = async ({ searchParams }: Props) => {
           ? [{ assignedToUser: { id: session?.user.id } }]
           : [{}]),
       ],
+      OR: [
+        { title: { contains: searchQuery, mode: "insensitive" } },
+        { acronym: { contains: searchQuery, mode: "insensitive" } },
+        { description: { contains: searchQuery, mode: "insensitive" } },
+        {
+          applicantFullName: {
+            contains: searchQuery,
+            mode: "insensitive",
+          },
+        },
+        {
+          assignedToUser: {
+            OR: [
+              { lastName: { contains: searchQuery, mode: "insensitive" } },
+              { firstName: { contains: searchQuery, mode: "insensitive" } },
+            ],
+          },
+        },
+        {
+          relatedFundingAgency: {
+            name: { contains: searchQuery, mode: "insensitive" },
+          },
+        },
+        {
+          relatedFundingProgramme: {
+            name: { contains: searchQuery, mode: "insensitive" },
+          },
+        },
+        {
+          relatedFundingAction: {
+            name: { contains: searchQuery, mode: "insensitive" },
+          },
+        },
+        {
+          relatedFundingCall: {
+            name: { contains: searchQuery, mode: "insensitive" },
+          },
+        },
+        { fundingAgency: { contains: searchQuery, mode: "insensitive" } },
+        { fundingProgramme: { contains: searchQuery, mode: "insensitive" } },
+        { fundingAction: { contains: searchQuery, mode: "insensitive" } },
+        { fundingCall: { contains: searchQuery, mode: "insensitive" } },
+        { projectNumber: { equals: parseInt(searchQuery) } },
+      ],
     },
 
     //   where: { status: status },
@@ -165,9 +272,10 @@ const GrantsPage = async ({ searchParams }: Props) => {
 
   return (
     <Flex direction="column" gap="3">
-      <GrantActions />
+      <DynamicGrantActions />
+      <DynamicGrantSearch />
       <GrantTable searchParams={searchParams} grants={grants} />
-      <Pagination
+      <DynamicPagination
         itemsCount={grantsCount}
         pageSize={pageSize}
         currentPage={page}
@@ -176,7 +284,7 @@ const GrantsPage = async ({ searchParams }: Props) => {
   );
 };
 
-export const dynamic = "force-dynamic";
+// export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Cluster Dashboard - Grants List",

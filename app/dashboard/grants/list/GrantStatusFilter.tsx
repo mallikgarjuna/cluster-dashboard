@@ -50,6 +50,11 @@ const GrantStatusFilter = () => {
         router.push(pathname + query);
       }}
       className="max-w-xs"
+      scrollShadowProps={{ isEnabled: false }}
+      showScrollIndicators={true}
+      listboxProps={{
+        className: "max-h-[300px] overflow-y-auto ",
+      }}
     >
       {statuses.map((status) => (
         <SelectItem

@@ -14,6 +14,9 @@ import {
   SelectItem,
 } from "@nextui-org/react";
 import {
+  FundingAction,
+  FundingCall,
+  FundingProgramme,
   Grant,
   StatusGrant,
   User,
@@ -29,12 +32,17 @@ import "easymde/dist/easymde.min.css";
 import { fetchAllUsers } from "@/lib/actions/user/queries";
 import { useQuery } from "@tanstack/react-query";
 import { useFundingAgencies } from "../../funders/_components/FundingProgrammeForm";
-import { GrantWithAllRelatedTypes } from "@/prisma/customTypes";
+import {
+  FundingActionWithCalls,
+  FundingProgrammeWithActionsCalls,
+  GrantWithAllRelatedTypes,
+} from "@/prisma/customTypes";
 import { useFundingProgrammes } from "../../funders/_components/FundingActionForm";
 import {
   useFundingActions,
   useFundingCalls,
 } from "../../funders/_components/FundingCallForm";
+import { useEffect, useState } from "react";
 
 interface Props {
   // grant?: Grant;
@@ -42,6 +50,8 @@ interface Props {
 }
 
 const GrantForm = ({ grant }: Props) => {
+  console.log("GrantForm rendered");
+
   const router = useRouter();
   const {
     register,
@@ -50,32 +60,64 @@ const GrantForm = ({ grant }: Props) => {
     reset,
     formState: { errors, isSubmitting },
     watch,
+    setValue,
+    getValues,
   } = useForm<GrantFormDataType>({
     resolver: zodResolver(grantFormSchema),
-    // defaultValues: {
-    //   title: grant?.title,
-    //   description: grant?.description,
-    //   acronym: grant?.acronym || "",
-    //   budgetTotal: grant?.budgetTotal || 0,
-    //   fundingAgency: grant?.fundingAgency || "",
-    //   fundingProgramme: grant?.fundingProgramme || "",
-    //   fundingCall: grant?.fundingCall || "",
-    //   // submissionDate: grant?.submissionDate ?? undefined,
-    //   // deadline: grant?.deadline || "",
-    //   // decisionDate: grant?.decisionDate || "",
-    //   // projectStartDate: grant?.projectStartDate || "",
-    //   // projectEndDate: grant?.projectEndDate || "",
-    //   projectNumber: grant?.projectNumber ?? null,
-    //   assignedToUserId: grant?.assignedToUserId ?? undefined,
-    //   applicantRole: grant?.applicantRole,
-    //   status: grant?.status,
-    //   notes: grant?.notes ?? "",
-    //   fundingAgencyId: grant?.relatedFundingAgency?.id,
-    //   fundingProgrammeId: grant?.relatedFundingProgramme?.id,
-    //   fundingActionId: grant?.relatedFundingAction?.id,
-    //   fundingCallId: grant?.relatedFundingCall?.id,
-    // },
   });
+
+  const { data: users, error, isLoading } = useUsers();
+
+  const [fundingProgrammes, setFundingProgrammes] = useState<
+    FundingProgrammeWithActionsCalls[]
+  >([]);
+  const [fundingActions, setFundingActions] = useState<
+    FundingActionWithCalls[]
+  >([]);
+  const [fundingCalls, setFundingCalls] = useState<FundingCall[]>([]);
+
+  // Watch the funders Ids
+  const selectedFundingAgencyId = watch("fundingAgencyId");
+  const selectedFundingProgrammeId = watch("fundingProgrammeId");
+  const selectedFundingActionId = watch("fundingActionId");
+
+  const { data: fetchedFundingAgencies } = useFundingAgencies();
+  const { data: fetchedFundingProgrammes } = useFundingProgrammes();
+  const { data: fetchedFundingActions } = useFundingActions();
+  const { data: fetchedFundingCalls } = useFundingCalls();
+
+  // Effect to update fundingProgrammes when a fundingAgency is selected
+  useEffect(() => {
+    const selectedFundingAgency = fetchedFundingAgencies?.find(
+      (fAgency) => fAgency.id === selectedFundingAgencyId,
+    );
+    setValue("fundingProgrammeId", undefined); //Reset when agency is selected
+    setFundingProgrammes(selectedFundingAgency?.fundingProgrammes || []);
+  }, [selectedFundingAgencyId, fetchedFundingAgencies, setValue]);
+
+  // Effect to update fundingActions when a fundingProgramme is selected
+  useEffect(() => {
+    const selectedFundingProgrmme = fundingProgrammes.find(
+      (fp) => fp.id === selectedFundingProgrammeId,
+    );
+    setValue("fundingActionId", undefined); //Reset when programme is selected
+    setFundingActions(selectedFundingProgrmme?.fundingActions || []);
+  }, [selectedFundingProgrammeId, fundingProgrammes, setValue]);
+
+  // Effect to update fundingCalls when a fundingAction is selected
+  useEffect(() => {
+    const selectedFundingAction = fundingActions.find(
+      (fa) => fa.id === selectedFundingActionId,
+    );
+    setValue("fundingCallId", undefined); //Reset when action is selected
+    setFundingCalls(selectedFundingAction?.fundingCalls || []);
+  }, [selectedFundingActionId, fundingActions, setValue]);
+
+  const statuses = Object.values(StatusGrant);
+
+  const applicantRoles = Object.values(enumApplicantRole);
+
+  const groupMemberTypes = Object.values(enumGroupMemberType);
 
   const submitGrantForm: SubmitHandler<GrantFormDataType> = async (
     grantFormData,
@@ -98,33 +140,12 @@ const GrantForm = ({ grant }: Props) => {
     }
   };
 
-  const { data: users, error, isLoading } = useUsers();
-
-  const {
-    data: fundingAgencies,
-    error: fundingAgenciesError,
-    isLoading: isLoadingFundingAgencies,
-  } = useFundingAgencies();
-
-  const { data: fundingProgrammes } = useFundingProgrammes();
-
-  const { data: fundingActions } = useFundingActions();
-
-  const { data: fundingCalls } = useFundingCalls();
-
-  const statuses = Object.values(StatusGrant);
-
-  const applicantRoles = Object.values(enumApplicantRole);
-
-  const groupMemberTypes = Object.values(enumGroupMemberType);
-
   return (
     <div className="max-w-full">
       <form onSubmit={handleSubmit(submitGrantForm)} className="space-y-2">
         <div className="text-3xl font-bold">
           {!!grant ? "Edit Grant" : "Create New Grant"}
         </div>
-
         <Input
           {...register("title")}
           errorMessage={errors.title?.message}
@@ -139,7 +160,6 @@ const GrantForm = ({ grant }: Props) => {
             ],
           }}
         />
-
         <Input
           {...register("acronym")}
           errorMessage={errors.acronym?.message}
@@ -154,7 +174,6 @@ const GrantForm = ({ grant }: Props) => {
             ],
           }}
         />
-
         <Controller
           name="description"
           control={control}
@@ -173,15 +192,14 @@ const GrantForm = ({ grant }: Props) => {
         {!!errors.description && (
           <p className="text-sm text-red-500">{errors.description.message}</p>
         )}
-
         <div className="flex gap-2 rounded-md border border-gray-300 py-2">
           <Input
             {...register("applicantFullName")}
             errorMessage={errors.applicantFullName?.message}
             isInvalid={!!errors.applicantFullName}
             type="text"
-            label="Applicant's Full Name - Text input *"
-            placeholder="Applicant's FirstName + LastName"
+            label="Applicant's LastName + FirstName - Text input *"
+            placeholder="(If not a PI): Applicant's LastName + FirstName"
             defaultValue={grant?.applicantFullName}
             classNames={{
               input: [
@@ -240,10 +258,42 @@ const GrantForm = ({ grant }: Props) => {
                   defaultSelectedKeys={
                     grant?.assignedToUserId ? [grant.assignedToUserId] : []
                   }
+                  onChange={(event) => {
+                    const newValue = event.target.value;
+                    field.onChange(newValue);
+                    if (
+                      newValue &&
+                      getValues("applicantFullName") === "" &&
+                      getValues("groupMemberType") === "PI"
+                    ) {
+                      const selectedUser = users?.find(
+                        (user) => user.id === newValue,
+                      );
+                      setValue(
+                        "applicantFullName",
+                        selectedUser?.lastName || "",
+                      );
+                    }
+
+                    // console.log(
+                    //   "applicantFullName: ",
+                    //   getValues("applicantFullName"),
+                    // );
+                    // console.log(
+                    //   "groupMemberType: ",
+                    //   getValues("groupMemberType"),
+                    // );
+                    // console.log("event.target.value: ", event.target.value);
+                  }}
                   classNames={{
                     value: grant?.assignedToUserId
                       ? "text-black"
                       : "text-gray-400",
+                  }}
+                  scrollShadowProps={{ isEnabled: false }}
+                  showScrollIndicators={true}
+                  listboxProps={{
+                    className: "max-h-[300px] overflow-y-auto ",
                   }}
                 >
                   {users?.map((user) => (
@@ -260,7 +310,6 @@ const GrantForm = ({ grant }: Props) => {
             }}
           />
         </div>
-
         <Controller
           control={control}
           name="applicantRole"
@@ -295,7 +344,6 @@ const GrantForm = ({ grant }: Props) => {
             );
           }}
         />
-
         <Controller
           control={control}
           name="isBudgetApproved"
@@ -312,14 +360,14 @@ const GrantForm = ({ grant }: Props) => {
             </Checkbox>
           )}
         />
-
         <div className="flex gap-2 rounded-md border border-gray-300 py-2">
           <Input
+            disabled={true}
             {...register("budgetTotal", { valueAsNumber: true })}
             errorMessage={errors.budgetTotal?.message}
             isInvalid={!!errors.budgetTotal}
             type="number"
-            label="Budget Total of the grant application"
+            label="<Disabled, to be removed> Budget Total of the grant application"
             placeholder="Total budget of the grant"
             // defaultValue is uncontrolled (if not below, may need to use Controlled comp;)
             defaultValue={grant?.budgetTotal?.toString() || "0"}
@@ -328,6 +376,11 @@ const GrantForm = ({ grant }: Props) => {
               input: [
                 "placeholder:text-default-700/50 dark:placeholder:text-default-400",
               ],
+            }}
+            onKeyDown={(e) => {
+              if (e.key === "ArrowUp" || e.key === "ArrowDown") {
+                e.preventDefault();
+              }
             }}
           />
 
@@ -346,9 +399,13 @@ const GrantForm = ({ grant }: Props) => {
                 "placeholder:text-default-700/50 dark:placeholder:text-default-400",
               ],
             }}
+            onKeyDown={(e) => {
+              if (e.key === "ArrowUp" || e.key === "ArrowDown") {
+                e.preventDefault();
+              }
+            }}
           />
         </div>
-
         {/* Related Funding Agency */}
         <div className="flex gap-2 rounded-md border border-gray-300 py-2">
           {/* Add an input field for selecting the related funding agency */}
@@ -379,8 +436,8 @@ const GrantForm = ({ grant }: Props) => {
                     : "text-gray-400",
                 }}
               >
-                {fundingAgencies ? (
-                  fundingAgencies.map((fundingAgency) => (
+                {fetchedFundingAgencies ? (
+                  fetchedFundingAgencies.map((fundingAgency) => (
                     <SelectItem key={fundingAgency.id} value={fundingAgency.id}>
                       {fundingAgency.name}
                     </SelectItem>
@@ -411,7 +468,6 @@ const GrantForm = ({ grant }: Props) => {
             }}
           />
         </div>
-
         {/* Related Funding Programme */}
         <div className="flex gap-2 rounded-md border border-gray-300 py-2">
           {/* Add an input field for selecting the related funding agency */}
@@ -436,7 +492,7 @@ const GrantForm = ({ grant }: Props) => {
                     : "text-gray-400",
                 }}
               >
-                {fundingProgrammes ? (
+                {selectedFundingAgencyId && fundingProgrammes.length ? (
                   fundingProgrammes.map((fundingProgramme) => (
                     <SelectItem
                       key={fundingProgramme.id}
@@ -447,7 +503,7 @@ const GrantForm = ({ grant }: Props) => {
                   ))
                 ) : (
                   <SelectItem key={""} value={""}>
-                    None
+                    None (or) Select a funding agency first
                   </SelectItem>
                 )}
               </Select>
@@ -471,7 +527,6 @@ const GrantForm = ({ grant }: Props) => {
             }}
           />
         </div>
-
         {/* Related Funding Actions */}
         <div className="flex gap-2 rounded-md border border-gray-300 py-2">
           {/* Add an input field for selecting the related funding agency */}
@@ -496,7 +551,7 @@ const GrantForm = ({ grant }: Props) => {
                     : "text-gray-400",
                 }}
               >
-                {fundingActions ? (
+                {selectedFundingProgrammeId && fundingActions ? (
                   fundingActions.map((fundingAction) => (
                     <SelectItem key={fundingAction.id} value={fundingAction.id}>
                       {fundingAction.name}
@@ -504,7 +559,7 @@ const GrantForm = ({ grant }: Props) => {
                   ))
                 ) : (
                   <SelectItem key={""} value={""}>
-                    None
+                    None (or) Select a funding programme first
                   </SelectItem>
                 )}
               </Select>
@@ -528,7 +583,6 @@ const GrantForm = ({ grant }: Props) => {
             }}
           />
         </div>
-
         {/* Related Funding Calls */}
         <div className="flex gap-2 rounded-md border border-gray-300 py-2">
           {/* Add an input field for selecting the related funding call */}
@@ -544,6 +598,18 @@ const GrantForm = ({ grant }: Props) => {
                 isInvalid={!!errors.fundingCallId}
                 label="Funding Call - Select"
                 placeholder="Select the related funding call"
+                onChange={(event) => {
+                  field.onChange(event.target.value);
+                  const selectedFundingCallId = event.target.value;
+                  const selectedFundingCall = fundingCalls?.find(
+                    (fc) => fc.id === selectedFundingCallId,
+                  );
+                  if (selectedFundingCall) {
+                    setValue("urlFundingCall", selectedFundingCall.url || "");
+                  } else {
+                    setValue("urlFundingCall", "");
+                  }
+                }}
                 defaultSelectedKeys={
                   grant?.fundingCallId ? [grant.fundingCallId] : [] //
                 }
@@ -551,15 +617,18 @@ const GrantForm = ({ grant }: Props) => {
                   value: grant?.fundingCallId ? "text-black" : "text-gray-400",
                 }}
               >
-                {fundingCalls ? (
-                  fundingCalls.map((fundingCall) => (
-                    <SelectItem key={fundingCall.id} value={fundingCall.id}>
-                      {fundingCall.name}
+                {selectedFundingActionId && fundingCalls ? (
+                  fundingCalls.map((fundingCallItem) => (
+                    <SelectItem
+                      key={fundingCallItem.id}
+                      value={fundingCallItem.id}
+                    >
+                      {fundingCallItem.name}
                     </SelectItem>
                   ))
                 ) : (
                   <SelectItem key={""} value={""}>
-                    None
+                    None (or) Select a funding action first
                   </SelectItem>
                 )}
               </Select>
@@ -583,7 +652,6 @@ const GrantForm = ({ grant }: Props) => {
             }}
           />
         </div>
-
         <Input
           {...register("urlFundingCall")}
           errorMessage={errors.urlFundingCall?.message}
@@ -598,7 +666,6 @@ const GrantForm = ({ grant }: Props) => {
             ],
           }}
         />
-
         <div className="flex gap-2 rounded-md border border-gray-300 py-2">
           <Input
             {...register("submissionDate")}
@@ -678,7 +745,6 @@ const GrantForm = ({ grant }: Props) => {
             );
           }}
         />
-
         <div className="flex gap-2 rounded-md border border-gray-300 py-2">
           <Input
             {...register("projectStartDate")}
@@ -712,10 +778,9 @@ const GrantForm = ({ grant }: Props) => {
             }}
           />
         </div>
-
         <Input
           {...register("projectNumber", {
-            setValueAs: (val) => (val === "" ? undefined : parseInt(val, 10)),
+            setValueAs: (val) => (val === "" ? null : parseInt(val, 10)),
           })}
           errorMessage={errors.projectNumber?.message}
           isInvalid={!!errors.projectNumber}
@@ -728,8 +793,12 @@ const GrantForm = ({ grant }: Props) => {
               "placeholder:text-default-700/50 dark:placeholder:text-default-400",
             ],
           }}
+          onKeyDown={(e) => {
+            if (e.key === "ArrowUp" || e.key === "ArrowDown") {
+              e.preventDefault();
+            }
+          }}
         />
-
         <Controller
           control={control}
           name="isDMPSubmitted"
@@ -747,14 +816,14 @@ const GrantForm = ({ grant }: Props) => {
             </Checkbox>
           )}
         />
-
         <Controller
           name="notes"
           control={control}
           render={({ field }) => (
             <SimpleMdeReact
               {...field}
-              placeholder="Additional notes"
+              contentEditable={false}
+              placeholder="<Disabled, to be removed> Additional notes"
               options={{
                 maxHeight: "100px",
                 autofocus: true,
@@ -766,7 +835,6 @@ const GrantForm = ({ grant }: Props) => {
         {!!errors.notes && (
           <p className="text-sm text-red-500">{errors.notes.message}</p>
         )}
-
         <div className="flex justify-between">
           <Button type="submit" color="primary" disabled={isSubmitting}>
             {grant ? "Update Grant" : "Create New Grant"}

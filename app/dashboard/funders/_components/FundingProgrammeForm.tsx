@@ -5,16 +5,22 @@ import {
   CreateFundingProgrammeFormSchema,
 } from "@/app/validationSchemas";
 import { createFundingProgrammeSA } from "@/lib/actions/funderActions";
+import { updateFundingProgrammeSA } from "@/lib/actions/updateFunderActions";
+import { FundingAgencyWithProgrammesActionsCallsAndGrants } from "@/prisma/customTypes";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button, Input, Select, SelectItem } from "@nextui-org/react";
-import { FundingAgency } from "@prisma/client";
+import { FundingProgramme } from "@prisma/client";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import React from "react";
 import { Controller, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
+import React from "react";
 
-const FundingProgrammeForm = () => {
+interface Props {
+  fProgramme?: FundingProgramme;
+}
+
+const FundingProgrammeForm = ({ fProgramme }: Props) => {
   const router = useRouter();
 
   const {
@@ -29,15 +35,18 @@ const FundingProgrammeForm = () => {
 
   const { data: fundingAgencies, isLoading, error } = useFundingAgencies();
 
-  const onSubmitCreateFundingProgramme = async (
-    createFundingProgrammeFormData: CreateFundingProgrammeFormFormInputType,
+  const onSubmitCreateUpdateFundingProgramme = async (
+    fundingProgrammeFormData: CreateFundingProgrammeFormFormInputType,
   ) => {
-    // console.log(createFundingProgrammeFormData);
+    // console.log(fundingProgrammeFormData);
 
     try {
-      const result = await createFundingProgrammeSA(
-        createFundingProgrammeFormData,
-      );
+      const result = fProgramme
+        ? await updateFundingProgrammeSA(
+            fProgramme.id,
+            fundingProgrammeFormData,
+          )
+        : await createFundingProgrammeSA(fundingProgrammeFormData);
 
       if (!result?.success) {
         toast.error(result?.message + " ");
@@ -50,15 +59,18 @@ const FundingProgrammeForm = () => {
         // Invalidate (and refetch) every query in the cache
         // queryClient.invalidateQueries();
 
-        router.push("/dashboard");
         router.refresh();
+        router.push("/dashboard/funders");
       }
-    } catch (error) {}
+    } catch (error) {
+      toast.error("Something went wrong..." + "\n" + error);
+      console.log(error);
+    }
   };
 
   return (
     <form
-      onSubmit={handleSubmit(onSubmitCreateFundingProgramme)}
+      onSubmit={handleSubmit(onSubmitCreateUpdateFundingProgramme)}
       className="space-y-2"
     >
       <h2 className="text-xl font-bold">Add a new Funding Programme</h2>
@@ -70,33 +82,46 @@ const FundingProgrammeForm = () => {
         type="text"
         label="Funding Programme Name (NWO: Funding Lines)"
         placeholder="Enter Funding Programme Name. E.g., EU-HORIZON, NWO-Talent Development Programme, etc."
+        defaultValue={fProgramme?.name}
       />
 
       {/* Add an input field for selecting the related funding agency */}
       <Controller
         control={control}
         name="fundingAgencyId"
+        defaultValue={fProgramme?.fundingAgencyId ?? undefined}
         render={({ field }) => (
-          <Select
-            {...field}
-            {...register("fundingAgencyId")}
-            errorMessage={errors.fundingAgencyId?.message}
-            isInvalid={!!errors.fundingAgencyId}
-            label="(Related) Funding Agency"
-            placeholder="Select the related funding agency"
-          >
+          <>
             {fundingAgencies ? (
-              fundingAgencies.map((fundingAgency) => (
-                <SelectItem key={fundingAgency.id} value={fundingAgency.id}>
-                  {fundingAgency.name}
-                </SelectItem>
-              ))
+              <Select
+                {...field}
+                {...register("fundingAgencyId")}
+                errorMessage={errors.fundingAgencyId?.message}
+                isInvalid={!!errors.fundingAgencyId}
+                label="(Related) Funding Agency"
+                placeholder="Select the related funding agency"
+                // defaultSelectedKeys={
+                //   fProgramme?.fundingAgencyId
+                //     ? [fProgramme.fundingAgencyId]
+                //     : []
+                // }
+              >
+                {fundingAgencies ? (
+                  fundingAgencies.map((fundingAgency) => (
+                    <SelectItem key={fundingAgency.id} value={fundingAgency.id}>
+                      {fundingAgency.name}
+                    </SelectItem>
+                  ))
+                ) : (
+                  <SelectItem key={""} value={""}>
+                    None
+                  </SelectItem>
+                )}
+              </Select>
             ) : (
-              <SelectItem key={""} value={""}>
-                None
-              </SelectItem>
+              <p>Loading funding agencies...</p>
             )}
-          </Select>
+          </>
         )}
       />
 
@@ -107,9 +132,9 @@ const FundingProgrammeForm = () => {
           isLoading={isSubmitting}
           color="primary"
         >
-          {isSubmitting
-            ? "Adding Funding Programme..."
-            : "Add Funding Programme"}
+          {fProgramme
+            ? "Update Funding Programme"
+            : "Create New Funding Programme"}
         </Button>
 
         <Button type="button" color="danger" onClick={() => router.back()}>
@@ -128,11 +153,12 @@ const fetchFundingAgencies = async () => {
     next: { tags: ["fundingAgencies-api"] },
   });
   const data = await res.json();
+  // console.log("Calling useFundingAgencies");
   return data;
 };
 
 export const useFundingAgencies = () =>
-  useQuery<FundingAgency[]>({
+  useQuery<FundingAgencyWithProgrammesActionsCallsAndGrants[]>({
     queryKey: ["fundingAgencies-api"], // can this tag be revalidated in SA?
     // queryFn: () => axios.get("/api/fundingAgencies").then((res) => res.data),
     queryFn: () => fetchFundingAgencies(),

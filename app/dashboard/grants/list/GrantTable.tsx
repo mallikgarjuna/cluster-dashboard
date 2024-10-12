@@ -22,6 +22,7 @@ export interface GrantQuery {
   groupLeader: User["id"]; // this is still a string type; //string;
   year: string;
   submitYear: string;
+  searchQuery: string;
 }
 
 interface Props {
@@ -81,7 +82,7 @@ const GrantTable = async ({ searchParams, grants }: Props) => {
               className="transition-colors hover:bg-gray-200"
             >
               <Tooltip content={grant.title}>
-                <Table.Cell className="max-w-[150px] truncate">
+                <Table.Cell className="max-w-[100px] truncate">
                   <Link href={`/dashboard/grants/${grant.id}`}>
                     {(grant.acronym ?? grant.title).slice(0, 20)}
                   </Link>
@@ -91,7 +92,7 @@ const GrantTable = async ({ searchParams, grants }: Props) => {
                 </Table.Cell>
               </Tooltip>
 
-              <Table.Cell className="hidden cursor-pointer md:table-cell">
+              <Table.Cell className="hidden max-w-[80px] cursor-pointer truncate md:table-cell">
                 <Link href={`/dashboard/grants/${grant.id}`}>
                   <span className="cursor-pointer">
                     <GrantStatusBadge status={grant.status} />
@@ -101,7 +102,7 @@ const GrantTable = async ({ searchParams, grants }: Props) => {
 
               <Tooltip
                 content={
-                  grant.fundingCall ?? grant.relatedFundingCall?.name ?? ""
+                  grant.relatedFundingCall?.name || grant.fundingCall || ""
                 }
               >
                 <Table.Cell className="hidden max-w-[150px] truncate md:table-cell">
@@ -109,7 +110,7 @@ const GrantTable = async ({ searchParams, grants }: Props) => {
                     href={`/dashboard/grants/${grant.id}`}
                     className="inline-block"
                   >
-                    {grant.fundingCall || grant.relatedFundingCall?.name}
+                    {grant.relatedFundingCall?.name || grant.fundingCall || ""}
                   </Link>
                 </Table.Cell>
               </Tooltip>
@@ -161,6 +162,12 @@ const GrantTable = async ({ searchParams, grants }: Props) => {
               <Table.Cell className="hidden md:table-cell">
                 {grant.groupMemberType}
               </Table.Cell>
+
+              <Tooltip content={grant.applicantFullName}>
+                <Table.Cell className="hidden md:table-cell">
+                  {grant.applicantFullName.slice(0, 10)}
+                </Table.Cell>
+              </Tooltip>
 
               <Table.Cell className="hidden md:table-cell">
                 {/* user lastName where user.id = grant.assignedToUserId */}
@@ -226,6 +233,11 @@ const columnsGrant: {
   {
     label: "Applicant",
     value: "groupMemberType",
+    classname: "hidden md:table-cell",
+  },
+  {
+    label: "Name",
+    value: "applicantFullName",
     classname: "hidden md:table-cell",
   },
 ];

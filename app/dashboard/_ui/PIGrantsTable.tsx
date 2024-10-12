@@ -1,18 +1,12 @@
 "use client";
 
 import Link from "@/app/components/Link";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableColumn,
-  TableHeader,
-  TableRow,
-} from "@nextui-org/react";
+import { Table } from "@radix-ui/themes";
 import { OSDepartmentShortName } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
+import PIGrantTableSkeleton from "./PIGrantTableSkeleton";
 
 // type APIResponseData = {
 type RowData = {
@@ -55,6 +49,7 @@ interface Props {
 const PIGrantsTable = () => {
   const [rows, setRows] = useState<RowData[]>(initialRowData);
   const [departments, setDepartments] = useState<OSDepartmentShortName[]>([]);
+  const [loading, setLoading] = useState(true);
 
   const searchParams = useSearchParams();
   const params = new URLSearchParams(searchParams);
@@ -85,6 +80,8 @@ const PIGrantsTable = () => {
         setRows(data);
       } catch (error) {
         console.error("Error fetching grantsCountOfPI API: ", error);
+      } finally {
+        setLoading(false); // Set loading state to false after fetching data
       }
     };
     fetchData();
@@ -134,7 +131,7 @@ const PIGrantsTable = () => {
     handleGroupLeader();
   }, [searchParams]);
 
-  console.log("Departmetns: ", departments);
+  // console.log("Departmetns: ", departments);
 
   // If a groupleader logged in, Show the corresponding dept, not all depts;
   useEffect(() => {
@@ -148,54 +145,110 @@ const PIGrantsTable = () => {
   }, [session]); // Add session as a dependency
   // console.log("Departmetns: ", departments);
 
+  if (loading) {
+    // return <div>Loading...</div>; // Render a loading state while data is being fetched
+    return <PIGrantTableSkeleton />; // Render a skeleton UI while data is being fetched
+  }
+
+  // Check that the departments array is always defined and has the same length on both server and client. If it can be empty, consider adding a conditional rendering to handle that case.
+  if (!departments || departments.length === 0) {
+    return <>No data available for departments.</>;
+  }
+
   return (
-    <div>
-      <h1 className="mb-2 text-xl font-bold">{`PI Grants Overview - Tables`}</h1>
-      {departments.map((dept) => (
-        <div key={dept}>
-          <h1 className="text-lg font-bold">{`${dept}:`}</h1>
-          <Table
-            aria-label={`PI Grants Table for ${dept}`}
-            className="mb-4"
-            key={dept}
-            classNames={{
-              tr: "hover:bg-gray-200 transition-colors",
-            }}
-          >
-            <TableHeader columns={columns}>
-              {(column) => (
-                <TableColumn key={column.key}>{column.label}</TableColumn>
-              )}
-            </TableHeader>
-            <TableBody items={rows.filter((row) => row.piDepartment === dept)}>
-              {(item) => (
-                <TableRow key={item.piID}>
-                  {(columnKey) => (
-                    <TableCell>
-                      {/* {columnKey !== "piID" && item[columnKey as keyof RowData]} */}
-                      {columnKey !== "piID" && (
-                        <>
-                          {columnKey === "pi" ? (
-                            <Link
-                              href={`/dashboard/grants/list?groupLeader=${item.piID}`}
-                              className="text-blue-600"
-                            >
-                              {item[columnKey as keyof RowData]}
-                            </Link>
-                          ) : (
-                            item[columnKey as keyof RowData]
-                          )}
-                        </>
-                      )}
-                    </TableCell>
-                  )}
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </div>
-      ))}
-    </div>
+    <React.Fragment>
+      <div className="mt-8 flex flex-col gap-5">
+        <h1 className="text-3xl font-bold">{`PI Grants Overview - Tables`}</h1>
+        <em className="text-xs">
+          {" "}
+          * Success Rate % = (# of Awarded) / (# of Submitted - # of Awaiting){" "}
+        </em>
+        {departments.map((dept) => (
+          <div key={dept} className="">
+            <h1 className="text-lg font-bold">{`${dept}:`}</h1>
+            <Table.Root
+              aria-label={`PI Grants Table for ${dept}`}
+              className=""
+              key={dept}
+              variant="surface"
+              size={"1"}
+            >
+              <Table.Header>
+                <Table.Row>
+                  {columns.map((column) => (
+                    <Table.ColumnHeaderCell key={column.key}>
+                      {column.label}
+                    </Table.ColumnHeaderCell>
+                  ))}
+                </Table.Row>
+              </Table.Header>
+              <Table.Body>
+                {rows
+                  .filter((row) => row.piDepartment === dept)
+                  .map((row: RowData) => (
+                    <Table.Row
+                      key={row.piID}
+                      className="transition-colors hover:bg-gray-200"
+                    >
+                      {columns.map((column) => (
+                        <Table.Cell key={column.key}>
+                          {column.key !== "piID" &&
+                            column.key !== "piDepartment" &&
+                            (column.key === "pi" ? (
+                              <Link
+                                href={`/dashboard/grants/list?groupLeader=${row.piID}`}
+                                className="text-blue-600"
+                              >
+                                {row[column.key as keyof RowData]}
+                              </Link>
+                            ) : (
+                              row[column.key as keyof RowData]
+                            ))}
+                        </Table.Cell>
+                      ))}
+                    </Table.Row>
+                  ))}
+                <Table.Row className="bg-gray-300">
+                  <Table.Cell className="font-bold">Total</Table.Cell>
+                  {columns.slice(1).map((column) => (
+                    <Table.Cell key={column.key} className="font-bold">
+                      {column.key === "successRate"
+                        ? (
+                            rows
+                              .filter((row) => row.piDepartment === dept)
+                              .reduce((acc, row) => {
+                                const submitted = row.submitted;
+                                const awaiting = row.awaiting;
+                                return submitted - awaiting > 0
+                                  ? acc +
+                                      (row.awarded / (submitted - awaiting)) *
+                                        100
+                                  : acc;
+                              }, 0) /
+                            rows.filter((row) => row.piDepartment === dept)
+                              .length
+                          )
+                            .toFixed(2)
+                            .toString()
+                        : rows
+                            .filter((row) => row.piDepartment === dept)
+                            .reduce((acc, row) => {
+                              const value = row[column.key as keyof RowData];
+                              if (typeof value === "number") {
+                                return acc + value;
+                              }
+                              return acc;
+                            }, 0)
+                            .toString()}
+                    </Table.Cell>
+                  ))}
+                </Table.Row>
+              </Table.Body>
+            </Table.Root>
+          </div>
+        ))}
+      </div>
+    </React.Fragment>
   );
 };
 

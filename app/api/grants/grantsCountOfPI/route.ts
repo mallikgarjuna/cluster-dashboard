@@ -50,11 +50,22 @@ export async function GET(request: NextRequest) {
       ? [{ id: queryObject.groupLeader }]
       : [{}];
 
+  // If a department is selected, filter by department
+  const isDepartmentSelected =
+    queryObject.department &&
+    queryObject.department !== ("All" as OSDepartmentShortName)
+      ? [{ relatedDepartment: { nameShort: queryObject.department } }]
+      : [{}];
+
   try {
     const PIs = await prisma.user.findMany({
       where: {
         role: "GROUPLEADER",
-        AND: [...isCurrentUserAGroupLeader, ...isGroupLeaderSelected],
+        AND: [
+          ...isCurrentUserAGroupLeader,
+          ...isGroupLeaderSelected,
+          ...isDepartmentSelected,
+        ],
       },
       select: {
         id: true,
@@ -140,7 +151,9 @@ export async function GET(request: NextRequest) {
       );
       const rejected = totalRejectedGrants.length;
 
-      const successRate = Number(((awarded / submitted) * 100).toFixed(2));
+      const successRate = Number(
+        ((awarded / (submitted - awaiting)) * 100).toFixed(2),
+      );
 
       const budgetAppliedFor = totalSubmittedGrants.reduce(
         (accumulator, grant) => accumulator + (grant.budgetTotal ?? 0),

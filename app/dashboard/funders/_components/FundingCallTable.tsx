@@ -2,6 +2,7 @@
 
 import React from "react";
 import { useFundingCalls } from "./FundingCallForm";
+import { Link } from "@/app/components";
 
 const FundingCallTable = () => {
   const { data: fundingCalls, isLoading, error } = useFundingCalls();
@@ -12,7 +13,10 @@ const FundingCallTable = () => {
       <ol className="list-decimal space-y-2 pl-6">
         {fundingCalls?.map((call) => (
           <li key={call.id}>
-            {call.name} - {call.url}
+            <Link href={`/dashboard/funders/call/edit/${call.id}`}>
+              {call.name}
+            </Link>{" "}
+            - {call.url}
           </li>
         ))}
       </ol>
