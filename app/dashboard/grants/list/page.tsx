@@ -271,16 +271,18 @@ const GrantsPage = async ({ searchParams }: Props) => {
   // console.log("grantsCount: ", grantsCount);
 
   return (
-    <Flex direction="column" gap="3">
-      <DynamicGrantActions />
-      <DynamicGrantSearch />
-      <GrantTable searchParams={searchParams} grants={grants} />
-      <DynamicPagination
-        itemsCount={grantsCount}
-        pageSize={pageSize}
-        currentPage={page}
-      />
-    </Flex>
+    <Suspense fallback={<div>Loading...</div>}>
+      <Flex direction="column" gap="3">
+        <DynamicGrantActions />
+        <DynamicGrantSearch />
+        <GrantTable searchParams={searchParams} grants={grants} />
+        <DynamicPagination
+          itemsCount={grantsCount}
+          pageSize={pageSize}
+          currentPage={page}
+        />
+      </Flex>
+    </Suspense>
   );
 };
 
