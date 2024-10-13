@@ -22,7 +22,7 @@ const GrantSearch = () => {
     const query = params.size ? "?" + params.toString() : "";
 
     router.replace(`${pathname}${query}`);
-  }, 1000);
+  }, 500);
 
   return (
     <Input
