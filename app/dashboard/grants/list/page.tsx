@@ -77,48 +77,54 @@ const GrantsPage = async ({ searchParams }: Props) => {
     searchQuery: searchQuery,
   };
 
+  const statusFilter = filters.status ? { status: filters.status } : {};
+
+  const departmentFilter = filters.department
+    ? {
+        assignedToUser: {
+          relatedDepartment: { nameShort: filters.department },
+        },
+      }
+    : {};
+
+  const groupLeaderFilter = filters.groupLeader
+    ? { assignedToUser: { id: filters.groupLeader } }
+    : {};
+
+  const startYearFilter = filters.year
+    ? filters.year === "AllStarted"
+      ? { projectStartDate: { not: null } }
+      : {
+          projectStartDate: {
+            gte: new Date(`${parseInt(filters.year)}-01-01`),
+            lt: new Date(`${parseInt(filters.year) + 1}-01-01`),
+          },
+        }
+    : {};
+
+  const submitYearFilter = filters.submitYear
+    ? {
+        submissionDate: {
+          gte: new Date(`${parseInt(filters.submitYear)}-01-01`),
+          lt: new Date(`${parseInt(filters.submitYear) + 1}-01-01`),
+        },
+      }
+    : {};
+
+  const isCurrentUserGroupLeader =
+    session?.user.role === "GROUPLEADER"
+      ? { assignedToUser: { id: session?.user.id } }
+      : {};
+
   const grants = await prisma.grant.findMany({
-    // where: { status: status },
     where: {
       AND: [
-        ...(filters.status ? [{ status: filters.status }] : [{}]),
-        ...(filters.department
-          ? [
-              {
-                assignedToUser: {
-                  relatedDepartment: { nameShort: filters.department },
-                },
-              },
-            ]
-          : [{}]),
-        ...(filters.groupLeader
-          ? [{ assignedToUser: { id: filters.groupLeader } }]
-          : [{}]),
-        ...(filters.year
-          ? filters.year === "AllStarted"
-            ? [{ projectStartDate: { not: null } }]
-            : [
-                {
-                  projectStartDate: {
-                    gte: new Date(`${parseInt(filters.year)}-01-01`),
-                    lt: new Date(`${parseInt(filters.year) + 1}-01-01`),
-                  },
-                },
-              ]
-          : [{}]),
-        ...(filters.submitYear
-          ? [
-              {
-                submissionDate: {
-                  gte: new Date(`${parseInt(filters.submitYear)}-01-01`),
-                  lt: new Date(`${parseInt(filters.submitYear) + 1}-01-01`),
-                },
-              },
-            ]
-          : [{}]),
-        ...(session?.user.role === "GROUPLEADER"
-          ? [{ assignedToUser: { id: session?.user.id } }]
-          : [{}]),
+        statusFilter,
+        departmentFilter,
+        groupLeaderFilter,
+        startYearFilter,
+        submitYearFilter,
+        isCurrentUserGroupLeader,
       ],
       OR: [
         { title: { contains: searchQuery, mode: "insensitive" } },
@@ -162,9 +168,6 @@ const GrantsPage = async ({ searchParams }: Props) => {
         { fundingProgramme: { contains: searchQuery, mode: "insensitive" } },
         { fundingAction: { contains: searchQuery, mode: "insensitive" } },
         { fundingCall: { contains: searchQuery, mode: "insensitive" } },
-        // ...(isNaN(parseInt(searchQuery))
-        //   ? []
-        //   : [{ projectNumber: { equals: parseInt(searchQuery) } }]),
       ],
     },
     include: {
@@ -185,44 +188,12 @@ const GrantsPage = async ({ searchParams }: Props) => {
   const grantsCount = await prisma.grant.count({
     where: {
       AND: [
-        ...(filters.status ? [{ status: filters.status }] : [{}]),
-        ...(filters.department
-          ? [
-              {
-                assignedToUser: {
-                  relatedDepartment: { nameShort: filters.department },
-                },
-              },
-            ]
-          : [{}]),
-        ...(filters.groupLeader
-          ? [{ assignedToUser: { id: filters.groupLeader } }]
-          : [{}]),
-        ...(filters.year
-          ? filters.year === "AllStarted"
-            ? [{ projectStartDate: { not: null } }]
-            : [
-                {
-                  projectStartDate: {
-                    gte: new Date(`${parseInt(filters.year)}-01-01`),
-                    lt: new Date(`${parseInt(filters.year) + 1}-01-01`),
-                  },
-                },
-              ]
-          : [{}]),
-        ...(filters.submitYear
-          ? [
-              {
-                submissionDate: {
-                  gte: new Date(`${parseInt(filters.submitYear)}-01-01`),
-                  lt: new Date(`${parseInt(filters.submitYear) + 1}-01-01`),
-                },
-              },
-            ]
-          : [{}]),
-        ...(session?.user.role === "GROUPLEADER"
-          ? [{ assignedToUser: { id: session?.user.id } }]
-          : [{}]),
+        statusFilter,
+        departmentFilter,
+        groupLeaderFilter,
+        startYearFilter,
+        submitYearFilter,
+        isCurrentUserGroupLeader,
       ],
       OR: [
         { title: { contains: searchQuery, mode: "insensitive" } },
@@ -266,13 +237,8 @@ const GrantsPage = async ({ searchParams }: Props) => {
         { fundingProgramme: { contains: searchQuery, mode: "insensitive" } },
         { fundingAction: { contains: searchQuery, mode: "insensitive" } },
         { fundingCall: { contains: searchQuery, mode: "insensitive" } },
-        // ...(isNaN(parseInt(searchQuery))
-        //   ? []
-        //   : [{ projectNumber: { equals: parseInt(searchQuery) } }]),
       ],
     },
-
-    //   where: { status: status },
   });
 
   // const grantsCount = grants.length; // this gives 10 == pageSize only;
