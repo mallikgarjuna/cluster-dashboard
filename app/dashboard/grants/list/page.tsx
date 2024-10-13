@@ -162,12 +162,9 @@ const GrantsPage = async ({ searchParams }: Props) => {
         { fundingProgramme: { contains: searchQuery, mode: "insensitive" } },
         { fundingAction: { contains: searchQuery, mode: "insensitive" } },
         { fundingCall: { contains: searchQuery, mode: "insensitive" } },
-        // {
-        //   projectNumber: {
-        //     // equals: parseInt(searchQuery),
-        //     equals: isNaN(parseInt(searchQuery)) ? null : parseInt(searchQuery),
-        //   },
-        // },
+        ...(isNaN(parseInt(searchQuery))
+          ? []
+          : [{ projectNumber: { equals: parseInt(searchQuery) } }]),
       ],
     },
     include: {
@@ -269,12 +266,9 @@ const GrantsPage = async ({ searchParams }: Props) => {
         { fundingProgramme: { contains: searchQuery, mode: "insensitive" } },
         { fundingAction: { contains: searchQuery, mode: "insensitive" } },
         { fundingCall: { contains: searchQuery, mode: "insensitive" } },
-        // {
-        //   projectNumber: {
-        //     // equals: parseInt(searchQuery),
-        //     equals: isNaN(parseInt(searchQuery)) ? null : parseInt(searchQuery),
-        //   },
-        // },
+        ...(isNaN(parseInt(searchQuery))
+          ? []
+          : [{ projectNumber: { equals: parseInt(searchQuery) } }]),
       ],
     },
 
