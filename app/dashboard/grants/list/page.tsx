@@ -77,47 +77,47 @@ const GrantsPage = async ({ searchParams }: Props) => {
     searchQuery: searchQuery,
   };
 
-  const statusFilter = filters.status ? { status: filters.status } : {};
+  const buildWhereClause = (filters: any, searchQuery: string) => {
+    const statusFilter = filters.status ? { status: filters.status } : {};
 
-  const departmentFilter = filters.department
-    ? {
-        assignedToUser: {
-          relatedDepartment: { nameShort: filters.department },
-        },
-      }
-    : {};
-
-  const groupLeaderFilter = filters.groupLeader
-    ? { assignedToUser: { id: filters.groupLeader } }
-    : {};
-
-  const startYearFilter = filters.year
-    ? filters.year === "AllStarted"
-      ? { projectStartDate: { not: null } }
-      : {
-          projectStartDate: {
-            gte: new Date(`${parseInt(filters.year)}-01-01`),
-            lt: new Date(`${parseInt(filters.year) + 1}-01-01`),
+    const departmentFilter = filters.department
+      ? {
+          assignedToUser: {
+            relatedDepartment: { nameShort: filters.department },
           },
         }
-    : {};
-
-  const submitYearFilter = filters.submitYear
-    ? {
-        submissionDate: {
-          gte: new Date(`${parseInt(filters.submitYear)}-01-01`),
-          lt: new Date(`${parseInt(filters.submitYear) + 1}-01-01`),
-        },
-      }
-    : {};
-
-  const isCurrentUserGroupLeader =
-    session?.user.role === "GROUPLEADER"
-      ? { assignedToUser: { id: session?.user.id } }
       : {};
 
-  const grants = await prisma.grant.findMany({
-    where: {
+    const groupLeaderFilter = filters.groupLeader
+      ? { assignedToUser: { id: filters.groupLeader } }
+      : {};
+
+    const startYearFilter = filters.year
+      ? filters.year === "AllStarted"
+        ? { projectStartDate: { not: null } }
+        : {
+            projectStartDate: {
+              gte: new Date(`${parseInt(filters.year)}-01-01`),
+              lt: new Date(`${parseInt(filters.year) + 1}-01-01`),
+            },
+          }
+      : {};
+
+    const submitYearFilter = filters.submitYear
+      ? {
+          submissionDate: {
+            gte: new Date(`${parseInt(filters.submitYear)}-01-01`),
+            lt: new Date(`${parseInt(filters.submitYear) + 1}-01-01`),
+          },
+        }
+      : {};
+
+    const isCurrentUserGroupLeader =
+      session?.user.role === "GROUPLEADER"
+        ? { assignedToUser: { id: session?.user.id } }
+        : {};
+
+    const whereClause = {
       AND: [
         statusFilter,
         departmentFilter,
@@ -127,49 +127,96 @@ const GrantsPage = async ({ searchParams }: Props) => {
         isCurrentUserGroupLeader,
       ],
       OR: [
-        { title: { contains: searchQuery, mode: "insensitive" } },
-        { acronym: { contains: searchQuery, mode: "insensitive" } },
-        { description: { contains: searchQuery, mode: "insensitive" } },
+        {
+          title: {
+            contains: searchQuery,
+            mode: "insensitive" as "insensitive",
+          },
+        },
+        {
+          acronym: {
+            contains: searchQuery,
+            mode: "insensitive" as "insensitive",
+          },
+        },
+        {
+          description: {
+            contains: searchQuery,
+            mode: "insensitive" as "insensitive",
+          },
+        },
         {
           applicantFullName: {
             contains: searchQuery,
-            mode: "insensitive",
+            mode: "insensitive" as "insensitive",
           },
         },
         {
           assignedToUser: {
             OR: [
-              { lastName: { contains: searchQuery, mode: "insensitive" } },
-              { firstName: { contains: searchQuery, mode: "insensitive" } },
+              {
+                lastName: {
+                  contains: searchQuery,
+                  mode: "insensitive" as "insensitive",
+                },
+              },
+              {
+                firstName: {
+                  contains: searchQuery,
+                  mode: "insensitive" as "insensitive",
+                },
+              },
             ],
           },
         },
         {
           relatedFundingAgency: {
-            name: { contains: searchQuery, mode: "insensitive" },
+            name: {
+              contains: searchQuery,
+              mode: "insensitive" as "insensitive",
+            },
           },
         },
         {
           relatedFundingProgramme: {
-            name: { contains: searchQuery, mode: "insensitive" },
+            name: {
+              contains: searchQuery,
+              mode: "insensitive" as "insensitive",
+            },
           },
         },
         {
           relatedFundingAction: {
-            name: { contains: searchQuery, mode: "insensitive" },
+            name: {
+              contains: searchQuery,
+              mode: "insensitive" as "insensitive",
+            },
           },
         },
         {
           relatedFundingCall: {
-            name: { contains: searchQuery, mode: "insensitive" },
+            name: {
+              contains: searchQuery,
+              mode: "insensitive" as "insensitive",
+            },
           },
         },
-        { fundingAgency: { contains: searchQuery, mode: "insensitive" } },
-        { fundingProgramme: { contains: searchQuery, mode: "insensitive" } },
-        { fundingAction: { contains: searchQuery, mode: "insensitive" } },
-        { fundingCall: { contains: searchQuery, mode: "insensitive" } },
+        {
+          fundingAgency: {
+            contains: searchQuery,
+            mode: "insensitive" as "insensitive",
+          },
+        },
       ],
-    },
+    };
+
+    return whereClause;
+  };
+
+  const whereClause = buildWhereClause(filters, searchQuery);
+
+  const grants = await prisma.grant.findMany({
+    where: whereClause,
     include: {
       assignedToUser: {
         include: {
@@ -186,59 +233,7 @@ const GrantsPage = async ({ searchParams }: Props) => {
   // console.log("grants: ", grants);
 
   const grantsCount = await prisma.grant.count({
-    where: {
-      AND: [
-        statusFilter,
-        departmentFilter,
-        groupLeaderFilter,
-        startYearFilter,
-        submitYearFilter,
-        isCurrentUserGroupLeader,
-      ],
-      OR: [
-        { title: { contains: searchQuery, mode: "insensitive" } },
-        { acronym: { contains: searchQuery, mode: "insensitive" } },
-        { description: { contains: searchQuery, mode: "insensitive" } },
-        {
-          applicantFullName: {
-            contains: searchQuery,
-            mode: "insensitive",
-          },
-        },
-        {
-          assignedToUser: {
-            OR: [
-              { lastName: { contains: searchQuery, mode: "insensitive" } },
-              { firstName: { contains: searchQuery, mode: "insensitive" } },
-            ],
-          },
-        },
-        {
-          relatedFundingAgency: {
-            name: { contains: searchQuery, mode: "insensitive" },
-          },
-        },
-        {
-          relatedFundingProgramme: {
-            name: { contains: searchQuery, mode: "insensitive" },
-          },
-        },
-        {
-          relatedFundingAction: {
-            name: { contains: searchQuery, mode: "insensitive" },
-          },
-        },
-        {
-          relatedFundingCall: {
-            name: { contains: searchQuery, mode: "insensitive" },
-          },
-        },
-        { fundingAgency: { contains: searchQuery, mode: "insensitive" } },
-        { fundingProgramme: { contains: searchQuery, mode: "insensitive" } },
-        { fundingAction: { contains: searchQuery, mode: "insensitive" } },
-        { fundingCall: { contains: searchQuery, mode: "insensitive" } },
-      ],
-    },
+    where: whereClause,
   });
 
   // const grantsCount = grants.length; // this gives 10 == pageSize only;
