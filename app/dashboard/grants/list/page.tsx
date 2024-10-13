@@ -61,7 +61,7 @@ const GrantsPage = async ({ searchParams }: Props) => {
 
   const submitYear = searchParams.submitYear;
 
-  const searchQuery = searchParams.searchQuery;
+  const searchQuery = searchParams.searchQuery || "";
 
   // const year = startYears.includes(searchParams.year) ? searchParams.year : undefined;
 
@@ -207,6 +207,27 @@ const GrantsPage = async ({ searchParams }: Props) => {
             mode: "insensitive" as "insensitive",
           },
         },
+        {
+          fundingProgramme: {
+            contains: searchQuery,
+            mode: "insensitive" as "insensitive",
+          },
+        },
+        {
+          fundingAction: {
+            contains: searchQuery,
+            mode: "insensitive" as "insensitive",
+          },
+        },
+        {
+          fundingCall: {
+            contains: searchQuery,
+            mode: "insensitive" as "insensitive",
+          },
+        },
+        ...(isNaN(parseInt(searchQuery))
+          ? []
+          : [{ projectNumber: { equals: parseInt(searchQuery) } }]),
       ],
     };
 
