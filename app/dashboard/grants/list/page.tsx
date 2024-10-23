@@ -61,6 +61,7 @@ const GrantsPage = async ({ searchParams }: Props) => {
   const fAgencyId = searchParams.fAgencyId || undefined;
   const fProgId = searchParams.fProgId || undefined;
   const fActionId = searchParams.fActionId || undefined;
+  const fCallId = searchParams.fCallId || undefined;
 
   // const year = startYears.includes(searchParams.year) ? searchParams.year : undefined;
 
@@ -77,6 +78,7 @@ const GrantsPage = async ({ searchParams }: Props) => {
     fAgencyId: fAgencyId,
     fProgId: fProgId,
     fActionId: fActionId,
+    fCallId: fCallId,
   };
 
   const buildWhereClause = (filters: any, searchQuery: string) => {
@@ -126,10 +128,14 @@ const GrantsPage = async ({ searchParams }: Props) => {
       ? { relatedFundingAction: { id: filters.fActionId } }
       : {};
 
+    const fCallIdFilter = filters.fCallId
+      ? { relatedFundingCall: { id: filters.fCallId } }
+      : {};
+
     const isCurrentUserGroupLeader =
       session?.user.role === "GROUPLEADER"
         ? { assignedToUser: { id: session?.user.id } }
-        : {};
+        : {}; // this can be 'undefined' (same for all above filters)
 
     const whereClause = {
       AND: [
@@ -141,8 +147,9 @@ const GrantsPage = async ({ searchParams }: Props) => {
         fAgencyIdFilter,
         fProgIdFilter,
         fActionIdFilter,
+        fCallIdFilter,
         isCurrentUserGroupLeader,
-      ],
+      ].filter(Boolean), // Remove undefined filters
       OR: [
         {
           title: {
