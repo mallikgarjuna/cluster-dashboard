@@ -33,6 +33,11 @@ const FundingAgencyFilter = () => {
     if (fAgencyId) params.set("fAgencyId", fAgencyId);
     else params.delete("fAgencyId");
 
+    // On fAgencyId change, reset the child filters of fAgency
+    params.delete("fProgId");
+    params.delete("fActionId");
+    params.delete("fCallId");
+
     const query = params.size ? "?" + params.toString() : "";
 
     router.push(pathname + query);
@@ -42,7 +47,7 @@ const FundingAgencyFilter = () => {
     <Select
       label="Filter by funding agency..."
       onChange={handleSelectionChange}
-      defaultSelectedKeys={[searchParams.get("fAgencyId") || "All"]}
+      defaultSelectedKeys={[searchParams.get("fAgencyId") || ""]} // Ensure no null value
     >
       {fetchedFundingAgencies?.map((fAgency) => (
         <SelectItem key={fAgency.id || "All"} value={fAgency.name || "All"}>
