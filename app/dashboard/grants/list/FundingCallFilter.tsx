@@ -1,16 +1,41 @@
 "use client";
 
 import { Select, SelectItem } from "@nextui-org/react";
+import { FundingCall } from "@prisma/client";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 import Skeleton from "react-loading-skeleton";
-import { useFundingCalls } from "../../funders/_components/FundingCallForm";
+import {
+  useFundingActions,
+  useFundingCalls,
+} from "../../funders/_components/FundingCallForm";
 
 const FundingCallFilter = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
 
+  const { data: fetchedFundingActions } = useFundingActions();
   const { data: fetchedFundingCalls, isLoading, error } = useFundingCalls();
+
+  const [fundingCalls, setFundingCalls] = useState<FundingCall[]>([]);
+
+  // useEffect to update fundingCalls when a fActionId is selected
+  useEffect(() => {
+    const fetchData = () => {
+      const params = new URLSearchParams(searchParams);
+      const fActionId = params.get("fActionId");
+      if (fActionId) {
+        const selectedFAction = fetchedFundingActions?.find(
+          (fAction) => fAction.id === fActionId,
+        );
+        setFundingCalls(selectedFAction?.fundingCalls || []);
+      } else {
+        setFundingCalls(fetchedFundingCalls || []);
+      }
+    };
+    fetchData();
+  }, [fetchedFundingActions, fetchedFundingCalls, searchParams]);
 
   if (isLoading) return <Skeleton />;
   if (error) return null;
@@ -35,9 +60,9 @@ const FundingCallFilter = () => {
     <Select
       label="Filter by Funcing Call..."
       onChange={handleSelectionOnChange}
-      defaultSelectedKeys={[searchParams.get("fCallId") || "All"]}
+      defaultSelectedKeys={[searchParams.get("fCallId") || ""]}
     >
-      {fetchedFundingCalls.map((fCall) => (
+      {fundingCalls.map((fCall) => (
         <SelectItem key={fCall.id || "All"} value={fCall.name || "All"}>
           {fCall.name}
         </SelectItem>
