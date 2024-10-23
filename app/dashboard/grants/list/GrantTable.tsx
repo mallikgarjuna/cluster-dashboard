@@ -25,6 +25,7 @@ export interface GrantQuery {
   searchQuery?: string;
   fAgencyId?: string;
   fProgId?: string;
+  fActionId?: string;
 }
 
 interface Props {

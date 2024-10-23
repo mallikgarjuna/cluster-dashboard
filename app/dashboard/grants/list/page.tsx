@@ -1,17 +1,12 @@
 // import Link from "next/link";
-import Pagination from "@/app/components/Pagination";
+import authOptions from "@/app/auth/authOptions";
 import prisma from "@/prisma/client";
 import { OSDepartmentShortName, StatusGrant } from "@prisma/client";
-import GrantActions from "./GrantActions";
-import GrantTable, { GrantQuery, columnNamesGrant } from "./GrantTable";
 import { Flex } from "@radix-ui/themes";
 import { Metadata } from "next";
 import { getServerSession } from "next-auth";
-import authOptions from "@/app/auth/authOptions";
-import { select } from "@nextui-org/react";
-import GrantSearch from "./GrantSearch";
-import { Suspense } from "react";
 import dynamic from "next/dynamic";
+import { GrantQuery, columnNamesGrant } from "./GrantTable";
 
 const DynamicGrantActions = dynamic(
   () => import("@/app/dashboard/grants/list/GrantActions"),
@@ -65,6 +60,7 @@ const GrantsPage = async ({ searchParams }: Props) => {
 
   const fAgencyId = searchParams.fAgencyId || undefined;
   const fProgId = searchParams.fProgId || undefined;
+  const fActionId = searchParams.fActionId || undefined;
 
   // const year = startYears.includes(searchParams.year) ? searchParams.year : undefined;
 
@@ -80,6 +76,7 @@ const GrantsPage = async ({ searchParams }: Props) => {
     searchQuery: searchQuery,
     fAgencyId: fAgencyId,
     fProgId: fProgId,
+    fActionId: fActionId,
   };
 
   const buildWhereClause = (filters: any, searchQuery: string) => {
@@ -125,6 +122,10 @@ const GrantsPage = async ({ searchParams }: Props) => {
       ? { relatedFundingProgramme: { id: filters.fProgId } }
       : {};
 
+    const fActionIdFilter = filters.fActionId
+      ? { relatedFundingAction: { id: filters.fActionId } }
+      : {};
+
     const isCurrentUserGroupLeader =
       session?.user.role === "GROUPLEADER"
         ? { assignedToUser: { id: session?.user.id } }
@@ -139,6 +140,7 @@ const GrantsPage = async ({ searchParams }: Props) => {
         submitYearFilter,
         fAgencyIdFilter,
         fProgIdFilter,
+        fActionIdFilter,
         isCurrentUserGroupLeader,
       ],
       OR: [

@@ -42,6 +42,11 @@ const DynamicFundingProgrammeFilter = dynamic(
   { ssr: false, loading: () => <div>Loading...</div> },
 );
 
+const DynamicFundingActionFilter = dynamic(
+  () => import("@/app/dashboard/grants/list/FundingActionFilter"),
+  { ssr: false, loading: () => <div>Loading...</div> },
+);
+
 const GrantActions = async () => {
   const usersWithDepartment = await prisma.user.findMany({
     where: { role: "GROUPLEADER" },
@@ -65,6 +70,7 @@ const GrantActions = async () => {
       <Flex justify="between" gap="3" align="center">
         <DynamicFundingAgencyFilter />
         <DynamicFundingProgrammeFilter />
+        <DynamicFundingActionFilter />
       </Flex>
     </Flex>
   );

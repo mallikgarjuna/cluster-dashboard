@@ -42,6 +42,7 @@ const FundingAgencyFilter = () => {
     <Select
       label="Filter by funding agency..."
       onChange={handleSelectionChange}
+      defaultSelectedKeys={[searchParams.get("fAgencyId") || "All"]}
     >
       {fetchedFundingAgencies?.map((fAgency) => (
         <SelectItem key={fAgency.id || "All"} value={fAgency.name || "All"}>
