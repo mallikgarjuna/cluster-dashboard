@@ -22,8 +22,8 @@ const DynamicPIGrantsTable = dynamic(
   },
 );
 
-const DynamicFundersTable = dynamic(
-  () => import("@/app/dashboard/funders/_components/FundersTable"),
+const DynamicPIFundersTable = dynamic(
+  () => import("@/app/dashboard/funders/_components/PIFundersTable"),
   { ssr: false, loading: () => <div>Loading...</div> },
 );
 
@@ -311,7 +311,7 @@ export default async function DashboardPage({ searchParams }: Props) {
       </Grid>
       {/* <PIGrantsTable grantsCountOfPIData={grantsCountOfPIData} /> */}
       <DynamicPIGrantsTable />
-      <DynamicFundersTable />
+      <DynamicPIFundersTable />
     </Flex>
   );
 }
