@@ -58,40 +58,50 @@ const PIFundersTable = () => {
   );
 
   const fAgencyCellContent = (fAgency: FundingAgencyWithAllRelatedTypes) => {
+    params.set("fAgencyId", fAgency.id);
+    const query = params.size ? "?" + params.toString() : "";
     return (
       <div className="flex gap-2">
-        <Link href={`/dashboard/grants/list?fAgencyId=${fAgency.id}`}>
-          {fAgency.name}
-        </Link>
+        <Link href={`/dashboard/grants/list${query}`}>{fAgency.name}</Link>
         <p>({fAgency.grants.length})</p>
       </div>
     );
   };
 
   const fProgrammeCellContent = (fP: FundingProgrammeWithAllRelatedTypes) => {
+    params.set("fProgId", fP.id);
+    // params.delete("fAgencyId");
+    const query = params.size ? "?" + params.toString() : "";
     return (
       <div className="flex gap-2">
-        <Link href={`/dashboard/grants/list?fProgId=${fP.id}`}>{fP.name}</Link>
+        <Link href={`/dashboard/grants/list${query}`}>{fP.name}</Link>
         <p>({fP.grants.length})</p>
       </div>
     );
   };
 
   const fActionCellContent = (fA: FundingActionWithAllRelatedTypes) => {
+    params.set("fActionId", fA.id);
+    // params.delete("fAgencyId");
+    // params.delete("fProgId");
+    const query = params.size ? "?" + params.toString() : "";
     return (
       <div className="flex gap-2">
-        <Link href={`/dashboard/grants/list?fActionId=${fA.id}`}>
-          {fA.name}
-        </Link>
+        <Link href={`/dashboard/grants/list${query}`}>{fA.name}</Link>
         <p>({fA.grants.length})</p>
       </div>
     );
   };
 
   const fCallCellContent = (fC: FundingCallWithAllRelatedTypes) => {
+    params.set("fCallId", fC.id);
+    // params.delete("fAgencyId");
+    // params.delete("fProgId");
+    // params.delete("fActionId");
+    const query = params.size ? "?" + params.toString() : "";
     return (
       <div className="flex gap-2">
-        <Link href={`/dashboard/grants/list?fCallId=${fC.id}`}>{fC.name}</Link>
+        <Link href={`/dashboard/grants/list${query}`}>{fC.name}</Link>
         <p>({fC.grants.length})</p>
       </div>
     );
