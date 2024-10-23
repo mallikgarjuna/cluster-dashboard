@@ -63,6 +63,8 @@ const GrantsPage = async ({ searchParams }: Props) => {
 
   const searchQuery = searchParams.searchQuery || "";
 
+  const fAgencyId = searchParams.fAgencyId || undefined;
+
   // const year = startYears.includes(searchParams.year) ? searchParams.year : undefined;
 
   const page = parseInt(searchParams.page) || 1;
@@ -75,6 +77,7 @@ const GrantsPage = async ({ searchParams }: Props) => {
     year: year,
     submitYear: submitYear,
     searchQuery: searchQuery,
+    fAgencyId: fAgencyId,
   };
 
   const buildWhereClause = (filters: any, searchQuery: string) => {
@@ -112,6 +115,10 @@ const GrantsPage = async ({ searchParams }: Props) => {
         }
       : {};
 
+    const fAgencyIdFilter = filters.fAgencyId
+      ? { relatedFundingAgency: { id: fAgencyId } }
+      : {};
+
     const isCurrentUserGroupLeader =
       session?.user.role === "GROUPLEADER"
         ? { assignedToUser: { id: session?.user.id } }
@@ -124,6 +131,7 @@ const GrantsPage = async ({ searchParams }: Props) => {
         groupLeaderFilter,
         startYearFilter,
         submitYearFilter,
+        fAgencyIdFilter,
         isCurrentUserGroupLeader,
       ],
       OR: [

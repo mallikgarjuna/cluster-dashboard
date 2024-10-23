@@ -32,6 +32,11 @@ const DynamicGrantSubmissionYearFilter = dynamic(
   { ssr: false, loading: () => <div>Loading...</div> },
 );
 
+const DynamicFundingAgencyFilter = dynamic(
+  () => import("@/app/dashboard/grants/list/FundingAgencyFilter"),
+  { ssr: false, loading: () => <div>Loading...</div> },
+);
+
 const GrantActions = async () => {
   const usersWithDepartment = await prisma.user.findMany({
     where: { role: "GROUPLEADER" },
@@ -40,16 +45,21 @@ const GrantActions = async () => {
   });
 
   return (
-    <Flex justify="between" gap="3" align="center">
-      <DynamicGrantStatusFilter />
-      <DynamicDepartmentFilter />
-      <DynamicGroupLeaderFilter users={usersWithDepartment} />
-      <DynamicGrantStartYearFilter />
-      <DynamicGrantSubmissionYearFilter />
-      {/* <Button>
+    <Flex direction="column" gap="3">
+      <Flex justify="between" gap="3" align="center">
+        <DynamicGrantStatusFilter />
+        <DynamicDepartmentFilter />
+        <DynamicGroupLeaderFilter users={usersWithDepartment} />
+        <DynamicGrantStartYearFilter />
+        <DynamicGrantSubmissionYearFilter />
+        {/* <Button>
         <Link href="/dashboard/grants/new">New Grant</Link>
       </Button> */}
-      <ButtonWithSpinner hrefProp="/dashboard/grants/new" name="New Grant" />
+        <ButtonWithSpinner hrefProp="/dashboard/grants/new" name="New Grant" />
+      </Flex>
+      <Flex justify="between" gap="3" align="center">
+        <DynamicFundingAgencyFilter />
+      </Flex>
     </Flex>
   );
 };
