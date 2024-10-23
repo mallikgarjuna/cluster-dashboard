@@ -1,11 +1,9 @@
 "use client";
 
 import { Select, SelectItem } from "@nextui-org/react";
-import { useEffect, useState } from "react";
-import { useFundingAgencies } from "../../funders/_components/FundingProgrammeForm";
-import Skeleton from "react-loading-skeleton";
-import { error } from "console";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import Skeleton from "react-loading-skeleton";
+import { useFundingAgencies } from "../../funders/_components/FundingProgrammeForm";
 
 const FundingAgencyFilter = () => {
   const searchParams = useSearchParams();
