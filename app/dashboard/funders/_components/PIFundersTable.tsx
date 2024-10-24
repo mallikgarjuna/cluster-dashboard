@@ -59,6 +59,7 @@ const PIFundersTable = () => {
 
   const fAgencyCellContent = (fAgency: FundingAgencyWithAllRelatedTypes) => {
     params.set("fAgencyId", fAgency.id);
+    params.delete("fCallId");
     const query = params.size ? "?" + params.toString() : "";
     return (
       <div className="flex gap-2">
@@ -71,6 +72,7 @@ const PIFundersTable = () => {
   const fProgrammeCellContent = (fP: FundingProgrammeWithAllRelatedTypes) => {
     params.set("fProgId", fP.id);
     params.delete("fAgencyId");
+    params.delete("fCallId");
     const query = params.size ? "?" + params.toString() : "";
     return (
       <div className="flex gap-2">
@@ -84,6 +86,7 @@ const PIFundersTable = () => {
     params.set("fActionId", fA.id);
     params.delete("fAgencyId");
     params.delete("fProgId");
+    params.delete("fCallId");
     const query = params.size ? "?" + params.toString() : "";
     return (
       <div className="flex gap-2">
