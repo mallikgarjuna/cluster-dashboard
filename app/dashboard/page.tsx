@@ -13,6 +13,7 @@ import dynamic from "next/dynamic";
 import PIGrantTableSkeleton from "./_ui/PIGrantTableSkeleton";
 import FundersTable from "./funders/_components/FundersTable";
 import { Suspense } from "react";
+import GrantsSubmittedPerYearChart from "./_ui/GrantsSubmittedPerYearChart";
 // import PIGrantsTable from "./_ui/PIGrantsTable";
 const DynamicPIGrantsTable = dynamic(
   () => import("@/app/dashboard/_ui/PIGrantsTable"),
@@ -309,6 +310,7 @@ export default async function DashboardPage({ searchParams }: Props) {
         </Flex>
         <LatestGrants latestGrants={latestGrants} />
       </Grid>
+      <GrantsSubmittedPerYearChart />
       {/* <PIGrantsTable grantsCountOfPIData={grantsCountOfPIData} /> */}
       <DynamicPIGrantsTable />
       <DynamicPIFundersTable />
