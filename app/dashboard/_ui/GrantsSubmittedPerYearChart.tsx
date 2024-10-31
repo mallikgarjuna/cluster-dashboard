@@ -13,15 +13,10 @@ import {
 } from "recharts";
 
 interface Props {
-  perYearData: { year: number | null; submitted: number }[];
+  perYearData: { year: number | null; submitted: number; awarded: number }[];
 }
 
 const GrantsSubmittedPerYearChart = ({ perYearData }: Props) => {
-  // const perYearData = [
-  //   { year: 2023, submitted: 20 },
-  //   { year: 2024, submitted: 10 },
-  // ];
-
   return (
     <Card>
       <CardHeader>Grants Submitted per Year</CardHeader>
@@ -34,6 +29,12 @@ const GrantsSubmittedPerYearChart = ({ perYearData }: Props) => {
               dataKey="submitted"
               type="monotone"
               stroke="blue"
+              activeDot={{ r: 10 }}
+            />
+            <Line
+              dataKey="awarded"
+              type="monotone"
+              stroke="green"
               activeDot={{ r: 10 }}
             />
             <CartesianGrid strokeDasharray="3 3" />

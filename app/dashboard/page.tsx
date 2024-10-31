@@ -1,3 +1,4 @@
+import { fetchUniqueGrantSubmitYears } from "@/lib/actions/grant/queries";
 import prisma from "@/prisma/client";
 import { OSDepartmentShortName } from "@prisma/client";
 import { Flex, Grid } from "@radix-ui/themes";
@@ -12,7 +13,6 @@ import GrantSummary from "./_ui/GrantSummary";
 import LatestGrants from "./_ui/LatestGrants";
 import PIGrantTableSkeleton from "./_ui/PIGrantTableSkeleton";
 import { GrantQuery } from "./grants/list/GrantTable";
-import { fetchUniqueGrantSubmitYears } from "@/lib/actions/grant/queries";
 // import PIGrantsTable from "./_ui/PIGrantsTable";
 const DynamicPIGrantsTable = dynamic(
   () => import("@/app/dashboard/_ui/PIGrantsTable"),
@@ -169,18 +169,6 @@ export default async function DashboardPage({ searchParams }: Props) {
   );
   // console.log("submittedTotal: ", submittedTotal);
 
-  // per year grant count data for GrantsSubmittedPerYearChart
-  const grantsCountPerYearData = await Promise.all(
-    uniqueGrantSubmissionYears.map(async (year) => ({
-      year: year,
-      submitted: await getSubmittedCountForUser(
-        filters.groupLeader,
-        year?.toString(),
-      ),
-    })),
-  );
-  // console.log("grantsSubmittedPerYearData: ", grantsSubmittedPerYearData);
-
   const getAwaitingCountForUser = async (userId?: string) => {
     const filterUserId = userId ? [{ assignedToUser: { id: userId } }] : [{}];
 
@@ -221,8 +209,22 @@ export default async function DashboardPage({ searchParams }: Props) {
       },
     });
   };
-  const getAwardedCountForUser = async (userId?: string) => {
+  const getAwardedCountForUser = async (
+    userId?: string,
+    submitYear?: string,
+  ) => {
     const filterUserId = userId ? [{ assignedToUser: { id: userId } }] : [{}];
+
+    const filterSubmitYear = submitYear
+      ? [
+          {
+            submissionDate: {
+              gte: new Date(`${parseInt(submitYear)}-01-01`),
+              lt: new Date(`${parseInt(submitYear) + 1}-01-01`),
+            },
+          },
+        ]
+      : [{}];
 
     return await prisma.grant.count({
       where: {
@@ -283,6 +285,22 @@ export default async function DashboardPage({ searchParams }: Props) {
     });
   };
   const latestGrants = await getLatestGrantsForUser(filters.groupLeader);
+
+  // per year grant count data for GrantsSubmittedPerYearChart
+  const grantsCountPerYearData = await Promise.all(
+    uniqueGrantSubmissionYears.map(async (year) => ({
+      year: year,
+      submitted: await getSubmittedCountForUser(
+        filters.groupLeader,
+        year?.toString(),
+      ),
+      awarded: await getAwardedCountForUser(
+        filters.groupLeader,
+        year?.toString(),
+      ),
+    })),
+  );
+  // console.log("grantsSubmittedPerYearData: ", grantsSubmittedPerYearData);
 
   // // Get all group leaders - for grantsCountOfPIData for PIGrantsTable
   // const groupLeaders = await prisma.user.findMany({
