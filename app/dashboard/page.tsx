@@ -50,6 +50,9 @@ export default async function DashboardPage({ searchParams }: Props) {
 
   const startYear = searchParams.year == "All" ? undefined : searchParams.year;
 
+  const uniqueGrantSubmissionYears = await fetchUniqueGrantSubmitYears();
+  console.log("uniqueGrantSubmissionYears: ", uniqueGrantSubmissionYears);
+
   // Filters
   const filters = {
     department: department,
@@ -122,8 +125,22 @@ export default async function DashboardPage({ searchParams }: Props) {
   };
   // const submittedTotal = (await getSubmittedGrantsForUser(filters.groupLeader))
   //   .length;
-  const getSubmittedCountForUser = async (userId?: string) => {
+  const getSubmittedCountForUser = async (
+    userId?: string,
+    submitYear?: string,
+  ) => {
     const filterUserId = userId ? [{ assignedToUser: { id: userId } }] : [{}];
+
+    const filterSubmitYear = submitYear
+      ? [
+          {
+            submissionDate: {
+              gte: new Date(`${parseInt(submitYear)}-01-01`),
+              lt: new Date(`${parseInt(submitYear) + 1}-01-01`),
+            },
+          },
+        ]
+      : [{}];
 
     return await prisma.grant.count({
       where: {
@@ -146,8 +163,23 @@ export default async function DashboardPage({ searchParams }: Props) {
       },
     });
   };
-  const submittedTotal = await getSubmittedCountForUser(filters.groupLeader);
+  const submittedTotal = await getSubmittedCountForUser(
+    filters.groupLeader,
+    filters.submitYear,
+  );
   // console.log("submittedTotal: ", submittedTotal);
+
+  // per year grant count data for GrantsSubmittedPerYearChart
+  const grantsCountPerYearData = await Promise.all(
+    uniqueGrantSubmissionYears.map(async (year) => ({
+      year: year,
+      submitted: await getSubmittedCountForUser(
+        filters.groupLeader,
+        year?.toString(),
+      ),
+    })),
+  );
+  // console.log("grantsSubmittedPerYearData: ", grantsSubmittedPerYearData);
 
   const getAwaitingCountForUser = async (userId?: string) => {
     const filterUserId = userId ? [{ assignedToUser: { id: userId } }] : [{}];
@@ -300,9 +332,6 @@ export default async function DashboardPage({ searchParams }: Props) {
   //   }),
   // );
 
-  const uniqueGrantSubmissionYears = await fetchUniqueGrantSubmitYears();
-  console.log("uniqueGrantSubmissionYears: ", uniqueGrantSubmissionYears);
-
   return (
     <Flex direction="column" gap="5" className="mb-32">
       <DashboardActions />
@@ -324,7 +353,7 @@ export default async function DashboardPage({ searchParams }: Props) {
         </Flex>
         <LatestGrants latestGrants={latestGrants} />
       </Grid>
-      <GrantsSubmittedPerYearChart />
+      <GrantsSubmittedPerYearChart perYearData={grantsCountPerYearData} />
       {/* <PIGrantsTable grantsCountOfPIData={grantsCountOfPIData} /> */}
       <DynamicPIGrantsTable />
       <DynamicPIFundersTable />

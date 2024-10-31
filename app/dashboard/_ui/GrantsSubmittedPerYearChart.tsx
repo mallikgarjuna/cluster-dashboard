@@ -12,11 +12,15 @@ import {
   YAxis,
 } from "recharts";
 
-const GrantsSubmittedPerYearChart = () => {
-  const perYearData = [
-    { year: 2023, submitted: 20 },
-    { year: 2024, submitted: 10 },
-  ];
+interface Props {
+  perYearData: { year: number | null; submitted: number }[];
+}
+
+const GrantsSubmittedPerYearChart = ({ perYearData }: Props) => {
+  // const perYearData = [
+  //   { year: 2023, submitted: 20 },
+  //   { year: 2024, submitted: 10 },
+  // ];
 
   return (
     <Card>
