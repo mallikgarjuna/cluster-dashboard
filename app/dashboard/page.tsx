@@ -189,8 +189,23 @@ export default async function DashboardPage({ searchParams }: Props) {
   };
   const awaitingTotal = await getAwaitingCountForUser(filters.groupLeader);
 
-  const getAwardedGrantsForUser = async (userId?: string) => {
+  const getAwardedGrantsForUser = async (
+    userId?: string,
+    startYear?: string,
+  ) => {
     const filterUserId = userId ? [{ assignedToUser: { id: userId } }] : [{}];
+
+    // Is different from filterStartYear;
+    const filterStartYearParam = startYear
+      ? [
+          {
+            projectStartDate: {
+              gte: new Date(`${parseInt(startYear)}-01-01`),
+              lt: new Date(`${parseInt(startYear) + 1}-01-01`),
+            },
+          },
+        ]
+      : [{}];
 
     return await prisma.grant.findMany({
       where: {
@@ -201,6 +216,7 @@ export default async function DashboardPage({ searchParams }: Props) {
           ...filterDepartment,
           ...filterStartYear,
           ...filterSubmitYear,
+          ...filterStartYearParam,
         ],
         OR: [
           { status: "AWARDED" },
@@ -300,6 +316,12 @@ export default async function DashboardPage({ searchParams }: Props) {
       awarded: await getAwardedCountForUser(
         filters.groupLeader,
         year?.toString(),
+      ),
+      totalFundingAwarded: (
+        await getAwardedGrantsForUser(filters.groupLeader, year?.toString())
+      ).reduce(
+        (accumulator, grant) => accumulator + (grant.budgetTotal ?? 0),
+        0,
       ),
     })),
   );
