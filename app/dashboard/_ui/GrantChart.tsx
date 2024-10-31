@@ -2,7 +2,14 @@
 
 import { Card } from "@radix-ui/themes";
 import React from "react";
-import { ResponsiveContainer, BarChart, XAxis, YAxis, Bar } from "recharts";
+import {
+  ResponsiveContainer,
+  BarChart,
+  XAxis,
+  YAxis,
+  Bar,
+  Tooltip,
+} from "recharts";
 
 interface Props {
   awaiting: number;
@@ -24,10 +31,13 @@ const GrantChart = ({ awaiting, submitted, awarded, rejected }: Props) => {
         <BarChart data={data}>
           <XAxis dataKey="label" />
           <YAxis />
+          {/* If the Tooltip is below the Bar, tooltip will mask the bar */}
+          <Tooltip />
           <Bar
             dataKey="value"
             barSize={60}
-            style={{ fill: "var(--accent-9)" }}
+            // style={{ fill: "var(--accent-9)" }}
+            fill="var(--accent-9)"
           />
         </BarChart>
       </ResponsiveContainer>

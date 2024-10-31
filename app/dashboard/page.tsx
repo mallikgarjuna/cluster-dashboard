@@ -51,7 +51,7 @@ export default async function DashboardPage({ searchParams }: Props) {
   const startYear = searchParams.year == "All" ? undefined : searchParams.year;
 
   const uniqueGrantSubmissionYears = await fetchUniqueGrantSubmitYears();
-  console.log("uniqueGrantSubmissionYears: ", uniqueGrantSubmissionYears);
+  // console.log("uniqueGrantSubmissionYears: ", uniqueGrantSubmissionYears);
 
   // Filters
   const filters = {
@@ -131,7 +131,7 @@ export default async function DashboardPage({ searchParams }: Props) {
   ) => {
     const filterUserId = userId ? [{ assignedToUser: { id: userId } }] : [{}];
 
-    const filterSubmitYear = submitYear
+    const filterSubmitYearParam = submitYear
       ? [
           {
             submissionDate: {
@@ -152,6 +152,7 @@ export default async function DashboardPage({ searchParams }: Props) {
           ...filterDepartment,
           ...filterStartYear,
           ...filterSubmitYear,
+          ...filterSubmitYearParam,
         ],
         OR: [
           { status: "SUBMITTED" },
@@ -211,16 +212,17 @@ export default async function DashboardPage({ searchParams }: Props) {
   };
   const getAwardedCountForUser = async (
     userId?: string,
-    submitYear?: string,
+    startYear?: string,
   ) => {
     const filterUserId = userId ? [{ assignedToUser: { id: userId } }] : [{}];
 
-    const filterSubmitYear = submitYear
+    // Is different from filterStartYear;
+    const filterStartYearParam = startYear
       ? [
           {
-            submissionDate: {
-              gte: new Date(`${parseInt(submitYear)}-01-01`),
-              lt: new Date(`${parseInt(submitYear) + 1}-01-01`),
+            projectStartDate: {
+              gte: new Date(`${parseInt(startYear)}-01-01`),
+              lt: new Date(`${parseInt(startYear) + 1}-01-01`),
             },
           },
         ]
@@ -235,6 +237,7 @@ export default async function DashboardPage({ searchParams }: Props) {
           ...filterDepartment,
           ...filterStartYear,
           ...filterSubmitYear,
+          ...filterStartYearParam,
         ],
         OR: [
           { status: "AWARDED" },
