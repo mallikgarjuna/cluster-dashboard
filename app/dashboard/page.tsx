@@ -1,19 +1,17 @@
 import prisma from "@/prisma/client";
+import { OSDepartmentShortName } from "@prisma/client";
 import { Flex, Grid } from "@radix-ui/themes";
 import { Metadata } from "next";
-import GrantChart from "./_ui/GrantChart";
-import GrantSummary from "./_ui/GrantSummary";
-import LatestGrants from "./_ui/LatestGrants";
 import { getServerSession } from "next-auth";
+import dynamic from "next/dynamic";
 import authOptions from "../auth/authOptions";
 import DashboardActions from "./_ui/DashboardActions";
-import { GrantQuery } from "./grants/list/GrantTable";
-import { OSDepartmentShortName } from "@prisma/client";
-import dynamic from "next/dynamic";
-import PIGrantTableSkeleton from "./_ui/PIGrantTableSkeleton";
-import FundersTable from "./funders/_components/FundersTable";
-import { Suspense } from "react";
+import GrantChart from "./_ui/GrantChart";
 import GrantsSubmittedPerYearChart from "./_ui/GrantsSubmittedPerYearChart";
+import GrantSummary from "./_ui/GrantSummary";
+import LatestGrants from "./_ui/LatestGrants";
+import PIGrantTableSkeleton from "./_ui/PIGrantTableSkeleton";
+import { GrantQuery } from "./grants/list/GrantTable";
 // import PIGrantsTable from "./_ui/PIGrantsTable";
 const DynamicPIGrantsTable = dynamic(
   () => import("@/app/dashboard/_ui/PIGrantsTable"),
@@ -49,13 +47,13 @@ export default async function DashboardPage({ searchParams }: Props) {
   const groupLeader =
     searchParams.groupLeader === "All" ? undefined : searchParams.groupLeader;
 
-  const year = searchParams.year == "All" ? undefined : searchParams.year;
+  const startYear = searchParams.year == "All" ? undefined : searchParams.year;
 
   // Filters
   const filters = {
     department: department,
     groupLeader: groupLeader,
-    year: year,
+    startYear: startYear,
     submitYear: searchParams.submitYear,
   };
 
@@ -74,14 +72,14 @@ export default async function DashboardPage({ searchParams }: Props) {
     ? [{ assignedToUser: { id: filters.groupLeader } }]
     : [{}];
 
-  const filterYear = filters.year
-    ? filters.year === "AllStarted"
+  const filterStartYear = filters.startYear
+    ? filters.startYear === "AllStarted"
       ? [{ projectStartDate: { not: null } }]
       : [
           {
             projectStartDate: {
-              gte: new Date(`${parseInt(filters.year)}-01-01`),
-              lt: new Date(`${parseInt(filters.year) + 1}-01-01`),
+              gte: new Date(`${parseInt(filters.startYear)}-01-01`),
+              lt: new Date(`${parseInt(filters.startYear) + 1}-01-01`),
             },
           },
         ]
@@ -108,7 +106,7 @@ export default async function DashboardPage({ searchParams }: Props) {
           // { assignedToUser: { id: userId } },
           ...(userId ? [{ assignedToUser: { id: userId } }] : [{}]),
           ...filterDepartment,
-          ...filterYear,
+          ...filterStartYear,
           ...filterSubmitYear,
         ],
         OR: [
@@ -124,15 +122,17 @@ export default async function DashboardPage({ searchParams }: Props) {
   // const submittedTotal = (await getSubmittedGrantsForUser(filters.groupLeader))
   //   .length;
   const getSubmittedCountForUser = async (userId?: string) => {
+    const filterUserId = userId ? [{ assignedToUser: { id: userId } }] : [{}];
+
     return await prisma.grant.count({
       where: {
         AND: [
           ...isGroupLeader,
           // ...filterGroupLeader,
           // { assignedToUser: { id: userId } },
-          ...(userId ? [{ assignedToUser: { id: userId } }] : [{}]),
+          ...filterUserId,
           ...filterDepartment,
-          ...filterYear,
+          ...filterStartYear,
           ...filterSubmitYear,
         ],
         OR: [
@@ -149,14 +149,16 @@ export default async function DashboardPage({ searchParams }: Props) {
   // console.log("submittedTotal: ", submittedTotal);
 
   const getAwaitingCountForUser = async (userId?: string) => {
+    const filterUserId = userId ? [{ assignedToUser: { id: userId } }] : [{}];
+
     return await prisma.grant.count({
       where: {
         AND: [
           ...isGroupLeader,
           // ...filterGroupLeader,
-          ...(userId ? [{ assignedToUser: { id: userId } }] : [{}]),
+          ...filterUserId,
           ...filterDepartment,
-          ...filterYear,
+          ...filterStartYear,
           ...filterSubmitYear,
         ],
         OR: [{ status: "SUBMITTED" }],
@@ -166,14 +168,16 @@ export default async function DashboardPage({ searchParams }: Props) {
   const awaitingTotal = await getAwaitingCountForUser(filters.groupLeader);
 
   const getAwardedGrantsForUser = async (userId?: string) => {
+    const filterUserId = userId ? [{ assignedToUser: { id: userId } }] : [{}];
+
     return await prisma.grant.findMany({
       where: {
         AND: [
           ...isGroupLeader,
           // ...filterGroupLeader,
-          ...(userId ? [{ assignedToUser: { id: userId } }] : [{}]),
+          ...filterUserId,
           ...filterDepartment,
-          ...filterYear,
+          ...filterStartYear,
           ...filterSubmitYear,
         ],
         OR: [
@@ -185,14 +189,16 @@ export default async function DashboardPage({ searchParams }: Props) {
     });
   };
   const getAwardedCountForUser = async (userId?: string) => {
+    const filterUserId = userId ? [{ assignedToUser: { id: userId } }] : [{}];
+
     return await prisma.grant.count({
       where: {
         AND: [
           ...isGroupLeader,
           // ...filterGroupLeader,
-          ...(userId ? [{ assignedToUser: { id: userId } }] : [{}]),
+          ...filterUserId,
           ...filterDepartment,
-          ...filterYear,
+          ...filterStartYear,
           ...filterSubmitYear,
         ],
         OR: [
@@ -206,14 +212,16 @@ export default async function DashboardPage({ searchParams }: Props) {
   const awardedTotal = await getAwardedCountForUser(filters.groupLeader);
 
   const getRejectedCountForUser = async (userId?: string) => {
+    const filterUserId = userId ? [{ assignedToUser: { id: userId } }] : [{}];
+
     return await prisma.grant.count({
       where: {
         AND: [
           ...isGroupLeader,
           // ...filterGroupLeader,
-          ...(userId ? [{ assignedToUser: { id: userId } }] : [{}]),
+          ...filterUserId,
           ...filterDepartment,
-          ...filterYear,
+          ...filterStartYear,
           ...filterSubmitYear,
         ],
         OR: [{ status: "REJECTED" }],
@@ -223,14 +231,16 @@ export default async function DashboardPage({ searchParams }: Props) {
   const rejectedTotal = await getRejectedCountForUser(filters.groupLeader);
 
   const getLatestGrantsForUser = async (userId?: string) => {
+    const filterUserId = userId ? [{ assignedToUser: { id: userId } }] : [{}];
+
     return await prisma.grant.findMany({
       where: {
         AND: [
           ...isGroupLeader,
           // ...filterGroupLeader,
-          ...(userId ? [{ assignedToUser: { id: userId } }] : [{}]),
+          ...filterUserId,
           ...filterDepartment,
-          ...filterYear,
+          ...filterStartYear,
           ...filterSubmitYear,
         ],
       },

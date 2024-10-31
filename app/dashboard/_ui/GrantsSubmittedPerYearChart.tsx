@@ -14,8 +14,8 @@ import {
 
 const GrantsSubmittedPerYearChart = () => {
   const perYearData = [
-    { year: 2024, submitted: 10 },
     { year: 2023, submitted: 20 },
+    { year: 2024, submitted: 10 },
   ];
 
   return (
