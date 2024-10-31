@@ -12,6 +12,7 @@ import GrantSummary from "./_ui/GrantSummary";
 import LatestGrants from "./_ui/LatestGrants";
 import PIGrantTableSkeleton from "./_ui/PIGrantTableSkeleton";
 import { GrantQuery } from "./grants/list/GrantTable";
+import { fetchUniqueGrantSubmitYears } from "@/lib/actions/grant/queries";
 // import PIGrantsTable from "./_ui/PIGrantsTable";
 const DynamicPIGrantsTable = dynamic(
   () => import("@/app/dashboard/_ui/PIGrantsTable"),
@@ -298,6 +299,9 @@ export default async function DashboardPage({ searchParams }: Props) {
   //     };
   //   }),
   // );
+
+  const uniqueGrantSubmissionYears = await fetchUniqueGrantSubmitYears();
+  console.log("uniqueGrantSubmissionYears: ", uniqueGrantSubmissionYears);
 
   return (
     <Flex direction="column" gap="5" className="mb-32">
