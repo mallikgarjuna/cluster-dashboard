@@ -156,7 +156,7 @@ export async function GET(request: NextRequest) {
       );
 
       const budgetAppliedFor = totalSubmittedGrants.reduce(
-        (accumulator, grant) => accumulator + (grant.budgetTotal ?? 0),
+        (accumulator, grant) => accumulator + (grant.budgetAssignedToPI ?? 0),
         0,
       );
       const budgetAwarded = totalAwardedGrants.reduce(

@@ -199,7 +199,7 @@ const columnsGrant: {
     classname: "hidden md:table-cell",
   },
   {
-    label: "Budget",
+    label: "Budget(€)",
     value: "budgetAssignedToPI",
     classname: "hidden md:table-cell",
   },

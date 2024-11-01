@@ -336,7 +336,7 @@ export default async function DashboardPage({ searchParams }: Props) {
       totalFundingAwarded: (
         await getAwardedGrantsForUser(filters.groupLeader, year?.toString())
       ).reduce(
-        (accumulator, grant) => accumulator + (grant.budgetTotal ?? 0),
+        (accumulator, grant) => accumulator + (grant.budgetAssignedToPI ?? 0),
         0,
       ),
     })),
