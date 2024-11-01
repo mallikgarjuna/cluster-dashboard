@@ -395,32 +395,27 @@ export default async function DashboardPage({ searchParams }: Props) {
   return (
     <Flex direction="column" gap="5" className="mb-32">
       <DashboardActions />
-      <Grid columns={{ initial: "1", md: "2" }} gap="5">
-        <Flex direction="column" gap="5">
-          <GrantSummary
-            awaiting={awaitingTotal}
-            submitted={submittedTotal}
-            awarded={awardedTotal}
-            rejected={rejectedTotal}
-            funding={fundingTotalAwarded}
-            searchParams={searchParams}
-          />
-          <GrantChart
-            awaiting={awaitingTotal}
-            submitted={submittedTotal}
-            awarded={awardedTotal}
-            rejected={rejectedTotal}
-          />
-        </Flex>
-        <LatestGrants latestGrants={latestGrants} />
-      </Grid>
+      <GrantSummary
+        awaiting={awaitingTotal}
+        submitted={submittedTotal}
+        awarded={awardedTotal}
+        rejected={rejectedTotal}
+        funding={fundingTotalAwarded}
+        searchParams={searchParams}
+      />
       <Grid columns={{ initial: "1", md: "3" }} gap="5">
+        <GrantChart
+          awaiting={awaitingTotal}
+          submitted={submittedTotal}
+          awarded={awardedTotal}
+          rejected={rejectedTotal}
+        />
         <GrantsSubmittedPerYearChart perYearData={grantsCountPerYearData} />
         <FundingAwardedPerYearChart perYearData={grantsCountPerYearData} />
       </Grid>
-      {/* <PIGrantsTable grantsCountOfPIData={grantsCountOfPIData} /> */}
       <DynamicPIGrantsTable />
       <DynamicPIFundersTable />
+      <LatestGrants latestGrants={latestGrants} />
     </Flex>
   );
 }
