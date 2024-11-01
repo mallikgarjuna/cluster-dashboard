@@ -7,6 +7,7 @@ import { getServerSession } from "next-auth";
 import dynamic from "next/dynamic";
 import authOptions from "../auth/authOptions";
 import DashboardActions from "./_ui/DashboardActions";
+import FundingAwardedPerYearChart from "./_ui/FundingAwardedPerYearChart";
 import GrantChart from "./_ui/GrantChart";
 import GrantsSubmittedPerYearChart from "./_ui/GrantsSubmittedPerYearChart";
 import GrantSummary from "./_ui/GrantSummary";
@@ -413,7 +414,10 @@ export default async function DashboardPage({ searchParams }: Props) {
         </Flex>
         <LatestGrants latestGrants={latestGrants} />
       </Grid>
-      <GrantsSubmittedPerYearChart perYearData={grantsCountPerYearData} />
+      <Grid columns={{ initial: "1", md: "3" }} gap="5">
+        <GrantsSubmittedPerYearChart perYearData={grantsCountPerYearData} />
+        <FundingAwardedPerYearChart perYearData={grantsCountPerYearData} />
+      </Grid>
       {/* <PIGrantsTable grantsCountOfPIData={grantsCountOfPIData} /> */}
       <DynamicPIGrantsTable />
       <DynamicPIFundersTable />

@@ -21,25 +21,20 @@ interface Props {
   }[];
 }
 
-const GrantsSubmittedPerYearChart = ({ perYearData }: Props) => {
+const FundingAwardedPerYearChart = ({ perYearData }: Props) => {
   return (
     <Card>
-      <CardHeader>Number of Grants Submitted/Awarded per Year</CardHeader>
+      <CardHeader>Total Funding Awarded per Year</CardHeader>
       <CardBody>
         <ResponsiveContainer width="100%" height={300}>
           <LineChart data={perYearData}>
             <XAxis dataKey="year" padding={{ left: 20, right: 20 }} />
-            <YAxis />
+            <YAxis yAxisId="right" orientation="right" />
             <Line
-              dataKey="submitted"
+              yAxisId="right"
+              dataKey="totalFundingAwarded"
               type="monotone"
-              stroke="blue"
-              activeDot={{ r: 10 }}
-            />
-            <Line
-              dataKey="awarded"
-              type="monotone"
-              stroke="green"
+              stroke="orange"
               activeDot={{ r: 10 }}
             />
             <CartesianGrid strokeDasharray="3 3" />
@@ -52,4 +47,4 @@ const GrantsSubmittedPerYearChart = ({ perYearData }: Props) => {
   );
 };
 
-export default GrantsSubmittedPerYearChart;
+export default FundingAwardedPerYearChart;
