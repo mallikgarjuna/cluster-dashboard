@@ -1,15 +1,15 @@
 import { StatusGrant } from "@prisma/client";
 import { Card, Flex, Text } from "@radix-ui/themes";
-import Link from "next/link";
-import React from "react";
-import { GrantQuery } from "../grants/list/GrantTable";
 import classNames from "classnames";
+import Link from "next/link";
+import { GrantQuery } from "../grants/list/GrantTable";
 
 interface Props {
   awaiting: number;
   submitted: number;
   awarded: number;
   rejected: number;
+  funding: number;
   searchParams: GrantQuery;
 }
 
@@ -18,6 +18,7 @@ const GrantSummary = ({
   submitted,
   awarded,
   rejected,
+  funding,
   searchParams,
 }: Props) => {
   const containers: {
@@ -49,6 +50,12 @@ const GrantSummary = ({
       value: rejected,
       status: "REJECTED",
       isClickable: true,
+    },
+    {
+      label: "Total Funding Awarded",
+      value: funding,
+      status: "AWARDED",
+      isClickable: false,
     },
   ];
 

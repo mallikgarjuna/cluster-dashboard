@@ -264,6 +264,12 @@ export default async function DashboardPage({ searchParams }: Props) {
     });
   };
   const awardedTotal = await getAwardedCountForUser(filters.groupLeader);
+  const fundingTotalAwarded = (
+    await getAwardedGrantsForUser(filters.groupLeader)
+  ).reduce(
+    (accumulator, grant) => accumulator + (grant.budgetAssignedToPI ?? 0),
+    0,
+  );
 
   const getRejectedCountForUser = async (userId?: string) => {
     const filterUserId = userId ? [{ assignedToUser: { id: userId } }] : [{}];
@@ -385,6 +391,7 @@ export default async function DashboardPage({ searchParams }: Props) {
             submitted={submittedTotal}
             awarded={awardedTotal}
             rejected={rejectedTotal}
+            funding={fundingTotalAwarded}
             searchParams={searchParams}
           />
           <GrantChart
