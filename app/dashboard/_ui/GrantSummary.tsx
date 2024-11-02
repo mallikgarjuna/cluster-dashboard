@@ -12,7 +12,9 @@ interface Props {
   submitted: number;
   awarded: number;
   rejected: number;
+  successRate: number;
   funding: number;
+  fundingAppliedFor: number;
   searchParams: GrantQuery;
 }
 
@@ -21,7 +23,9 @@ const GrantSummary = ({
   submitted,
   awarded,
   rejected,
+  successRate,
   funding,
+  fundingAppliedFor,
   searchParams,
 }: Props) => {
   const containers: {
@@ -55,7 +59,19 @@ const GrantSummary = ({
       isClickable: true,
     },
     {
-      label: "Total Funding Awarded (€)",
+      label: "Success Rate (%)",
+      value: successRate,
+      status: "AWARDED",
+      isClickable: true,
+    },
+    {
+      label: "Funding Applied For (€)",
+      value: fundingAppliedFor,
+      status: "SUBMITTED",
+      isClickable: true,
+    },
+    {
+      label: "Funding Awarded (€)",
       value: funding,
       status: "AWARDED",
       isClickable: false,

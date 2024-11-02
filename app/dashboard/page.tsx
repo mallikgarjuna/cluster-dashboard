@@ -103,15 +103,19 @@ export default async function DashboardPage({ searchParams }: Props) {
 
   // Prisma queries
   const getSubmittedGrantsForUser = async (userId?: string) => {
+    const filterUserIdParam = userId
+      ? [{ assignedToUser: { id: userId } }]
+      : [{}];
+
     return await prisma.grant.findMany({
       where: {
         AND: [
           ...isGroupLeader,
           ...filterGroupLeader,
-          ...(userId ? [{ assignedToUser: { id: userId } }] : [{}]),
           ...filterDepartment,
           ...filterStartYear,
           ...filterSubmitYear,
+          ...filterUserIdParam,
         ],
         OR: [
           { status: "SUBMITTED" },
@@ -170,6 +174,13 @@ export default async function DashboardPage({ searchParams }: Props) {
     filters.submitYear,
   );
   // console.log("submittedTotal: ", submittedTotal);
+
+  const fundingTotalAppliedFor = (
+    await getSubmittedGrantsForUser(filters.groupLeader)
+  ).reduce(
+    (accumulator, grant) => accumulator + (grant.budgetAssignedToPI ?? 0),
+    0,
+  );
 
   const getAwaitingCountForUser = async (userId?: string) => {
     const filterUserIdParam = userId
@@ -299,6 +310,10 @@ export default async function DashboardPage({ searchParams }: Props) {
   };
   const rejectedTotal = await getRejectedCountForUser(filters.groupLeader);
 
+  const successRate = Number(
+    ((awardedTotal / (submittedTotal - awaitingTotal)) * 100).toFixed(2),
+  );
+
   const getLatestGrantsForUser = async (userId?: string) => {
     const filterUserIdParam = userId
       ? [{ assignedToUser: { id: userId } }]
@@ -400,7 +415,9 @@ export default async function DashboardPage({ searchParams }: Props) {
         submitted={submittedTotal}
         awarded={awardedTotal}
         rejected={rejectedTotal}
+        successRate={successRate}
         funding={fundingTotalAwarded}
+        fundingAppliedFor={fundingTotalAppliedFor}
         searchParams={searchParams}
       />
       <Grid columns={{ initial: "1", md: "3" }} gap="5">
