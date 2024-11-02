@@ -24,7 +24,9 @@ interface Props {
 const FundingAwardedPerYearChart = ({ perYearData }: Props) => {
   return (
     <Card>
-      <CardHeader>Total Funding Awarded per Year</CardHeader>
+      <CardHeader>
+        <p className="font-bold">Total Funding Awarded (€) per Year</p>
+      </CardHeader>
       <CardBody>
         <ResponsiveContainer width="100%" height={300}>
           <LineChart data={perYearData}>

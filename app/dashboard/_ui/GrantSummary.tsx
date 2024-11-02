@@ -1,5 +1,8 @@
+"use client";
+
+import { Card, CardBody, CardHeader } from "@nextui-org/react";
 import { StatusGrant } from "@prisma/client";
-import { Card, Flex, Text } from "@radix-ui/themes";
+import { Flex, Text } from "@radix-ui/themes";
 import classNames from "classnames";
 import Link from "next/link";
 import { GrantQuery } from "../grants/list/GrantTable";
@@ -40,7 +43,7 @@ const GrantSummary = ({
       isClickable: true,
     },
     {
-      label: "Total Awarded Grants",
+      label: "Awarded Grants",
       value: awarded,
       status: "AWARDED",
       isClickable: false,
@@ -52,7 +55,7 @@ const GrantSummary = ({
       isClickable: true,
     },
     {
-      label: "Total Funding Awarded",
+      label: "Total Funding Awarded (€)",
       value: funding,
       status: "AWARDED",
       isClickable: false,
@@ -60,36 +63,43 @@ const GrantSummary = ({
   ];
 
   return (
-    <Flex gap="4" justify="between">
-      {containers.map((container) => (
-        <Card
-          key={container.label}
-          className={classNames({ "hover:bg-zinc-200": container.isClickable })}
-        >
-          <Flex direction="column" gap="1">
-            <Link
-              className={classNames({
-                "text-sm font-medium": true,
-                "pointer-events-none": !container.isClickable,
-              })}
-              // href={`/dashboard/grants/list?status=${container.status}`} // TODO: add appropriate query params
-              href={{
-                pathname: "/dashboard/grants/list",
-                query: {
-                  ...searchParams,
-                  status: container.status,
-                },
-              }}
-            >
-              {container.label}
-            </Link>
-            <Text size="5" className="font-bold">
-              {container.value}
-            </Text>
-          </Flex>
-        </Card>
-      ))}
-    </Flex>
+    <Card>
+      <Flex gap="4" justify="between">
+        {containers.map((container) => (
+          <Card
+            key={container.label}
+            className={classNames({
+              "my-1 bg-zinc-50": true,
+              "hover:bg-zinc-400": container.isClickable,
+            })}
+          >
+            <CardHeader>
+              <Link
+                className={classNames({
+                  "text-sm font-medium": true,
+                  "pointer-events-none": !container.isClickable,
+                })}
+                // href={`/dashboard/grants/list?status=${container.status}`} // TODO: add appropriate query params
+                href={{
+                  pathname: "/dashboard/grants/list",
+                  query: {
+                    ...searchParams,
+                    status: container.status,
+                  },
+                }}
+              >
+                {container.label}
+              </Link>
+            </CardHeader>
+            <CardBody className="py-0">
+              <Text size="5" className="font-bold">
+                {container.value}
+              </Text>
+            </CardBody>
+          </Card>
+        ))}
+      </Flex>
+    </Card>
   );
 };
 
