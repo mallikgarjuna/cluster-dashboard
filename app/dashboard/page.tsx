@@ -1,4 +1,4 @@
-import { fetchUniqueGrantSubmitYears } from "@/lib/actions/grant/queries";
+import { fetchUniqueGrantYearsSA } from "@/lib/actions/grant/queries";
 import prisma from "@/prisma/client";
 import { OSDepartmentShortName } from "@prisma/client";
 import { Flex, Grid } from "@radix-ui/themes";
@@ -51,7 +51,7 @@ export default async function DashboardPage({ searchParams }: Props) {
 
   const startYear = searchParams.year == "All" ? undefined : searchParams.year;
 
-  const uniqueGrantSubmissionYears = await fetchUniqueGrantSubmitYears();
+  const uniqueGrantSubmissionYears = await fetchUniqueGrantYearsSA();
   // console.log("uniqueGrantSubmissionYears: ", uniqueGrantSubmissionYears);
 
   // Filters
