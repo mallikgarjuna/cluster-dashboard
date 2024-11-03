@@ -22,7 +22,10 @@ const LatestGrants = ({ latestGrants }: Props) => {
         <Table.Root>
           <Table.Body>
             {latestGrants.map((grant) => (
-              <Table.Row key={grant.id}>
+              <Table.Row
+                key={grant.id}
+                className="transition-colors hover:bg-gray-200"
+              >
                 <Table.Cell>
                   <Flex justify="between">
                     <Flex direction="column" gap="2" align="start">

@@ -55,7 +55,11 @@ const PIFundersTable = () => {
   );
 
   const BorderedRow = (props: any) => (
-    <Table.Row {...props} style={{ borderBottom: "1px solid #e5e5e5" }} />
+    <Table.Row
+      {...props}
+      style={{ borderBottom: "1px solid #e5e5e5" }}
+      className="transition-colors hover:bg-gray-200"
+    />
   );
 
   const fAgencyCellContent = (fAgency: FundingAgencyWithAllRelatedTypes) => {
