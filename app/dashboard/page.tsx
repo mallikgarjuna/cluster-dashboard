@@ -338,25 +338,50 @@ export default async function DashboardPage({ searchParams }: Props) {
   const latestGrants = await getLatestGrantsForUser(filters.groupLeader);
 
   // per year grant count data for GrantsSubmittedPerYearChart
-  const grantsCountPerYearData = await Promise.all(
-    uniqueGrantSubmissionYears.map(async (year) => ({
+  const grantsCountPerYearData = [];
+  for (const year of uniqueGrantSubmissionYears) {
+    const submitted = await getSubmittedCountForUser(
+      filters.groupLeader,
+      year?.toString(),
+    );
+    const awarded = await getAwardedCountForUser(
+      filters.groupLeader,
+      year?.toString(),
+    );
+    const totalFundingAwarded = (
+      await getAwardedGrantsForUser(filters.groupLeader, year?.toString())
+    ).reduce(
+      (accumulator, grant) => accumulator + (grant.budgetAssignedToPI ?? 0),
+      0,
+    );
+
+    grantsCountPerYearData.push({
       year: year,
-      submitted: await getSubmittedCountForUser(
-        filters.groupLeader,
-        year?.toString(),
-      ),
-      awarded: await getAwardedCountForUser(
-        filters.groupLeader,
-        year?.toString(),
-      ),
-      totalFundingAwarded: (
-        await getAwardedGrantsForUser(filters.groupLeader, year?.toString())
-      ).reduce(
-        (accumulator, grant) => accumulator + (grant.budgetAssignedToPI ?? 0),
-        0,
-      ),
-    })),
-  );
+      submitted: submitted,
+      awarded: awarded,
+      totalFundingAwarded: totalFundingAwarded,
+    });
+  }
+
+  // const grantsCountPerYearData = await Promise.all(
+  //   uniqueGrantSubmissionYears.map(async (year) => ({
+  //     year: year,
+  //     submitted: await getSubmittedCountForUser(
+  //       filters.groupLeader,
+  //       year?.toString(),
+  //     ),
+  //     awarded: await getAwardedCountForUser(
+  //       filters.groupLeader,
+  //       year?.toString(),
+  //     ),
+  //     totalFundingAwarded: (
+  //       await getAwardedGrantsForUser(filters.groupLeader, year?.toString())
+  //     ).reduce(
+  //       (accumulator, grant) => accumulator + (grant.budgetAssignedToPI ?? 0),
+  //       0,
+  //     ),
+  //   })),
+  // );
   // console.log("grantsSubmittedPerYearData: ", grantsSubmittedPerYearData);
 
   // // Get all group leaders - for grantsCountOfPIData for PIGrantsTable
