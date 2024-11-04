@@ -1,46 +1,49 @@
-import React from "react";
-import prisma from "@/prisma/client";
-import { Button, Card, Flex, Heading, Table } from "@radix-ui/themes";
+"use client";
+
 import { GrantStatusBadge } from "@/app/components";
-import Link from "next/link";
-import { getServerSession } from "next-auth";
-import authOptions from "@/app/auth/authOptions";
-import { Grant } from "@prisma/client";
 import { GrantWithUser } from "@/prisma/customTypes";
+import { Card, CardBody, CardHeader } from "@nextui-org/react";
+import { Button, Flex, Table } from "@radix-ui/themes";
+import Link from "next/link";
 
 interface Props {
   latestGrants: GrantWithUser[];
 }
 
-const LatestGrants = async ({ latestGrants }: Props) => {
-  const session = await getServerSession(authOptions);
+const LatestGrants = ({ latestGrants }: Props) => {
+  // const session = await getServerSession(authOptions);
 
   return (
     <Card>
-      <Heading size="4" mb="3">
-        Latest Grants
-      </Heading>
-      <Table.Root>
-        <Table.Body>
-          {latestGrants.map((grant) => (
-            <Table.Row key={grant.id}>
-              <Table.Cell>
-                <Flex justify="between">
-                  <Flex direction="column" gap="2" align="start">
-                    <Link href={`/dashboard/grants/${grant.id}`}>
-                      {grant.title}
-                    </Link>
-                    <GrantStatusBadge status={grant.status} />
+      <CardHeader className="pb-0">
+        <h1 className="text-3xl font-bold">Latest Grants</h1>
+      </CardHeader>
+      <CardBody>
+        <Table.Root>
+          <Table.Body>
+            {latestGrants.map((grant) => (
+              <Table.Row
+                key={grant.id}
+                className="transition-colors hover:bg-gray-200"
+              >
+                <Table.Cell>
+                  <Flex justify="between">
+                    <Flex direction="column" gap="2" align="start">
+                      <Link href={`/dashboard/grants/${grant.id}`}>
+                        {grant.title}
+                      </Link>
+                      <GrantStatusBadge status={grant.status} />
+                    </Flex>
+                    {grant.assignedToUser && (
+                      <Button>{grant.assignedToUser?.email}</Button>
+                    )}
                   </Flex>
-                  {grant.assignedToUser && (
-                    <Button>{grant.assignedToUser?.email}</Button>
-                  )}
-                </Flex>
-              </Table.Cell>
-            </Table.Row>
-          ))}
-        </Table.Body>
-      </Table.Root>
+                </Table.Cell>
+              </Table.Row>
+            ))}
+          </Table.Body>
+        </Table.Root>
+      </CardBody>
     </Card>
   );
 };

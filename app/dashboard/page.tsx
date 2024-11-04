@@ -1,18 +1,19 @@
+import { fetchUniqueGrantYearsSA } from "@/lib/actions/grant/queries";
 import prisma from "@/prisma/client";
+import { OSDepartmentShortName } from "@prisma/client";
 import { Flex, Grid } from "@radix-ui/themes";
 import { Metadata } from "next";
-import GrantChart from "./_ui/GrantChart";
-import GrantSummary from "./_ui/GrantSummary";
-import LatestGrants from "./_ui/LatestGrants";
 import { getServerSession } from "next-auth";
+import dynamic from "next/dynamic";
 import authOptions from "../auth/authOptions";
 import DashboardActions from "./_ui/DashboardActions";
-import { GrantQuery } from "./grants/list/GrantTable";
-import { OSDepartmentShortName } from "@prisma/client";
-import dynamic from "next/dynamic";
+import FundingAwardedPerYearChart from "./_ui/FundingAwardedPerYearChart";
+import GrantChart from "./_ui/GrantChart";
+import GrantsSubmittedPerYearChart from "./_ui/GrantsSubmittedPerYearChart";
+import GrantSummary from "./_ui/GrantSummary";
+import LatestGrants from "./_ui/LatestGrants";
 import PIGrantTableSkeleton from "./_ui/PIGrantTableSkeleton";
-import FundersTable from "./funders/_components/FundersTable";
-import { Suspense } from "react";
+import { GrantQuery } from "./grants/list/GrantTable";
 // import PIGrantsTable from "./_ui/PIGrantsTable";
 const DynamicPIGrantsTable = dynamic(
   () => import("@/app/dashboard/_ui/PIGrantsTable"),
@@ -48,13 +49,16 @@ export default async function DashboardPage({ searchParams }: Props) {
   const groupLeader =
     searchParams.groupLeader === "All" ? undefined : searchParams.groupLeader;
 
-  const year = searchParams.year == "All" ? undefined : searchParams.year;
+  const startYear = searchParams.year == "All" ? undefined : searchParams.year;
+
+  const uniqueGrantSubmissionYears = await fetchUniqueGrantYearsSA();
+  // console.log("uniqueGrantSubmissionYears: ", uniqueGrantSubmissionYears);
 
   // Filters
   const filters = {
     department: department,
     groupLeader: groupLeader,
-    year: year,
+    startYear: startYear,
     submitYear: searchParams.submitYear,
   };
 
@@ -73,14 +77,14 @@ export default async function DashboardPage({ searchParams }: Props) {
     ? [{ assignedToUser: { id: filters.groupLeader } }]
     : [{}];
 
-  const filterYear = filters.year
-    ? filters.year === "AllStarted"
+  const filterStartYear = filters.startYear
+    ? filters.startYear === "AllStarted"
       ? [{ projectStartDate: { not: null } }]
       : [
           {
             projectStartDate: {
-              gte: new Date(`${parseInt(filters.year)}-01-01`),
-              lt: new Date(`${parseInt(filters.year) + 1}-01-01`),
+              gte: new Date(`${parseInt(filters.startYear)}-01-01`),
+              lt: new Date(`${parseInt(filters.startYear) + 1}-01-01`),
             },
           },
         ]
@@ -99,16 +103,19 @@ export default async function DashboardPage({ searchParams }: Props) {
 
   // Prisma queries
   const getSubmittedGrantsForUser = async (userId?: string) => {
+    const filterUserIdParam = userId
+      ? [{ assignedToUser: { id: userId } }]
+      : [{}];
+
     return await prisma.grant.findMany({
       where: {
         AND: [
           ...isGroupLeader,
-          // ...filterGroupLeader,
-          // { assignedToUser: { id: userId } },
-          ...(userId ? [{ assignedToUser: { id: userId } }] : [{}]),
+          ...filterGroupLeader,
           ...filterDepartment,
-          ...filterYear,
+          ...filterStartYear,
           ...filterSubmitYear,
+          ...filterUserIdParam,
         ],
         OR: [
           { status: "SUBMITTED" },
@@ -122,17 +129,35 @@ export default async function DashboardPage({ searchParams }: Props) {
   };
   // const submittedTotal = (await getSubmittedGrantsForUser(filters.groupLeader))
   //   .length;
-  const getSubmittedCountForUser = async (userId?: string) => {
+  const getSubmittedCountForUser = async (
+    userId?: string,
+    submitYear?: string,
+  ) => {
+    const filterUserIdParam = userId
+      ? [{ assignedToUser: { id: userId } }]
+      : [{}];
+
+    const filterSubmitYearParam = submitYear
+      ? [
+          {
+            submissionDate: {
+              gte: new Date(`${parseInt(submitYear)}-01-01`),
+              lt: new Date(`${parseInt(submitYear) + 1}-01-01`),
+            },
+          },
+        ]
+      : [{}];
+
     return await prisma.grant.count({
       where: {
         AND: [
           ...isGroupLeader,
-          // ...filterGroupLeader,
-          // { assignedToUser: { id: userId } },
-          ...(userId ? [{ assignedToUser: { id: userId } }] : [{}]),
+          ...filterGroupLeader,
           ...filterDepartment,
-          ...filterYear,
+          ...filterStartYear,
           ...filterSubmitYear,
+          ...filterUserIdParam,
+          ...filterSubmitYearParam,
         ],
         OR: [
           { status: "SUBMITTED" },
@@ -144,19 +169,33 @@ export default async function DashboardPage({ searchParams }: Props) {
       },
     });
   };
-  const submittedTotal = await getSubmittedCountForUser(filters.groupLeader);
+  const submittedTotal = await getSubmittedCountForUser(
+    filters.groupLeader,
+    filters.submitYear,
+  );
   // console.log("submittedTotal: ", submittedTotal);
 
+  const fundingTotalAppliedFor = (
+    await getSubmittedGrantsForUser(filters.groupLeader)
+  ).reduce(
+    (accumulator, grant) => accumulator + (grant.budgetAssignedToPI ?? 0),
+    0,
+  );
+
   const getAwaitingCountForUser = async (userId?: string) => {
+    const filterUserIdParam = userId
+      ? [{ assignedToUser: { id: userId } }]
+      : [{}];
+
     return await prisma.grant.count({
       where: {
         AND: [
           ...isGroupLeader,
-          // ...filterGroupLeader,
-          ...(userId ? [{ assignedToUser: { id: userId } }] : [{}]),
+          ...filterGroupLeader,
           ...filterDepartment,
-          ...filterYear,
+          ...filterStartYear,
           ...filterSubmitYear,
+          ...filterUserIdParam,
         ],
         OR: [{ status: "SUBMITTED" }],
       },
@@ -164,16 +203,36 @@ export default async function DashboardPage({ searchParams }: Props) {
   };
   const awaitingTotal = await getAwaitingCountForUser(filters.groupLeader);
 
-  const getAwardedGrantsForUser = async (userId?: string) => {
+  const getAwardedGrantsForUser = async (
+    userId?: string,
+    startYear?: string,
+  ) => {
+    const filterUserIdParam = userId
+      ? [{ assignedToUser: { id: userId } }]
+      : [{}];
+
+    // This func param filter is different from filterStartYear searchparam filter;
+    const filterStartYearParam = startYear
+      ? [
+          {
+            projectStartDate: {
+              gte: new Date(`${parseInt(startYear)}-01-01`),
+              lt: new Date(`${parseInt(startYear) + 1}-01-01`),
+            },
+          },
+        ]
+      : [{}];
+
     return await prisma.grant.findMany({
       where: {
         AND: [
           ...isGroupLeader,
-          // ...filterGroupLeader,
-          ...(userId ? [{ assignedToUser: { id: userId } }] : [{}]),
+          ...filterGroupLeader,
           ...filterDepartment,
-          ...filterYear,
+          ...filterStartYear,
           ...filterSubmitYear,
+          ...filterUserIdParam,
+          ...filterStartYearParam,
         ],
         OR: [
           { status: "AWARDED" },
@@ -183,16 +242,36 @@ export default async function DashboardPage({ searchParams }: Props) {
       },
     });
   };
-  const getAwardedCountForUser = async (userId?: string) => {
+  const getAwardedCountForUser = async (
+    userId?: string,
+    startYear?: string,
+  ) => {
+    const filterUserIdParam = userId
+      ? [{ assignedToUser: { id: userId } }]
+      : [{}];
+
+    // Is different from filterStartYear;
+    const filterStartYearParam = startYear
+      ? [
+          {
+            projectStartDate: {
+              gte: new Date(`${parseInt(startYear)}-01-01`),
+              lt: new Date(`${parseInt(startYear) + 1}-01-01`),
+            },
+          },
+        ]
+      : [{}];
+
     return await prisma.grant.count({
       where: {
         AND: [
           ...isGroupLeader,
-          // ...filterGroupLeader,
-          ...(userId ? [{ assignedToUser: { id: userId } }] : [{}]),
+          ...filterGroupLeader,
           ...filterDepartment,
-          ...filterYear,
+          ...filterStartYear,
           ...filterSubmitYear,
+          ...filterUserIdParam,
+          ...filterStartYearParam,
         ],
         OR: [
           { status: "AWARDED" },
@@ -203,17 +282,27 @@ export default async function DashboardPage({ searchParams }: Props) {
     });
   };
   const awardedTotal = await getAwardedCountForUser(filters.groupLeader);
+  const fundingTotalAwarded = (
+    await getAwardedGrantsForUser(filters.groupLeader)
+  ).reduce(
+    (accumulator, grant) => accumulator + (grant.budgetAssignedToPI ?? 0),
+    0,
+  );
 
   const getRejectedCountForUser = async (userId?: string) => {
+    const filterUserIdParam = userId
+      ? [{ assignedToUser: { id: userId } }]
+      : [{}];
+
     return await prisma.grant.count({
       where: {
         AND: [
           ...isGroupLeader,
-          // ...filterGroupLeader,
-          ...(userId ? [{ assignedToUser: { id: userId } }] : [{}]),
+          ...filterGroupLeader,
           ...filterDepartment,
-          ...filterYear,
+          ...filterStartYear,
           ...filterSubmitYear,
+          ...filterUserIdParam,
         ],
         OR: [{ status: "REJECTED" }],
       },
@@ -221,16 +310,24 @@ export default async function DashboardPage({ searchParams }: Props) {
   };
   const rejectedTotal = await getRejectedCountForUser(filters.groupLeader);
 
+  const successRate = Number(
+    ((awardedTotal / (submittedTotal - awaitingTotal)) * 100).toFixed(2),
+  );
+
   const getLatestGrantsForUser = async (userId?: string) => {
+    const filterUserIdParam = userId
+      ? [{ assignedToUser: { id: userId } }]
+      : [{}];
+
     return await prisma.grant.findMany({
       where: {
         AND: [
           ...isGroupLeader,
-          // ...filterGroupLeader,
-          ...(userId ? [{ assignedToUser: { id: userId } }] : [{}]),
+          ...filterGroupLeader,
           ...filterDepartment,
-          ...filterYear,
+          ...filterStartYear,
           ...filterSubmitYear,
+          ...filterUserIdParam,
         ],
       },
       orderBy: { createdAt: "desc" },
@@ -239,6 +336,28 @@ export default async function DashboardPage({ searchParams }: Props) {
     });
   };
   const latestGrants = await getLatestGrantsForUser(filters.groupLeader);
+
+  // per year grant count data for GrantsSubmittedPerYearChart
+  const grantsCountPerYearData = await Promise.all(
+    uniqueGrantSubmissionYears.map(async (year) => ({
+      year: year,
+      submitted: await getSubmittedCountForUser(
+        filters.groupLeader,
+        year?.toString(),
+      ),
+      awarded: await getAwardedCountForUser(
+        filters.groupLeader,
+        year?.toString(),
+      ),
+      totalFundingAwarded: (
+        await getAwardedGrantsForUser(filters.groupLeader, year?.toString())
+      ).reduce(
+        (accumulator, grant) => accumulator + (grant.budgetAssignedToPI ?? 0),
+        0,
+      ),
+    })),
+  );
+  // console.log("grantsSubmittedPerYearData: ", grantsSubmittedPerYearData);
 
   // // Get all group leaders - for grantsCountOfPIData for PIGrantsTable
   // const groupLeaders = await prisma.user.findMany({
@@ -291,27 +410,29 @@ export default async function DashboardPage({ searchParams }: Props) {
   return (
     <Flex direction="column" gap="5" className="mb-32">
       <DashboardActions />
-      <Grid columns={{ initial: "1", md: "2" }} gap="5">
-        <Flex direction="column" gap="5">
-          <GrantSummary
-            awaiting={awaitingTotal}
-            submitted={submittedTotal}
-            awarded={awardedTotal}
-            rejected={rejectedTotal}
-            searchParams={searchParams}
-          />
-          <GrantChart
-            awaiting={awaitingTotal}
-            submitted={submittedTotal}
-            awarded={awardedTotal}
-            rejected={rejectedTotal}
-          />
-        </Flex>
-        <LatestGrants latestGrants={latestGrants} />
+      <GrantSummary
+        awaiting={awaitingTotal}
+        submitted={submittedTotal}
+        awarded={awardedTotal}
+        rejected={rejectedTotal}
+        successRate={successRate}
+        funding={fundingTotalAwarded}
+        fundingAppliedFor={fundingTotalAppliedFor}
+        searchParams={searchParams}
+      />
+      <Grid columns={{ initial: "1", md: "3" }} gap="5">
+        <GrantChart
+          awaiting={awaitingTotal}
+          submitted={submittedTotal}
+          awarded={awardedTotal}
+          rejected={rejectedTotal}
+        />
+        <GrantsSubmittedPerYearChart perYearData={grantsCountPerYearData} />
+        <FundingAwardedPerYearChart perYearData={grantsCountPerYearData} />
       </Grid>
-      {/* <PIGrantsTable grantsCountOfPIData={grantsCountOfPIData} /> */}
       <DynamicPIGrantsTable />
       <DynamicPIFundersTable />
+      <LatestGrants latestGrants={latestGrants} />
     </Flex>
   );
 }

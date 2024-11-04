@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "@/app/components/Link";
-import { Table } from "@radix-ui/themes";
+import { Card, CardBody, CardHeader } from "@nextui-org/react";
 import { OSDepartmentShortName } from "@prisma/client";
+import { Table } from "@radix-ui/themes";
 import { useSession } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
@@ -10,9 +11,9 @@ import PIGrantTableSkeleton from "./PIGrantTableSkeleton";
 
 // type APIResponseData = {
 type RowData = {
-  piID: string;
-  piDepartment: string; //OSDepartmentShortName | "Unknown";
-  pi: string | null;
+  piID?: string;
+  piDepartment?: string; //OSDepartmentShortName | "Unknown";
+  pi?: string | null;
   submitted: number;
   awaiting: number;
   awarded: number;
@@ -155,99 +156,131 @@ const PIGrantsTable = () => {
     return <>No data available for departments.</>;
   }
 
+  // departmentTotalRowData is an array of objects with the following properties:
+  const departmentTotalRowData: RowData[] = departments.map((dept) => {
+    const totalRowData: { [key: string]: number }[] = columns
+      .slice(1)
+      .map((column) => {
+        return {
+          [column.key]: rows
+            .filter((row) => row.piDepartment === dept)
+            .reduce((acc, row) => {
+              const val = row[column.key];
+              return typeof val === "number" ? acc + val : acc;
+            }, 0),
+        };
+      });
+    // console.log("totalRowData: ", totalRowData);
+
+    // Funcion to find a value by key in an array of objects, each with a single key-value pair
+    const findValueByKey = (arr: { [key: string]: any }[], key: string) =>
+      arr.find((obj) => Object.keys(obj).includes(key))?.[key];
+
+    const totalAwarded = findValueByKey(totalRowData, "awarded");
+    const totalSubmitted = findValueByKey(totalRowData, "submitted");
+    const totalAwaiting = findValueByKey(totalRowData, "awaiting");
+
+    const totalSuccessRate =
+      totalAwarded !== undefined &&
+      totalSubmitted !== undefined &&
+      totalAwaiting !== undefined &&
+      totalSubmitted - totalAwaiting > 0
+        ? Number(
+            ((totalAwarded / (totalSubmitted - totalAwaiting)) * 100).toFixed(
+              2,
+            ),
+          )
+        : 0;
+
+    // Ensure all RowData properties are included - otherwise, gives type error
+    return {
+      piDepartment: dept as string,
+      submitted: findValueByKey(totalRowData, "submitted"),
+      awaiting: findValueByKey(totalRowData, "awaiting"),
+      awarded: findValueByKey(totalRowData, "awarded"),
+      rejected: findValueByKey(totalRowData, "rejected"),
+      successRate: totalSuccessRate,
+      budgetAppliedFor: findValueByKey(totalRowData, "budgetAppliedFor"),
+      budgetAwarded: findValueByKey(totalRowData, "budgetAwarded"),
+      // ...Object.fromEntries(totalRowData.map(({ key, val }) => [key, val])),
+      // successRate: totalSuccessRate,
+    };
+  });
+
   return (
     <React.Fragment>
-      <div className="mt-8 flex flex-col gap-5">
-        <h1 className="text-3xl font-bold">{`PI Grants Overview - Tables`}</h1>
-        <em className="text-xs">
-          {" "}
-          * Success Rate % = (# of Awarded) / (# of Submitted - # of Awaiting){" "}
-        </em>
-        {departments.map((dept) => (
-          <div key={dept} className="">
-            <h1 className="text-lg font-bold">{`${dept}:`}</h1>
-            <Table.Root
-              aria-label={`PI Grants Table for ${dept}`}
-              className=""
-              key={dept}
-              variant="surface"
-              size={"1"}
-            >
-              <Table.Header>
-                <Table.Row>
-                  {columns.map((column) => (
-                    <Table.ColumnHeaderCell key={column.key}>
-                      {column.label}
-                    </Table.ColumnHeaderCell>
-                  ))}
-                </Table.Row>
-              </Table.Header>
-              <Table.Body>
-                {rows
-                  .filter((row) => row.piDepartment === dept)
-                  .map((row: RowData) => (
-                    <Table.Row
-                      key={row.piID}
-                      className="transition-colors hover:bg-gray-200"
-                    >
-                      {columns.map((column) => (
-                        <Table.Cell key={column.key}>
-                          {column.key !== "piID" &&
-                            column.key !== "piDepartment" &&
-                            (column.key === "pi" ? (
-                              <Link
-                                href={`/dashboard/grants/list?groupLeader=${row.piID}`}
-                                className="text-blue-600"
-                              >
-                                {row[column.key as keyof RowData]}
-                              </Link>
-                            ) : (
-                              row[column.key as keyof RowData]
-                            ))}
-                        </Table.Cell>
-                      ))}
-                    </Table.Row>
-                  ))}
-                <Table.Row className="bg-gray-300">
-                  <Table.Cell className="font-bold">Total</Table.Cell>
-                  {columns.slice(1).map((column) => (
-                    <Table.Cell key={column.key} className="font-bold">
-                      {column.key === "successRate"
-                        ? (
-                            rows
-                              .filter((row) => row.piDepartment === dept)
-                              .reduce((acc, row) => {
-                                const submitted = row.submitted;
-                                const awaiting = row.awaiting;
-                                return submitted - awaiting > 0
-                                  ? acc +
-                                      (row.awarded / (submitted - awaiting)) *
-                                        100
-                                  : acc;
-                              }, 0) /
-                            rows.filter((row) => row.piDepartment === dept)
-                              .length
-                          )
-                            .toFixed(2)
-                            .toString()
-                        : rows
-                            .filter((row) => row.piDepartment === dept)
-                            .reduce((acc, row) => {
-                              const value = row[column.key as keyof RowData];
-                              if (typeof value === "number") {
-                                return acc + value;
-                              }
-                              return acc;
-                            }, 0)
-                            .toString()}
-                    </Table.Cell>
-                  ))}
-                </Table.Row>
-              </Table.Body>
-            </Table.Root>
-          </div>
-        ))}
-      </div>
+      <Card>
+        <CardHeader className="flex-col items-start pb-0">
+          <h1 className="text-3xl font-bold">{`PI Grants Overview - Tables`}</h1>
+          <p className="text-xs">
+            {" "}
+            * Success Rate % = (# of Awarded) / (# of Submitted - # of Awaiting){" "}
+          </p>
+        </CardHeader>
+        <CardBody className="flex flex-col gap-5">
+          {departments.map((dept) => (
+            <div key={dept} className="">
+              <h1 className="text-lg font-bold">{`${dept}:`}</h1>
+              <Table.Root
+                aria-label={`PI Grants Table for ${dept}`}
+                className=""
+                key={dept}
+                variant="surface"
+                size={"1"}
+              >
+                <Table.Header>
+                  <Table.Row>
+                    {columns.map((column) => (
+                      <Table.ColumnHeaderCell key={column.key}>
+                        {column.label}
+                      </Table.ColumnHeaderCell>
+                    ))}
+                  </Table.Row>
+                </Table.Header>
+                <Table.Body>
+                  {rows
+                    .filter((row) => row.piDepartment === dept)
+                    .map((row: RowData) => (
+                      <Table.Row
+                        key={row.piID}
+                        className="transition-colors hover:bg-gray-200"
+                      >
+                        {columns.map((column) => (
+                          <Table.Cell key={column.key}>
+                            {column.key !== "piID" &&
+                              column.key !== "piDepartment" &&
+                              (column.key === "pi" ? (
+                                <Link
+                                  href={`/dashboard/grants/list?groupLeader=${row.piID}`}
+                                  className="text-blue-600"
+                                >
+                                  {row[column.key as keyof RowData]}
+                                </Link>
+                              ) : (
+                                row[column.key as keyof RowData]
+                              ))}
+                          </Table.Cell>
+                        ))}
+                      </Table.Row>
+                    ))}
+                  <Table.Row className="bg-gray-300">
+                    <Table.Cell className="font-bold">Total</Table.Cell>
+                    {columns.slice(1).map((column) => (
+                      <Table.Cell key={column.key} className="font-bold">
+                        {
+                          departmentTotalRowData.find(
+                            (row) => row.piDepartment === dept,
+                          )?.[column.key]
+                        }
+                      </Table.Cell>
+                    ))}
+                  </Table.Row>
+                </Table.Body>
+              </Table.Root>
+            </div>
+          ))}
+        </CardBody>
+      </Card>
     </React.Fragment>
   );
 };
