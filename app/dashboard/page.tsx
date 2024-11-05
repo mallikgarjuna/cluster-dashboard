@@ -340,14 +340,16 @@ export default async function DashboardPage({ searchParams }: Props) {
   // per year grant count data for GrantsSubmittedPerYearChart
   const grantsCountPerYearData = [];
   for (const year of uniqueGrantSubmissionYears) {
-    const submitted = await getSubmittedCountForUser(
-      filters.groupLeader,
-      year?.toString(),
-    );
-    const awarded = await getAwardedCountForUser(
-      filters.groupLeader,
-      year?.toString(),
-    );
+    const submitted = 0;
+    // const submitted = await getSubmittedCountForUser(
+    //   filters.groupLeader,
+    //   year?.toString(),
+    // );
+    const awarded = 0;
+    // const awarded = await getAwardedCountForUser(
+    //   filters.groupLeader,
+    //   year?.toString(),
+    // );
     const totalFundingAwarded = 0;
     // const totalFundingAwarded = (
     //   await getAwardedGrantsForUser(filters.groupLeader, year?.toString())
