@@ -4,47 +4,51 @@
 // Without a defined matcher, this one line applies next-auth to the entire project
 // export { default } from "next-auth/middleware";
 
-// to implement role based authorization, use withAuth
-// Ref: https://next-auth.js.org/configuration/nextjs#advanced-usage
-import { NextRequestWithAuth, withAuth } from "next-auth/middleware";
-import { NextRequest, NextResponse } from "next/server";
+import { auth } from "./lib/auth";
 
-export default withAuth(
-  // `withAuth` augments your `Request` with the user's token.
-  function middleware(request: NextRequestWithAuth) {
-    if (
-      request.nextUrl.pathname.startsWith("/admin") &&
-      request.nextauth.token?.user.role !== "ADMIN"
-    ) {
-      return NextResponse.rewrite(new URL("/denied", request.url));
-    }
+export default auth;
 
-    if (
-      request.nextUrl.pathname.startsWith("/dashboard") &&
-      request.nextauth.token?.user.role !== "USER" &&
-      request.nextauth.token?.user.role !== "GROUPLEADER" &&
-      request.nextauth.token?.user.role !== "ADMIN"
-    ) {
-      return NextResponse.rewrite(new URL("/denied", request.url));
-    }
+// // to implement role based authorization, use withAuth
+// // Ref: https://next-auth.js.org/configuration/nextjs#advanced-usage
+// import { NextRequestWithAuth, withAuth } from "next-auth/middleware";
+// import { NextRequest, NextResponse } from "next/server";
 
-    if (
-      (request.nextUrl.pathname.startsWith("/dashboard/grants/edit") ||
-        request.nextUrl.pathname.startsWith("/dashboard/grants/new")) &&
-      request.nextauth.token?.user.role !== "ADMIN" &&
-      request.nextauth.token?.user.role !== "GROUPLEADER"
-    ) {
-      return NextResponse.rewrite(new URL("/denied", request.url));
-    }
-  },
-  {
-    callbacks: {
-      authorized: async ({ req, token }) => {
-        return !!token;
-      },
-    },
-  },
-);
+// export default withAuth(
+//   // `withAuth` augments your `Request` with the user's token.
+//   function middleware(request: NextRequestWithAuth) {
+//     if (
+//       request.nextUrl.pathname.startsWith("/admin") &&
+//       request.nextauth.token?.user.role !== "ADMIN"
+//     ) {
+//       return NextResponse.rewrite(new URL("/denied", request.url));
+//     }
+
+//     if (
+//       request.nextUrl.pathname.startsWith("/dashboard") &&
+//       request.nextauth.token?.user.role !== "USER" &&
+//       request.nextauth.token?.user.role !== "GROUPLEADER" &&
+//       request.nextauth.token?.user.role !== "ADMIN"
+//     ) {
+//       return NextResponse.rewrite(new URL("/denied", request.url));
+//     }
+
+//     if (
+//       (request.nextUrl.pathname.startsWith("/dashboard/grants/edit") ||
+//         request.nextUrl.pathname.startsWith("/dashboard/grants/new")) &&
+//       request.nextauth.token?.user.role !== "ADMIN" &&
+//       request.nextauth.token?.user.role !== "GROUPLEADER"
+//     ) {
+//       return NextResponse.rewrite(new URL("/denied", request.url));
+//     }
+//   },
+//   {
+//     callbacks: {
+//       authorized: async ({ req, token }) => {
+//         return !!token;
+//       },
+//     },
+//   },
+// );
 
 // If you only want to secure certain pages, export a config object with a matcher:
 // Runs the middleware for these routes
