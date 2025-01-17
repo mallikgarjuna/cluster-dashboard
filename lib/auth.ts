@@ -34,7 +34,7 @@ const config = {
 
         const isValidPassword = await bcrypt.compare(
           password,
-          user.hashedPassword,
+          user.hashedPassword!, //TODO:
         );
         if (!isValidPassword) {
           console.log("Invalid credentials");
@@ -52,18 +52,34 @@ const config = {
     }),
   ],
   callbacks: {
-    authorized: ({ request }) => {
+    authorized: ({ request, auth }) => {
+      // runs on every request with middleware
+      const isLoggedIn = Boolean(auth?.user);
       const isTryingToAccessDashboard =
         request.nextUrl.pathname.includes("/dashboard");
 
-      if (isTryingToAccessDashboard) {
-        return false;
+      if (!isLoggedIn && isTryingToAccessDashboard) {
+        return false; // redirect to login?? //TODO:
       }
 
-      return true;
+      if (!isLoggedIn && !isTryingToAccessDashboard) {
+        return true;
+      }
+
+      if (isLoggedIn && isTryingToAccessDashboard) {
+        return true;
+      }
+
+      if (isLoggedIn && !isTryingToAccessDashboard) {
+        return true;
+      }
+
+      return false;
     },
   },
-  session: {},
+  session: {
+    strategy: "jwt",
+  },
 } satisfies NextAuthConfig;
 
 export const { auth, signIn } = NextAuth(config);

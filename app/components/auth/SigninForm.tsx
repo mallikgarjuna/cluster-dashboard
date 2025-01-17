@@ -79,10 +79,10 @@ const SigninForm = ({ callbackUrl }: Props) => {
   return (
     <form
       onSubmit={handleSubmit(signinUser)}
-      action={async (formData) => {
-        const result = await trigger();
-        if (!result) return;
-      }}
+      // action={async (formData) => {
+      //   const result = await trigger();
+      //   if (!result) return;
+      // }}
       className="flex min-w-96 flex-col items-center justify-center gap-2 rounded-md border p-2"
     >
       <div className="text-2xl font-bold">Sign in Form</div>
