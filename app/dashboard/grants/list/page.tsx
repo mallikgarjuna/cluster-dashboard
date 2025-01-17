@@ -1,12 +1,11 @@
 // import Link from "next/link";
-import authOptions from "@/app/auth/authOptions";
 import prisma from "@/prisma/client";
 import { OSDepartmentShortName, StatusGrant } from "@prisma/client";
 import { Flex } from "@radix-ui/themes";
 import { Metadata } from "next";
-import { getServerSession } from "next-auth";
 import dynamic from "next/dynamic";
 import { GrantQuery, columnNamesGrant } from "./GrantTable";
+import { checkAuth } from "@/lib/server-utils";
 
 const DynamicGrantActions = dynamic(
   () => import("@/app/dashboard/grants/list/GrantActions"),
@@ -30,7 +29,7 @@ interface Props {
 }
 
 const GrantsPage = async ({ searchParams }: Props) => {
-  const session = await getServerSession(authOptions);
+  const session = await checkAuth();
 
   // console.log("searchParams: ", searchParams);
   // validate the status param

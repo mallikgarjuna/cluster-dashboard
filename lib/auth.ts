@@ -4,11 +4,15 @@ import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import NextAuth, { NextAuthConfig } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import { SigninFormSchema } from "@/app/validationSchemas";
+import { UserWithDepartment } from "@/prisma/customTypes";
 
 const config = {
   adapter: PrismaAdapter(prisma),
   pages: {
     signIn: "/auth/signin",
+  },
+  session: {
+    strategy: "jwt",
   },
   providers: [
     Credentials({
@@ -76,9 +80,21 @@ const config = {
 
       return false;
     },
-  },
-  session: {
-    strategy: "jwt",
+    jwt: async ({ token, user }) => {
+      if (user) {
+        // on sign in
+        token.user = user as UserWithDepartment;
+      }
+
+      return token;
+    },
+    session: async ({ session, token }) => {
+      if (token.user) {
+        session.user = token.user as UserWithDepartment;
+      }
+
+      return session;
+    },
   },
 } satisfies NextAuthConfig;
 
