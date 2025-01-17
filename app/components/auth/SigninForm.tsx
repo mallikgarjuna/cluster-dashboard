@@ -5,6 +5,7 @@ import { loginUser } from "@/lib/actions/authActions";
 import { signIn } from "@/lib/auth";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button, Input } from "@nextui-org/react";
+import { AuthError } from "next-auth";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
@@ -22,6 +23,7 @@ const SigninForm = ({ callbackUrl }: Props) => {
     handleSubmit,
     reset,
     formState: { errors, isSubmitting },
+    trigger,
   } = useForm<SigninFormInputType>({
     resolver: zodResolver(SigninFormSchema),
   });
@@ -29,21 +31,42 @@ const SigninForm = ({ callbackUrl }: Props) => {
   const signinUser: SubmitHandler<SigninFormInputType> = async (
     signinFormData,
   ) => {
-    // signIn() is a client-side function, cannot wrap it in a server-action; see docs;
-    const result = await signIn("credentials", {
-      email: signinFormData.email,
-      password: signinFormData.password,
-      redirect: false,
-    });
-    // console.log("result: ", result); // {error: 'xxx'/ null, status: 200, ok: true, url: null}
+    // // signIn() is a client-side function, cannot wrap it in a server-action; see docs;
+    // const result = await signIn("credentials", {
+    //   email: signinFormData.email,
+    //   password: signinFormData.password,
+    //   redirect: false,
+    // });
+    // // console.log("result: ", result); // {error: 'xxx'/ null, status: 200, ok: true, url: null}
 
-    // Here, result.ok is true if the HTTP req is successful which is always true; so check result.error;
-    if (result?.error) {
-      toast.error(`Something went wrong... ${result.error}`);
-      reset({ password: "" });
-      return;
+    // // Here, result.ok is true if the HTTP req is successful which is always true; so check result.error;
+    // if (result?.error) {
+    //   toast.error(`Something went wrong... ${result.error}`);
+    //   reset({ password: "" });
+    //   return;
+    // }
+    // toast.success("Logged in successfully!");
+
+    try {
+      await signIn("credentials", signinFormData);
+    } catch (error) {
+      if (error instanceof AuthError) {
+        switch (error.type) {
+          case "CredentialsSignin": {
+            toast.error("Invalid credentials");
+            break;
+          }
+          default: {
+            toast.error("Error. Could not sign in.");
+          }
+        }
+      }
+
+      // toast.error("Could not sign in.");
+
+      // nextjs redirects throws an error, so we need to rethrow the error;
+      throw error;
     }
-    toast.success("Logged in successfully!");
 
     reset();
     // router.push(callbackUrl || "/");
@@ -56,6 +79,10 @@ const SigninForm = ({ callbackUrl }: Props) => {
   return (
     <form
       onSubmit={handleSubmit(signinUser)}
+      action={async (formData) => {
+        const result = await trigger();
+        if (!result) return;
+      }}
       className="flex min-w-96 flex-col items-center justify-center gap-2 rounded-md border p-2"
     >
       <div className="text-2xl font-bold">Sign in Form</div>
