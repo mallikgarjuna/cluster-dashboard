@@ -2,9 +2,9 @@
 
 import { SigninFormInputType, SigninFormSchema } from "@/app/validationSchemas";
 import { loginUser } from "@/lib/actions/authActions";
+import { signIn } from "@/lib/auth";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button, Input } from "@nextui-org/react";
-import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
