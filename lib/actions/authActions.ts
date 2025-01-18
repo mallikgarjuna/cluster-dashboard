@@ -9,15 +9,13 @@ import {
   SignupFormSchema,
 } from "@/app/validationSchemas";
 import prisma from "@/prisma/client";
-import { User } from "@prisma/client";
-import bcrypt from "bcrypt";
-import { signJwt, verifyJwt } from "../jwt";
-import axios from "axios";
-import { redirect } from "next/navigation";
+import bcrypt from "bcryptjs";
 import { signIn } from "next-auth/react";
-import { sendActivationEmail, sendResetEmail } from "./mailActions";
-import { getErrorMessage } from "../utils";
 import { revalidatePath, revalidateTag } from "next/cache";
+import { redirect } from "next/navigation";
+import { signJwt, verifyJwt } from "../jwt";
+import { getErrorMessage } from "../utils";
+import { sendActivationEmail, sendResetEmail } from "./mailActions";
 
 // register user action
 export async function registerUser(signupFormData: SignupFormInputType) {

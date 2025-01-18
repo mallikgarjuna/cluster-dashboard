@@ -1,11 +1,9 @@
-import { User } from "@prisma/client";
-import { NextRequest, NextResponse } from "next/server";
-import { z } from "zod";
-import prisma from "@/prisma/client";
-import bcrypt from "bcrypt";
 import { SignupFormSchema } from "@/app/validationSchemas";
-import axios from "axios";
 import { signJwt } from "@/lib/jwt";
+import prisma from "@/prisma/client";
+import axios from "axios";
+import bcrypt from "bcryptjs";
+import { NextRequest, NextResponse } from "next/server";
 
 // const UserRegistrationSchema = z.object({
 //   email: z.string().email(),

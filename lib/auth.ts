@@ -1,10 +1,10 @@
-import bcrypt from "bcrypt";
+import { SigninFormSchema } from "@/app/validationSchemas";
 import prisma from "@/prisma/client";
-import { PrismaAdapter } from "@next-auth/prisma-adapter";
+import { UserWithDepartment } from "@/prisma/customTypes";
+import { PrismaAdapter } from "@auth/prisma-adapter";
+import bcrypt from "bcryptjs";
 import NextAuth, { NextAuthConfig } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
-import { SigninFormSchema } from "@/app/validationSchemas";
-import { UserWithDepartment } from "@/prisma/customTypes";
 
 const config = {
   adapter: PrismaAdapter(prisma),
