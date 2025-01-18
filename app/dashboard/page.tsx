@@ -1,11 +1,10 @@
 import { fetchUniqueGrantYearsSA } from "@/lib/actions/grant/queries";
+import { checkAuth } from "@/lib/server-utils";
 import prisma from "@/prisma/client";
 import { OSDepartmentShortName } from "@prisma/client";
 import { Flex, Grid } from "@radix-ui/themes";
 import { Metadata } from "next";
-import { getServerSession } from "next-auth";
 import dynamic from "next/dynamic";
-import authOptions from "../auth/authOptions";
 import DashboardActions from "./_ui/DashboardActions";
 import FundingAwardedPerYearChart from "./_ui/FundingAwardedPerYearChart";
 import GrantChart from "./_ui/GrantChart";
@@ -33,7 +32,7 @@ interface Props {
 }
 
 export default async function DashboardPage({ searchParams }: Props) {
-  const session = await getServerSession(authOptions);
+  const session = await checkAuth();
 
   const isGroupLeader =
     session?.user.role === "GROUPLEADER"

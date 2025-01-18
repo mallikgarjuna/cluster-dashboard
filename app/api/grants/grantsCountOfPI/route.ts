@@ -1,13 +1,11 @@
-import authOptions from "@/app/auth/authOptions";
 import { GrantQuery } from "@/app/dashboard/grants/list/GrantTable";
+import { checkAuth } from "@/lib/server-utils";
 import prisma from "@/prisma/client";
 import { OSDepartmentShortName } from "@prisma/client";
-import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
-  const session = await getServerSession(authOptions);
-  if (!session) return NextResponse.json({}, { status: 401 });
+  const session = await checkAuth();
 
   const isCurrentUserAGroupLeader =
     session.user.role === "GROUPLEADER" ? [{ id: session.user.id }] : [{}];

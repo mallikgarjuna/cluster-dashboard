@@ -1,16 +1,12 @@
+import { checkAuth } from "@/lib/server-utils";
 import prisma from "@/prisma/client";
 import { Box, Flex, Grid } from "@radix-ui/themes";
 import { notFound } from "next/navigation";
-import EditGrantButton from "./EditGrantButton";
-import GrantDetails from "./GrantDetails";
-import DeleteGrantButton from "./DeleteGrantButton";
-import { getServerSession } from "next-auth";
-import authOptions from "@/app/auth/authOptions";
-import AssigneeSelect from "./AssigneeSelect";
-import { Metadata } from "next";
 import { cache } from "react";
-import { Button } from "@nextui-org/react";
+import DeleteGrantButton from "./DeleteGrantButton";
+import EditGrantButton from "./EditGrantButton";
 import GoBackButton from "./GoBackButton";
+import GrantDetails from "./GrantDetails";
 
 interface Props {
   params: { id: string };
@@ -31,7 +27,8 @@ const fetchGrant = cache((grantId: string) =>
 );
 
 const GrantDetailPage = async ({ params }: Props) => {
-  const session = await getServerSession(authOptions);
+  const session = await checkAuth();
+
   // if (typeof parseInt(params.id) !== "number") notFound();
 
   const grant = await fetchGrant(params.id);

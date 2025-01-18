@@ -1,14 +1,13 @@
+import { checkAuth } from "@/lib/server-utils";
 import { Flex, Grid } from "@radix-ui/themes";
 import { Metadata } from "next";
 import Link from "next/link";
 import { HiArrowRight } from "react-icons/hi";
 import ClusterLogo from "./ui/ClusterLogo";
 import { lusitana } from "./ui/fonts";
-import { getServerSession } from "next-auth";
-import authOptions from "./auth/authOptions";
 
 export default async function HomePage() {
-  const session = await getServerSession(authOptions);
+  const session = await checkAuth();
 
   return (
     <main className="flex min-h-screen flex-col gap-6 p-6">

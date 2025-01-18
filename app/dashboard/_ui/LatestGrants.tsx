@@ -11,7 +11,7 @@ interface Props {
 }
 
 const LatestGrants = ({ latestGrants }: Props) => {
-  // const session = await getServerSession(authOptions);
+  // const session = await checkAuth();
 
   return (
     <Card>
