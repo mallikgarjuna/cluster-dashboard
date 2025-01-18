@@ -3,7 +3,6 @@ import { Select, SelectItem } from "@nextui-org/react";
 import { OSDepartmentShortName } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import React from "react";
 
 const departShortNames = Object.values(OSDepartmentShortName);
 let departments: { label: string; value?: OSDepartmentShortName }[] = [

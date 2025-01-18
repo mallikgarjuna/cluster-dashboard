@@ -1,22 +1,21 @@
 "use client";
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import React, { useState } from "react";
-import { GrCluster } from "react-icons/gr";
-import classnames from "classnames";
-import { Avatar, Box, Container, Flex, Text } from "@radix-ui/themes";
+import { Skeleton } from "@/app/components";
 import {
   Button,
   Dropdown,
-  DropdownTrigger,
-  DropdownMenu,
   DropdownItem,
-  Spinner,
+  DropdownMenu,
+  DropdownTrigger,
 } from "@nextui-org/react";
-import { signIn, useSession } from "next-auth/react";
 import { CaretDownIcon } from "@radix-ui/react-icons";
-import { Skeleton } from "@/app/components";
+import { Box, Container, Flex } from "@radix-ui/themes";
+import classnames from "classnames";
+import { useSession } from "next-auth/react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useState } from "react";
+import { GrCluster } from "react-icons/gr";
 
 const NavBar = () => {
   return (

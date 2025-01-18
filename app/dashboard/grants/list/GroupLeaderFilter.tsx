@@ -1,13 +1,11 @@
 "use client";
-import { fetchAllUsers } from "@/lib/actions/user/queries";
 import { UserWithDepartment } from "@/prisma/customTypes";
-import { Select, SelectItem, SelectSection, useUser } from "@nextui-org/react";
-import { OSDepartmentShortName, User } from "@prisma/client";
+import { Select, SelectItem, SelectSection } from "@nextui-org/react";
+import { OSDepartmentShortName } from "@prisma/client";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useSession } from "next-auth/react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import React from "react";
 import Skeleton from "react-loading-skeleton";
 
 interface Props {
