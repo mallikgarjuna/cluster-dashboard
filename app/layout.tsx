@@ -3,15 +3,15 @@ import "@radix-ui/themes/styles.css";
 import "@/app/theme-config.css";
 // import "./globals.css";
 import "@/app/globals.css";
+import { Theme } from "@radix-ui/themes";
 import type { Metadata } from "next";
-import NavBar from "./NavBar";
-import { Container, Theme } from "@radix-ui/themes";
-import AuthProvider from "./auth/Provider";
-import QueryClientProvider from "./QueryClientProvider";
-import { Providers } from "./providers";
-import { Toaster } from "react-hot-toast";
-import { inter } from "./ui/fonts";
 import NextTopLoader from "nextjs-toploader";
+import { Toaster } from "react-hot-toast";
+import NavBar from "./NavBar";
+import AuthSessionProvider from "./providers/AuthSessionProvider";
+import { NextUIComponentsProvider } from "./providers/NextUIComponentsProvider";
+import TanSackQueryClientProvider from "./providers/TanSackQueryClientProvider";
+import { inter } from "./ui/fonts";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -26,9 +26,9 @@ export default function RootLayout({
   return (
     <html lang="en" className="light">
       <body className={inter.variable}>
-        <QueryClientProvider>
-          <Providers>
-            <AuthProvider>
+        <TanSackQueryClientProvider>
+          <NextUIComponentsProvider>
+            <AuthSessionProvider>
               <Theme>
                 <NavBar />
                 <main className="mx-auto w-full max-w-[1400px] p-5">
@@ -37,9 +37,9 @@ export default function RootLayout({
                   {/* </Container> */}
                 </main>
               </Theme>
-            </AuthProvider>
-          </Providers>
-        </QueryClientProvider>
+            </AuthSessionProvider>
+          </NextUIComponentsProvider>
+        </TanSackQueryClientProvider>
       </body>
     </html>
   );

@@ -8,7 +8,7 @@ import {
 
 const queryClient = new QueryClient();
 
-const QueryClientProvider = ({ children }: PropsWithChildren) => {
+const TanSackQueryClientProvider = ({ children }: PropsWithChildren) => {
   return (
     <ReactQueryClientProvider client={queryClient}>
       {children}
@@ -16,4 +16,4 @@ const QueryClientProvider = ({ children }: PropsWithChildren) => {
   );
 };
 
-export default QueryClientProvider;
+export default TanSackQueryClientProvider;
