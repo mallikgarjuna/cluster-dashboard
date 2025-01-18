@@ -1,5 +1,5 @@
 "use client";
-import { CreateUserFormInputType } from "@/app/validationSchemas";
+import { CreateUserFormInputType } from "@/lib/validationSchemas";
 import { createUserByAdmin } from "@/lib/actions/authActions";
 import { Button, Checkbox, Input, Select, SelectItem } from "@nextui-org/react";
 import { Department, UserRole } from "@prisma/client";

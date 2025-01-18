@@ -3,7 +3,7 @@
 import {
   CreateFundingAgencyFormInputType,
   CreateFundingAgencyFormSchema,
-} from "@/app/validationSchemas";
+} from "@/lib/validationSchemas";
 import { createFundingAgencySA } from "@/lib/actions/funderActions";
 import { updateFundingAgencySA } from "@/lib/actions/updateFunderActions";
 import { zodResolver } from "@hookform/resolvers/zod";

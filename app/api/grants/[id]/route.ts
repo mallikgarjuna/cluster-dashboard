@@ -1,4 +1,4 @@
-import { patchGrantSchema } from "@/app/validationSchemas";
+import { patchGrantSchema } from "@/lib/validationSchemas";
 import { checkAuth } from "@/lib/server-utils";
 import prisma from "@/prisma/client";
 import { NextRequest, NextResponse } from "next/server";

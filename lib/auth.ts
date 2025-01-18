@@ -1,4 +1,4 @@
-import { SigninFormSchema } from "@/app/validationSchemas";
+import { SigninFormSchema } from "@/lib/validationSchemas";
 import prisma from "@/prisma/client";
 import { UserWithDepartment } from "@/prisma/customTypes";
 import { PrismaAdapter } from "@auth/prisma-adapter";

@@ -1,4 +1,4 @@
-import { SignupFormSchema } from "@/app/validationSchemas";
+import { SignupFormSchema } from "@/lib/validationSchemas";
 import { signJwt } from "@/lib/jwt";
 import prisma from "@/prisma/client";
 import axios from "axios";

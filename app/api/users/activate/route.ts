@@ -1,5 +1,5 @@
 import { verifyJwt } from "@/lib/jwt";
-import { ActivateUserDataType } from "./../../../validationSchemas";
+import { ActivateUserDataType } from "../../../../lib/validationSchemas";
 import { NextRequest, NextResponse } from "next/server";
 
 type ActivateUserFunction = (

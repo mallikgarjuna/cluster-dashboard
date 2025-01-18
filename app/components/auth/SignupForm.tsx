@@ -4,7 +4,7 @@ import { Button, Checkbox, Input, Link } from "@nextui-org/react";
 import { HiEye, HiEyeOff, HiKey, HiMail, HiUser } from "react-icons/hi";
 import React, { useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import { SignupFormInputType, SignupFormSchema } from "@/app/validationSchemas";
+import { SignupFormInputType, SignupFormSchema } from "@/lib/validationSchemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
 import toast from "react-hot-toast";

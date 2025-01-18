@@ -1,6 +1,6 @@
 "use client";
 import { Spinner } from "@/app/components";
-import { GrantFormDataType, grantFormSchema } from "@/app/validationSchemas";
+import { GrantFormDataType, grantFormSchema } from "@/lib/validationSchemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Button,

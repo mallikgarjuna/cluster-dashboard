@@ -5,7 +5,7 @@ import ErrorMessage from "@/app/components/ErrorMessage";
 import CustomInput from "@/app/components/Input/CustomInput";
 import CustomMDEInput from "@/app/components/Input/CustomMDEInput";
 import Spinner from "@/app/components/Spinner";
-import { GrantFormDataType, grantFormSchema } from "@/app/validationSchemas";
+import { GrantFormDataType, grantFormSchema } from "@/lib/validationSchemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Grant } from "@prisma/client";
 import axios from "axios";

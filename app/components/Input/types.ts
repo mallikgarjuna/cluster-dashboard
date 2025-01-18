@@ -1,6 +1,6 @@
 // Source: https://github.com/kirankumal/zod-react-hook-form/blob/master/src/components/Input/types.ts
 
-import { GrantFormDataType } from "@/app/validationSchemas";
+import { GrantFormDataType } from "@/lib/validationSchemas";
 import { Grant } from "@prisma/client";
 import { FieldErrors } from "react-hook-form";
 

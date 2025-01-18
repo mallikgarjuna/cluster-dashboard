@@ -1,6 +1,6 @@
 "use client";
 
-import { SigninFormInputType, SigninFormSchema } from "@/app/validationSchemas";
+import { SigninFormInputType, SigninFormSchema } from "@/lib/validationSchemas";
 import { loginUser } from "@/lib/actions/authActions";
 import { signIn } from "@/lib/auth";
 import { zodResolver } from "@hookform/resolvers/zod";

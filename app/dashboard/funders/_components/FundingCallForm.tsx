@@ -3,7 +3,7 @@
 import {
   CreateFundingCallFormInputType,
   CreateFundingCallFormSchema,
-} from "@/app/validationSchemas";
+} from "@/lib/validationSchemas";
 import { createFundingCallSA } from "@/lib/actions/funderActions";
 import { updateFundingCallSA } from "@/lib/actions/updateFunderActions";
 import { FundingActionWithCalls } from "@/prisma/customTypes";

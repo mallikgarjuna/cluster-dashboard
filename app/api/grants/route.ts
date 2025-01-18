@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/prisma/client";
-import { grantFormSchema } from "../../validationSchemas";
+import { grantFormSchema } from "../../../lib/validationSchemas";
 import { checkAuth } from "@/lib/server-utils";
 
 export async function POST(request: NextRequest) {

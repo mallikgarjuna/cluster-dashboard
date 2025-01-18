@@ -7,7 +7,7 @@ import {
   SigninFormSchema,
   SignupFormInputType,
   SignupFormSchema,
-} from "@/app/validationSchemas";
+} from "@/lib/validationSchemas";
 import prisma from "@/prisma/client";
 import bcrypt from "bcryptjs";
 import { revalidatePath, revalidateTag } from "next/cache";

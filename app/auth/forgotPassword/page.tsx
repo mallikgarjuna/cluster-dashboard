@@ -2,7 +2,7 @@
 import {
   ForgotPasswordFormInputType,
   ForgotPasswordFormSchema,
-} from "@/app/validationSchemas";
+} from "@/lib/validationSchemas";
 import { forgotPassword } from "@/lib/actions/authActions";
 import { getErrorMessage } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
