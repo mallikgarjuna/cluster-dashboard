@@ -46,12 +46,13 @@ const config = {
         }
 
         if (!user.emailVerified) {
-          // console.log("Email not verified");
-          // return null;
+          console.log("Email not verified");
+          return null;
           // throw new Error("Please verify your email first!");
         }
 
-        return user;
+        return user; // a truthy value
+        // Nextauth automatically uses whatever we return here as the user obj throughout the authentication flow
       },
     }),
   ],
