@@ -98,4 +98,8 @@ const config = {
   },
 } satisfies NextAuthConfig;
 
-export const { auth, signIn } = NextAuth(config);
+export const {
+  auth,
+  signIn,
+  handlers: { GET, POST },
+} = NextAuth(config);
