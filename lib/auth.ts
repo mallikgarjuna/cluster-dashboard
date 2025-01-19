@@ -67,15 +67,23 @@ const config = {
         return false; // redirect to login?? //TODO:
       }
 
-      if (!isLoggedIn && !isTryingToAccessDashboard) {
-        return true;
-      }
-
       if (isLoggedIn && isTryingToAccessDashboard) {
         return true;
       }
 
+      if (
+        isLoggedIn &&
+        (request.nextUrl.pathname.includes("/signin") ||
+          request.nextUrl.pathname.includes("/signup"))
+      ) {
+        return Response.redirect(new URL("/", request.url));
+      }
+
       if (isLoggedIn && !isTryingToAccessDashboard) {
+        return true;
+      }
+
+      if (!isLoggedIn && !isTryingToAccessDashboard) {
         return true;
       }
 

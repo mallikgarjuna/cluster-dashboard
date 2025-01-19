@@ -1,9 +1,13 @@
+"use client";
+
 import { checkAuth } from "@/lib/server-utils";
 import { Image } from "@nextui-org/react";
+import { useSession } from "next-auth/react";
 import { HiOutlineUserCircle } from "react-icons/hi";
 
-const ProfilePage = async () => {
-  const session = await checkAuth();
+const ProfilePage =  () => {
+  // const session = await checkAuth();
+  const {data: session} = useSession();
   const user = session?.user;
 
   //   if un-authenticated, redirect the user to login page

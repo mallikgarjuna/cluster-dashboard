@@ -1,8 +1,8 @@
 import "@radix-ui/themes/styles.css";
 // import "./theme-config.css";
-import "@/app/theme-config.css";
+import "@/app/styles/theme-config.css";
 // import "./globals.css";
-import "@/app/globals.css";
+import "@/app/styles/globals.css";
 import { Theme } from "@radix-ui/themes";
 import type { Metadata } from "next";
 import NextTopLoader from "nextjs-toploader";
