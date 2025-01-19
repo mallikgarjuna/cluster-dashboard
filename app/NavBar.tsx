@@ -1,16 +1,8 @@
 "use client";
 
 import { Skeleton } from "@/app/components";
-import { logOutUser } from "@/lib/actions/authActions";
-import {
-  Button,
-  Dropdown,
-  DropdownItem,
-  DropdownMenu,
-  DropdownTrigger,
-} from "@nextui-org/react";
-import { CaretDownIcon } from "@radix-ui/react-icons";
-import { Box, Container, Flex } from "@radix-ui/themes";
+import { Button } from "@nextui-org/react";
+import { Container, Flex } from "@radix-ui/themes";
 import classnames from "classnames";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
