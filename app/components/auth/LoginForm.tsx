@@ -78,7 +78,7 @@ const LoginForm = ({ callbackUrl }: Props) => {
       }}
       className="flex min-w-96 flex-col items-center justify-center gap-2 rounded-md border p-2"
     >
-      <div className="text-2xl font-bold">Sign in Form</div>
+      <div className="text-2xl font-bold">Log in Form</div>
       <Input
         {...register("email")}
         errorMessage={errors.email?.message}

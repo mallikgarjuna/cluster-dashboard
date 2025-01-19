@@ -59,9 +59,25 @@ const config = {
   callbacks: {
     authorized: ({ request, auth }) => {
       // runs on every request with middleware
+      console.log("Checking route : ", request.nextUrl.href);
+
       const isLoggedIn = Boolean(auth?.user);
+      const isAdmin = auth?.user.role === "ADMIN";
+
       const isTryingToAccessDashboard =
         request.nextUrl.pathname.includes("/dashboard");
+
+      const isTryingToAccessHomePage = request.nextUrl.pathname === "/";
+      const isTryingToAccessAdminPage = request.nextUrl.pathname === "/admin";
+
+      // return true;
+      if (!isAdmin && isTryingToAccessAdminPage) {
+        return false;
+      }
+
+      if (isTryingToAccessHomePage) {
+        return true;
+      }
 
       if (!isLoggedIn && isTryingToAccessDashboard) {
         return false; // redirect to login?? //TODO:
@@ -76,7 +92,7 @@ const config = {
         (request.nextUrl.pathname.includes("/login") ||
           request.nextUrl.pathname.includes("/signup"))
       ) {
-        return Response.redirect(new URL("/", request.nextUrl));
+        return Response.redirect(new URL("/", request.nextUrl.origin));
       }
 
       if (isLoggedIn && !isTryingToAccessDashboard) {

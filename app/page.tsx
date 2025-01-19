@@ -7,7 +7,7 @@ import ClusterLogo from "./ui/ClusterLogo";
 import { lusitana } from "./ui/fonts";
 
 export default async function HomePage() {
-  const session = await checkAuth();
+  // const session = await checkAuth();
 
   return (
     <main className="flex min-h-screen flex-col gap-6 p-6">
@@ -22,15 +22,15 @@ export default async function HomePage() {
             <strong>Welcome to Cluster Dashboard.</strong>
             <p>This is the dashboard for the cluster BST.</p>
           </div>
-          {!session && (
-            <Link
-              href="/auth/login"
-              className="flex items-center gap-5 self-start rounded-lg bg-blue-500 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-blue-400 md:text-base"
-              prefetch={false}
-            >
-              <span>Log in</span> <HiArrowRight />
-            </Link>
-          )}
+          {/* {!session && ( */}
+          <Link
+            href="/auth/login"
+            className="flex items-center gap-5 self-start rounded-lg bg-blue-500 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-blue-400 md:text-base"
+            prefetch={false}
+          >
+            <span>Log in</span> <HiArrowRight />
+          </Link>
+          {/* )} */}
         </Flex>
       </Grid>
     </main>
