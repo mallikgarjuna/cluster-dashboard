@@ -7,7 +7,7 @@ import { auth } from "./auth";
 export async function checkAuth() {
   const session = await auth();
   if (!session?.user) {
-    redirect("/auth/signin");
+    redirect("/auth/login");
   }
 
   return session;

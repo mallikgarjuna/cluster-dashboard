@@ -9,7 +9,7 @@ const SignupPage = () => {
     <div className="grid grid-cols-1 place-items-center items-center gap-3 md:grid-cols-2">
       <Box className="flex items-center justify-center md:col-span-2">
         <Text className="p-2">Already have an account?</Text>
-        <Link href="/auth/signin">Sign in</Link>
+        <Link href="/auth/login">Log in</Link>
       </Box>
       <SignupForm />
       <FaUserPlus size={200} />

@@ -1,4 +1,4 @@
-import { SigninFormSchema } from "@/lib/validationSchemas";
+import { LoginFormSchema } from "@/lib/validationSchemas";
 import prisma from "@/prisma/client";
 import { UserWithDepartment } from "@/prisma/customTypes";
 import { PrismaAdapter } from "@auth/prisma-adapter";
@@ -9,7 +9,7 @@ import Credentials from "next-auth/providers/credentials";
 const config = {
   adapter: PrismaAdapter(prisma),
   pages: {
-    signIn: "/auth/signin",
+    signIn: "/auth/login",
   },
   session: {
     strategy: "jwt",
@@ -20,7 +20,7 @@ const config = {
         // runs on login
 
         // validation - later?
-        const validatedFormData = SigninFormSchema.safeParse(credentials);
+        const validatedFormData = LoginFormSchema.safeParse(credentials);
         if (!validatedFormData.success) {
           return null;
         }
@@ -73,10 +73,10 @@ const config = {
 
       if (
         isLoggedIn &&
-        (request.nextUrl.pathname.includes("/signin") ||
+        (request.nextUrl.pathname.includes("/login") ||
           request.nextUrl.pathname.includes("/signup"))
       ) {
-        return Response.redirect(new URL("/", request.url));
+        return Response.redirect(new URL("/", request.nextUrl));
       }
 
       if (isLoggedIn && !isTryingToAccessDashboard) {

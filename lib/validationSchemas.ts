@@ -93,16 +93,16 @@ export const patchGrantSchema = z.object({
   // })
 });
 
-export const SigninFormSchema = z.object({
+export const LoginFormSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
   password: z.string({
     required_error: "Please enter your password",
   }),
 });
 
-export type SigninFormInputType = z.infer<typeof SigninFormSchema>;
+export type LoginFormInputType = z.infer<typeof LoginFormSchema>;
 
-export type SigninFormInputFieldsName = keyof SigninFormInputType;
+export type LoginFormInputFieldsName = keyof LoginFormInputType;
 
 // Signup form schema
 export const SignupFormSchema = z

@@ -1,6 +1,6 @@
 "use client";
 
-import { SigninFormInputType, SigninFormSchema } from "@/lib/validationSchemas";
+import { LoginFormInputType, LoginFormSchema } from "@/lib/validationSchemas";
 import { loginUser } from "@/lib/actions/authActions";
 import { signIn } from "@/lib/auth";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -15,7 +15,7 @@ import { HiEye, HiEyeOff } from "react-icons/hi";
 interface Props {
   callbackUrl?: string;
 }
-const SigninForm = ({ callbackUrl }: Props) => {
+const LoginForm = ({ callbackUrl }: Props) => {
   const [isVisiblePass, setIsVisiblePass] = useState(false);
   const router = useRouter();
   const {
@@ -24,31 +24,15 @@ const SigninForm = ({ callbackUrl }: Props) => {
     reset,
     formState: { errors, isSubmitting },
     trigger,
-  } = useForm<SigninFormInputType>({
-    resolver: zodResolver(SigninFormSchema),
+  } = useForm<LoginFormInputType>({
+    resolver: zodResolver(LoginFormSchema),
   });
 
-  const signinUser: SubmitHandler<SigninFormInputType> = async (
-    signinFormData,
+  const handleLoginUser: SubmitHandler<LoginFormInputType> = async (
+    loginFormData,
   ) => {
-    // // signIn() is a client-side function, cannot wrap it in a server-action; see docs;
-    // const result = await signIn("credentials", {
-    //   email: signinFormData.email,
-    //   password: signinFormData.password,
-    //   redirect: false,
-    // });
-    // // console.log("result: ", result); // {error: 'xxx'/ null, status: 200, ok: true, url: null}
-
-    // // Here, result.ok is true if the HTTP req is successful which is always true; so check result.error;
-    // if (result?.error) {
-    //   toast.error(`Something went wrong... ${result.error}`);
-    //   reset({ password: "" });
-    //   return;
-    // }
-    // toast.success("Logged in successfully!");
-
     try {
-      await signIn("credentials", signinFormData);
+      await signIn("credentials", loginFormData);
     } catch (error) {
       if (error instanceof AuthError) {
         switch (error.type) {
@@ -78,7 +62,7 @@ const SigninForm = ({ callbackUrl }: Props) => {
 
   return (
     <form
-      // onSubmit={handleSubmit(signinUser)}
+      // onSubmit={handleSubmit(handleLoginUser)}
       action={async (formData) => {
         const resultTrigger = await trigger();
         if (!resultTrigger) return;
@@ -89,6 +73,8 @@ const SigninForm = ({ callbackUrl }: Props) => {
           return;
         }
         toast.success(result?.message);
+
+        reset();
       }}
       className="flex min-w-96 flex-col items-center justify-center gap-2 rounded-md border p-2"
     >
@@ -117,4 +103,4 @@ const SigninForm = ({ callbackUrl }: Props) => {
   );
 };
 
-export default SigninForm;
+export default LoginForm;

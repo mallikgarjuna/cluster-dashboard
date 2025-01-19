@@ -1,7 +1,7 @@
 "use client";
 
 import { Link } from "@/app/components";
-import SigninForm from "@/app/components/auth/SigninForm";
+import LoginForm from "@/app/components/auth/LoginForm";
 import { Heading } from "@radix-ui/themes";
 
 interface Props {
@@ -9,12 +9,12 @@ interface Props {
     callbackUrl?: string;
   };
 }
-const SigninPage = ({ searchParams }: Props) => {
+const LoginPage = ({ searchParams }: Props) => {
   // console.log("searchParams: ", searchParams);
 
   return (
     <div className="flex flex-col items-center justify-center gap-4">
-      <SigninForm callbackUrl={searchParams.callbackUrl} />
+      <LoginForm callbackUrl={searchParams.callbackUrl} />
 
       <Link href="/auth/forgotPassword">Forgot password?</Link>
       <div className="flex gap-2">
@@ -27,4 +27,4 @@ const SigninPage = ({ searchParams }: Props) => {
 };
 
 //
-export default SigninPage;
+export default LoginPage;

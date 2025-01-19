@@ -40,7 +40,7 @@ const SignupForm = () => {
           "The user registered successfully!" + "\n" + result.message,
         );
         reset();
-        router.push("/auth/signin");
+        router.push("/auth/login");
       }
       // console.log(singupFormData);
     } catch (error) {

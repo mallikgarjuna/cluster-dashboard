@@ -3,8 +3,8 @@ import {
   CreateUserFormInputType,
   CreateUserFormSchema,
   ForgotPasswordFormInputType,
-  SigninFormInputType,
-  SigninFormSchema,
+  LoginFormInputType,
+  LoginFormSchema,
   SignupFormInputType,
   SignupFormSchema,
 } from "@/lib/validationSchemas";
@@ -194,45 +194,10 @@ export async function createUserByAdmin(
   };
 }
 
-// TODO: (not used it yet) signin user action b/c signIn() is a client-side function;
+// TODO: (not used it yet) login user action b/c signIn() is a client-side function;
 export async function loginUser(formData: unknown) {
-  // // In the received data, we have to make sure that we've a valid email and pswd
-  // const validatedFields = SigninFormSchema.safeParse(signinFormData);
-  // if (!validatedFields.success) {
-  //   return {
-  //     success: false,
-  //     message:
-  //       "Missing fields. Failed to sign in user." +
-  //       "\n" +
-  //       getErrorMessage(validatedFields.error),
-  //   };
-  // }
-  // const { email, password } = validatedFields.data;
-
-  // try {
-  //   // Here signIn() is a client-side function and cannot work in server-side here; so throws an error;
-  //   const result = await signIn("credentials", {
-  //     email: email,
-  //     password: password,
-  //     redirect: false,
-  //   });
-  //   if (result?.error) {
-  //     return {
-  //       success: false,
-  //       message: "Failed to sign in user",
-  //     };
-  //   } else {
-  //     return {
-  //       success: true,
-  //       message: "Logged in successfully!",
-  //     };
-  //   }
-  // } catch (error) {
-  //   return {
-  //     message: "Database error: Failed to sign in user.",
-  //   };
-  // }
-
+  // Check if the `formData` is a valid `FormData` object
+  // b/c only `FormData` object can be passed to `signIn()` function
   if (!(formData instanceof FormData)) {
     return {
       success: false,
