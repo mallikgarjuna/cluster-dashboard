@@ -15,7 +15,7 @@ import { redirect } from "next/navigation";
 import { signJwt, verifyJwt } from "../jwt";
 import { getErrorMessage } from "../utils";
 import { sendActivationEmail, sendResetEmail } from "./mailActions";
-import { signIn } from "../auth";
+import { signIn, signOut } from "../auth";
 import { AuthError } from "next-auth";
 
 // register user action
@@ -232,6 +232,11 @@ export async function loginUser(formData: unknown) {
   }
 
   redirect("/"); // b/c /dashboard is taking too long to load
+}
+
+export async function logOutUser() {
+  // In Next-Auth v5, you can call signOut() on server-side (here in SA)
+  await signOut({ redirectTo: "/" });
 }
 
 // Activate user server action (called in auth/activation/[jwt]/page.tsx)

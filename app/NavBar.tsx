@@ -1,6 +1,7 @@
 "use client";
 
 import { Skeleton } from "@/app/components";
+import { logOutUser } from "@/lib/actions/authActions";
 import {
   Button,
   Dropdown,
@@ -103,26 +104,21 @@ const AuthStatus = () => {
           <p>User role: {session?.user?.role}</p>
           <Dropdown>
             <DropdownTrigger>
-              {/* <Text>{session.user?.email}</Text> */}
               <Button variant="light">
                 {`${session.user.firstName} ${session.user.lastName}`}
                 <CaretDownIcon />
               </Button>
-              {/* Image doesn't exist for credentials login, so use email text display */}
-              {/* <Avatar
-              src={session.user!.image!}
-              fallback="?"
-              size="2"
-              radius="full"
-            /> */}
             </DropdownTrigger>
             <DropdownMenu aria-label="Static-Actions">
               <DropdownItem key="email">{session.user!.email}</DropdownItem>
               <DropdownItem key="profile" as={Link} href="/profile">
                 Profile
               </DropdownItem>
-              <DropdownItem key="signout" as={Link} href="/api/auth/signout">
-                Sign out
+              <DropdownItem
+                key="signout"
+                onPress={async () => await logOutUser()}
+              >
+                Log out
               </DropdownItem>
             </DropdownMenu>
           </Dropdown>
