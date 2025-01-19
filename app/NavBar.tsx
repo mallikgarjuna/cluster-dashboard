@@ -17,6 +17,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { GrCluster } from "react-icons/gr";
+import LogOutButton from "./components/auth/LogOutButton";
 
 const NavBar = () => {
   return (
@@ -102,26 +103,14 @@ const AuthStatus = () => {
       {status === "authenticated" && (
         <Flex gap="3" align="center">
           <p>User role: {session?.user?.role}</p>
-          <Dropdown>
-            <DropdownTrigger>
-              <Button variant="light">
-                {`${session.user.firstName} ${session.user.lastName}`}
-                <CaretDownIcon />
-              </Button>
-            </DropdownTrigger>
-            <DropdownMenu aria-label="Static-Actions">
-              <DropdownItem key="email">{session.user!.email}</DropdownItem>
-              <DropdownItem key="profile" as={Link} href="/profile">
-                Profile
-              </DropdownItem>
-              <DropdownItem
-                key="signout"
-                onPress={async () => await logOutUser()}
-              >
-                Log out
-              </DropdownItem>
-            </DropdownMenu>
-          </Dropdown>
+
+          <Button as={Link} href="/profile" variant="faded">
+            <Link href="/profile">
+              {`${session.user.firstName} ${session.user.lastName}`}
+            </Link>
+          </Button>
+
+          <LogOutButton />
         </Flex>
       )}
     </Box>
