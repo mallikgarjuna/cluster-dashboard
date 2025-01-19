@@ -19,7 +19,18 @@ import { useState } from "react";
 import { GrCluster } from "react-icons/gr";
 import LogOutButton from "./components/auth/LogOutButton";
 
+const links = [
+  { label: "Home", href: "/" },
+  { label: "Dashboard", href: "/dashboard" },
+  { label: "Admin", href: "/admin" },
+];
+
 const NavBar = () => {
+  const currentPath = usePathname();
+  const [loading, setLoading] = useState("");
+
+  const { data: session, status } = useSession();
+
   return (
     <nav className="mb-0 border-b px-5 py-3">
       <Container>
@@ -28,10 +39,47 @@ const NavBar = () => {
             <Link href="/">
               <GrCluster />
             </Link>
-            <NavLinks />
+            {/* <NavLinks /> */}
+            <ul className="flex space-x-6">
+              {links.map((link) => (
+                <li key={link.href}>
+                  <Link
+                    className={classnames({
+                      "nav-link": true,
+                      "!text-blue-900": link.href === currentPath,
+                    })}
+                    href={link.href}
+                    onClick={() => setLoading(link.href)}
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
           </Flex>
           <Flex gap="3" align="center">
-            <AuthStatus />
+            {/* <AuthStatus /> */}
+            {status === "loading" && <Skeleton width="4rem" />}
+
+            {status === "unauthenticated" && (
+              <>
+                <Link className="nav-link" href="/auth/login">
+                  Log in
+                </Link>
+              </>
+            )}
+
+            {status === "authenticated" && (
+              <Flex gap="3" align="center">
+                <p>User role: {session?.user?.role}</p>
+
+                <Button as={Link} href="/profile" variant="faded">
+                  {`${session.user.firstName} ${session.user.lastName}`}
+                </Button>
+
+                <LogOutButton />
+              </Flex>
+            )}
           </Flex>
         </Flex>
       </Container>
@@ -39,82 +87,80 @@ const NavBar = () => {
   );
 };
 
-const NavLinks = () => {
-  const currentPath = usePathname();
-  const [loading, setLoading] = useState("");
+// const NavLinks = () => {
+//   const currentPath = usePathname();
+//   const [loading, setLoading] = useState("");
 
-  const links = [
-    { label: "Home", href: "/" },
-    { label: "Dashboard", href: "/dashboard" },
-    { label: "Admin", href: "/admin" },
-  ];
+//   const links = [
+//     { label: "Home", href: "/" },
+//     { label: "Dashboard", href: "/dashboard" },
+//     { label: "Admin", href: "/admin" },
+//   ];
 
-  // console.log("Current path: ", currentPath);
-  // console.log("Loading: ", loading);
+//   // console.log("Current path: ", currentPath);
+//   // console.log("Loading: ", loading);
 
-  return (
-    <ul className="flex space-x-6">
-      {links.map((link) => (
-        <li key={link.href}>
-          <Link
-            className={classnames({
-              "nav-link": true,
-              "!text-blue-900": link.href === currentPath,
-            })}
-            href={link.href}
-            onClick={() => setLoading(link.href)}
-          >
-            {link.label}
-            {/* {loading === link.href && currentPath !== link.href ? (
-              <Spinner size="sm" />
-            ) : null} */}
-          </Link>
-        </li>
-      ))}
-    </ul>
-  );
-};
+//   return (
+//     <ul className="flex space-x-6">
+//       {links.map((link) => (
+//         <li key={link.href}>
+//           <Link
+//             className={classnames({
+//               "nav-link": true,
+//               "!text-blue-900": link.href === currentPath,
+//             })}
+//             href={link.href}
+//             onClick={() => setLoading(link.href)}
+//           >
+//             {link.label}
+//             {/* {loading === link.href && currentPath !== link.href ? (
+//               <Spinner size="sm" />
+//             ) : null} */}
+//           </Link>
+//         </li>
+//       ))}
+//     </ul>
+//   );
+// };
 
-const AuthStatus = () => {
-  const { data: session, status } = useSession();
-  // console.log("Status: ", status);
-  // console.log("Session: ", session);
+// const AuthStatus = () => {
+//   const { data: session, status } = useSession();
+//   // console.log("Status: ", status);
+//   // console.log("Session: ", session);
 
-  if (status === "loading") return <Skeleton width="4rem" />;
+//   if (status === "loading") return <Skeleton width="4rem" />;
 
-  if (status === "unauthenticated")
-    return (
-      <>
-        {/* <Link className="nav-link" href="/api/auth/signin">
-          Sign in
-        </Link> */}
-        {/* <Button onClick={() => signIn()}>Sign in</Button> */}
-        <Link className="nav-link" href="/auth/login">
-          Log in
-        </Link>
-        {/* <Link className="nav-link" href="/auth/signup">
-          Sign up
-        </Link> */}
-      </>
-    );
+//   if (status === "unauthenticated")
+//     return (
+//       <>
+//         {/* <Link className="nav-link" href="/api/auth/signin">
+//           Sign in
+//         </Link> */}
+//         {/* <Button onClick={() => signIn()}>Sign in</Button> */}
+//         <Link className="nav-link" href="/auth/login">
+//           Log in
+//         </Link>
+//         {/* <Link className="nav-link" href="/auth/signup">
+//           Sign up
+//         </Link> */}
+//       </>
+//     );
 
-  return (
-    <Box>
-      {status === "authenticated" && (
-        <Flex gap="3" align="center">
-          <p>User role: {session?.user?.role}</p>
+//   return (
+//     <Box>
+//       {status === "authenticated" && (
+//         <Flex gap="3" align="center">
+//           <p>User role: {session?.user?.role}</p>
 
-          <Button as={Link} href="/profile" variant="faded">
-            <Link href="/profile">
-              {`${session.user.firstName} ${session.user.lastName}`}
-            </Link>
-          </Button>
+//           <Button as={Link} href="/profile" variant="faded">
+//             {`${session.user.firstName} ${session.user.lastName}`}
+//           </Button>
 
-          <LogOutButton />
-        </Flex>
-      )}
-    </Box>
-  );
-};
+//           <LogOutButton />
+//         </Flex>
+//       )}
+//     </Box>
+//   );
+// };
 
 export default NavBar;
