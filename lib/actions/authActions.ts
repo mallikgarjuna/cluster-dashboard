@@ -231,7 +231,7 @@ export async function loginUser(formData: unknown) {
     throw error; // nextjs redirects throws an error, so we need to rethrow the error;
   }
 
-  redirect("/"); // b/c /dashboard is taking too long to load
+  // redirect("/profile"); // b/c /dashboard is taking too long to load
 }
 
 export async function logOutUser() {

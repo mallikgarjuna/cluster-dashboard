@@ -10,6 +10,7 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { GrCluster } from "react-icons/gr";
 import LogOutButton from "./components/auth/LogOutButton";
+import ClusterLogo from "./ui/ClusterLogo";
 
 const links = [
   { label: "Home", href: "/" },
@@ -30,6 +31,7 @@ const NavBar = () => {
           <Flex gap="3" align="center">
             <Link href="/">
               <GrCluster />
+              {/* <ClusterLogo /> */}
             </Link>
             {/* <NavLinks /> */}
             <ul className="flex space-x-6">

@@ -5,6 +5,7 @@ import { PrismaAdapter } from "@auth/prisma-adapter";
 import bcrypt from "bcryptjs";
 import NextAuth, { NextAuthConfig } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
+import { NextResponse } from "next/server";
 
 const config = {
   adapter: PrismaAdapter(prisma),
@@ -92,7 +93,7 @@ const config = {
         (request.nextUrl.pathname.includes("/login") ||
           request.nextUrl.pathname.includes("/signup"))
       ) {
-        return Response.redirect(new URL("/", request.nextUrl.origin));
+        return Response.redirect(new URL("/dashboard", request.url));
       }
 
       if (isLoggedIn && !isTryingToAccessDashboard) {

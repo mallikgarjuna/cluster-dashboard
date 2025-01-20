@@ -26,9 +26,9 @@ export default function RootLayout({
   return (
     <html lang="en" className="light">
       <body className={inter.variable}>
-        <TanSackQueryClientProvider>
-          <NextUIComponentsProvider>
-            <AuthSessionProvider>
+        <AuthSessionProvider>
+          <TanSackQueryClientProvider>
+            <NextUIComponentsProvider>
               <Theme>
                 <NavBar />
                 <main className="mx-auto w-full max-w-[1400px] p-5">
@@ -37,9 +37,9 @@ export default function RootLayout({
                   {/* </Container> */}
                 </main>
               </Theme>
-            </AuthSessionProvider>
-          </NextUIComponentsProvider>
-        </TanSackQueryClientProvider>
+            </NextUIComponentsProvider>
+          </TanSackQueryClientProvider>
+        </AuthSessionProvider>
       </body>
     </html>
   );

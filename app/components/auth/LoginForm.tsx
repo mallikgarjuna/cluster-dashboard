@@ -67,14 +67,23 @@ const LoginForm = ({ callbackUrl }: Props) => {
         const resultTrigger = await trigger();
         if (!resultTrigger) return;
 
+        // console.log("Before loginUser SA");
         const result = await loginUser(formData);
-        if (!result?.success) {
-          toast.error(result?.message);
+        // console.log("After loginUser SA");
+        if (result) {
+          // If result is returned, it means that the user is not logged in (see loginUser() SA);
+          toast.error(result.message);
           return;
-        }
-        toast.success(result?.message);
+        } else {
+          // if result is not returned, it means that the user is logged in
+          // - and redirected to LoginPage (/auth/login) where the loginUser() SA is called;
+          // - then (in parallel) based on `authorized()` callback, redirects appropriately;
+          // console.log("result from loginUsr SA: ", result); // undefined
+          toast.success("Successfully logged in!");
 
-        reset();
+          reset();
+          // router.push("/dashboard"); // not needed b/c signIn() redirects via `authorized()`;
+        }
       }}
       className="flex min-w-96 flex-col items-center justify-center gap-2 rounded-md border p-2"
     >
