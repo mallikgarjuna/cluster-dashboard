@@ -1,14 +1,11 @@
 "use client";
 
 import { loginUser } from "@/lib/actions/authActions";
-import { signIn } from "@/lib/auth";
 import { LoginFormInputType, LoginFormSchema } from "@/lib/validationSchemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@nextui-org/react";
-import { AuthError } from "next-auth";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { HiEye, HiEyeOff } from "react-icons/hi";
 import LogInFormButton from "./LogInFormButton";
@@ -18,46 +15,14 @@ interface Props {
 }
 const LoginForm = ({ callbackUrl }: Props) => {
   const [isVisiblePass, setIsVisiblePass] = useState(false);
-  const router = useRouter();
   const {
     register,
-    handleSubmit,
-    reset,
-    formState: { errors, isSubmitting },
     trigger,
+    formState: { errors, isSubmitting },
+    reset,
   } = useForm<LoginFormInputType>({
     resolver: zodResolver(LoginFormSchema),
   });
-
-  const handleLoginUser: SubmitHandler<LoginFormInputType> = async (
-    loginFormData,
-  ) => {
-    try {
-      await signIn("credentials", loginFormData);
-    } catch (error) {
-      if (error instanceof AuthError) {
-        switch (error.type) {
-          case "CredentialsSignin": {
-            toast.error("Invalid credentials");
-            break;
-          }
-          default: {
-            toast.error("Error. Could not sign in.");
-          }
-        }
-      }
-
-      // toast.error("Could not sign in.");
-
-      // nextjs redirects throws an error, so we need to rethrow the error;
-      throw error;
-    }
-
-    reset();
-    // router.push(callbackUrl || "/");
-    // router.push("/dashboard");
-    router.push("/"); // b/c /dashboard is taking too long to load
-  };
 
   const toggleVisiblePass = () => setIsVisiblePass((prev) => !prev);
 
