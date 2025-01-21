@@ -37,7 +37,7 @@ const ButtonWithSpinner = ({
     <Link href={hrefProp}>
       <Button
         // onClick={() => setIsLoading(true)}
-        onClick={handleClick}
+        onPress={handleClick}
         disabled={isLoading}
         isLoading={isLoading}
         spinner={<Spinner color="white" size="sm" />}

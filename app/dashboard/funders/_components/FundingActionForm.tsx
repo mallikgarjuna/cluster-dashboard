@@ -135,7 +135,7 @@ const FundingActionForm = ({ fAction }: Props) => {
           {fAction ? "Update Funding Action" : "Create New Funding Action"}
         </Button>
 
-        <Button type="button" color="danger" onClick={() => router.back()}>
+        <Button type="button" color="danger" onPress={() => router.back()}>
           Cancel
         </Button>
       </div>
