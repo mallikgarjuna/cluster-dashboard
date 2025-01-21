@@ -4,9 +4,15 @@
 // Without a defined matcher, this one line applies next-auth to the entire project
 // export { default } from "next-auth/middleware";
 
-import { auth } from "./lib/auth";
+import NextAuth from "next-auth";
+import { nextAuthEdgeConfig } from "./lib/auth-edge";
 
-export default auth;
+// import { auth } from "./lib/auth-no-edge";
+
+// export default auth;
+
+// ====== After auth-edge.ts and auth-no-edge.ts are created:
+export default NextAuth(nextAuthEdgeConfig).auth;
 
 // // to implement role based authorization, use withAuth
 // // Ref: https://next-auth.js.org/configuration/nextjs#advanced-usage

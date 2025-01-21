@@ -15,7 +15,7 @@ import { redirect } from "next/navigation";
 import { signJwt, verifyJwt } from "../jwt";
 import { getErrorMessage } from "../utils";
 import { sendActivationEmail, sendResetEmail } from "./mailActions";
-import { signIn, signOut } from "../auth";
+import { signIn, signOut } from "../auth-no-edge";
 import { AuthError } from "next-auth";
 
 // register user action

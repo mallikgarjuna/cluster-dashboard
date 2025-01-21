@@ -1,13 +1,9 @@
-import { LoginFormSchema } from "@/lib/validationSchemas";
 import prisma from "@/prisma/client";
 import { UserWithDepartment } from "@/prisma/customTypes";
 import { PrismaAdapter } from "@auth/prisma-adapter";
-import bcrypt from "bcryptjs";
-import NextAuth, { NextAuthConfig } from "next-auth";
-import Credentials from "next-auth/providers/credentials";
-import { NextResponse } from "next/server";
+import { NextAuthConfig } from "next-auth";
 
-const config = {
+export const nextAuthEdgeConfig = {
   adapter: PrismaAdapter(prisma),
   pages: {
     signIn: "/auth/login",
@@ -15,48 +11,7 @@ const config = {
   session: {
     strategy: "jwt",
   },
-  providers: [
-    Credentials({
-      async authorize(credentials) {
-        // runs on login
-
-        // validation - later?
-        const validatedFormData = LoginFormSchema.safeParse(credentials);
-        if (!validatedFormData.success) {
-          return null;
-        }
-
-        // extract values
-        const { email, password } = validatedFormData.data;
-
-        const user = await prisma.user.findUnique({
-          where: { email },
-        });
-        if (!user) {
-          console.log("No user found");
-          return null;
-        }
-
-        const isValidPassword = await bcrypt.compare(
-          password,
-          user.hashedPassword!, //TODO:
-        );
-        if (!isValidPassword) {
-          console.log("Invalid credentials");
-          return null;
-        }
-
-        if (!user.emailVerified) {
-          console.log("Email not verified");
-          return null;
-          // throw new Error("Please verify your email first!");
-        }
-
-        return user; // a truthy value
-        // Nextauth automatically uses whatever we return here as the user obj throughout the authentication flow
-      },
-    }),
-  ],
+  providers: [], // ========> Don't run this on Edge - see auth-no-edge.ts;
   callbacks: {
     authorized: ({ request, auth }) => {
       // runs on every request with middleware
@@ -124,10 +79,3 @@ const config = {
     },
   },
 } satisfies NextAuthConfig;
-
-export const {
-  auth,
-  signIn,
-  signOut,
-  handlers: { GET, POST },
-} = NextAuth(config);
