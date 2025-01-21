@@ -1,16 +1,17 @@
 "use client";
 
-import { LoginFormInputType, LoginFormSchema } from "@/lib/validationSchemas";
 import { loginUser } from "@/lib/actions/authActions";
 import { signIn } from "@/lib/auth";
+import { LoginFormInputType, LoginFormSchema } from "@/lib/validationSchemas";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button, Input } from "@nextui-org/react";
+import { Input } from "@nextui-org/react";
 import { AuthError } from "next-auth";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { HiEye, HiEyeOff } from "react-icons/hi";
+import LogInFormButton from "./LogInFormButton";
 
 interface Props {
   callbackUrl?: string;
@@ -105,9 +106,8 @@ const LoginForm = ({ callbackUrl }: Props) => {
           </button>
         }
       />
-      <Button type="submit" disabled={isSubmitting} isLoading={isSubmitting}>
-        {isSubmitting ? "Signing in..." : "Sign in"}
-      </Button>
+
+      <LogInFormButton />
     </form>
   );
 };
