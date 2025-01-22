@@ -10,7 +10,6 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { GrCluster } from "react-icons/gr";
 import LogOutButton from "./components/auth/LogOutButton";
-import ClusterLogo from "./ui/ClusterLogo";
 
 const links = [
   { label: "Home", href: "/" },
@@ -25,7 +24,7 @@ const NavBar = () => {
   const { data: session, status } = useSession();
 
   return (
-    <nav className="mb-0 border-b px-5 py-3">
+    <nav className="border-b px-5 py-3">
       <Container>
         <Flex justify="between">
           <Flex gap="3" align="center">

@@ -7,7 +7,6 @@ import { Theme } from "@radix-ui/themes";
 import type { Metadata } from "next";
 import NextTopLoader from "nextjs-toploader";
 import { Toaster } from "react-hot-toast";
-import NavBar from "./NavBar";
 import AuthSessionProvider from "./providers/AuthSessionProvider";
 import { NextUIComponentsProvider } from "./providers/NextUIComponentsProvider";
 import TanSackQueryClientProvider from "./providers/TanSackQueryClientProvider";
@@ -30,8 +29,8 @@ export default function RootLayout({
           <TanSackQueryClientProvider>
             <NextUIComponentsProvider>
               <Theme>
-                <NavBar />
-                <main className="mx-auto w-full max-w-[1400px] p-5">
+                {/* <NavBar /> */}
+                <main className="mx-auto w-full max-w-[1400px]">
                   {/* <Container> */}
                   <Toaster /> <NextTopLoader /> {children}
                   {/* </Container> */}
