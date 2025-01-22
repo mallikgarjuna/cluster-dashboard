@@ -5,7 +5,7 @@ import { Metadata } from "next";
 // import GrantForm from "../_components/GrantForm";
 // lazyloading
 const GrantForm = dynamic(
-  () => import("@/app/dashboard/grants/_components/GrantForm"),
+  () => import("@/app/(app)/dashboard/grants/_components/GrantForm"),
   {
     ssr: false,
     loading: () => <GrantFormSkeleton />,

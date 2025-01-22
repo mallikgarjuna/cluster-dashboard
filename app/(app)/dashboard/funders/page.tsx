@@ -5,7 +5,7 @@ import { Suspense } from "react";
 import dynamic from "next/dynamic";
 
 const DynamicFundersTable = dynamic(
-  () => import("@/app/dashboard/funders/_components/FundersTable"),
+  () => import("@/app/(app)/dashboard/funders/_components/FundersTable"),
   { ssr: false, loading: () => <div>Loading...</div> },
 );
 

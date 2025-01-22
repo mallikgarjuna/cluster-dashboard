@@ -15,7 +15,7 @@ import PIGrantTableSkeleton from "./_ui/PIGrantTableSkeleton";
 import { GrantQuery } from "./grants/list/GrantTable";
 // import PIGrantsTable from "./_ui/PIGrantsTable";
 const DynamicPIGrantsTable = dynamic(
-  () => import("@/app/dashboard/_ui/PIGrantsTable"),
+  () => import("@/app/(app)/dashboard/_ui/PIGrantsTable"),
   {
     ssr: false,
     loading: () => <PIGrantTableSkeleton />,
@@ -23,7 +23,7 @@ const DynamicPIGrantsTable = dynamic(
 );
 
 const DynamicPIFundersTable = dynamic(
-  () => import("@/app/dashboard/funders/_components/PIFundersTable"),
+  () => import("@/app/(app)/dashboard/funders/_components/PIFundersTable"),
   { ssr: false, loading: () => <div>Loading...</div> },
 );
 

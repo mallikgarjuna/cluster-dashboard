@@ -8,11 +8,11 @@ import { GrantQuery, columnNamesGrant } from "./GrantTable";
 import { checkAuth } from "@/lib/server-utils";
 
 const DynamicGrantActions = dynamic(
-  () => import("@/app/dashboard/grants/list/GrantActions"),
+  () => import("@/app/(app)/dashboard/grants/list/GrantActions"),
   { ssr: false, loading: () => <div>Loading...</div> },
 );
 const DynamicGrantSearch = dynamic(
-  () => import("@/app/dashboard/grants/list/GrantSearch"),
+  () => import("@/app/(app)/dashboard/grants/list/GrantSearch"),
   { ssr: false, loading: () => <div>Loading...</div> },
 );
 const DynamicPagination = dynamic(() => import("@/app/components/Pagination"), {
@@ -20,7 +20,7 @@ const DynamicPagination = dynamic(() => import("@/app/components/Pagination"), {
   loading: () => <div>Loading...</div>,
 });
 const DynamicGrantTable = dynamic(
-  () => import("@/app/dashboard/grants/list/GrantTable"),
+  () => import("@/app/(app)/dashboard/grants/list/GrantTable"),
   { ssr: false, loading: () => <div>Loading...</div> },
 );
 

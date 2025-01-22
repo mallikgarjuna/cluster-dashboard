@@ -12,43 +12,43 @@ import GrantSubmissionYearFilter from "./GrantSubmissionYearFilter";
 import dynamic from "next/dynamic";
 
 const DynamicGrantStatusFilter = dynamic(
-  () => import("@/app/dashboard/grants/list/GrantStatusFilter"),
+  () => import("@/app/(app)/dashboard/grants/list/GrantStatusFilter"),
   { ssr: false, loading: () => <div>Loading...</div> },
 );
 const DynamicDepartmentFilter = dynamic(
-  () => import("@/app/dashboard/grants/list/DepartmentFilter"),
+  () => import("@/app/(app)/dashboard/grants/list/DepartmentFilter"),
   { ssr: false, loading: () => <div>Loading...</div> },
 );
 const DynamicGroupLeaderFilter = dynamic(
-  () => import("@/app/dashboard/grants/list/GroupLeaderFilter"),
+  () => import("@/app/(app)/dashboard/grants/list/GroupLeaderFilter"),
   { ssr: false, loading: () => <div>Loading...</div> },
 );
 const DynamicGrantStartYearFilter = dynamic(
-  () => import("@/app/dashboard/grants/list/GrantStartYearFilter"),
+  () => import("@/app/(app)/dashboard/grants/list/GrantStartYearFilter"),
   { ssr: false, loading: () => <div>Loading...</div> },
 );
 const DynamicGrantSubmissionYearFilter = dynamic(
-  () => import("@/app/dashboard/grants/list/GrantSubmissionYearFilter"),
+  () => import("@/app/(app)/dashboard/grants/list/GrantSubmissionYearFilter"),
   { ssr: false, loading: () => <div>Loading...</div> },
 );
 
 const DynamicFundingAgencyFilter = dynamic(
-  () => import("@/app/dashboard/grants/list/FundingAgencyFilter"),
+  () => import("@/app/(app)/dashboard/grants/list/FundingAgencyFilter"),
   { ssr: false, loading: () => <div>Loading...</div> },
 );
 
 const DynamicFundingProgrammeFilter = dynamic(
-  () => import("@/app/dashboard/grants/list/FundingProgrammeFilter"),
+  () => import("@/app/(app)/dashboard/grants/list/FundingProgrammeFilter"),
   { ssr: false, loading: () => <div>Loading...</div> },
 );
 
 const DynamicFundingActionFilter = dynamic(
-  () => import("@/app/dashboard/grants/list/FundingActionFilter"),
+  () => import("@/app/(app)/dashboard/grants/list/FundingActionFilter"),
   { ssr: false, loading: () => <div>Loading...</div> },
 );
 
 const DynamicFundingCallFilter = dynamic(
-  () => import("@/app/dashboard/grants/list/FundingCallFilter"),
+  () => import("@/app/(app)/dashboard/grants/list/FundingCallFilter"),
   { ssr: false, loading: () => <div>Loading...</div> },
 );
 

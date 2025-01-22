@@ -1,4 +1,4 @@
-import { GrantQuery } from "@/app/dashboard/grants/list/GrantTable";
+import { GrantQuery } from "@/app/(app)/dashboard/grants/list/GrantTable";
 import { checkAuth } from "@/lib/server-utils";
 import prisma from "@/prisma/client";
 import { OSDepartmentShortName } from "@prisma/client";
