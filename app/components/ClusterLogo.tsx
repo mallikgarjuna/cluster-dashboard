@@ -1,6 +1,5 @@
-import React from "react";
-import { GrCluster } from "react-icons/gr";
 import Link from "next/link";
+import { GrCluster } from "react-icons/gr";
 
 const ClusterLogo = () => {
   return (

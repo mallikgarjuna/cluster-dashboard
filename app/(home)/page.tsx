@@ -3,7 +3,7 @@ import { Flex, Grid } from "@radix-ui/themes";
 import { Metadata } from "next";
 import Link from "next/link";
 import { HiArrowRight } from "react-icons/hi";
-import ClusterLogo from "../ui/ClusterLogo";
+import ClusterLogo from "../components/ClusterLogo";
 
 export default async function HomePage() {
   // const session = await checkAuth();

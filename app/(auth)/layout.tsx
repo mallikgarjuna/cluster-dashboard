@@ -1,5 +1,5 @@
 import React from "react";
-import ClusterLogo from "../ui/ClusterLogo";
+import ClusterLogo from "../components/ClusterLogo";
 
 type AuthLayoutProps = {
   children: React.ReactNode;
