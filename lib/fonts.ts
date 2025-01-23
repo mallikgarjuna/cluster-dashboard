@@ -3,8 +3,8 @@ import { Inter as Inter } from "next/font/google";
 
 export const inter = Inter({
   subsets: ["latin"],
-  variable: "--font-inter",
-  preload: true,
+  // variable: "--font-inter",
+  // preload: true,
 });
 
 // export const lusitana = Lusitana({

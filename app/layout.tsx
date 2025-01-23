@@ -25,7 +25,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="light">
-      <body className={inter.variable}>
+      <body className={inter.className}>
         <AuthSessionProvider>
           <TanSackQueryClientProvider>
             <NextUIComponentsProvider>

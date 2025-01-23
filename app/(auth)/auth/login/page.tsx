@@ -14,7 +14,7 @@ const LoginPage = ({ searchParams }: Props) => {
 
   return (
     <div className="flex flex-col items-center justify-center gap-4">
-      <LoginForm callbackUrl={searchParams.callbackUrl} />
+      <LoginForm />
 
       <Link href="/auth/forgotPassword">Forgot password?</Link>
       <div className="flex gap-2">
