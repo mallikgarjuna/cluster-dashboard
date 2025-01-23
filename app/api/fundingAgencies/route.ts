@@ -1,18 +1,14 @@
-import authOptions from "@/app/auth/authOptions";
-import { GrantQuery } from "@/app/dashboard/grants/list/GrantTable";
+import { GrantQuery } from "@/app/(app)/dashboard/grants/list/GrantTable";
+import { checkAuth } from "@/lib/server-utils";
 import prisma from "@/prisma/client";
 import { OSDepartmentShortName } from "@prisma/client";
-import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 
 // To disable caching for this route
 export const revalidate = 0;
 
 export async function GET(request: NextRequest) {
-  const session = await getServerSession(authOptions);
-  if (!session) {
-    NextResponse.json({ message: "You must be logged in to get this data." });
-  }
+  const session = await checkAuth();
 
   const searchParams: URLSearchParams = request.nextUrl.searchParams;
   const queryObject: Partial<GrantQuery> = Object.fromEntries(searchParams);

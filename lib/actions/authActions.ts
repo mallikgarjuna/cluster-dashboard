@@ -3,21 +3,20 @@ import {
   CreateUserFormInputType,
   CreateUserFormSchema,
   ForgotPasswordFormInputType,
-  SigninFormInputType,
-  SigninFormSchema,
+  LoginFormInputType,
+  LoginFormSchema,
   SignupFormInputType,
   SignupFormSchema,
-} from "@/app/validationSchemas";
+} from "@/lib/validationSchemas";
 import prisma from "@/prisma/client";
-import { User } from "@prisma/client";
-import bcrypt from "bcrypt";
-import { signJwt, verifyJwt } from "../jwt";
-import axios from "axios";
-import { redirect } from "next/navigation";
-import { signIn } from "next-auth/react";
-import { sendActivationEmail, sendResetEmail } from "./mailActions";
-import { getErrorMessage } from "../utils";
+import bcrypt from "bcryptjs";
 import { revalidatePath, revalidateTag } from "next/cache";
+import { redirect } from "next/navigation";
+import { signJwt, verifyJwt } from "../jwt";
+import { getErrorMessage } from "../utils";
+import { sendActivationEmail, sendResetEmail } from "./mailActions";
+import { signIn, signOut } from "../auth-no-edge";
+import { AuthError } from "next-auth";
 
 // register user action
 export async function registerUser(signupFormData: SignupFormInputType) {
@@ -195,44 +194,49 @@ export async function createUserByAdmin(
   };
 }
 
-// TODO: (not used it yet) signin user action b/c signIn() is a client-side function;
-export async function loginUser(signinFormData: SigninFormInputType) {
-  // In the received data, we have to make sure that we've a valid email and pswd
-  const validatedFields = SigninFormSchema.safeParse(signinFormData);
-  if (!validatedFields.success) {
+// TODO: (not used it yet) login user action b/c signIn() is a client-side function;
+export async function loginUser(formData: unknown) {
+  // Check if the `formData` is a valid `FormData` object
+  // b/c only `FormData` object can be passed to `signIn()` function
+  if (!(formData instanceof FormData)) {
     return {
       success: false,
-      message:
-        "Missing fields. Failed to sign in user." +
-        "\n" +
-        getErrorMessage(validatedFields.error),
+      message: "Invalid form data",
     };
   }
-  const { email, password } = validatedFields.data;
 
   try {
-    // Here signIn() is a client-side function and cannot work in server-side here; so throws an error;
-    const result = await signIn("credentials", {
-      email: email,
-      password: password,
-      redirect: false,
-    });
-    if (result?.error) {
-      return {
-        success: false,
-        message: "Failed to sign in user",
-      };
-    } else {
-      return {
-        success: true,
-        message: "Logged in successfully!",
-      };
-    }
+    await signIn("credentials", formData);
   } catch (error) {
-    return {
-      message: "Database error: Failed to sign in user.",
-    };
+    if (error instanceof AuthError) {
+      switch (error.type) {
+        case "CredentialsSignin": {
+          return {
+            success: false,
+            message: "Invalid credentials",
+          };
+        }
+        default: {
+          return {
+            success: false,
+            message: "Error. Could not sign in.",
+          };
+        }
+      }
+    }
+
+    // return {
+    //   message: "Could not sign in",
+    // };
+    throw error; // nextjs redirects throws an error, so we need to rethrow the error;
   }
+
+  // redirect("/profile"); // b/c /dashboard is taking too long to load
+}
+
+export async function logOutUser() {
+  // In Next-Auth v5, you can call signOut() on server-side (here in SA)
+  await signOut({ redirectTo: "/" });
 }
 
 // Activate user server action (called in auth/activation/[jwt]/page.tsx)

@@ -56,8 +56,8 @@ const ResetPasswordForm = ({ jwtUserId }: Props) => {
         toast.success("Your password has been reset successfully.");
 
       reset();
-      //   redirect the user to signin page
-      router.push("/auth/signin");
+      //   redirect the user to login page
+      router.push("/auth/login");
     } catch (error) {
       console.error(error);
       toast.error("Something went wrong in resetting password...");

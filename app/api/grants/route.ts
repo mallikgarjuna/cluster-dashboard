@@ -1,13 +1,10 @@
-import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/prisma/client";
-import { grantFormSchema } from "../../validationSchemas";
-import authOptions from "@/app/auth/authOptions";
+import { grantFormSchema } from "../../../lib/validationSchemas";
+import { checkAuth } from "@/lib/server-utils";
 
 export async function POST(request: NextRequest) {
-  const session = await getServerSession(authOptions);
-  if (!session) return NextResponse.json({}, { status: 401 });
-  // 401 == unauthorized
+  const session = await checkAuth();
 
   const body = await request.json();
   // console.log("body: ", body);

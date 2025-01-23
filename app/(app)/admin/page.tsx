@@ -1,0 +1,76 @@
+import { Metadata } from "next";
+import Link from "next/link";
+
+const AdminPage = () => {
+  return (
+    <>
+      <article className="flex flex-col gap-3">
+        <h2 className="text-3xl">Admin Tasks</h2>
+        <ol className="flex flex-col gap-3">
+          <li>
+            <Link
+              href="/auth/createUser"
+              color="blue"
+              className="text-blue-500"
+            >
+              Create new user by Web-Admin
+            </Link>
+          </li>
+          <li>
+            <Link href="/dashboard" color="blue" className="text-blue-500">
+              Dashboard
+            </Link>
+          </li>
+        </ol>
+      </article>
+      <article className="mt-6 flex flex-col gap-3">
+        <h2 className="text-3xl">Funders</h2>
+        <ol className="flex flex-col gap-3">
+          <li>
+            <Link
+              href="/dashboard/funders/agency/new"
+              color="blue"
+              className="text-blue-500"
+            >
+              Create a new funding agency
+            </Link>
+          </li>
+          <li>
+            <Link
+              href="/dashboard/funders/programme/new"
+              color="blue"
+              className="text-blue-500"
+            >
+              Create a new funding programme
+            </Link>
+          </li>
+          <li>
+            <Link
+              href="/dashboard/funders/action/new"
+              color="blue"
+              className="text-blue-500"
+            >
+              Create a new funding action
+            </Link>
+          </li>
+          <li>
+            <Link
+              href="/dashboard/funders/call/new"
+              color="blue"
+              className="text-blue-500"
+            >
+              Create a new funding call
+            </Link>
+          </li>
+        </ol>
+      </article>
+    </>
+  );
+};
+
+export const metadata: Metadata = {
+  title: "Cluster Dashboard - Admin",
+  description: "Admin tasks",
+};
+
+export default AdminPage;

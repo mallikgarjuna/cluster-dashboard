@@ -1,10 +1,10 @@
 // API for user login
 // for authorize() function in authOptions.ts
 
+import prisma from "@/prisma/client";
+import bcrypt from "bcryptjs";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import prisma from "@/prisma/client";
-import bcrypt from "bcrypt";
 
 // zod schema for user login
 const UserLoginSchema = z.object({

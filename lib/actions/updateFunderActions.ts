@@ -9,7 +9,7 @@ import {
   CreateFundingCallFormSchema,
   CreateFundingProgrammeFormFormInputType,
   CreateFundingProgrammeFormSchema,
-} from "@/app/validationSchemas";
+} from "@/lib/validationSchemas";
 import prisma from "@/prisma/client";
 import { revalidateTag } from "next/cache";
 import { getErrorMessage } from "../utils";
