@@ -33,7 +33,13 @@ export default function RootLayout({
                 {/* <NavBar /> */}
                 <main className="mx-auto w-full max-w-[1400px]">
                   {/* <Container> */}
-                  <Toaster /> <NextTopLoader /> {children}
+                  <Toaster
+                    toastOptions={{
+                      duration: 5000,
+                    }}
+                  />{" "}
+                  <NextTopLoader />
+                  {children}
                   {/* </Container> */}
                 </main>
               </Theme>

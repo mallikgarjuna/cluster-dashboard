@@ -46,14 +46,14 @@ export async function POST(request: NextRequest) {
   // encrypt the userId with jwt:
   const jwtUserId = signJwt({ newUserId: newUser.id });
 
-  const activationUrl = `${process.env.NEXTAUTH_URL}/auth/activation/${jwtUserId}`;
+  const activationUrl = `${process.env.AUTH_URL}/auth/activation/${jwtUserId}`;
   const activationData = {
     toEmail: newUser.email,
     subject: "Activate your account",
     firstName: newUser.firstName,
     activationUrl: activationUrl,
   };
-  await axios.post(`${process.env.NEXTAUTH_URL}/api/sendEmail`, activationData);
+  await axios.post(`${process.env.AUTH_URL}/api/sendEmail`, activationData);
 
   //   Finally return a basic response to the client
   //   obvisouly, don't return the hashedpwd for security reasons

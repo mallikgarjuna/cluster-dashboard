@@ -9,7 +9,7 @@ interface Props {
 }
 const ActivationPage = async ({ params }: Props) => {
   // const response = await axios.post(
-  //   `${process.env.NEXTAUTH_URL}/api/users/activate`,
+  //   `${process.env.AUTH_URL}/api/users/activate`,
   //   {
   //     jwtUserId: params.jwt,
   //   }

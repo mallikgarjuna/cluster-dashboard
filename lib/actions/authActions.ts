@@ -17,8 +17,10 @@ import { getErrorMessage } from "../utils";
 import { sendActivationEmail, sendResetEmail } from "./mailActions";
 import { signIn, signOut } from "../auth-no-edge";
 import { AuthError } from "next-auth";
+import { Prisma } from "@prisma/client";
 
-// register user action
+// =========================================================
+// register user action (not using it; use createUserByAdmin SA instead);
 export async function registerUser(signupFormData: SignupFormInputType) {
   // In the received data, we have to make sure that we've a valid email and pswd
   const validatedFields = SignupFormSchema.safeParse(signupFormData);
@@ -71,14 +73,14 @@ export async function registerUser(signupFormData: SignupFormInputType) {
   // encrypt the userId with jwt:
   const jwtUserId = signJwt({ newUserId: newUser.id });
 
-  const activationUrl = `${process.env.NEXTAUTH_URL}/auth/activation/${jwtUserId}`;
+  const activationUrl = `${process.env.AUTH_URL}/auth/activation/${jwtUserId}`;
   const activationData = {
     toEmail: newUser.email!,
     subject: "Activate your account",
     firstName: newUser.firstName!,
     activationUrl: activationUrl,
   };
-  //   await axios.post(`${process.env.NEXTAUTH_URL}/api/sendEmail`, activationData);
+  //   await axios.post(`${process.env.AUTH_URL}/api/sendEmail`, activationData);
   const activationResult = await sendActivationEmail(activationData); // calling server action, instead of api
   if (activationResult.success === false) {
     return {
@@ -101,11 +103,9 @@ export async function registerUser(signupFormData: SignupFormInputType) {
   redirect("/");
 }
 
-// Create user by admin
-export async function createUserByAdmin(
-  createUserFormData: CreateUserFormInputType,
-) {
-  // validate
+// Create user by admin ======================================
+export async function createUserByAdmin(createUserFormData: unknown) {
+  // validate the input data
   const validatedFields = CreateUserFormSchema.safeParse(createUserFormData);
   if (!validatedFields.success) {
     return {
@@ -116,23 +116,14 @@ export async function createUserByAdmin(
         getErrorMessage(validatedFields.error),
     };
   }
+
+  // destructure the validated data
   const { firstName, lastName, email, password, role, departmentId } =
     validatedFields.data;
   const name = `${firstName} ${lastName}`;
-
-  // If valid, make sure that we don't have a user w/ same email
-  const user = await prisma?.user.findUnique({
-    where: { email: email },
-  });
-  if (user) {
-    return {
-      success: false,
-      message: "User already exists. Failed to create user.",
-    };
-  }
-
-  // if user doesn't exists, create a user
   const hashedPassword = await bcrypt.hash(password, 10);
+
+  // db mutation: create user
   try {
     var newUser = await prisma.user.create({
       data: {
@@ -153,6 +144,14 @@ export async function createUserByAdmin(
     revalidateTag("usersInGrantForm");
     revalidateTag("usersInAssigneeSelect");
   } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      if (error.code === "P2002") {
+        return {
+          success: false,
+          message: "Email already exists",
+        };
+      }
+    }
     return {
       success: false,
       message:
@@ -166,9 +165,9 @@ export async function createUserByAdmin(
   // encrypt the userId with jwt
   const jwtUserId = signJwt({ newUserId: newUser.id });
 
-  const activationUrl = `${process.env.NEXTAUTH_URL}/auth/activation/${jwtUserId}`;
+  const activationUrl = `${process.env.AUTH_URL}/auth/activation/${jwtUserId}`;
   const activationData = {
-    toEmail: "m.gurram@umcg.nl", //Admin email hardcoded
+    toEmail: "m.gurram@umcg.nl", //Admin email hardcoded; //newUser.email!;
     subject: "Activate account: Created new user for " + newUser.email,
     firstName: "Admin",
     activationUrl: activationUrl,
@@ -178,7 +177,7 @@ export async function createUserByAdmin(
     return {
       success: false,
       message:
-        "Failed to send activation email. Failed to create user by Admin." +
+        "Failed to send activation email. But user is created successfully by Admin." +
         "\n" +
         activationResult.message,
     };
@@ -194,7 +193,7 @@ export async function createUserByAdmin(
   };
 }
 
-// TODO: (not used it yet) login user action b/c signIn() is a client-side function;
+// Using this SA in LoginForm;
 export async function loginUser(formData: unknown) {
   // Check if the `formData` is a valid `FormData` object
   // b/c only `FormData` object can be passed to `signIn()` function
@@ -278,7 +277,7 @@ export async function forgotPassword(
 
   // if user exists, send an email with restpassword link
   const jwtUserId = signJwt({ id: user.id });
-  const resetUrl = `${process.env.NEXTAUTH_URL}/auth/resetPassword/${jwtUserId}`;
+  const resetUrl = `${process.env.AUTH_URL}/auth/resetPassword/${jwtUserId}`;
   const resetPasswordData = {
     toEmail: user.email!,
     subject: "Reset your password",

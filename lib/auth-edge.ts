@@ -28,13 +28,24 @@ export const nextAuthEdgeConfig = {
         request.nextUrl.pathname.includes("/admin");
       const isTryingToAccessProfilePage =
         request.nextUrl.pathname.includes("/profile");
+      const isTryingToAccessAuthPages =
+        request.nextUrl.pathname.includes("/auth");
+      const isTryingToAccessLoginPage =
+        request.nextUrl.pathname.includes("/login");
+      const isTryingToAccessSignupPage =
+        request.nextUrl.pathname.includes("/signup");
+      const isTryingToAccessCreateUserPage =
+        request.nextUrl.pathname.includes("/createUser");
 
       // return true;
       if (!isAdmin && isTryingToAccessAdminPage) {
         return false;
       }
 
-      if (!isLoggedIn && isTryingToAccessDashboard) {
+      if (
+        !isLoggedIn &&
+        (isTryingToAccessDashboard || isTryingToAccessAuthPages)
+      ) {
         return false; // redirect to login?? //TODO:
       }
 
@@ -49,6 +60,9 @@ export const nextAuthEdgeConfig = {
 
         if (!isAdmin && isTryingToAccessAdminPage) return false;
         if (isAdmin && isTryingToAccessAdminPage) return true;
+
+        if (!isAdmin && isTryingToAccessCreateUserPage) return false;
+        if (isAdmin && isTryingToAccessCreateUserPage) return true;
 
         return Response.redirect(new URL("/dashboard", request.url));
       }
