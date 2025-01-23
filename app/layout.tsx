@@ -10,7 +10,7 @@ import { Toaster } from "react-hot-toast";
 import AuthSessionProvider from "./providers/AuthSessionProvider";
 import { NextUIComponentsProvider } from "./providers/NextUIComponentsProvider";
 import TanSackQueryClientProvider from "./providers/TanSackQueryClientProvider";
-import { inter } from "./ui/fonts";
+import { inter } from "../lib/fonts";
 
 export const metadata: Metadata = {
   title: "Create Next App",

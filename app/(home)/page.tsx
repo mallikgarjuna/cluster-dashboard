@@ -4,7 +4,6 @@ import { Metadata } from "next";
 import Link from "next/link";
 import { HiArrowRight } from "react-icons/hi";
 import ClusterLogo from "../ui/ClusterLogo";
-import { lusitana } from "../ui/fonts";
 
 export default async function HomePage() {
   // const session = await checkAuth();
@@ -17,7 +16,7 @@ export default async function HomePage() {
       <Grid columns={{ initial: "1", md: "2" }} gap="5">
         <Flex direction="column" gap="5">
           <div
-            className={`text-xl text-gray-800 md:text-3xl md:leading-normal ${lusitana.className}`}
+            className={`text-xl text-gray-800 md:text-3xl md:leading-normal`}
           >
             <strong>Welcome to Cluster Dashboard.</strong>
             <p>This is the dashboard for the cluster BST.</p>
