@@ -104,6 +104,7 @@ export async function registerUser(signupFormData: SignupFormInputType) {
 }
 
 // Create user by admin ======================================
+// Using this SA in CreateUserForm component;
 export async function createUserByAdmin(createUserFormData: unknown) {
   // validate the input data
   const validatedFields = CreateUserFormSchema.safeParse(createUserFormData);
