@@ -24,15 +24,14 @@ export const nextAuthEdgeConfig = {
         request.nextUrl.pathname.includes("/dashboard");
 
       const isTryingToAccessHomePage = request.nextUrl.pathname === "/";
-      const isTryingToAccessAdminPage = request.nextUrl.pathname === "/admin";
+      const isTryingToAccessAdminPage =
+        request.nextUrl.pathname.includes("/admin");
+      const isTryingToAccessProfilePage =
+        request.nextUrl.pathname.includes("/profile");
 
       // return true;
       if (!isAdmin && isTryingToAccessAdminPage) {
         return false;
-      }
-
-      if (isTryingToAccessHomePage) {
-        return true;
       }
 
       if (!isLoggedIn && isTryingToAccessDashboard) {
@@ -43,16 +42,15 @@ export const nextAuthEdgeConfig = {
         return true;
       }
 
-      if (
-        isLoggedIn &&
-        (request.nextUrl.pathname.includes("/login") ||
-          request.nextUrl.pathname.includes("/signup"))
-      ) {
-        return Response.redirect(new URL("/dashboard", request.url));
-      }
-
       if (isLoggedIn && !isTryingToAccessDashboard) {
-        return true;
+        // if (isAdmin) return true;
+
+        if (isTryingToAccessProfilePage) return true;
+
+        if (!isAdmin && isTryingToAccessAdminPage) return false;
+        if (isAdmin && isTryingToAccessAdminPage) return true;
+
+        return Response.redirect(new URL("/dashboard", request.url));
       }
 
       if (!isLoggedIn && !isTryingToAccessDashboard) {
@@ -60,6 +58,25 @@ export const nextAuthEdgeConfig = {
       }
 
       return false;
+
+      // if (
+      //   isLoggedIn &&
+      //   (request.nextUrl.pathname.includes("/login") ||
+      //     request.nextUrl.pathname.includes("/signup"))
+      // ) {
+      //   return Response.redirect(new URL("/dashboard", request.url));
+      // }
+
+      // if (isLoggedIn && !isTryingToAccessDashboard) {
+      //   if (
+      //     request.nextUrl.pathname.includes("/login") ||
+      //     request.nextUrl.pathname.includes("/signup")
+      //   ) {
+      //     return Response.redirect(new URL("/dashboard", request.url));
+      //   }
+
+      //   return true;
+      // }
     },
     jwt: async ({ token, user }) => {
       if (user) {
