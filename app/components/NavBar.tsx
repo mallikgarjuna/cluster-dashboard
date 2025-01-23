@@ -9,7 +9,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { GrCluster } from "react-icons/gr";
-import LogOutButton from "./components/auth/LogOutButton";
+import LogOutButton from "./auth/LogOutButton";
 
 const links = [
   { label: "Home", href: "/" },
