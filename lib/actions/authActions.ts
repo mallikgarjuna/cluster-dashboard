@@ -1,27 +1,25 @@
 "use server";
 import {
-  CreateUserFormInputType,
   CreateUserFormSchema,
-  ForgotPasswordFormInputType,
   ForgotPasswordFormSchema,
-  LoginFormInputType,
-  LoginFormSchema,
   SignupFormInputType,
   SignupFormSchema,
 } from "@/lib/validationSchemas";
 import prisma from "@/prisma/client";
+import { Prisma } from "@prisma/client";
 import bcrypt from "bcryptjs";
+import { AuthError } from "next-auth";
 import { revalidatePath, revalidateTag } from "next/cache";
 import { redirect } from "next/navigation";
+import { signIn, signOut } from "../auth-no-edge";
 import { signJwt, verifyJwt } from "../jwt";
 import { getErrorMessage } from "../utils";
 import { sendActivationEmail, sendResetEmail } from "./mailActions";
-import { signIn, signOut } from "../auth-no-edge";
-import { AuthError } from "next-auth";
-import { Prisma } from "@prisma/client";
 
 // =========================================================
-// register user action (not using it; use createUserByAdmin SA instead);
+// registeruser() SA =========================================
+// Using it in SignupForm.tsx
+// XXX Currently not using it; use createUserByAdmin SA instead);
 export async function registerUser(signupFormData: SignupFormInputType) {
   // In the received data, we have to make sure that we've a valid email and pswd
   const validatedFields = SignupFormSchema.safeParse(signupFormData);
@@ -104,8 +102,8 @@ export async function registerUser(signupFormData: SignupFormInputType) {
   redirect("/");
 }
 
-// Create user by admin ======================================
-// Using this SA in CreateUserForm component;
+// createUserByAdmin() SA ======================================
+// Using this SA in CreateUserForm.tsx component;
 export async function createUserByAdmin(createUserFormData: unknown) {
   // validate the input data
   const validatedFields = CreateUserFormSchema.safeParse(createUserFormData);
@@ -195,7 +193,8 @@ export async function createUserByAdmin(createUserFormData: unknown) {
   };
 }
 
-// Using this SA in LoginForm;====================================
+// loginUser() SA ============================================
+// Using this SA in LoginForm.tsx;
 export async function loginUser(formData: unknown) {
   // Check if the `formData` is a valid `FormData` object
   // b/c only `FormData` object can be passed to `signIn()` function
@@ -235,14 +234,16 @@ export async function loginUser(formData: unknown) {
   // redirect("/profile"); // b/c /dashboard is taking too long to load
 }
 
-// Using this SA in LogOutButton component ========================
+// logOutUser() SA ============================================
+// Using this SA in LogOutButton.tsx component
 export async function logOutUser() {
   // In Next-Auth v5, you can call signOut() on server-side (here in SA)
   await signOut({ redirectTo: "/" });
 }
 
+// activateUser() SA ==========================================
 // Activate user server action (called in auth/activation/[jwt]/page.tsx)
-// Using this SA in ActivationPage SC ===============================
+// Using this SA in ActivationPage SC
 type ActivateUserFunction = (
   jwtUserId: string,
 ) => Promise<"userNotExist" | "alreadyActivated" | "success">;
