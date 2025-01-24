@@ -17,6 +17,8 @@ const WelcomeEmailSchema = z.object({
 });
 type WelcomeEmailInputType = z.infer<typeof WelcomeEmailSchema>;
 
+// sendActivationEmail() SA ======================================
+// Used in createUserByAdmin() SA in authActions.ts
 export async function sendActivationEmail(
   activationData: WelcomeEmailInputType,
 ) {
@@ -72,9 +74,9 @@ const ResetPasswordEmailSchema = z.object({
 });
 type ResetPasswordEmailInputType = z.infer<typeof ResetPasswordEmailSchema>;
 
-export async function sendResetEmail(
-  resetPasswordData: ResetPasswordEmailInputType,
-) {
+// sendResetEmail() SA ======================================
+// Used in forgotPassword() SA in authActions.ts
+export async function sendResetEmail(resetPasswordData: unknown) {
   // TODO: addrate limit
   // TODO: add authorization
 
@@ -113,7 +115,7 @@ export async function sendResetEmail(
   //   return NextResponse.json(data, { status: 200 });
   return {
     success: true,
-    message: "Reset Email sent successfully",
+    message: "Reset Email sent successfully. Check your inbox",
     status: 200,
   };
 }

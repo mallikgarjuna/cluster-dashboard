@@ -1,5 +1,9 @@
 "use client";
-import { CreateUserFormInputType } from "@/lib/validationSchemas";
+
+import {
+  CreateUserFormInputType,
+  CreateUserFormSchema,
+} from "@/lib/validationSchemas";
 import { createUserByAdmin } from "@/lib/actions/authActions";
 import { Button, Checkbox, Input, Select, SelectItem } from "@nextui-org/react";
 import { Department, UserRole } from "@prisma/client";
@@ -18,6 +22,7 @@ import {
   HiOfficeBuilding,
   HiUser,
 } from "react-icons/hi";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 const CreateUserForm = () => {
   const { data: departments, error, isLoading } = useDepartments();
@@ -25,57 +30,85 @@ const CreateUserForm = () => {
   const router = useRouter();
   const {
     register,
+    trigger,
+    getValues,
     handleSubmit,
     formState: { errors, isSubmitting },
     control,
     reset,
-  } = useForm<CreateUserFormInputType>();
+  } = useForm<CreateUserFormInputType>({
+    resolver: zodResolver(CreateUserFormSchema),
+  });
 
   const [isVisiblePass, setIsVisiblePass] = useState(false);
   const toggleVisiblePass = () => setIsVisiblePass((prev) => !prev);
 
-  const createUserOnSubmit = async (
-    createUserFormData: CreateUserFormInputType,
-  ) => {
-    // Check the type of departmentId returned by the form
-    // console.log(createUserFormData);
+  // const createUserOnSubmit = async (
+  //   createUserFormData: CreateUserFormInputType,
+  // ) => {
+  //   // Check the type of departmentId returned by the form
+  //   // console.log(createUserFormData);
 
-    try {
-      const result = await createUserByAdmin(createUserFormData);
-      if (!result.success) {
-        toast.error(result.message);
-      } else {
-        toast.success(
-          "The user created by Admin successfully!" + "\n" + result.message,
-        );
-        reset();
-        // router.push("/admin");
+  //   try {
+  //     const result = await createUserByAdmin(createUserFormData);
+  //     if (!result.success) {
+  //       toast.error(result.message);
+  //     } else {
+  //       toast.success(
+  //         "The user created by Admin successfully!" + "\n" + result.message,
+  //       );
+  //       reset();
+  //       // router.push("/admin");
 
-        // Invalidate (and refetch) every query in the cache
-        queryClient.invalidateQueries();
-        // Invalidate (and refetch) every query with a key that starts with `users`
-        queryClient.invalidateQueries({
-          queryKey: ["users"],
-        });
-        queryClient.invalidateQueries({
-          queryKey: ["usersInGrantForm"],
-        });
-        queryClient.invalidateQueries({
-          queryKey: ["usersInAssigneeSelect"],
-        });
+  //       // Invalidate (and refetch) every query in the cache
+  //       queryClient.invalidateQueries();
+  //       // Invalidate (and refetch) every query with a key that starts with `users`
+  //       queryClient.invalidateQueries({
+  //         queryKey: ["users"],
+  //       });
+  //       queryClient.invalidateQueries({
+  //         queryKey: ["usersInGrantForm"],
+  //       });
+  //       queryClient.invalidateQueries({
+  //         queryKey: ["usersInAssigneeSelect"],
+  //       });
 
-        router.push("/dashboard/grants/list");
-        router.refresh();
-      }
-    } catch (error) {
-      toast.error("Something went wrong...");
-      console.error(error);
+  //       router.push("/dashboard/grants/list");
+  //       router.refresh();
+  //     }
+  //   } catch (error) {
+  //     toast.error("Something went wrong...");
+  //     console.error(error);
+  //   }
+  // };
+
+  const handleAction = async (formData: FormData) => {
+    const resultTrigger = await trigger();
+    if (!resultTrigger) return;
+
+    // FormData object first needs to be converted to a JS object;
+    // console.log("formData: ", formData);
+
+    // This is a plain JS object after zodResolver() validation is applied
+    // Note: getValues() doesn't get the zod `transformations` applied;
+    const createUserData = getValues();
+    // console.log("createUserData: ", createUserData);
+
+    const result = await createUserByAdmin(createUserData);
+    if (!result.success) {
+      toast.error(result.message);
+      return;
+    } else {
+      toast.success(result.message);
+      reset();
+      router.push("/admin");
     }
   };
 
   return (
     <form
-      onSubmit={handleSubmit(createUserOnSubmit)}
+      // onSubmit={handleSubmit(createUserOnSubmit)}
+      action={handleAction}
       className="grid grid-cols-2 gap-3 place-self-stretch rounded-md border p-2"
     >
       <h2 className="col-span-2 flex justify-center text-lg font-bold">

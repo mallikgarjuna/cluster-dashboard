@@ -24,15 +24,28 @@ export const nextAuthEdgeConfig = {
         request.nextUrl.pathname.includes("/dashboard");
 
       const isTryingToAccessHomePage = request.nextUrl.pathname === "/";
-      const isTryingToAccessAdminPage = request.nextUrl.pathname === "/admin";
+      const isTryingToAccessAdminPage =
+        request.nextUrl.pathname.includes("/admin");
+      const isTryingToAccessProfilePage =
+        request.nextUrl.pathname.includes("/profile");
+      const isTryingToAccessAuthPages =
+        request.nextUrl.pathname.includes("/auth");
+      const isTryingToAccessLoginPage =
+        request.nextUrl.pathname.includes("/login");
+      const isTryingToAccessSignupPage =
+        request.nextUrl.pathname.includes("/signup");
+      const isTryingToAccessCreateUserPage =
+        request.nextUrl.pathname.includes("/createUser");
+      const isTryingToAccessForgotPasswordPage =
+        request.nextUrl.pathname.includes("/forgotPassword");
+      const isTryingToAccessResetPasswordPage =
+        request.nextUrl.pathname.includes("/resetPassword");
+      const isTryingToAccessActivationPage =
+        request.nextUrl.pathname.includes("/activation");
 
       // return true;
       if (!isAdmin && isTryingToAccessAdminPage) {
         return false;
-      }
-
-      if (isTryingToAccessHomePage) {
-        return true;
       }
 
       if (!isLoggedIn && isTryingToAccessDashboard) {
@@ -43,23 +56,57 @@ export const nextAuthEdgeConfig = {
         return true;
       }
 
-      if (
-        isLoggedIn &&
-        (request.nextUrl.pathname.includes("/login") ||
-          request.nextUrl.pathname.includes("/signup"))
-      ) {
+      if (isLoggedIn && !isTryingToAccessDashboard) {
+        // if (isAdmin) return true;
+
+        if (
+          isTryingToAccessProfilePage ||
+          isTryingToAccessForgotPasswordPage ||
+          isTryingToAccessResetPasswordPage
+        )
+          return true;
+
+        if (!isAdmin && isTryingToAccessAdminPage) return false;
+        if (isAdmin && isTryingToAccessAdminPage) return true;
+
+        if (!isAdmin && isTryingToAccessCreateUserPage) return false;
+        if (isAdmin && isTryingToAccessCreateUserPage) return true;
+
         return Response.redirect(new URL("/dashboard", request.url));
       }
 
-      if (isLoggedIn && !isTryingToAccessDashboard) {
-        return true;
-      }
-
       if (!isLoggedIn && !isTryingToAccessDashboard) {
-        return true;
+        if (
+          isTryingToAccessHomePage ||
+          isTryingToAccessLoginPage ||
+          isTryingToAccessForgotPasswordPage ||
+          isTryingToAccessResetPasswordPage ||
+          isTryingToAccessActivationPage
+        )
+          return true;
+        // return true;
       }
 
       return false;
+
+      // if (
+      //   isLoggedIn &&
+      //   (request.nextUrl.pathname.includes("/login") ||
+      //     request.nextUrl.pathname.includes("/signup"))
+      // ) {
+      //   return Response.redirect(new URL("/dashboard", request.url));
+      // }
+
+      // if (isLoggedIn && !isTryingToAccessDashboard) {
+      //   if (
+      //     request.nextUrl.pathname.includes("/login") ||
+      //     request.nextUrl.pathname.includes("/signup")
+      //   ) {
+      //     return Response.redirect(new URL("/dashboard", request.url));
+      //   }
+
+      //   return true;
+      // }
     },
     jwt: async ({ token, user }) => {
       if (user) {

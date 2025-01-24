@@ -1,67 +1,20 @@
 "use client";
-import {
-  ForgotPasswordFormInputType,
-  ForgotPasswordFormSchema,
-} from "@/lib/validationSchemas";
-import { forgotPassword } from "@/lib/actions/authActions";
-import { getErrorMessage } from "@/lib/utils";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Button, Input } from "@nextui-org/react";
-import React from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
-import toast from "react-hot-toast";
+
+import ForgotPasswordForm from "@/app/components/auth/ForgotPasswordForm";
 import { FaUserLock } from "react-icons/fa";
-import { HiMail } from "react-icons/hi";
-import { z } from "zod";
 
 const ForgotPasswordPage = () => {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors, isSubmitting },
-    reset,
-  } = useForm<ForgotPasswordFormInputType>({
-    resolver: zodResolver(ForgotPasswordFormSchema),
-  });
-
-  const submitRequest: SubmitHandler<ForgotPasswordFormInputType> = async (
-    ForgotPasswordFormData,
-  ) => {
-    try {
-      const result = await forgotPassword(ForgotPasswordFormData);
-      toast.success("Reset password link was sent to your email.");
-      reset();
-    } catch (error) {
-      // console.log(error);
-      toast.error("Something went wrong..." + "\n" + getErrorMessage(error));
-    }
-  };
-
   return (
-    <div className="grid grid-cols-1 place-items-center items-center md:grid-cols-2">
-      <form
-        onSubmit={handleSubmit(submitRequest)}
-        className="flex flex-col gap-2 place-self-stretch"
-      >
-        <div className="text-center text-2xl font-bold">Enter Your Email</div>
-        <Input
-          type="email"
-          label="Email"
-          placeholder="Enter your email"
-          {...register("email")}
-          startContent={<HiMail />}
-          errorMessage={errors.email?.message}
-        />
-        <Button
-          type="submit"
-          color="primary"
-          isLoading={isSubmitting}
-          disabled={isSubmitting}
-        >
-          {isSubmitting ? "Submitting..." : "Submit"}
-        </Button>
-      </form>
-      <FaUserLock size={200} />
+    <div className="flex flex-col gap-4">
+      <h1 className="text-center text-2xl font-bold">
+        Send password reset link to your email
+      </h1>
+
+      <div className="flex gap-2">
+        <ForgotPasswordForm />
+
+        <FaUserLock size={100} />
+      </div>
     </div>
   );
 };

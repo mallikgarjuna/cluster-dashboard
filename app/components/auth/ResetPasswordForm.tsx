@@ -37,6 +37,8 @@ const ResetPasswordForm = ({ jwtUserId }: Props) => {
 
   const {
     register,
+    trigger,
+    getValues,
     handleSubmit,
     reset,
     formState: { errors, isSubmitting },
@@ -44,29 +46,60 @@ const ResetPasswordForm = ({ jwtUserId }: Props) => {
     resolver: zodResolver(ResetPasswordFormSchema),
   });
 
-  const resetPass: SubmitHandler<ResetPasswordFormInputType> = async (
-    resetPasswordFormData,
-  ) => {
-    try {
-      const result = await resetPassword(
-        jwtUserId,
-        resetPasswordFormData.password,
-      );
-      if (result === "success")
-        toast.success("Your password has been reset successfully.");
+  // const resetPass: SubmitHandler<ResetPasswordFormInputType> = async (
+  //   resetPasswordFormData,
+  // ) => {
+  //   // console.log("resetPasswordFormData: ", resetPasswordFormData);
 
+  //   try {
+  //     const result = await resetPassword(
+  //       jwtUserId,
+  //       resetPasswordFormData.password,
+  //     );
+  //     if (result === "success")
+  //       toast.success("Your password has been reset successfully.");
+
+  //     reset();
+  //     //   redirect the user to login page
+  //     router.push("/auth/login");
+  //   } catch (error) {
+  //     console.error(error);
+  //     toast.error("Something went wrong in resetting password...");
+  //   }
+  // };
+
+  const handleAction = async (formData: FormData) => {
+    // console.log("formData: ", formData);
+
+    // If wrong pswd, it gives false but no CS errors? TODO:
+    const resultTrigger = await trigger();
+    if (!resultTrigger) return;
+
+    // FormData object first needs to be converted to a JS object;
+
+    // This is a plain JS object after zodResolver() validation is applied
+    // Note: getValues() doesn't get the zod `transformations` applied;
+    const resetPasswordFormData = getValues();
+    // console.log("resetPasswordFormData: ", resetPasswordFormData);
+
+    const result = await resetPassword(
+      jwtUserId,
+      resetPasswordFormData.password,
+    );
+    if (!result.success) {
+      toast.error(result.message);
+      return;
+    } else {
+      toast.success(result.message);
       reset();
-      //   redirect the user to login page
       router.push("/auth/login");
-    } catch (error) {
-      console.error(error);
-      toast.error("Something went wrong in resetting password...");
     }
   };
 
   return (
     <form
-      onSubmit={handleSubmit(resetPass)}
+      // onSubmit={handleSubmit(resetPass)}
+      action={handleAction}
       className="m-2 flex flex-col gap-2 rounded-md border p-2"
     >
       <div className="text-2xl font-bold">Reset Your Password</div>
