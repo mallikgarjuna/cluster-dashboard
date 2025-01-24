@@ -242,7 +242,7 @@ export async function logOutUser() {
 }
 
 // Activate user server action (called in auth/activation/[jwt]/page.tsx)
-// Using this SA in ActivationPage ===============================
+// Using this SA in ActivationPage SC ===============================
 type ActivateUserFunction = (
   jwtUserId: string,
 ) => Promise<"userNotExist" | "alreadyActivated" | "success">;
@@ -270,7 +270,8 @@ export const activateUser: ActivateUserFunction = async (jwtUserID) => {
   // }
 };
 
-// forgot Password server action
+// forgotPassword() SA ============================================
+// Used in ForgotPasswordForm.tsx
 export async function forgotPassword(forgotPasswordFormData: unknown) {
   // validate the input data
   const validatedFields = ForgotPasswordFormSchema.safeParse(

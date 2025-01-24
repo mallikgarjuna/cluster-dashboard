@@ -17,6 +17,8 @@ const WelcomeEmailSchema = z.object({
 });
 type WelcomeEmailInputType = z.infer<typeof WelcomeEmailSchema>;
 
+// sendActivationEmail() SA ======================================
+// Used in createUserByAdmin() SA in authActions.ts
 export async function sendActivationEmail(
   activationData: WelcomeEmailInputType,
 ) {

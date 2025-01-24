@@ -40,6 +40,8 @@ export const nextAuthEdgeConfig = {
         request.nextUrl.pathname.includes("/forgotPassword");
       const isTryingToAccessResetPasswordPage =
         request.nextUrl.pathname.includes("/resetPassword");
+      const isTryingToAccessActivationPage =
+        request.nextUrl.pathname.includes("/activation");
 
       // return true;
       if (!isAdmin && isTryingToAccessAdminPage) {
@@ -73,7 +75,8 @@ export const nextAuthEdgeConfig = {
           isTryingToAccessHomePage ||
           isTryingToAccessLoginPage ||
           isTryingToAccessForgotPasswordPage ||
-          isTryingToAccessResetPasswordPage
+          isTryingToAccessResetPasswordPage ||
+          isTryingToAccessActivationPage
         )
           return true;
         // return true;
