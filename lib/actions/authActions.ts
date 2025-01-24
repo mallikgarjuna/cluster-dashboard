@@ -3,6 +3,7 @@ import {
   CreateUserFormInputType,
   CreateUserFormSchema,
   ForgotPasswordFormInputType,
+  ForgotPasswordFormSchema,
   LoginFormInputType,
   LoginFormSchema,
   SignupFormInputType,
@@ -194,7 +195,7 @@ export async function createUserByAdmin(createUserFormData: unknown) {
   };
 }
 
-// Using this SA in LoginForm;
+// Using this SA in LoginForm;====================================
 export async function loginUser(formData: unknown) {
   // Check if the `formData` is a valid `FormData` object
   // b/c only `FormData` object can be passed to `signIn()` function
@@ -234,12 +235,14 @@ export async function loginUser(formData: unknown) {
   // redirect("/profile"); // b/c /dashboard is taking too long to load
 }
 
+// Using this SA in LogOutButton component ========================
 export async function logOutUser() {
   // In Next-Auth v5, you can call signOut() on server-side (here in SA)
   await signOut({ redirectTo: "/" });
 }
 
 // Activate user server action (called in auth/activation/[jwt]/page.tsx)
+// Using this SA in ActivationPage ===============================
 type ActivateUserFunction = (
   jwtUserId: string,
 ) => Promise<"userNotExist" | "alreadyActivated" | "success">;
@@ -268,13 +271,35 @@ export const activateUser: ActivateUserFunction = async (jwtUserID) => {
 };
 
 // forgot Password server action
-export async function forgotPassword(
-  forgotPasswordFormData: ForgotPasswordFormInputType,
-) {
+export async function forgotPassword(forgotPasswordFormData: unknown) {
+  // validate the input data
+  const validatedFields = ForgotPasswordFormSchema.safeParse(
+    forgotPasswordFormData,
+  );
+  if (!validatedFields.success) {
+    return {
+      success: false,
+      message:
+        "Missing fields. Invalid data." +
+        "/n" +
+        getErrorMessage(validatedFields.error),
+    };
+  }
+
+  // destructure/parse the validated data
+  const { email } = validatedFields.data;
+
+  // db operation: check if user exists
   const user = await prisma.user.findUnique({
-    where: { email: forgotPasswordFormData.email },
+    where: { email },
   });
-  if (!user) throw new Error("The user does not exist.");
+  if (!user) {
+    // throw new Error("The user does not exist.");
+    return {
+      success: false,
+      message: "The user does not exist.",
+    };
+  }
 
   // if user exists, send an email with restpassword link
   const jwtUserId = signJwt({ id: user.id });
@@ -286,7 +311,18 @@ export async function forgotPassword(
     resetUrl: resetUrl,
   };
 
-  await sendResetEmail(resetPasswordData);
+  const result = await sendResetEmail(resetPasswordData);
+  if (!result.success) {
+    return {
+      success: false,
+      message: result.message,
+    };
+  }
+  return {
+    success: true,
+    message:
+      "Reset password link is sent to your email." + "\n" + result.message,
+  };
 }
 
 type ResetPasswordFunc = (

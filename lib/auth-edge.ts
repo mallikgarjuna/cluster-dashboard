@@ -36,16 +36,17 @@ export const nextAuthEdgeConfig = {
         request.nextUrl.pathname.includes("/signup");
       const isTryingToAccessCreateUserPage =
         request.nextUrl.pathname.includes("/createUser");
+      const isTryingToAccessForgotPasswordPage =
+        request.nextUrl.pathname.includes("/forgotPassword");
+      const isTryingToAccessResetPasswordPage =
+        request.nextUrl.pathname.includes("/resetPassword");
 
       // return true;
       if (!isAdmin && isTryingToAccessAdminPage) {
         return false;
       }
 
-      if (
-        !isLoggedIn &&
-        (isTryingToAccessDashboard || isTryingToAccessAuthPages)
-      ) {
+      if (!isLoggedIn && isTryingToAccessDashboard) {
         return false; // redirect to login?? //TODO:
       }
 
@@ -68,7 +69,14 @@ export const nextAuthEdgeConfig = {
       }
 
       if (!isLoggedIn && !isTryingToAccessDashboard) {
-        return true;
+        if (
+          isTryingToAccessHomePage ||
+          isTryingToAccessLoginPage ||
+          isTryingToAccessForgotPasswordPage ||
+          isTryingToAccessResetPasswordPage
+        )
+          return true;
+        // return true;
       }
 
       return false;

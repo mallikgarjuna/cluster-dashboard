@@ -1,4 +1,5 @@
 "use client";
+
 import {
   CreateUserFormInputType,
   CreateUserFormSchema,
@@ -99,6 +100,7 @@ const CreateUserForm = () => {
       return;
     } else {
       toast.success(result.message);
+      reset();
       router.push("/admin");
     }
   };

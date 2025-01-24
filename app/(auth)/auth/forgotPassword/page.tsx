@@ -1,4 +1,5 @@
 "use client";
+
 import {
   ForgotPasswordFormInputType,
   ForgotPasswordFormSchema,
@@ -13,10 +14,14 @@ import toast from "react-hot-toast";
 import { FaUserLock } from "react-icons/fa";
 import { HiMail } from "react-icons/hi";
 import { z } from "zod";
+import { useRouter } from "next/navigation";
 
 const ForgotPasswordPage = () => {
+  const router = useRouter();
   const {
     register,
+    trigger,
+    getValues,
     handleSubmit,
     formState: { errors, isSubmitting },
     reset,
@@ -24,23 +29,42 @@ const ForgotPasswordPage = () => {
     resolver: zodResolver(ForgotPasswordFormSchema),
   });
 
-  const submitRequest: SubmitHandler<ForgotPasswordFormInputType> = async (
-    ForgotPasswordFormData,
-  ) => {
-    try {
-      const result = await forgotPassword(ForgotPasswordFormData);
-      toast.success("Reset password link was sent to your email.");
+  // const submitRequest: SubmitHandler<ForgotPasswordFormInputType> = async (
+  //   ForgotPasswordFormData,
+  // ) => {
+  //   try {
+  //     const result = await forgotPassword(ForgotPasswordFormData);
+  //     toast.success("Reset password link was sent to your email.");
+  //     reset();
+  //   } catch (error) {
+  //     // console.log(error);
+  //     toast.error("Something went wrong..." + "\n" + getErrorMessage(error));
+  //   }
+  // };
+
+  const handleAction = async (formData: FormData) => {
+    const resultTrigger = await trigger();
+    if (!resultTrigger) {
+      return;
+    }
+
+    const forgotPasswordFormData = getValues();
+
+    const result = await forgotPassword(forgotPasswordFormData);
+    if (!result.success) {
+      toast.error(result.message);
+    } else {
+      toast.success(result.message);
       reset();
-    } catch (error) {
-      // console.log(error);
-      toast.error("Something went wrong..." + "\n" + getErrorMessage(error));
+      router.push("/");
     }
   };
 
   return (
     <div className="grid grid-cols-1 place-items-center items-center md:grid-cols-2">
       <form
-        onSubmit={handleSubmit(submitRequest)}
+        // onSubmit={handleSubmit(submitRequest)}
+        action={handleAction}
         className="flex flex-col gap-2 place-self-stretch"
       >
         <div className="text-center text-2xl font-bold">Enter Your Email</div>
