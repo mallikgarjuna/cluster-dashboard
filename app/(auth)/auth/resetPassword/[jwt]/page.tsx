@@ -7,7 +7,7 @@ interface Props {
 }
 const ResetPasswordPage = ({ params }: Props) => {
   const payload = verifyJwt(params.jwt);
-  if (!payload)
+  if (!payload || !params.jwt)
     return (
       <div className="flex h-screen items-center justify-center text-2xl text-red-500">
         The URL is not valid.

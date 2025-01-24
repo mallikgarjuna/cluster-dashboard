@@ -59,7 +59,12 @@ export const nextAuthEdgeConfig = {
       if (isLoggedIn && !isTryingToAccessDashboard) {
         // if (isAdmin) return true;
 
-        if (isTryingToAccessProfilePage) return true;
+        if (
+          isTryingToAccessProfilePage ||
+          isTryingToAccessForgotPasswordPage ||
+          isTryingToAccessResetPasswordPage
+        )
+          return true;
 
         if (!isAdmin && isTryingToAccessAdminPage) return false;
         if (isAdmin && isTryingToAccessAdminPage) return true;
