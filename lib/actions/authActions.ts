@@ -325,29 +325,62 @@ export async function forgotPassword(forgotPasswordFormData: unknown) {
   };
 }
 
+// resetPassword() SA ============================================
+// Used in ResetPasswordForm.tsx
 type ResetPasswordFunc = (
   jwtUserId: string,
   password: string,
-) => Promise<"userNotExist" | "success">;
+) => Promise<{ success: boolean; message: string }>;
+// ) => Promise<"userNotExist" | "success">;
 
 export const resetPassword: ResetPasswordFunc = async (jwtUserId, password) => {
+  // validate the input data
   const payload = verifyJwt(jwtUserId);
-  if (!payload) return "userNotExist";
+  if (!payload) {
+    // return "userNotExist"
+    return {
+      success: false,
+      message: "Invalid user. Please try again.",
+    };
+  }
 
+  // destructure/parse the validated data
   const userId = payload.id; // id was set in forgotPassword server action
+
+  // db operation: check if user exists
   const user = await prisma.user.findUnique({
     where: { id: userId },
   });
-  if (!user) return "userNotExist";
+  if (!user) {
+    // return "userNotExist";
+    return {
+      success: false,
+      message: "User does not exist.",
+    };
+  }
 
-  const result = await prisma.user.update({
-    where: { id: userId },
-    data: {
-      hashedPassword: await bcrypt.hash(password, 10),
-    },
-  });
-  if (result) return "success";
-  else throw new Error("Something went wrong...");
+  // if user exists, update the password
+  try {
+    const result = await prisma.user.update({
+      where: { id: userId },
+      data: {
+        hashedPassword: await bcrypt.hash(password, 10),
+      },
+    });
+    if (result) {
+      // return "success";
+      return {
+        success: true,
+        message: "Password reset successfully.",
+      };
+    }
+  } catch (error) {
+    // else throw new Error("Something went wrong...");
+    return {
+      success: false,
+      message: "Something went wrong... Failed to reset password.",
+    };
+  }
 
   redirect("/");
 };
