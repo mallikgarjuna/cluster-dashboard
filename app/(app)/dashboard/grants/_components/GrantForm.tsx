@@ -43,6 +43,7 @@ import {
   useFundingCalls,
 } from "../../funders/_components/FundingCallForm";
 import { useEffect, useState } from "react";
+import { createGrant } from "@/lib/actions/grant/grantActions";
 
 interface Props {
   // grant?: Grant;
@@ -55,6 +56,7 @@ const GrantForm = ({ grant }: Props) => {
   const router = useRouter();
   const {
     register,
+    trigger,
     handleSubmit,
     control,
     reset,
@@ -119,30 +121,75 @@ const GrantForm = ({ grant }: Props) => {
 
   const groupMemberTypes = Object.values(enumGroupMemberType);
 
-  const submitGrantForm: SubmitHandler<GrantFormDataType> = async (
-    grantFormData,
-  ) => {
-    // console.log(grantFormData);
-    try {
-      if (grant) {
-        await axios.patch(`/api/grants/${grant.id}`, grantFormData);
-      } else {
-        await axios.post("/api/grants", grantFormData);
-      }
-      toast.success("The grant was saved successfully!");
-      reset();
-      router.push("/dashboard/grants/list");
-      router.refresh();
-      // console.log(grantFormData);
-    } catch (error) {
-      toast.error("Something went wrong...");
-      console.log(error);
-    }
+  // const submitGrantForm: SubmitHandler<GrantFormDataType> = async (
+  //   grantFormData,
+  // ) => {
+  // // Validates form data before calling the submit handler
+  // // Prevents form submission if validation fails
+  // // Integrates with React Hook Form's validation schema
+  //   // console.log(grantFormData);
+  //   try {
+  //     if (grant) {
+  //       await axios.patch(`/api/grants/${grant.id}`, grantFormData);
+  //     } else {
+  //       await axios.post("/api/grants", grantFormData);
+  //     }
+  //     toast.success("The grant was saved successfully!");
+  //     reset();
+  //     router.push("/dashboard/grants/list");
+  //     router.refresh();
+  //     // console.log(grantFormData);
+  //   } catch (error) {
+  //     toast.error("Something went wrong...");
+  //     console.log(error);
+  //   }
+  // };
+  // const submitGrantForm = (grantFormData: GrantFormDataType) => {
+  //   console.log(grantFormData);
+  // };
+
+  const handleAction = async (formData: FormData) => {
+    // `formData` is not validated (and is of type `FormData`)
+    // console.log("formData: ", formData); // a FormData object
+
+    // Manually Trigger the RHF validation and return if `errors` to on CS;
+    const resultTrigger = await trigger();
+    if (!resultTrigger) return;
+
+    // Get validated form data as a plain JS object (of type `GrantFormDataType`)
+    const grantData = getValues();
+    // console.log("grantData: ", grantData);
+
+    // Clean the data
+    // Convert the empty string "" dates to `undefined` that will be saved as `null` in DB;
+    // B/c form returns empty string for empty date fields;
+    grantData.submissionDate = grantData.submissionDate || undefined; // Will be saved as null
+    grantData.deadline = grantData.deadline || undefined;
+    grantData.decisionDate = grantData.decisionDate || undefined;
+    grantData.projectStartDate = grantData.projectStartDate || undefined;
+    grantData.projectEndDate = grantData.projectEndDate || undefined;
+    // console.log("grantData: ", grantData);
+
+    // Convert empty string to `undefined`
+    // fundingAgencyId is returning "" (not sure why, TODO:) while the others are returning `undefined`;;
+    grantData.fundingAgencyId = grantData.fundingAgencyId || undefined;
+    grantData.fundingProgrammeId = grantData.fundingProgrammeId || undefined;
+    grantData.fundingActionId = grantData.fundingActionId || undefined;
+    grantData.fundingCallId = grantData.fundingCallId || undefined;
+    // console.log("grantData: ", grantData);
+
+    const result = await createGrant(grantData);
+    if (!result.success) toast.error(result.message);
+    else toast.success(result.message);
   };
 
   return (
     <div className="max-w-full">
-      <form onSubmit={handleSubmit(submitGrantForm)} className="space-y-2">
+      <form
+        // onSubmit={handleSubmit(submitGrantForm)}
+        action={handleAction}
+        className="space-y-2"
+      >
         <div className="text-3xl font-bold">
           {!!grant ? "Edit Grant" : "Create New Grant"}
         </div>

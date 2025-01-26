@@ -13,18 +13,19 @@ datasource db {
 }
 
 model Grant {
+  // 38 fields here;
   // id               Int         @default(autoincrement()) @ignore
   // newId            String      @default(cuid()) @ignore
   id                      String               @id @default(cuid())
   title                   String               @default("") @db.VarChar(255)
+  acronym                 String?              @default("") @db.VarChar(255)
   description             String               @default("") @db.Text
   applicantFullName       String               @default("") @db.VarChar(255)
-  status                  StatusGrant          @default(DRAFT)
-  acronym                 String?              @default("") @db.VarChar(255)
+  groupMemberType         enumGroupMemberType? @default(PI)
+  applicantRole           enumApplicantRole    @default(MAIN_APPLICANT)
+  isBudgetApproved        Boolean?             @default(false)
   budgetTotal             Int?                 @default(0)
   budgetAssignedToPI      Int?                 @default(0)
-  isBudgetApproved        Boolean?             @default(false)
-  isDMPSubmitted          Boolean?             @default(false)
   fundingAgency           String?              @default("") @db.VarChar(255) //text input
   fundingProgramme        String?              @default("") @db.VarChar(255) //text input
   fundingAction           String?              @default("") @db.VarChar(255) //text input
@@ -33,18 +34,18 @@ model Grant {
   submissionDate          DateTime?
   deadline                DateTime?
   decisionDate            DateTime?
+  status                  StatusGrant          @default(DRAFT)
   projectStartDate        DateTime?
   projectEndDate          DateTime?
-  notes                   String?              @default("") @db.Text
   projectNumber           Int? // This field is optional and defaults to null if not provided
-  applicantRole           enumApplicantRole    @default(MAIN_APPLICANT)
+  notes                   String?              @default("") @db.Text
+  isDMPSubmitted          Boolean?             @default(false)
   createdAt               DateTime             @default(now())
   updatedAt               DateTime             @updatedAt
-  assignedToUserId        String?              @db.VarChar(255)
-  assignedToUser          User?                @relation("GrantAssignedToUser", fields: [assignedToUserId], references: [id])
-  groupMemberType         enumGroupMemberType? @default(PI)
-  createdByUserId         String?              @db.VarChar(255)
   createdByUser           User?                @relation("GrantCreatedByUser", fields: [createdByUserId], references: [id])
+  createdByUserId         String?              @db.VarChar(255)
+  assignedToUser          User?                @relation("GrantAssignedToUser", fields: [assignedToUserId], references: [id])
+  assignedToUserId        String?              @db.VarChar(255)
   relatedFundingAgency    FundingAgency?       @relation(fields: [fundingAgencyId], references: [id])
   fundingAgencyId         String?              @db.VarChar(255)
   relatedFundingProgramme FundingProgramme?    @relation(fields: [fundingProgrammeId], references: [id])
