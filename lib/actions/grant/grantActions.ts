@@ -2,7 +2,7 @@
 
 import { checkAuth } from "@/lib/server-utils";
 import { getErrorMessage } from "@/lib/utils";
-import { grantFormSchema } from "@/lib/validationSchemas";
+import { grantFormSchema, grantIdSchema } from "@/lib/validationSchemas";
 import prisma from "@/prisma/client";
 import { Prisma } from "@prisma/client";
 import { revalidatePath } from "next/cache";
@@ -65,6 +65,69 @@ export async function createGrant(grantData: unknown) {
   }
 
   // TODO: come back after implementing data fetching in the layout file;
+  // Revalidate the path to force the client to re-fetch the data
+  // revalidatePath("/dashboard", "layout");
+}
+
+// updateGrant() SA ============================================
+// Using this SA in GrantForm.tsx component;
+export async function updateGrant(grantId: unknown, grantData: unknown) {
+  // Check user authentication
+  const session = await checkAuth();
+  const isAdmin = session.user.role === "ADMIN";
+
+  // Validate the input data
+  const validatedGrantId = grantIdSchema.safeParse(grantId);
+  const validatedGrantData = grantFormSchema.safeParse(grantData);
+  if (!validatedGrantId.success || !validatedGrantData.success) {
+    return {
+      success: false,
+      message: "Invalid grant id or grant data. Failed to update grant.",
+    };
+  }
+
+  // Authorization check
+  const grant = await prisma.grant.findUnique({
+    where: { id: validatedGrantId.data },
+  });
+  if (!grant) {
+    return {
+      success: false,
+      message: "Grant not found. Failed to update grant.",
+    };
+  }
+
+  // Admin or creator of the grant can update the grant;
+  const isAuthorized = isAdmin || grant.createdByUserId === session.user.id;
+  if (!isAuthorized) {
+    return {
+      success: false,
+      message: "You are not authorized to update this grant.",
+    };
+  }
+
+  // DB mutation: update grant
+  try {
+    await prisma.grant.update({
+      where: {
+        id: validatedGrantId.data,
+      },
+      data: validatedGrantData.data,
+    });
+
+    return {
+      success: true,
+      message: "Success. Updated grant.",
+    };
+  } catch (error) {
+    console.log("error: ", error);
+    return {
+      success: false,
+      message:
+        "Database error. Failed to update grant." + getErrorMessage(error),
+    };
+  }
+
   // Revalidate the path to force the client to re-fetch the data
   // revalidatePath("/dashboard", "layout");
 }

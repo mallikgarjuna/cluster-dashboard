@@ -50,6 +50,8 @@ export const grantFormSchema = z.object({
 export type GrantFormDataType = z.infer<typeof grantFormSchema>;
 // export const statuses = Object.values(StatusGrant);
 
+export const grantIdSchema = z.string().cuid();
+
 export const patchGrantSchema = z.object({
   title: z.string().min(1, "Title is required.").max(255).optional(),
   description: z

@@ -43,7 +43,7 @@ import {
   useFundingCalls,
 } from "../../funders/_components/FundingCallForm";
 import { useEffect, useState } from "react";
-import { createGrant } from "@/lib/actions/grant/grantActions";
+import { createGrant, updateGrant } from "@/lib/actions/grant/grantActions";
 
 interface Props {
   // grant?: Grant;
@@ -178,9 +178,24 @@ const GrantForm = ({ grant }: Props) => {
     grantData.fundingCallId = grantData.fundingCallId || undefined;
     // console.log("grantData: ", grantData);
 
-    const result = await createGrant(grantData);
-    if (!result.success) toast.error(result.message);
-    else toast.success(result.message);
+    // Pass the cleaned data to the SAs:
+    let result;
+    if (grant) {
+      result = await updateGrant(grant.id, grantData);
+    } else {
+      result = await createGrant(grantData);
+    }
+
+    if (result && !result?.success) {
+      toast.error(result?.message);
+    } else if (result) {
+      toast.success(result.message);
+      reset();
+      router.push("/dashboard/grants/list");
+      // router.refresh();
+    } else {
+      toast.error("Unexpected error. Failed to create/update grant.");
+    }
   };
 
   return (
