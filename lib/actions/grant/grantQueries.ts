@@ -1,5 +1,17 @@
-"use server";
+// "use server";
+import "server-only";
+
+// Server-utils (queries) for Grants
 import prisma from "@/prisma/client";
+import { Grant } from "@prisma/client";
+
+async function getGrantByGrantId(grantId: Grant["id"]) {
+  const grant = await prisma.grant.findUnique({
+    where: { id: grantId },
+  });
+
+  return grant;
+}
 
 async function fetchUniqueGrantYearsSA() {
   //   get all unique submission dates (not years, yet) - gives us an array of objects
@@ -62,4 +74,4 @@ async function fetchUniqueGrantYearsSA() {
 }
 
 // Export functions for use in other files
-export { fetchUniqueGrantYearsSA };
+export { getGrantByGrantId, fetchUniqueGrantYearsSA };

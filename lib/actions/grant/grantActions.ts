@@ -6,6 +6,7 @@ import { grantFormSchema, grantIdSchema } from "@/lib/validationSchemas";
 import prisma from "@/prisma/client";
 import { Prisma } from "@prisma/client";
 import { revalidatePath } from "next/cache";
+import { getGrantByGrantId } from "./grantQueries";
 
 // createGrant() SA ============================================
 // Using this SA in GrantForm.tsx component;
@@ -87,9 +88,7 @@ export async function updateGrant(grantId: unknown, grantData: unknown) {
   }
 
   // Authorization check
-  const grant = await prisma.grant.findUnique({
-    where: { id: validatedGrantId.data },
-  });
+  const grant = await getGrantByGrantId(validatedGrantId.data);
   if (!grant) {
     return {
       success: false,
@@ -149,9 +148,7 @@ export async function deleteGrant(grantId: unknown) {
   }
 
   // Authorization check
-  const grant = await prisma.grant.findUnique({
-    where: { id: validatedGrantId.data },
-  });
+  const grant = await getGrantByGrantId(validatedGrantId.data);
   if (!grant) {
     return {
       success: false,
