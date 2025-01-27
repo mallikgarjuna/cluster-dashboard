@@ -131,3 +131,60 @@ export async function updateGrant(grantId: unknown, grantData: unknown) {
   // Revalidate the path to force the client to re-fetch the data
   // revalidatePath("/dashboard", "layout");
 }
+
+// deleteGrant() SA ============================================
+// Using this SA in DeleteGrantButton component
+export async function deleteGrant(grantId: unknown) {
+  // Check user authentication
+  const session = await checkAuth();
+  const isAdmin = session.user.role === "ADMIN";
+
+  // Validate the input data
+  const validatedGrantId = grantIdSchema.safeParse(grantId);
+  if (!validatedGrantId.success) {
+    return {
+      success: false,
+      message: "Invalid grant id. Failed to delete grant.",
+    };
+  }
+
+  // Authorization check
+  const grant = await prisma.grant.findUnique({
+    where: { id: validatedGrantId.data },
+  });
+  if (!grant) {
+    return {
+      success: false,
+      message: "Grant not found. Failed to delete grant.",
+    };
+  }
+  const isCreator = grant.createdByUserId === session.user.id;
+  const isAuthorized = isAdmin || isCreator;
+  if (!isAuthorized) {
+    return {
+      success: false,
+      message: "You are not authorized to delete this grant.",
+    };
+  }
+
+  // DB mutation: delete grant
+  try {
+    await prisma.grant.delete({
+      where: { id: validatedGrantId.data },
+    });
+
+    return {
+      success: true,
+      message: "Success. Deleted grant.",
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message:
+        "Database error. Failed to delete grant." + getErrorMessage(error),
+    };
+  }
+
+  // Revalidate the path to force the client to re-fetch the data
+  // revalidatePath("/dashboard", "layout");
+}

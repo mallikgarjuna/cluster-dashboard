@@ -186,14 +186,15 @@ const GrantForm = ({ grant }: Props) => {
       result = await createGrant(grantData);
     }
 
-    if (result && !result?.success) {
-      toast.error(result?.message);
+    if (result && !result.success) {
+      toast.error(result.message);
     } else if (result) {
       toast.success(result.message);
       reset();
       router.push("/dashboard/grants/list");
       // router.refresh();
     } else {
+      // fallback error for unexpected cases where `result` is `undefined`;
       toast.error("Unexpected error. Failed to create/update grant.");
     }
   };
