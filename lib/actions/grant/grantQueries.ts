@@ -1,7 +1,7 @@
 // "use server";
 import "server-only";
-
 // Server-utils (queries) for Grants
+
 import prisma from "@/prisma/client";
 import { Grant } from "@prisma/client";
 
