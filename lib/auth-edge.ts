@@ -109,18 +109,38 @@ export const nextAuthEdgeConfig = {
       // }
     },
     jwt: async ({ token, user }) => {
+      // console.log("jwt token b4: ", token);
+      // {name: ..., email: ..., picture: null, sub: ...}; // only the 1st time jwt() is called; // sub is the user id;
+      // {name: ..., email: ..., picture: null, sub: ..., user: {...}}; // on 2nd time onwards;
+
+      // console.log("jwt user b4 ", user);
+      // {...user obj from authorize()} // only the 1st time jwt() is called;
+      // sometimes gives `undefined`; why?? // on 2nd time onwards, it doesn't get `user`;
+
       if (user) {
         // on sign in
         token.user = user as UserWithDepartment;
       }
 
+      // console.log("jwt Token after: ", token);
+      // {name: ..., email: ..., picture: null, sub: ..., user: {...}}; // sub is the user id;
+
       return token;
     },
     session: async ({ session, token }) => {
+      // console.log("session session b4: ", session);
+      // { user: {name: ... emal: ..., image: null}, expires: ...}; // 1st and all times (not userWithDepartment);
+
+      // console.log("session token b4: ", token); // from jwt();
+      // {name: ..., email: ..., picture: null, sub: ..., user: {...}, iat: ..., exp:..., jti:...}; // all times;
+
       if (token.user) {
         // session.user = token.user as UserWithDepartment;
         session.user = token.user as any; // TODO: this is a temporary fix to bypass type checking
       }
+
+      // console.log("session Session after: ", session);
+      // { user: {...all fields}, expires: ...} // 1st and all times (now with userWithDepartment);
 
       return session;
     },

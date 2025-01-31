@@ -1,5 +1,6 @@
 import { Prisma } from "@prisma/client";
 
+////////////////////////// Grant types //////////////////////////
 // Grant with User type
 const grantWithUser = Prisma.validator<Prisma.GrantDefaultArgs>()({
   include: {
