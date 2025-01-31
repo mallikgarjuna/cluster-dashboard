@@ -11,6 +11,7 @@
     "format": "prettier --write ."
   },
   "dependencies": {
+    "@auth/core": "^0.37.4",
     "@auth/prisma-adapter": "^2.7.4",
     "@faker-js/faker": "^8.4.1",
     "@hookform/error-message": "^2.0.1",

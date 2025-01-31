@@ -1,6 +1,7 @@
 import prisma from "@/prisma/client";
 import { UserWithDepartment } from "@/prisma/customTypes";
 import { PrismaAdapter } from "@auth/prisma-adapter";
+import { OSDepartmentShortName, UserRole } from "@prisma/client";
 import { NextAuthConfig } from "next-auth";
 
 export const nextAuthEdgeConfig = {
@@ -117,9 +118,24 @@ export const nextAuthEdgeConfig = {
       // {...user obj from authorize()} // only the 1st time jwt() is called;
       // sometimes gives `undefined`; why?? // on 2nd time onwards, it doesn't get `user`;
 
+      // `user` from `authorize()` exists only on the 1st time jwt() is called;
       if (user) {
         // on sign in
-        token.user = user as UserWithDepartment;
+        // token.user = user as UserWithDepartment;
+
+        // Type assertion to specify that user is of type returned by `authorize()`;
+        // This'll ensure that TS recognizes the properties you are trying to access on the `user` object;
+        const typedUser = user as UserWithDepartment;
+
+        token.userId = typedUser.id;
+        token.email = typedUser.email || ""; // TODO: make `email` non-optional;
+        token.firstName = typedUser.firstName || "";
+        token.lastName = typedUser.lastName || "";
+        token.role = typedUser.role;
+        // token.relatedDepartment.nameShort =
+        //   typedUser.relatedDepartment?.nameShort || "ERIBA"; //TODO: default department;
+        token.relatedDepartmentNameShort =
+          typedUser.relatedDepartment?.nameShort || "ERIBA"; //TODO: default department;
       }
 
       // console.log("jwt Token after: ", token);
@@ -134,10 +150,18 @@ export const nextAuthEdgeConfig = {
       // console.log("session token b4: ", token); // from jwt();
       // {name: ..., email: ..., picture: null, sub: ..., user: {...}, iat: ..., exp:..., jti:...}; // all times;
 
-      if (token.user) {
-        // session.user = token.user as UserWithDepartment;
-        session.user = token.user as any; // TODO: this is a temporary fix to bypass type checking
-      }
+      // if (token.user) {
+      // session.user = token.user as UserWithDepartment;
+      // session.user = token.user as any; // TODO: this is a temporary fix to bypass type checking
+      // }
+      session.user.id = token.userId;
+      session.user.firstName = token.firstName;
+      session.user.lastName = token.lastName;
+      session.user.role = token.role;
+      session.user.relatedDepartmentNameShort =
+        token.relatedDepartmentNameShort;
+      // session.user.relatedDepartment.nameShort = token.departmentNameShort;
+      // this doesn't work - having an object inside User/JWT type;
 
       // console.log("session Session after: ", session);
       // { user: {...all fields}, expires: ...} // 1st and all times (now with userWithDepartment);

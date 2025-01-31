@@ -37,7 +37,7 @@ const DepartmentFilter = () => {
   if (session.user.role === "GROUPLEADER") {
     departments = departments.filter(
       (dept) =>
-        dept.value && dept.value === session.user.relatedDepartment?.nameShort,
+        dept.value && dept.value === session.user.relatedDepartmentNameShort,
     );
 
     // defaultSelectedKeys = []
@@ -65,7 +65,7 @@ const DepartmentFilter = () => {
 
   const defaultValueSelect =
     session.user.role === "GROUPLEADER"
-      ? session.user.relatedDepartment?.nameShort // `undefined` is acceptable
+      ? session.user.relatedDepartmentNameShort // `undefined` is acceptable
       : searchParams.get("department") || "All"; // `null` is not acceptable for defaultValue prop;
 
   return (

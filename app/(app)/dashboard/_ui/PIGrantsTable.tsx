@@ -139,7 +139,7 @@ const PIGrantsTable = () => {
     if (session?.user.role === "GROUPLEADER") {
       setDepartments((prevDepartments) =>
         prevDepartments.filter(
-          (dept) => dept === session.user.relatedDepartment?.nameShort,
+          (dept) => dept === session.user.relatedDepartmentNameShort,
         ),
       );
     }
