@@ -5,6 +5,7 @@ import GrantStartYearFilter from "../grants/list/GrantStartYearFilter";
 import prisma from "@/prisma/client";
 import GrantSubmissionYearFilter from "../grants/list/GrantSubmissionYearFilter";
 import { getDepartmentShortNames } from "@/lib/actions/department/deptQueries";
+import { getUniqueGrantStartYears } from "@/lib/actions/grant/grantQueries";
 
 const DashboardActions = async () => {
   const usersWithDepartment = await prisma.user.findMany({
@@ -14,6 +15,10 @@ const DashboardActions = async () => {
   });
 
   const departmentShortNames = await getDepartmentShortNames();
+  // console.log("Department short names: ", departmentShortNames);
+
+  const grantStartYears = await getUniqueGrantStartYears();
+  // console.log("Grant start years: ", grantStartYears);
 
   return (
     <div className="flex gap-3">

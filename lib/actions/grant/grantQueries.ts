@@ -73,5 +73,39 @@ async function fetchUniqueGrantYearsSA() {
   return uniqueYears;
 }
 
+// For PostgreSQL: use a more efficient raw query
+// This approach is more efficient for large datasets as it performs the year extraction at the database level.
+async function getUniqueGrantStartYears() {
+  const uniqueStartYears = await prisma.$queryRaw<{ year: number }[]>`
+    SELECT DISTINCT EXTRACT(YEAR FROM "projectStartDate") as year 
+    FROM "Grant" 
+    WHERE "projectStartDate" IS NOT NULL 
+    ORDER BY year ASC`;
+
+  return uniqueStartYears.map((year) => year.year);
+
+  // ***** don't use the prisma query - it's slow for large dbs ***
+  // Get unique years using Prisma's date functions
+  // const uniqueYears = await prisma.grant
+  //   .findMany({
+  //     select: {
+  //       projectStartDate: true,
+  //     },
+  //     distinct: ["projectStartDate"],
+  //     orderBy: {
+  //       projectStartDate: "desc",
+  //     },
+  //   })
+  //   .then((dates) =>
+  //     // Filter out null dates and extract unique years
+  //     dates
+  //       .map((d) => d.projectStartDate)
+  //       .filter((date): date is Date => date !== null)
+  //       .map((date) => date.getFullYear())
+  //       .sort((a, b) => a - b),
+  //   );
+  // return uniqueYears;
+}
+
 // Export functions for use in other files
-export { getGrantByGrantId, fetchUniqueGrantYearsSA };
+export { getGrantByGrantId, fetchUniqueGrantYearsSA, getUniqueGrantStartYears };
