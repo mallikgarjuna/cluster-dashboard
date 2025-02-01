@@ -13,20 +13,29 @@ import { useSession } from "next-auth/react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Label } from "@/components/ui/label";
 
-const departShortNames = Object.values(OSDepartmentShortName);
-let departments: { label: string; value: OSDepartmentShortName }[] = [
-  // { label: "All depts" },
-  { label: "BBT dept", value: "BBT" },
-  { label: "BMS dept", value: "BMS" },
-  { label: "ERIBA dept", value: "ERIBA" },
-];
+// const departShortNames = Object.values(OSDepartmentShortName);
+// let departments: { label: string; value: OSDepartmentShortName }[] = [
+//   // { label: "All depts" },
+//   { label: "BBT dept", value: "BBT" },
+//   { label: "BMS dept", value: "BMS" },
+//   { label: "ERIBA dept", value: "ERIBA" },
+// ];
 
-const DepartmentFilter = () => {
+type DepartmentFilterProps = {
+  departments: OSDepartmentShortName[];
+};
+
+const DepartmentFilter = ({ departments }: DepartmentFilterProps) => {
   const searchParams = useSearchParams();
   // console.log("searchParams: ", searchParams.toString());
   const router = useRouter();
   const pathname = usePathname();
   const { data: session, status } = useSession();
+
+  let departmentOptions = departments.map((dept) => ({
+    label: dept,
+    value: dept,
+  }));
 
   if (!session) return null;
 
@@ -35,7 +44,7 @@ const DepartmentFilter = () => {
 
   // If a groupleader logged in, Show the corresponding dept, not all depts;
   if (session.user.role === "GROUPLEADER") {
-    departments = departments.filter(
+    departmentOptions = departmentOptions.filter(
       (dept) =>
         dept.value && dept.value === session.user.relatedDepartmentNameShort,
     );
@@ -80,7 +89,7 @@ const DepartmentFilter = () => {
         </SelectTrigger>
         <SelectContent>
           <SelectItem value="All">All</SelectItem>
-          {departments.map((dept) => (
+          {departmentOptions.map((dept) => (
             <SelectItem key={dept.value} value={dept.value}>
               {dept.label}
             </SelectItem>

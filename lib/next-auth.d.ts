@@ -56,7 +56,7 @@ declare module "next-auth" {
   }
 }
 
-// // ********* old-working w/ UserWithDepartment *********
+// ********* old-working w/ UserWithDepartment *********
 // import { UserWithDepartment } from "@/prisma/customTypes";
 // import { User } from "@prisma/client";
 // import {} from "next-auth";
