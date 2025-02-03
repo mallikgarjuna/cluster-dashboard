@@ -82,7 +82,8 @@ async function getUniqueGrantStartYears() {
     WHERE "projectStartDate" IS NOT NULL 
     ORDER BY year ASC`;
 
-  return uniqueStartYears.map((year) => year.year);
+  return uniqueStartYears.map((entry) => Number(entry.year));
+  // explicitly convert the years to numbers, although it may not be necessary if they are already being returned as numbers.
 
   // ***** don't use the prisma query - it's slow for large dbs ***
   // Get unique years using Prisma's date functions

@@ -24,7 +24,7 @@ const DashboardActions = async () => {
     <div className="flex gap-3">
       <DepartmentFilter departments={departmentShortNames} />
       <GroupLeaderFilter users={usersWithDepartment} />
-      <GrantStartYearFilter />
+      <GrantStartYearFilter startYears={grantStartYears} />
       <GrantSubmissionYearFilter />
     </div>
   );
