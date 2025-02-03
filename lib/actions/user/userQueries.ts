@@ -19,3 +19,13 @@ export async function fetchAllUsers() {
     };
   }
 }
+
+export const getGroupLeadersWithDepartment = async () => {
+  const groupLeadersWithDepartment = await prisma.user.findMany({
+    where: { role: "GROUPLEADER" },
+    include: { relatedDepartment: true },
+    orderBy: { lastName: "asc" },
+  });
+
+  return groupLeadersWithDepartment;
+};

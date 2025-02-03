@@ -20,10 +20,10 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import Skeleton from "react-loading-skeleton";
 
 interface Props {
-  users: UserWithDepartment[];
+  groupLeaders: UserWithDepartment[];
 }
 
-const GroupLeaderFilter = ({ users }: Props) => {
+const GroupLeaderFilter = ({ groupLeaders }: Props) => {
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
@@ -54,7 +54,7 @@ const GroupLeaderFilter = ({ users }: Props) => {
   //   );
   // }
 
-  if (!users) return <Skeleton />;
+  if (!groupLeaders) return <Skeleton />;
 
   // Filter the users based on their department's shortname
   // const departmentShortNames: string[] = Object.values(OSDepartmentShortName);
@@ -76,7 +76,7 @@ const GroupLeaderFilter = ({ users }: Props) => {
 
   // console.log("departmentUsersObject: ", departmentUsersObject);
 
-  users.forEach((user) => {
+  groupLeaders.forEach((user) => {
     // console.log("user: ", user.relatedDepartment);
 
     // const department = user.relatedDepartment?.nameShort;

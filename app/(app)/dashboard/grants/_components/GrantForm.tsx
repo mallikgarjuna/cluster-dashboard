@@ -29,7 +29,7 @@ import { Controller, SubmitHandler, useForm, useWatch } from "react-hook-form";
 import toast from "react-hot-toast";
 import SimpleMdeReact from "react-simplemde-editor";
 import "easymde/dist/easymde.min.css";
-import { fetchAllUsers } from "@/lib/actions/user/queries";
+import { fetchAllUsers } from "@/lib/actions/user/userQueries";
 import { useQuery } from "@tanstack/react-query";
 import { useFundingAgencies } from "../../funders/_components/FundingProgrammeForm";
 import {
