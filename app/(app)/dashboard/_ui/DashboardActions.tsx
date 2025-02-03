@@ -25,7 +25,8 @@ const DashboardActions = async () => {
       <DepartmentFilter departments={departmentShortNames} />
       <GroupLeaderFilter users={usersWithDepartment} />
       <GrantStartYearFilter startYears={grantStartYears} />
-      <GrantSubmissionYearFilter />
+      <GrantSubmissionYearFilter submitYears={grantStartYears} />
+      {/* to avoid another db fetching operation, use startYears for submitYears */}
     </div>
   );
 };

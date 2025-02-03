@@ -1,52 +1,92 @@
 "use client";
 
-import { Select, SelectItem } from "@nextui-org/react";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+// import { Select, SelectItem } from "@nextui-org/react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React from "react";
 
-const GrantSubmissionYearFilter = () => {
+type GrantSubmitYearFilterProps = {
+  submitYears: number[];
+};
+
+const GrantSubmissionYearFilter = ({
+  submitYears,
+}: GrantSubmitYearFilterProps) => {
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname(); // returns "/dashboard" on /dashboard?foo=bar
 
-  const submitYears = ["2023", "2024"];
+  // const submitYears = ["2023", "2024"];
+  const submitYearOptions = submitYears.map((year) => ({
+    label: year.toString(),
+    value: year.toString(),
+  }));
 
-  const handleSelectionChange = (
-    event: React.ChangeEvent<HTMLSelectElement>,
-  ) => {
-    // console.log("event: ", event); // Object { target: Object { 0: option, 1: option, value: "2023", … }
-
-    const submitYear = event.target.value;
-    // console.log("submitYear: ", submitYear); // submitYear:  2023
+  const handleValueChange = (value: string) => {
+    console.log("submitYear: ", value); // submitYear:  2023
 
     const params = new URLSearchParams(searchParams);
     // console.log("params: ", params); // params:  URLSearchParams { year → "2023" }
 
-    if (submitYear) params.set("submitYear", submitYear);
-    else params.delete("submitYear");
+    if (value === "All") {
+      params.delete("submitYear");
+    } else {
+      params.set("submitYear", value);
+    }
 
-    const query = params.size ? "?" + params.toString() : "";
+    const queryString = params.size ? "?" + params.toString() : "";
     // console.log("query: ", query); // query:  ?submitYear=2023
 
-    router.push(pathname + query);
+    router.push(pathname + queryString);
     // console.log("pathname: ", pathname); // pathname:  /dashboard/grants/list
   };
 
+  const defaultValueSelect = searchParams.get("submitYear") || "All"; // `null` is not acceptable for defaultValue prop;
+
   return (
-    <Select
-      label="Filter by submission year..."
-      onChange={handleSelectionChange}
-      defaultSelectedKeys={
-        searchParams.get("submitYear") ? [searchParams.get("submitYear")!] : []
-      }
-    >
-      {submitYears.map((year) => (
-        <SelectItem key={year} textValue={year}>
-          {year}
-        </SelectItem>
-      ))}
-    </Select>
+    <div className="flex min-w-[200px] max-w-xs flex-col gap-2">
+      <Label>Filter by submission year</Label>
+      <Select
+        onValueChange={handleValueChange}
+        defaultValue={defaultValueSelect}
+      >
+        <SelectTrigger>
+          <SelectValue placeholder="Select submit year" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="All">All</SelectItem>
+          {submitYearOptions.map((year) => (
+            <SelectItem key={year.value} value={year.value}>
+              {year.label}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+    </div>
   );
+
+  // return (
+  //   <Select
+  //     label="Filter by submission year..."
+  //     onChange={handleSelectionChange}
+  //     defaultSelectedKeys={
+  //       searchParams.get("submitYear") ? [searchParams.get("submitYear")!] : []
+  //     }
+  //   >
+  //     {submitYears.map((year) => (
+  //       <SelectItem key={year} textValue={year}>
+  //         {year}
+  //       </SelectItem>
+  //     ))}
+  //   </Select>
+  // );
 };
 
 export default GrantSubmissionYearFilter;
