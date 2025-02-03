@@ -16,7 +16,7 @@ const DashboardActions = async () => {
   // console.log("Grant start years: ", grantStartYears);
 
   return (
-    <div className="flex gap-3">
+    <div className="flex justify-between">
       <DepartmentFilter departments={departmentShortNames} />
       <GroupLeaderFilter groupLeaders={groupLeaders} />
       <GrantStartYearFilter startYears={grantStartYears} />

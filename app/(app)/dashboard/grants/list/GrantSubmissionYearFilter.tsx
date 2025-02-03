@@ -8,9 +8,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-// import { Select, SelectItem } from "@nextui-org/react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import React from "react";
 
 type GrantSubmitYearFilterProps = {
   submitYears: number[];
@@ -51,7 +49,7 @@ const GrantSubmissionYearFilter = ({
   const defaultValueSelect = searchParams.get("submitYear") || "All"; // `null` is not acceptable for defaultValue prop;
 
   return (
-    <div className="flex min-w-[200px] max-w-xs flex-col gap-2">
+    <div className="flex min-w-[200px] flex-col gap-2">
       <Label>Filter by submission year</Label>
       <Select
         onValueChange={handleValueChange}
@@ -71,22 +69,6 @@ const GrantSubmissionYearFilter = ({
       </Select>
     </div>
   );
-
-  // return (
-  //   <Select
-  //     label="Filter by submission year..."
-  //     onChange={handleSelectionChange}
-  //     defaultSelectedKeys={
-  //       searchParams.get("submitYear") ? [searchParams.get("submitYear")!] : []
-  //     }
-  //   >
-  //     {submitYears.map((year) => (
-  //       <SelectItem key={year} textValue={year}>
-  //         {year}
-  //       </SelectItem>
-  //     ))}
-  //   </Select>
-  // );
 };
 
 export default GrantSubmissionYearFilter;

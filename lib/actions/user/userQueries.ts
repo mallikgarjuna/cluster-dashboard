@@ -29,3 +29,13 @@ export const getGroupLeadersWithDepartment = async () => {
 
   return groupLeadersWithDepartment;
 };
+// Similar to React Query's hook earlier created
+// - but not using it anymore;
+// const useUsersWithDepartment = () =>
+//   useQuery<UserWithDepartment[]>({
+//     queryKey: ["usersWithDepartment"],
+//     queryFn: () =>
+//       axios.get("/api/users/withdepartment").then((res) => res.data),
+//     staleTime: 60 * 1000, //60s
+//     retry: 3,
+//   });
