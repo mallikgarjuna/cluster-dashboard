@@ -49,7 +49,7 @@ const GrantSubmissionYearFilter = ({
   const defaultValueSelect = searchParams.get("submitYear") || "All"; // `null` is not acceptable for defaultValue prop;
 
   return (
-    <div className="flex min-w-[200px] flex-col gap-2">
+    <div className="min-w-[200px] flex-1 space-y-2">
       <Label>Filter by submission year</Label>
       <Select
         onValueChange={handleValueChange}

@@ -65,7 +65,7 @@ const DepartmentFilter = ({ departments }: DepartmentFilterProps) => {
       : searchParams.get("department") || "All"; // `null` is not acceptable for defaultValue prop;
 
   return (
-    <div className="flex min-w-[200px] flex-col gap-2">
+    <div className="min-w-[200px] flex-1 space-y-2">
       <Label htmlFor="department">Filter by department</Label>
       <Select
         onValueChange={handleValueChange}

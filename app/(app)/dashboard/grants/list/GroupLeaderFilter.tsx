@@ -82,7 +82,7 @@ const GroupLeaderFilter = ({ groupLeaders }: Props) => {
       : searchParams.get("groupLeader") || "All";
 
   return (
-    <div className="flex min-w-[200px] flex-col gap-2">
+    <div className="min-w-[200px] flex-1 space-y-2">
       <Label>Filter by group leader</Label>
       <Select
         onValueChange={handleValueChange}
