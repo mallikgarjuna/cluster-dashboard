@@ -10,6 +10,7 @@ import prisma from "@/prisma/client";
 import ButtonWithSpinner from "./ButtonWithSpinner";
 import GrantSubmissionYearFilter from "./GrantSubmissionYearFilter";
 import dynamic from "next/dynamic";
+import { getGrantStatuses } from "@/lib/actions/grant/grantQueries";
 
 const DynamicGrantStatusFilter = dynamic(
   () => import("@/app/(app)/dashboard/grants/list/GrantStatusFilter"),
@@ -59,14 +60,16 @@ const GrantActions = async () => {
     include: { relatedDepartment: true },
   });
 
+  const grantStatuses = await getGrantStatuses();
+
   return (
     <Flex direction="column" gap="3">
       <Flex justify="between" gap="3" align="center">
-        <DynamicGrantStatusFilter />
-        <DynamicDepartmentFilter />
+        <DynamicGrantStatusFilter grantStatuses={grantStatuses} />
+        {/* <DynamicDepartmentFilter />
         <DynamicGroupLeaderFilter users={usersWithDepartment} />
         <DynamicGrantStartYearFilter />
-        <DynamicGrantSubmissionYearFilter />
+        <DynamicGrantSubmissionYearFilter /> */}
         {/* <Button>
         <Link href="/dashboard/grants/new">New Grant</Link>
       </Button> */}

@@ -3,7 +3,7 @@ import "server-only";
 // Server-utils (queries) for Grants
 
 import prisma from "@/prisma/client";
-import { Grant } from "@prisma/client";
+import { Grant, StatusGrant } from "@prisma/client";
 
 async function getGrantByGrantId(grantId: Grant["id"]) {
   const grant = await prisma.grant.findUnique({
@@ -108,5 +108,15 @@ async function getUniqueGrantStartYears() {
   // return uniqueYears;
 }
 
+const getGrantStatuses = async () => {
+  const grantStatuses = Object.values(StatusGrant);
+  return grantStatuses;
+};
+
 // Export functions for use in other files
-export { getGrantByGrantId, fetchUniqueGrantYearsSA, getUniqueGrantStartYears };
+export {
+  getGrantByGrantId,
+  fetchUniqueGrantYearsSA,
+  getUniqueGrantStartYears,
+  getGrantStatuses,
+};
