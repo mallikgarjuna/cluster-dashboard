@@ -39,21 +39,33 @@ const GrantDetailPage = async ({ params }: Props) => {
 
   return (
     <Grid columns={{ initial: "1", sm: "5" }} gap="5">
-      {/* sm in Radix === md in TWcss */}
       <Box className="md:col-span-4">
         <GrantDetails grant={grant} />
       </Box>
       <Box className="md:pl-2">
-        <Flex direction="column" gap="2" className="section-panel p-3 md:sticky md:top-6">
+        <Flex
+          direction="column"
+          gap="3"
+          className="section-panel overflow-hidden p-0 md:sticky md:top-6"
+        >
+          <div className="border-b border-[var(--color-border)] bg-[var(--color-surface-muted)] px-4 py-4">
+            <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-[var(--color-primary)]">
+              Actions
+            </p>
+            <p className="mt-1 text-sm leading-6 text-[var(--color-text-secondary)]">
+              Manage this record or return to the grants list.
+            </p>
+          </div>
+          <div className="space-y-3 px-4 pb-4">
           {(session?.user.role === "ADMIN" ||
             session?.user.id === grant.assignedToUserId) && (
             <>
-              {/* <AssigneeSelect grant={grant} /> */}
               <EditGrantButton grantId={grant.id!} />
               <DeleteGrantButton grantId={grant.id!} />
             </>
           )}
           <GoBackButton />
+          </div>
         </Flex>
       </Box>
     </Grid>

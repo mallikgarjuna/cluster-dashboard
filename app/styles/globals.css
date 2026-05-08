@@ -82,6 +82,89 @@
   .indigo-link {
     @apply text-[var(--color-primary)] transition-colors duration-200 hover:text-[var(--color-primary-hover)];
   }
+
+  .detail-section {
+    @apply section-panel overflow-hidden;
+  }
+
+  .detail-section-header {
+    @apply border-b px-5 py-4 md:px-6;
+    border-color: var(--color-border);
+    background: var(--color-surface-muted);
+  }
+
+  .detail-section-title {
+    @apply font-display text-[20px] font-semibold tracking-[-0.03em] text-[var(--color-text-primary)];
+  }
+
+  .detail-section-copy {
+    @apply mt-1 text-sm leading-6 text-[var(--color-text-secondary)];
+  }
+
+  .detail-grid {
+    @apply grid gap-4 p-5 md:grid-cols-2 md:p-6 xl:grid-cols-3;
+  }
+
+  .detail-value-card {
+    @apply rounded-lg border bg-[var(--color-surface)] px-4 py-3;
+    border-color: var(--color-border);
+  }
+
+  .form-section {
+    @apply section-panel overflow-hidden;
+  }
+
+  .form-section-header {
+    @apply border-b px-5 py-4 md:px-6;
+    border-color: var(--color-border);
+    background: var(--color-surface-muted);
+  }
+
+  .form-section-grid {
+    @apply grid grid-cols-1 gap-4 p-5 md:grid-cols-2 md:p-6;
+  }
+
+  .field-cluster {
+    @apply rounded-xl border bg-[var(--color-surface-muted)] p-4;
+    border-color: var(--color-border);
+  }
+
+  .or-divider {
+    @apply self-center justify-self-center rounded-full border px-3 py-1 text-xs font-medium uppercase tracking-[0.14em] text-[var(--color-text-muted)];
+    border-color: var(--color-border);
+    background: var(--color-surface);
+  }
+
+  .markdown-editor-shell .EasyMDEContainer {
+    @apply overflow-hidden rounded-xl border bg-[var(--color-surface)];
+    border-color: var(--color-border);
+  }
+
+  .markdown-editor-shell .EasyMDEContainer .editor-toolbar {
+    @apply border-b bg-[var(--color-surface-muted)];
+    border-color: var(--color-border);
+  }
+
+  .markdown-editor-shell .EasyMDEContainer .editor-toolbar button {
+    color: var(--color-text-secondary);
+  }
+
+  .markdown-editor-shell .EasyMDEContainer .editor-toolbar button:hover,
+  .markdown-editor-shell .EasyMDEContainer .editor-toolbar button.active {
+    background: var(--color-surface);
+    color: var(--color-text-primary);
+  }
+
+  .markdown-editor-shell .EasyMDEContainer .CodeMirror,
+  .markdown-editor-shell .EasyMDEContainer .CodeMirror-scroll {
+    background: var(--color-surface);
+    color: var(--color-text-primary);
+    min-height: 180px;
+  }
+
+  .markdown-editor-shell .EasyMDEContainer .CodeMirror-cursor {
+    border-color: var(--color-primary);
+  }
 }
 
 @layer base {
