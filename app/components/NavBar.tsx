@@ -22,18 +22,18 @@ const NavBar = () => {
   const { data: session, status } = useSession();
 
   return (
-    <nav className="border-b border-zinc-200/90 bg-white/95 backdrop-blur-sm">
-      <Container className="px-6 py-4 md:px-8">
+    <nav className="sticky top-0 z-40 border-b border-[var(--color-border)] bg-white/80 backdrop-blur-xl">
+      <Container className="px-6 py-3 md:px-8">
         <Flex justify="between" align="center" gap="4">
           <Flex gap="4" align="center">
             <Link
               href="/"
-              className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-zinc-200 bg-zinc-50 text-zinc-950 transition-colors hover:bg-zinc-100"
+              className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-[var(--color-border)] bg-white text-[var(--color-primary)] transition-colors duration-200 hover:bg-[var(--color-primary-soft)]"
             >
               <GrCluster />
             </Link>
             <div className="hidden md:block">
-              <span className="text-sm font-semibold tracking-[-0.02em] text-zinc-950">
+              <span className="font-display text-sm font-bold tracking-[-0.03em] text-[var(--color-text-primary)]">
                 Cluster Dashboard
               </span>
             </div>
@@ -64,7 +64,7 @@ const NavBar = () => {
 
             {status === "authenticated" && (
               <Flex gap="3" align="center">
-                <p className="hidden text-sm text-zinc-500 md:block">
+                <p className="hidden text-sm text-[var(--color-text-secondary)] md:block">
                   {session?.user?.role}
                 </p>
 

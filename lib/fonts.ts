@@ -1,14 +1,20 @@
-import { Inter as Inter } from "next/font/google";
-// import { Lusitana as Lusitana } from "next/font/google";
+import {
+  DM_Sans,
+  JetBrains_Mono,
+  Manrope,
+} from "next/font/google";
 
-export const inter = Inter({
+export const bodySans = DM_Sans({
   subsets: ["latin"],
-  // variable: "--font-inter",
-  // preload: true,
+  variable: "--font-body",
 });
 
-// export const lusitana = Lusitana({
-//   subsets: ["latin"],
-//   weight: ["400", "700"],
-//   preload: true,
-// });
+export const displaySans = Manrope({
+  subsets: ["latin"],
+  variable: "--font-display",
+});
+
+export const codeMono = JetBrains_Mono({
+  subsets: ["latin"],
+  variable: "--font-mono",
+});

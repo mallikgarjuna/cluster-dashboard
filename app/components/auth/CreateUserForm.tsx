@@ -56,7 +56,7 @@ function FieldWrapper({
       <Label className="mb-2 block">{label}</Label>
       <div className="relative">
         {icon ? (
-          <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500">
+          <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)]">
             {icon}
           </span>
         ) : null}
@@ -103,7 +103,7 @@ const CreateUserForm = () => {
   return (
     <form
       action={handleAction}
-      className="auth-panel form-grid max-w-3xl"
+      className="auth-panel form-grid max-w-3xl border-none bg-transparent p-0"
     >
       <div className="col-span-full space-y-2 text-center">
         <h1 className="auth-heading">Create a new user</h1>
@@ -256,14 +256,17 @@ const CreateUserForm = () => {
         name="accepted"
         render={({ field }) => (
           <div className="col-span-full space-y-2">
-            <label className="flex items-start gap-3 text-sm leading-6 text-zinc-600">
+            <label className="flex items-start gap-3 text-sm leading-6 text-[var(--color-text-secondary)]">
               <Checkbox
                 checked={field.value}
                 onCheckedChange={(checked) => field.onChange(Boolean(checked))}
                 onBlur={field.onBlur}
               />
               <span>
-                I accept the <Link href="/terms">terms and conditions</Link>
+                I accept the{" "}
+                <Link href="/terms" className="indigo-link">
+                  terms and conditions
+                </Link>
               </span>
             </label>
             <FieldError message={errors.accepted?.message} />
@@ -276,7 +279,7 @@ const CreateUserForm = () => {
           {isSubmitting ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
           {isSubmitting ? "Creating User..." : "Create User"}
         </Button>
-        <em className="text-sm text-zinc-500">
+        <em className="text-sm text-[var(--color-text-secondary)]">
           An activation email will be sent to the Web Admin.
         </em>
       </div>

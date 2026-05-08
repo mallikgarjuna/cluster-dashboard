@@ -15,7 +15,7 @@ const ForgotPasswordPage = () => {
         <ForgotPasswordForm />
       </div>
 
-      <div className="hidden h-28 w-28 items-center justify-center rounded-full border border-zinc-200 bg-zinc-50 text-zinc-400 md:flex">
+      <div className="hidden h-28 w-28 items-center justify-center rounded-full border border-[var(--color-border)] bg-[var(--color-primary-soft)] text-[var(--color-primary)] md:flex">
         <FaUserLock size={48} />
       </div>
     </div>

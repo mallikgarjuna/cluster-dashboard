@@ -11,7 +11,9 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
       <div className="mb-10">
         <ClusterLogo />
       </div>
-      {children}
+      <div className="w-full rounded-[20px] border border-[var(--color-border)] bg-white/70 p-6 backdrop-blur-sm md:p-8">
+        {children}
+      </div>
     </div>
   );
 }

@@ -9,7 +9,7 @@ export function FieldError({ message, className }: FieldErrorProps) {
   if (!message) return null;
 
   return (
-    <p className={cn("text-sm font-medium text-red-600", className)}>
+    <p className={cn("text-sm font-medium text-[#EF4444]", className)}>
       {message}
     </p>
   );

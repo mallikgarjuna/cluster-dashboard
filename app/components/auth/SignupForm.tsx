@@ -36,7 +36,7 @@ function FieldWrapper({
       <Label className="mb-2 block">{label}</Label>
       <div className="relative">
         {icon ? (
-          <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500">
+          <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)]">
             {icon}
           </span>
         ) : null}
@@ -85,7 +85,7 @@ const SignupForm = () => {
   return (
     <form
       onSubmit={handleSubmit(saveUser)}
-      className="auth-panel form-grid"
+      className="auth-panel form-grid border-none bg-transparent p-0"
     >
       <div className="col-span-full space-y-2 text-center">
         <h1 className="auth-heading">Create account</h1>
@@ -177,14 +177,18 @@ const SignupForm = () => {
         name="accepted"
         render={({ field }) => (
           <div className="col-span-full space-y-2">
-            <label className="flex items-start gap-3 text-sm leading-6 text-zinc-600">
+            <label className="flex items-start gap-3 text-sm leading-6 text-[var(--color-text-secondary)]">
               <Checkbox
                 checked={field.value}
                 onCheckedChange={(checked) => field.onChange(Boolean(checked))}
                 onBlur={field.onBlur}
               />
               <span>
-                I accept the <Link href="/terms">terms and conditions</Link>.
+                I accept the{" "}
+                <Link href="/terms" className="indigo-link">
+                  terms and conditions
+                </Link>
+                .
               </span>
             </label>
             <FieldError message={errors.accepted?.message} />

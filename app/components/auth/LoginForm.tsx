@@ -47,7 +47,7 @@ const LoginForm = ({ callbackUrl: _callbackUrl }: Props) => {
   return (
     <form
       action={handleAction}
-      className="auth-panel flex w-full flex-col gap-5"
+      className="auth-panel flex w-full flex-col gap-5 border-none bg-transparent p-0"
     >
       <div className="space-y-2 text-center">
         <div className="auth-heading">Log in</div>
@@ -74,7 +74,7 @@ const LoginForm = ({ callbackUrl: _callbackUrl }: Props) => {
             type="button"
             variant="ghost"
             size="icon"
-            className="absolute right-1 top-1/2 -translate-y-1/2"
+            className="absolute right-1 top-1/2 -translate-y-1/2 text-[var(--color-text-secondary)]"
             aria-label={isVisiblePass ? "Hide password" : "Show password"}
             onClick={toggleVisiblePass}
           >

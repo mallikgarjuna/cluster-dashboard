@@ -10,13 +10,13 @@ const statusMap: Record<
   StatusGrant,
   {
     label: string;
-    color: "blue" | "gray";
+    color: "blue" | "green" | "red" | "amber" | "gray";
   }
 > = {
   SUBMITTED: { label: "Submitted", color: "blue" },
-  AWARDED: { label: "Awarded", color: "blue" },
-  REJECTED: { label: "Rejected", color: "gray" },
-  RUNNING_PROJECT: { label: "Running project", color: "gray" },
+  AWARDED: { label: "Awarded", color: "green" },
+  REJECTED: { label: "Rejected", color: "red" },
+  RUNNING_PROJECT: { label: "Running project", color: "amber" },
   ENDED_PROJECT: { label: "Ended project", color: "gray" },
   DRAFT: { label: "Draft", color: "gray" },
   DELETED: { label: "Deleted", color: "gray" },

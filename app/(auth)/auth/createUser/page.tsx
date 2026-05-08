@@ -8,7 +8,7 @@ const CreateUserPage = () => {
       <div className="grid w-full items-start gap-8 md:grid-cols-[minmax(0,1fr)_160px]">
         <CreateUserForm />
         <div className="hidden justify-center md:flex">
-          <div className="flex h-32 w-32 items-center justify-center rounded-full border border-zinc-200 bg-zinc-50 text-zinc-400">
+          <div className="flex h-32 w-32 items-center justify-center rounded-full border border-[var(--color-border)] bg-[var(--color-primary-soft)] text-[var(--color-primary)]">
             <FaUserPlus size={52} />
           </div>
         </div>
