@@ -1,15 +1,10 @@
 "use client";
 
-import { Label } from "@/components/ui/label";
 import {
-  Select,
-  SelectContent,
   SelectGroup,
   SelectItem,
   SelectLabel,
   SelectSeparator,
-  SelectTrigger,
-  SelectValue,
 } from "@/components/ui/select";
 import { updateFilterQueryParams } from "@/lib/utils";
 import { UserWithDepartment } from "@/prisma/customTypes";
@@ -17,6 +12,7 @@ import { OSDepartmentShortName } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import Skeleton from "react-loading-skeleton";
+import FilterSelectField from "./FilterSelectField";
 
 interface Props {
   groupLeaders: UserWithDepartment[];
@@ -77,53 +73,45 @@ const GroupLeaderFilter = ({ groupLeaders }: Props) => {
       : searchParams.get("groupLeader") || "All";
 
   return (
-    <div className="min-w-[200px] flex-1 space-y-2">
-      <Label>Filter by group leader</Label>
-      <Select
-        onValueChange={handleValueChange}
-        defaultValue={defaultValueSelect}
-      >
-        <SelectTrigger>
-          <SelectValue placeholder="Select a group leader" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="All">All</SelectItem>
+    <FilterSelectField
+      label="Filter by group leader"
+      placeholder="Select a group leader"
+      onValueChange={handleValueChange}
+      defaultValue={defaultValueSelect}
+    >
+      <SelectSeparator className="m-[5px] h-px bg-zinc-300" />
 
-          <SelectSeparator className="m-[5px] h-px bg-zinc-300" />
+      <SelectGroup>
+        <SelectLabel>{departmentShortNames[0]}</SelectLabel>
+        {departmentUsersObject[departmentShortNames[0]].map((user) => (
+          <SelectItem key={user.id} value={user.id}>
+            {user.lastName}
+          </SelectItem>
+        ))}
+      </SelectGroup>
 
-          <SelectGroup>
-            <SelectLabel>{departmentShortNames[0]}</SelectLabel>
-            {departmentUsersObject[departmentShortNames[0]].map((user) => (
-              <SelectItem key={user.id} value={user.id}>
-                {user.lastName}
-              </SelectItem>
-            ))}
-          </SelectGroup>
+      <SelectSeparator className="m-[5px] h-px bg-zinc-300" />
 
-          <SelectSeparator className="m-[5px] h-px bg-zinc-300" />
+      <SelectGroup>
+        <SelectLabel>{departmentShortNames[1]}</SelectLabel>
+        {departmentUsersObject[departmentShortNames[1]].map((user) => (
+          <SelectItem key={user.id} value={user.id}>
+            {user.lastName}
+          </SelectItem>
+        ))}
+      </SelectGroup>
 
-          <SelectGroup>
-            <SelectLabel>{departmentShortNames[1]}</SelectLabel>
-            {departmentUsersObject[departmentShortNames[1]].map((user) => (
-              <SelectItem key={user.id} value={user.id}>
-                {user.lastName}
-              </SelectItem>
-            ))}
-          </SelectGroup>
+      <SelectSeparator className="m-[5px] h-px bg-zinc-300" />
 
-          <SelectSeparator className="m-[5px] h-px bg-zinc-300" />
-
-          <SelectGroup>
-            <SelectLabel>{departmentShortNames[2]}</SelectLabel>
-            {departmentUsersObject[departmentShortNames[2]].map((user) => (
-              <SelectItem key={user.id} value={user.id}>
-                {user.lastName}
-              </SelectItem>
-            ))}
-          </SelectGroup>
-        </SelectContent>
-      </Select>
-    </div>
+      <SelectGroup>
+        <SelectLabel>{departmentShortNames[2]}</SelectLabel>
+        {departmentUsersObject[departmentShortNames[2]].map((user) => (
+          <SelectItem key={user.id} value={user.id}>
+            {user.lastName}
+          </SelectItem>
+        ))}
+      </SelectGroup>
+    </FilterSelectField>
   );
 };
 

@@ -1,15 +1,8 @@
 "use client";
 
-import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { updateFilterQueryParams } from "@/lib/utils";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import FilterSelectField from "./FilterSelectField";
 
 type GrantStartYearFilterProps = {
   startYears: number[];
@@ -40,25 +33,13 @@ const GrantStartYearFilter = ({ startYears }: GrantStartYearFilterProps) => {
   const defaultValueSelect = searchParams.get("year") || "All"; // `null` is not acceptable for defaultValue prop;
 
   return (
-    <div className="min-w-[200px] flex-1 space-y-2">
-      <Label>Filter by start year</Label>
-      <Select
-        onValueChange={handleValueChange}
-        defaultValue={defaultValueSelect}
-      >
-        <SelectTrigger>
-          <SelectValue placeholder="Select start year" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="All">All</SelectItem>
-          {startYearOptions.map((year) => (
-            <SelectItem key={year.value} value={year.value}>
-              {year.label}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
-    </div>
+    <FilterSelectField
+      label="Filter by start year"
+      placeholder="Select start year"
+      onValueChange={handleValueChange}
+      defaultValue={defaultValueSelect}
+      options={startYearOptions}
+    />
   );
 };
 

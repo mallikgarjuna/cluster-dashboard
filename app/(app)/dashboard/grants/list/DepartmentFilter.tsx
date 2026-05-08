@@ -1,17 +1,10 @@
 "use client";
 
-import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { updateFilterQueryParams } from "@/lib/utils";
 import { OSDepartmentShortName } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import FilterSelectField from "./FilterSelectField";
 
 type DepartmentFilterProps = {
   departments: OSDepartmentShortName[];
@@ -61,25 +54,13 @@ const DepartmentFilter = ({ departments }: DepartmentFilterProps) => {
       : searchParams.get("department") || "All"; // `null` is not acceptable for defaultValue prop;
 
   return (
-    <div className="min-w-[200px] flex-1 space-y-2">
-      <Label htmlFor="department">Filter by department</Label>
-      <Select
-        onValueChange={handleValueChange}
-        defaultValue={defaultValueSelect}
-      >
-        <SelectTrigger>
-          <SelectValue placeholder="Select department" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="All">All</SelectItem>
-          {departmentOptions.map((dept) => (
-            <SelectItem key={dept.value} value={dept.value}>
-              {dept.label}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
-    </div>
+    <FilterSelectField
+      label="Filter by department"
+      placeholder="Select department"
+      onValueChange={handleValueChange}
+      defaultValue={defaultValueSelect}
+      options={departmentOptions}
+    />
   );
 };
 

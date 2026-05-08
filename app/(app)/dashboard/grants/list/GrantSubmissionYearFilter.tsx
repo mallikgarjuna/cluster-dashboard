@@ -1,15 +1,8 @@
 "use client";
 
-import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { updateFilterQueryParams } from "@/lib/utils";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import FilterSelectField from "./FilterSelectField";
 
 type GrantSubmitYearFilterProps = {
   submitYears: number[];
@@ -44,25 +37,13 @@ const GrantSubmissionYearFilter = ({
   const defaultValueSelect = searchParams.get("submitYear") || "All"; // `null` is not acceptable for defaultValue prop;
 
   return (
-    <div className="min-w-[200px] flex-1 space-y-2">
-      <Label>Filter by submission year</Label>
-      <Select
-        onValueChange={handleValueChange}
-        defaultValue={defaultValueSelect}
-      >
-        <SelectTrigger>
-          <SelectValue placeholder="Select submit year" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="All">All</SelectItem>
-          {submitYearOptions.map((year) => (
-            <SelectItem key={year.value} value={year.value}>
-              {year.label}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
-    </div>
+    <FilterSelectField
+      label="Filter by submission year"
+      placeholder="Select submit year"
+      onValueChange={handleValueChange}
+      defaultValue={defaultValueSelect}
+      options={submitYearOptions}
+    />
   );
 };
 
