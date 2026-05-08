@@ -1,16 +1,7 @@
-import { GrantStatusBadge } from "@/app/components";
-import { Button, Flex } from "@radix-ui/themes";
-import Link from "next/link";
-import React from "react";
-import GrantStatusFilter from "./GrantStatusFilter";
-import DepartmentFilter from "./DepartmentFilter";
-import GroupLeaderFilter from "./GroupLeaderFilter";
-import GrantStartYearFilter from "./GrantStartYearFilter";
-import prisma from "@/prisma/client";
+import { StatusGrant } from "@prisma/client";
+import { Flex } from "@radix-ui/themes";
 import ButtonWithSpinner from "./ButtonWithSpinner";
-import GrantSubmissionYearFilter from "./GrantSubmissionYearFilter";
 import dynamic from "next/dynamic";
-import { getGrantStatuses } from "@/lib/actions/grant/grantQueries";
 
 const DynamicGrantStatusFilter = dynamic(
   () => import("@/app/(app)/dashboard/grants/list/GrantStatusFilter"),
@@ -54,13 +45,7 @@ const DynamicFundingCallFilter = dynamic(
 );
 
 const GrantActions = async () => {
-  const usersWithDepartment = await prisma.user.findMany({
-    where: { role: "GROUPLEADER" },
-    orderBy: { lastName: "asc" },
-    include: { relatedDepartment: true },
-  });
-
-  const grantStatuses = await getGrantStatuses();
+  const grantStatuses = Object.values(StatusGrant);
 
   return (
     <Flex direction="column" gap="3">
