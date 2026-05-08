@@ -144,6 +144,7 @@ const SignupForm = () => {
           variant="ghost"
           size="icon"
           className="absolute right-1 top-1/2 -translate-y-1/2"
+          aria-label={isVisiblePass ? "Hide password" : "Show password"}
           onClick={toggleVisiblePass}
         >
           {isVisiblePass ? <HiEyeOff /> : <HiEye />}
@@ -159,7 +160,7 @@ const SignupForm = () => {
         <Input
           {...register("confirmPassword")}
           type={isVisiblePass ? "text" : "password"}
-          placeholder="Renter to confirm password"
+          placeholder="Re-enter to confirm password"
           className="pl-9"
         />
       </FieldWrapper>

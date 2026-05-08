@@ -7,7 +7,6 @@ import classnames from "classnames";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
 import { GrCluster } from "react-icons/gr";
 import LogOutButton from "./auth/LogOutButton";
 
@@ -19,7 +18,6 @@ const links = [
 
 const NavBar = () => {
   const currentPath = usePathname();
-  const [loading, setLoading] = useState("");
 
   const { data: session, status } = useSession();
 
@@ -42,7 +40,6 @@ const NavBar = () => {
                       "!text-blue-900": link.href === currentPath,
                     })}
                     href={link.href}
-                    onClick={() => setLoading(link.href)}
                   >
                     {link.label}
                   </Link>

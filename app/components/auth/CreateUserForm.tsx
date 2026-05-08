@@ -166,6 +166,7 @@ const CreateUserForm = () => {
           variant="ghost"
           size="icon"
           className="absolute right-1 top-1/2 -translate-y-1/2"
+          aria-label={isVisiblePass ? "Hide password" : "Show password"}
           onClick={toggleVisiblePass}
         >
           {isVisiblePass ? <HiEye /> : <HiEyeOff />}

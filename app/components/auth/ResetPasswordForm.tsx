@@ -89,6 +89,7 @@ const ResetPasswordForm = ({ jwtUserId }: Props) => {
             variant="ghost"
             size="icon"
             className="absolute right-1 top-1/2 -translate-y-1/2"
+            aria-label={visiblePass ? "Hide password" : "Show password"}
             onClick={toggleVisiblePass}
           >
             {visiblePass ? <HiEye /> : <HiEyeOff />}
