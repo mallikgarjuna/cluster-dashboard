@@ -4,13 +4,9 @@ import { OSDepartmentShortName, StatusGrant } from "@prisma/client";
 import { Flex } from "@radix-ui/themes";
 import { Metadata } from "next";
 import dynamic from "next/dynamic";
+import GrantActions from "./GrantActions";
 import { GrantQuery, columnNamesGrant } from "./GrantTable";
 import { checkAuth } from "@/lib/server-utils";
-
-const DynamicGrantActions = dynamic(
-  () => import("@/app/(app)/dashboard/grants/list/GrantActions"),
-  { ssr: false, loading: () => <div>Loading...</div> },
-);
 const DynamicGrantSearch = dynamic(
   () => import("@/app/(app)/dashboard/grants/list/GrantSearch"),
   { ssr: false, loading: () => <div>Loading...</div> },
@@ -285,7 +281,7 @@ const GrantsPage = async ({ searchParams }: Props) => {
 
   return (
     <Flex direction="column" gap="3">
-      <DynamicGrantActions />
+      <GrantActions />
       <DynamicGrantSearch />
       <DynamicGrantTable searchParams={searchParams} grants={grants} />
       <DynamicPagination
