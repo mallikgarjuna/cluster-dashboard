@@ -29,7 +29,7 @@ const FundingCallFilter = () => {
     const fetchData = () => {
       const params = new URLSearchParams(searchParams);
       const fActionId = params.get("fActionId");
-      if (fActionId) {
+      if (fActionId && fActionId !== "All") {
         const selectedFAction = fetchedFundingActions?.find(
           (fAction) => fAction.id === fActionId,
         );
@@ -50,7 +50,6 @@ const FundingCallFilter = () => {
       searchParams,
       paramName: "fCallId",
       value,
-      allValue: "",
     });
 
     router.push(pathname + queryString);

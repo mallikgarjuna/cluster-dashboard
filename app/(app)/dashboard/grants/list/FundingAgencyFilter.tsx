@@ -26,7 +26,6 @@ const FundingAgencyFilter = () => {
       searchParams,
       paramName: "fAgencyId",
       value,
-      allValue: "",
       resetParams: ["fProgId", "fActionId", "fCallId"],
     });
 

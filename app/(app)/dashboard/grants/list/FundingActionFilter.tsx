@@ -29,7 +29,7 @@ const FundingActionFilter = () => {
     const fetchData = () => {
       const params = new URLSearchParams(searchParams);
       const fProgId = params.get("fProgId");
-      if (fProgId) {
+      if (fProgId && fProgId !== "All") {
         const selectedFProg = fetchedFundingProgrammes?.find(
           (fProg) => fProg.id === fProgId,
         );
@@ -50,7 +50,6 @@ const FundingActionFilter = () => {
       searchParams,
       paramName: "fActionId",
       value,
-      allValue: "",
       resetParams: ["fCallId"],
     });
 

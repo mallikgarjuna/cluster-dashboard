@@ -53,10 +53,22 @@ const GrantsPage = async ({ searchParams }: Props) => {
 
   const searchQuery = searchParams.searchQuery || "";
 
-  const fAgencyId = searchParams.fAgencyId || undefined;
-  const fProgId = searchParams.fProgId || undefined;
-  const fActionId = searchParams.fActionId || undefined;
-  const fCallId = searchParams.fCallId || undefined;
+  const fAgencyId =
+    searchParams.fAgencyId && searchParams.fAgencyId !== "All"
+      ? searchParams.fAgencyId
+      : undefined;
+  const fProgId =
+    searchParams.fProgId && searchParams.fProgId !== "All"
+      ? searchParams.fProgId
+      : undefined;
+  const fActionId =
+    searchParams.fActionId && searchParams.fActionId !== "All"
+      ? searchParams.fActionId
+      : undefined;
+  const fCallId =
+    searchParams.fCallId && searchParams.fCallId !== "All"
+      ? searchParams.fCallId
+      : undefined;
 
   // const year = startYears.includes(searchParams.year) ? searchParams.year : undefined;
 
