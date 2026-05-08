@@ -3,7 +3,10 @@
 import { loginUser } from "@/lib/actions/authActions";
 import { LoginFormInputType, LoginFormSchema } from "@/lib/validationSchemas";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Input } from "@nextui-org/react";
+import { Button } from "@/components/ui/button";
+import { FieldError } from "@/components/ui/field-error";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
@@ -13,12 +16,13 @@ import LogInFormButton from "./LogInFormButton";
 interface Props {
   callbackUrl?: string;
 }
-const LoginForm = ({ callbackUrl }: Props) => {
+
+const LoginForm = ({ callbackUrl: _callbackUrl }: Props) => {
   const [isVisiblePass, setIsVisiblePass] = useState(false);
   const {
     register,
     trigger,
-    formState: { errors, isSubmitting },
+    formState: { errors },
     reset,
   } = useForm<LoginFormInputType>({
     resolver: zodResolver(LoginFormSchema),
@@ -30,49 +34,49 @@ const LoginForm = ({ callbackUrl }: Props) => {
     const resultTrigger = await trigger();
     if (!resultTrigger) return;
 
-    // console.log("Before loginUser SA");
     const result = await loginUser(formData);
-    // console.log("After loginUser SA");
     if (result) {
-      // If result is returned, it means that the user is not logged in (see loginUser() SA);
       toast.error(result.message);
       return;
-    } else {
-      // if result is not returned, it means that the user is logged in
-      // - and redirected to LoginPage (/auth/login) where the loginUser() SA is called;
-      // - then (in parallel) based on `authorized()` callback, redirects appropriately;
-      // console.log("result from loginUsr SA: ", result); // undefined
-      toast.success("Successfully logged in!");
-
-      reset();
-      // router.push("/dashboard"); // not needed b/c signIn() redirects via `authorized()`;
     }
+
+    toast.success("Successfully logged in!");
+    reset();
   };
 
   return (
     <form
-      // onSubmit={handleSubmit(handleLoginUser)}
       action={handleAction}
       className="flex min-w-96 flex-col items-center justify-center gap-2 rounded-md border p-2"
     >
       <div className="text-2xl font-bold">Log in Form</div>
-      <Input
-        {...register("email")}
-        errorMessage={errors.email?.message}
-        type="email"
-        label="Email"
-      />
-      <Input
-        {...register("password")}
-        errorMessage={errors.password?.message}
-        type={isVisiblePass ? "text" : "password"}
-        label="Password"
-        endContent={
-          <button type="button" onClick={toggleVisiblePass}>
+
+      <div className="w-full">
+        <Label className="mb-2 block">Email</Label>
+        <Input {...register("email")} type="email" />
+        <FieldError className="mt-1" message={errors.email?.message} />
+      </div>
+
+      <div className="w-full">
+        <Label className="mb-2 block">Password</Label>
+        <div className="relative">
+          <Input
+            {...register("password")}
+            type={isVisiblePass ? "text" : "password"}
+            className="pr-10"
+          />
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            className="absolute right-1 top-1/2 -translate-y-1/2"
+            onClick={toggleVisiblePass}
+          >
             {isVisiblePass ? <HiEye /> : <HiEyeOff />}
-          </button>
-        }
-      />
+          </Button>
+        </div>
+        <FieldError className="mt-1" message={errors.password?.message} />
+      </div>
 
       <LogInFormButton />
     </form>

@@ -2,10 +2,14 @@
 
 import { resetPassword } from "@/lib/actions/authActions";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button, Input } from "@nextui-org/react";
+import { Button } from "@/components/ui/button";
+import { FieldError } from "@/components/ui/field-error";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { HiEye, HiEyeOff } from "react-icons/hi";
 import { z } from "zod";
@@ -39,48 +43,17 @@ const ResetPasswordForm = ({ jwtUserId }: Props) => {
     register,
     trigger,
     getValues,
-    handleSubmit,
     reset,
     formState: { errors, isSubmitting },
   } = useForm<ResetPasswordFormInputType>({
     resolver: zodResolver(ResetPasswordFormSchema),
   });
 
-  // const resetPass: SubmitHandler<ResetPasswordFormInputType> = async (
-  //   resetPasswordFormData,
-  // ) => {
-  //   // console.log("resetPasswordFormData: ", resetPasswordFormData);
-
-  //   try {
-  //     const result = await resetPassword(
-  //       jwtUserId,
-  //       resetPasswordFormData.password,
-  //     );
-  //     if (result === "success")
-  //       toast.success("Your password has been reset successfully.");
-
-  //     reset();
-  //     //   redirect the user to login page
-  //     router.push("/auth/login");
-  //   } catch (error) {
-  //     console.error(error);
-  //     toast.error("Something went wrong in resetting password...");
-  //   }
-  // };
-
-  const handleAction = async (formData: FormData) => {
-    // console.log("formData: ", formData);
-
-    // If wrong pswd, it gives false but no CS errors? TODO:
+  const handleAction = async (_formData: FormData) => {
     const resultTrigger = await trigger();
     if (!resultTrigger) return;
 
-    // FormData object first needs to be converted to a JS object;
-
-    // This is a plain JS object after zodResolver() validation is applied
-    // Note: getValues() doesn't get the zod `transformations` applied;
     const resetPasswordFormData = getValues();
-    // console.log("resetPasswordFormData: ", resetPasswordFormData);
 
     const result = await resetPassword(
       jwtUserId,
@@ -89,46 +62,56 @@ const ResetPasswordForm = ({ jwtUserId }: Props) => {
     if (!result.success) {
       toast.error(result.message);
       return;
-    } else {
-      toast.success(result.message);
-      reset();
-      router.push("/auth/login");
     }
+
+    toast.success(result.message);
+    reset();
+    router.push("/auth/login");
   };
 
   return (
     <form
-      // onSubmit={handleSubmit(resetPass)}
       action={handleAction}
       className="m-2 flex flex-col gap-2 rounded-md border p-2"
     >
       <div className="text-2xl font-bold">Reset Your Password</div>
-      <Input
-        type={visiblePass ? "text" : "password"}
-        label="Password"
-        // placeholder="Enter your new password."
-        {...register("password")}
-        errorMessage={errors.password?.message}
-        endContent={
-          <button type="button" onClick={toggleVisiblePass}>
+
+      <div>
+        <Label className="mb-2 block">Password</Label>
+        <div className="relative">
+          <Input
+            type={visiblePass ? "text" : "password"}
+            {...register("password")}
+            className="pr-10"
+          />
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            className="absolute right-1 top-1/2 -translate-y-1/2"
+            onClick={toggleVisiblePass}
+          >
             {visiblePass ? <HiEye /> : <HiEyeOff />}
-          </button>
-        }
-      />
-      <Input
-        type={visiblePass ? "text" : "password"}
-        label="Confirm Password"
-        // placeholder="Re-enter your new password."
-        {...register("confirmPassword")}
-        errorMessage={errors.confirmPassword?.message}
-      />
+          </Button>
+        </div>
+        <FieldError className="mt-1" message={errors.password?.message} />
+      </div>
+
+      <div>
+        <Label className="mb-2 block">Confirm Password</Label>
+        <Input
+          type={visiblePass ? "text" : "password"}
+          {...register("confirmPassword")}
+        />
+        <FieldError
+          className="mt-1"
+          message={errors.confirmPassword?.message}
+        />
+      </div>
+
       <div className="flex justify-center">
-        <Button
-          type="submit"
-          color="primary"
-          disabled={isSubmitting}
-          isLoading={isSubmitting}
-        >
+        <Button type="submit" disabled={isSubmitting}>
+          {isSubmitting ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
           {isSubmitting ? "Resetting..." : "Reset"}
         </Button>
       </div>
