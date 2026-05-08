@@ -22,14 +22,13 @@ const GroupLeaderFilter = ({ groupLeaders }: Props) => {
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
-  const { data: session, status } = useSession();
+  const { data: session } = useSession();
 
   if (!session) return null;
 
   if (!groupLeaders) return <Skeleton />;
 
   const departmentShortNames = Object.values(OSDepartmentShortName);
-  // console.log("departmentShortNames: ", departmentShortNames);
 
   const departmentUsersObject: Record<
     OSDepartmentShortName,
@@ -42,15 +41,10 @@ const GroupLeaderFilter = ({ groupLeaders }: Props) => {
     {} as Record<OSDepartmentShortName, UserWithDepartment[]>,
   );
 
-  // console.log("departmentUsersObject: ", departmentUsersObject);
-
   groupLeaders.forEach((user) => {
-    // console.log("user: ", user.relatedDepartment);
+    const department = user.relatedDepartment?.nameShort;
 
-    const department = user.relatedDepartment?.nameShort; //not a string
-    // console.log("department: ", department);
-
-    // Add the user to the corresponding department array - only if the user is a groupleader
+    // Add users to their department section only when they are group leaders.
     if (department && user.role === "GROUPLEADER") {
       departmentUsersObject[department].push(user);
     }
@@ -66,7 +60,7 @@ const GroupLeaderFilter = ({ groupLeaders }: Props) => {
     router.push(pathname + queryString);
   };
 
-  // If a groupleader logged in, filter by group leader
+  // If a group leader is logged in, default to that group leader.
   const defaultValueSelect =
     session.user.role === "GROUPLEADER"
       ? session.user.id

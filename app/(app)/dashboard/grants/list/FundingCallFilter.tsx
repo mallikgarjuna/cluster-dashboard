@@ -25,7 +25,6 @@ const FundingCallFilter = () => {
 
   const [fundingCalls, setFundingCalls] = useState<FundingCall[]>([]);
 
-  // useEffect to update fundingCalls when a fActionId is selected
   useEffect(() => {
     const fetchData = () => {
       const params = new URLSearchParams(searchParams);

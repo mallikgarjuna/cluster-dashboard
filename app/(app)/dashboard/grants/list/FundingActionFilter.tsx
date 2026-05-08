@@ -25,7 +25,6 @@ const FundingActionFilter = () => {
 
   const [fundingActions, setFundingActions] = useState<FundingAction[]>([]);
 
-  // useEffect to update fundingActions when a fProgId is selected
   useEffect(() => {
     const fetchData = () => {
       const params = new URLSearchParams(searchParams);

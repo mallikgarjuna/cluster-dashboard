@@ -13,14 +13,12 @@ const GrantStartYearFilter = ({ startYears }: GrantStartYearFilterProps) => {
   const router = useRouter();
   const pathname = usePathname();
 
-  // const startYears = ["AllStarted", "2023", "2024"];
   const startYearOptions = startYears.map((year) => ({
-    label: year.toString(), // convert number to string for `value` prop
-    value: year.toString(), // convert number to string for `value` prop
+    label: year.toString(),
+    value: year.toString(),
   }));
 
   const handleValueChange = (value: string) => {
-    console.log("startYear Value: ", value);
     const queryString = updateFilterQueryParams({
       searchParams,
       paramName: "year",
@@ -30,7 +28,7 @@ const GrantStartYearFilter = ({ startYears }: GrantStartYearFilterProps) => {
     router.push(`${pathname}${queryString}`);
   };
 
-  const defaultValueSelect = searchParams.get("year") || "All"; // `null` is not acceptable for defaultValue prop;
+  const defaultValueSelect = searchParams.get("year") || "All";
 
   return (
     <FilterSelectField

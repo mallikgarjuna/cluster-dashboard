@@ -20,7 +20,6 @@ const GrantStatusFilter = ({ grantStatuses }: GrantStatusFilterProps) => {
   }));
 
   const handleValueChange = (value: string) => {
-    console.log("status select: ", value);
     const queryString = updateFilterQueryParams({
       searchParams,
       paramName: "status",
@@ -30,7 +29,7 @@ const GrantStatusFilter = ({ grantStatuses }: GrantStatusFilterProps) => {
     router.push(`${pathname}${queryString}`);
   };
 
-  const defaultValueSelect = searchParams.get("status") || "All"; // null is not acceptable for defaultValue prop;
+  const defaultValueSelect = searchParams.get("status") || "All";
 
   return (
     <FilterSelectField

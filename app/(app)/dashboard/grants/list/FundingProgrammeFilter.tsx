@@ -27,7 +27,6 @@ const FundingProgrammeFilter = () => {
     FundingProgramme[]
   >([]);
 
-  // useEffect to update fundingProgrammes when a fAgencyId is selected
   useEffect(() => {
     const fetchData = async () => {
       const params = new URLSearchParams(searchParams);

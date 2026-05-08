@@ -13,33 +13,29 @@ const GrantSubmissionYearFilter = ({
 }: GrantSubmitYearFilterProps) => {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const pathname = usePathname(); // returns "/dashboard" on /dashboard?foo=bar
+  const pathname = usePathname();
 
-  // const submitYears = ["2023", "2024"];
   const submitYearOptions = submitYears.map((year) => ({
     label: year.toString(),
     value: year.toString(),
   }));
 
   const handleValueChange = (value: string) => {
-    console.log("submitYear: ", value); // submitYear:  2023
     const queryString = updateFilterQueryParams({
       searchParams,
       paramName: "submitYear",
       value,
     });
-    // console.log("query: ", query); // query:  ?submitYear=2023
 
     router.push(pathname + queryString);
-    // console.log("pathname: ", pathname); // pathname:  /dashboard/grants/list
   };
 
-  const defaultValueSelect = searchParams.get("submitYear") || "All"; // `null` is not acceptable for defaultValue prop;
+  const defaultValueSelect = searchParams.get("submitYear") || "All";
 
   return (
     <FilterSelectField
       label="Filter by submission year"
-      placeholder="Select submit year"
+      placeholder="Select submission year"
       onValueChange={handleValueChange}
       defaultValue={defaultValueSelect}
       options={submitYearOptions}

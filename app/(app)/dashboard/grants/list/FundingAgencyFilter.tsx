@@ -19,8 +19,6 @@ const FundingAgencyFilter = () => {
 
   if (isLoading) return <Skeleton />;
   if (error) return null;
-
-  // Fallback to null if undefined, to prevent type error below
   if (!fetchedFundingAgencies) return null;
 
   const handleValueChange = (value: string) => {
