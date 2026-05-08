@@ -2,80 +2,100 @@
 version: alpha
 name: Cluster Dashboard
 description: >
-  A light, highly restrained research administration dashboard built on a
-  white canvas, soft zinc separation, disciplined spacing, and a single
-  institutional blue accent.
+  An editorial precision interface for research administration where grants,
+  funders, and operational records are presented with confident typography,
+  warm light surfaces, disciplined spacing, and indigo-led interaction states.
 colors:
-  background: "#ffffff"
-  on-background: "#09090b"
-  surface: "#ffffff"
-  surface-muted: "#fafafa"
-  surface-subtle: "#f4f4f5"
-  surface-elevated: "#ffffff"
-  surface-brand-soft: "#bfdbfe"
-  border: "#e4e4e7"
-  border-strong: "#d4d4d8"
-  text-primary: "#09090b"
-  text-secondary: "#27272a"
-  text-muted: "#71717a"
-  text-link: "#3b82f6"
-  text-link-active: "#1e3a8a"
-  primary: "#3b82f6"
-  primary-hover: "#60a5fa"
-  primary-soft: "#bfdbfe"
-  primary-strong: "#1e3a8a"
-  neutral-inverse: "#18181b"
-  on-neutral-inverse: "#fafafa"
-  hover-row: "#e5e7eb"
-  focus-ring: "#09090b"
-  success: "#22c55e"
-  warning: "#eab308"
-  danger: "#dc2626"
-  data-info: "#0000ff"
-  data-success: "#008000"
-  data-warning: "#ffa500"
+  background: "#FAFAFA"
+  on-background: "#0A0A0A"
+  surface: "#FFFFFF"
+  surface-muted: "#F5F5F7"
+  surface-subtle: "#F1F1F4"
+  surface-brand-soft: "#EEF2FF"
+  border: "#E8E8EC"
+  border-strong: "#D9D9DF"
+  text-primary: "#0A0A0A"
+  text-secondary: "#6B6B6B"
+  text-muted: "#9C9C9C"
+  text-link: "#6366F1"
+  text-link-active: "#4F46E5"
+  primary: "#6366F1"
+  primary-hover: "#4F46E5"
+  primary-soft: "#EEF2FF"
+  primary-strong: "#4338CA"
+  secondary: "#20970B"
+  neutral-inverse: "#111111"
+  on-neutral-inverse: "#FFFFFF"
+  hover-row: "#F5F5F7"
+  focus-ring: "#6366F1"
+  success: "#10B981"
+  warning: "#F59E0B"
+  danger: "#EF4444"
+  data-info: "#6366F1"
+  data-success: "#10B981"
+  data-warning: "#F59E0B"
 typography:
-  headline-xl:
-    fontFamily: Inter
-    fontSize: 30px
+  display-xl:
+    fontFamily: General Sans
+    fontSize: 72px
     fontWeight: "700"
-    lineHeight: 36px
-    letterSpacing: "-0.02em"
-  headline-lg:
-    fontFamily: Inter
+    lineHeight: 76px
+    letterSpacing: "-0.04em"
+  headline-xl:
+    fontFamily: General Sans
+    fontSize: 60px
+    fontWeight: "700"
+    lineHeight: 64px
+    letterSpacing: "-0.03em"
+  section-heading:
+    fontFamily: General Sans
+    fontSize: 32px
+    fontWeight: "700"
+    lineHeight: 38px
+    letterSpacing: "-0.03em"
+  subhead:
+    fontFamily: General Sans
     fontSize: 24px
     fontWeight: "700"
-    lineHeight: 32px
-  title-lg:
-    fontFamily: Inter
-    fontSize: 20px
-    fontWeight: "700"
-    lineHeight: 28px
-  body-lg:
-    fontFamily: Inter
-    fontSize: 18px
-    fontWeight: "400"
-    lineHeight: 28px
+    lineHeight: 30px
+    letterSpacing: "-0.02em"
   body-md:
-    fontFamily: Inter
-    fontSize: 16px
+    fontFamily: DM Sans
+    fontSize: 15px
     fontWeight: "400"
     lineHeight: 24px
+  body-sm:
+    fontFamily: DM Sans
+    fontSize: 13px
+    fontWeight: "400"
+    lineHeight: 20px
   label-md:
-    fontFamily: Inter
+    fontFamily: DM Sans
     fontSize: 14px
     fontWeight: "500"
     lineHeight: 20px
-  label-sm:
-    fontFamily: Inter
+  caption:
+    fontFamily: DM Sans
     fontSize: 12px
     fontWeight: "500"
+    lineHeight: 18px
+  overline:
+    fontFamily: DM Sans
+    fontSize: 11px
+    fontWeight: "600"
     lineHeight: 16px
+    letterSpacing: "0.14em"
+    textTransform: uppercase
+  code:
+    fontFamily: JetBrains Mono
+    fontSize: 13px
+    fontWeight: "400"
+    lineHeight: 20px
 rounded:
-  sm: 4px
-  md: 6px
-  lg: 8px
-  xl: 12px
+  xs: 4px
+  sm: 6px
+  md: 8px
+  lg: 12px
   full: 9999px
 spacing:
   base: 4px
@@ -86,243 +106,276 @@ spacing:
   xl: 20px
   "2xl": 24px
   "3xl": 32px
-  "4xl": 48px
-  "5xl": 64px
-  nav-inline: 20px
-  nav-block: 12px
-  page-padding: 24px
-  card-padding: 24px
-  compact-card-padding: 16px
-  form-padding: 8px
-  field-gap: 8px
-  cluster-gap: 12px
-  action-gap: 20px
+  "4xl": 40px
+  "5xl": 48px
+  "6xl": 64px
+  "7xl": 80px
+  "8xl": 96px
+  component-padding-small: "8px 12px"
+  component-padding-medium: "10px 16px"
+  component-padding-large: "12px 24px"
 layout:
-  content-max-width: 1400px
-  auth-form-width: 384px
-  hero-height-mobile: 80px
-  hero-height-desktop: 208px
+  content-max-width: 1280px
+  page-padding-inline: 24px
+  section-spacing-mobile: 32px
+  section-spacing-tablet: 48px
+  section-spacing-desktop: 64px
+  card-grid-gap: 24px
 shadows:
   none: "none"
-  sm: "0 1px 2px 0 rgba(0, 0, 0, 0.05)"
-  md: "0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1)"
-  lg: "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1)"
+  hover-card: "0 8px 30px rgba(0, 0, 0, 0.08)"
+  hover-primary: "0 4px 12px rgba(99, 102, 241, 0.35)"
+  popover: "0 10px 30px rgba(15, 23, 42, 0.12)"
+focus:
+  ring: "0 0 0 3px rgba(99, 102, 241, 0.12)"
 elevation:
   level-0: "{shadows.none}"
-  level-1: "{shadows.sm}"
-  level-2: "{shadows.md}"
-  level-3: "{shadows.lg}"
+  level-1: "{shadows.hover-card}"
+  level-2: "{shadows.popover}"
 motion:
   duration-fast: 150ms
   duration-standard: 200ms
   duration-slow: 300ms
   easing-standard: "cubic-bezier(0.4, 0, 0.2, 1)"
-  easing-linear: "linear"
-  spinner-duration: 1s
-  spinner-duration-reduced: 1.5s
+  hover-lift-card: "-2px"
+  hover-lift-button: "-1px"
 components:
   page-canvas:
     backgroundColor: "{colors.background}"
     textColor: "{colors.text-primary}"
-    padding: "{spacing.page-padding}"
+    padding: "{layout.page-padding-inline}"
+  navigation-bar:
+    backgroundColor: "rgba(255, 255, 255, 0.82)"
+    borderColor: "{colors.border}"
+    height: 56px
+    backdropFilter: "blur(16px)"
   hero-band:
-    backgroundColor: "{colors.surface-brand-soft}"
+    backgroundColor: "{colors.surface}"
     textColor: "{colors.text-primary}"
     rounded: "{rounded.lg}"
-    padding: "{spacing.page-padding}"
-    height: "{layout.hero-height-desktop}"
-  panel-minimal:
-    backgroundColor: "{colors.surface-elevated}"
-    textColor: "{colors.text-primary}"
-    rounded: "{rounded.md}"
-    padding: "{spacing.card-padding}"
-  button-action:
+    padding: "{spacing.component-padding-large}"
+  button-primary:
     backgroundColor: "{colors.primary}"
-    textColor: "#ffffff"
+    textColor: "#FFFFFF"
     typography: "{typography.label-md}"
-    rounded: "{rounded.lg}"
-    padding: "12px 24px"
-  button-action-hover:
+    rounded: "{rounded.sm}"
+    padding: "{spacing.component-padding-medium}"
+    shadow: "{shadows.none}"
+  button-primary-hover:
     backgroundColor: "{colors.primary-hover}"
-    textColor: "#ffffff"
-  button-neutral:
-    backgroundColor: "{colors.neutral-inverse}"
-    textColor: "{colors.on-neutral-inverse}"
-    typography: "{typography.label-md}"
-    rounded: "{rounded.md}"
-    height: 36px
-    padding: "0 16px"
-  button-neutral-hover:
-    backgroundColor: "#27272a"
-    textColor: "{colors.on-neutral-inverse}"
-  button-outline:
-    backgroundColor: "{colors.surface}"
+    shadow: "{shadows.hover-primary}"
+    transform: "translateY(-1px)"
+  button-secondary:
+    backgroundColor: "transparent"
+    borderColor: "{colors.border}"
     textColor: "{colors.text-primary}"
     typography: "{typography.label-md}"
-    rounded: "{rounded.md}"
-    height: 36px
-    padding: "0 16px"
-  button-outline-hover:
-    backgroundColor: "{colors.surface-subtle}"
+    rounded: "{rounded.sm}"
+    padding: "{spacing.component-padding-medium}"
+  button-ghost:
+    backgroundColor: "transparent"
     textColor: "{colors.text-secondary}"
-  button-danger:
-    backgroundColor: "{colors.danger}"
-    textColor: "#ffffff"
     typography: "{typography.label-md}"
-    rounded: "{rounded.md}"
-    height: 36px
-    padding: "0 16px"
-  button-danger-hover:
-    backgroundColor: "#b91c1c" # A darker shade of the danger color
-    textColor: "#ffffff"
-  input-field:
-    backgroundColor: "{colors.surface}"
-    textColor: "{colors.text-primary}"
-    typography: "{typography.body-md}"
-    rounded: "{rounded.md}"
-    height: 36px
-    padding: "0 12px"
-  auth-panel:
-    backgroundColor: "{colors.surface}"
-    textColor: "{colors.text-primary}"
-    rounded: "{rounded.md}"
-    padding: "{spacing.form-padding}"
-    width: "{layout.auth-form-width}"
+    rounded: "{rounded.sm}"
+    padding: "{spacing.component-padding-medium}"
+  button-danger:
+    backgroundColor: "transparent"
+    borderColor: "{colors.danger}"
+    textColor: "{colors.danger}"
+    typography: "{typography.label-md}"
+    rounded: "{rounded.sm}"
+    padding: "{spacing.component-padding-medium}"
   card-default:
     backgroundColor: "{colors.surface}"
+    borderColor: "{colors.border}"
     textColor: "{colors.text-primary}"
-    rounded: "{rounded.xl}"
-    padding: "{spacing.card-padding}"
-  card-muted:
-    backgroundColor: "{colors.surface-muted}"
-    textColor: "{colors.text-primary}"
-    rounded: "{rounded.xl}"
-    padding: "{spacing.compact-card-padding}"
-  select-trigger:
+    rounded: "{rounded.lg}"
+    shadow: "{shadows.none}"
+  card-default-hover:
+    shadow: "{shadows.hover-card}"
+    transform: "translateY(-2px)"
+  input-field:
     backgroundColor: "{colors.surface}"
+    borderColor: "{colors.border}"
     textColor: "{colors.text-primary}"
-    typography: "{typography.body-md}"
-    rounded: "{rounded.md}"
-    height: 36px
-    padding: "0 12px"
-  nav-link:
-    backgroundColor: "transparent"
-    textColor: "{colors.text-muted}"
-    typography: "{typography.body-md}"
-    padding: "0"
-  nav-link-active:
-    backgroundColor: "transparent"
-    textColor: "{colors.text-link-active}"
-  table-row-hover:
+    placeholderColor: "{colors.text-muted}"
+    typography: "{typography.label-md}"
+    rounded: "{rounded.sm}"
+    padding: "10px 14px"
+    focusRing: "{focus.ring}"
+  chip-default:
+    backgroundColor: "{colors.surface-subtle}"
+    textColor: "{colors.text-secondary}"
+    typography: "{typography.caption}"
+    rounded: "{rounded.full}"
+    padding: "4px 12px"
+  chip-active:
+    backgroundColor: "{colors.primary}"
+    textColor: "#FFFFFF"
+    typography: "{typography.caption}"
+    rounded: "{rounded.full}"
+    padding: "4px 12px"
+  list-row:
+    backgroundColor: "{colors.surface}"
+    borderColor: "{colors.border}"
+    textColor: "{colors.text-primary}"
+    padding: "12px 16px"
+  list-row-hover:
     backgroundColor: "{colors.hover-row}"
-    textColor: "{colors.text-primary}"
+  search-bar:
+    backgroundColor: "{colors.surface}"
+    borderColor: "{colors.border}"
+    textColor: "{colors.text-secondary}"
+    rounded: "{rounded.lg}"
+    padding: "{spacing.component-padding-medium}"
 ---
 
 ## Overview
+Cluster Dashboard should move away from plain black-and-white austerity and toward a more editorial, quietly expressive interface. The right reference mood is professional and modern without becoming sterile: bold heading typography, warmer light surfaces, indigo-led interaction states, and enough spacing to make dense administrative content feel curated rather than cramped.
 
-Cluster Dashboard should feel like a dependable internal product rendered with restraint and confidence, not like a brand campaign. The interface is bright, quiet, and reduced: plain white surfaces carry most screens, typography performs most of the hierarchy, and emphasis is reserved for a small number of actions and state cues.
-
-The overall mood is professional, calm, and high-trust. There is no decorative spectacle, no visual clutter, and almost no ornamental flourish. The strongest branded moment is the pale blue hero band on the homepage; elsewhere, blue should remain purposeful and controlled, used mainly for links, CTAs, and selected navigation.
+This is still an internal research administration product, not a marketing site. So the Genesis-inspired direction should be adapted rather than copied. What transfers especially well is the sense of precision: confident headings, restrained borders, intelligent use of one strong accent color, and cards that feel like framed content rather than generic admin boxes.
 
 ## Colors
+The palette should become warmer, richer, and more intentional than the current monochrome scheme.
 
-The color system is built from three layers:
+- **Indigo** is the primary interaction color. Use it for CTAs, active states, links, focus rings, selected chips, and high-priority interactive feedback.
+- **Green** is available, but should be reserved for specific brand or positive highlights rather than spread across the full shell.
+- **Warm gray** should replace flat white as the page canvas so the app feels softer and less stark.
+- **White surfaces** should remain the card and panel layer, creating a framed editorial effect against the warmer background.
+- **Semantic colors** should stay available for confirmations, warnings, and destructive states, but they should be secondary to the indigo-led interaction system.
 
-- White and near-white surfaces create a clean administrative canvas.
-- Zinc grays handle borders, muted text, hover fills, and low-priority chrome.
-- A single medium blue acts as the primary accent for login actions, links, and key entry points.
-
-The rendered UI confirms that the product lives almost entirely on a bright white background. The pale blue banner is a supporting surface, not a dominant brand field. Black and near-black text carry most of the visual weight, which keeps the system feeling direct and reduced.
-
-Semantic color should stay isolated to status badges, alerts, and data visualization. The surrounding shell should remain largely monochrome so the interface retains a composed, premium quality instead of becoming noisy.
+The result should feel more alive than pure monochrome, but still controlled. Indigo is the main visual voice; other colors exist in support, not in competition.
 
 ## Typography
+The strongest transferable idea from Genesis is its editorial type contrast. Cluster Dashboard should adopt that logic:
 
-Inter is the only font family and should remain the entire system's voice. Its role here is crisp, neutral, and highly legible, with a tone closer to product UI precision than expressive branding.
+- **General Sans** for display and section headings
+- **DM Sans** for body text, labels, and UI copy
+- **JetBrains Mono** for IDs, codes, CLI strings, and machine-readable values
 
-Typography hierarchy is simple and practical:
+Headings should feel assertive and compact, with tight negative tracking. Body text should stay practical and readable. This creates a more designed and premium feeling than using one neutral font for everything.
 
-- Large headings use bold weights and modest negative tracking.
-- Form labels, buttons, and compact metadata stay disciplined in the 12px to 14px range.
-- Body copy stays at a standard 16px with relaxed but controlled line height.
+The type system should be applied selectively:
 
-This is not an expressive editorial system. Avoid stylized type treatments, decorative contrast, or oversized display moments outside page titles and the homepage welcome block. The best typographic result is clean, spare, and quietly authoritative.
+- Dashboard hero, page titles, and section headings can use the stronger editorial display tone.
+- Tables, forms, metadata, and descriptive copy should remain grounded in DM Sans for clarity.
+- Avoid mixing too many font weights on a single screen. One regular weight and one medium or bold weight is usually enough.
 
 ## Layout
+The layout system should preserve the 4px spacing grid and keep strong sectional rhythm:
 
-The layout model is a centered application shell with a wide maximum content width and generous empty space around primary content blocks. The homepage and auth screens both rely on visible breathing room, which makes the product feel calmer and more intentional even when the workflows themselves are operationally dense.
+- 24px horizontal padding at the shell level
+- 32px to 64px between major sections depending on breakpoint
+- 20px to 24px gaps in card grids
+- 10px by 16px or 12px by 24px internal component padding depending on density
 
-Spacing follows a practical 4px and 8px rhythm:
+Genesis’s best layout idea is not just “more space,” but “better controlled space.” High-density content is acceptable as long as each block has a clear frame and enough breathing room around it.
 
-- 8px and 12px for field stacks, inline controls, and compact grouping.
-- 16px to 24px for cards, sections, and navigation padding.
-- 48px and above for major separation on entry screens.
+## Elevation
+Depth should remain minimal, but not flat to the point of feeling unfinished.
 
-Forms should stay structurally tight, centered, and visually quiet. Data-heavy screens can expand horizontally, but should still feel contained inside the 1400px shell rather than stretched edge to edge. Space should read as a design decision, not as leftover emptiness.
+- Static cards should usually rest flat with a 1px border.
+- Hover can introduce a subtle editorial lift: a soft shadow plus a small vertical movement.
+- Primary buttons can use a restrained indigo glow on hover.
+- Focus should rely on a 3px tinted ring rather than thick borders or dramatic glows.
+- Navigation should communicate elevation through translucency and backdrop blur rather than heavy shadow.
 
-## Elevation & Depth
-
-Depth is subtle. Most components rely on hairline-like borders and very soft shadows rather than dramatic layering. The system should feel flat-first, with just enough separation to distinguish cards, inputs, and popovers from the white page.
-
-- Standard cards use soft low-contrast lift plus a light border.
-- Inputs and select triggers use minimal control shadows, mostly to avoid disappearing into white backgrounds.
-- Popovers and dropdowns can step up one level in elevation, but should still feel restrained, precise, and system-like.
-
-Heavy glass effects, colored shadows, and dramatic floating panels would be off-brand for this product.
-
-## Shapes
-
-The shape language is gently rounded but not playful. Most inputs and buttons sit at 6px to 8px radii, while larger cards stretch to 12px. The effect should feel modern and approachable without becoming soft, bubbly, or consumer-app-like.
-
-- Inputs, buttons, and selects: use the `md` and `lg` radii.
-- Larger summary cards and grouped containers: use `xl`.
-- Avoid pill-heavy styling except for badges and small semantic indicators.
+This gives the app more sophistication without pushing it into flashy territory.
 
 ## Components
+### Buttons
+The Genesis button system is a strong fit and should be adapted directly:
 
-### Entry Screens
+- Primary: indigo fill, white text, 6px radius
+- Secondary: transparent with subtle border
+- Ghost: no border, hover by text/background shift only
+- Destructive: red text and red border, used only when destructive meaning matters
 
-The homepage pairs a large pale blue banner with a plain text welcome block and a single blue CTA. Keep this composition airy, centered, and uncomplicated. It should feel like a concise gateway into the product, not a marketing landing page.
+Buttons should feel slightly more alive than the current neutral controls. A small upward shift on hover helps them feel precise and tactile.
 
-The login screen uses a centered, lightly bordered form card on a white background with minimal decoration. Inputs are full-width, standard height, and visually subordinate to the form title and submit action. The best reference mood is calm product minimalism rather than enterprise heaviness.
+### Cards
+Cards should feel like gallery frames for information:
+
+- white surface
+- 1px subtle border
+- 12px radius for larger content cards
+- minimal static shadow
+- gentle lift and shadow increase on hover where interactivity exists
+
+This is one of the best Genesis ideas for your app because it makes dense admin content feel intentionally presented.
+
+### Inputs
+Inputs should use the Genesis pattern almost verbatim:
+
+- white surface
+- subtle border
+- 6px radius
+- 14px text
+- muted placeholder
+- indigo border/focus ring on focus
+
+This is a cleaner and more memorable interaction model than neutral-only focus states.
+
+### Chips and Status
+Genesis has a good distinction between generic chips and semantic status chips. That is worth carrying over:
+
+- neutral chips for filters, categories, and inactive states
+- indigo active chips for selected states
+- semantic chips only where status meaning matters
+
+This is better than making every badge a different loud color.
+
+### Lists and Tables
+Rows should behave like stacked editorial list items:
+
+- subtle dividers
+- white surface
+- 12px vertical and 16px horizontal padding
+- hover through a soft background shift only
+
+Tables should read more like structured content lists and less like software-default data grids.
 
 ### Navigation
+Genesis’s navigation rules are highly transferable:
 
-Top navigation is understated. Links sit on a plain horizontal strip with bottom border separation. Inactive items are muted gray; the active route deepens to a darker blue rather than introducing a larger shape, pill, or tab treatment.
+- sticky top nav
+- 56px height
+- 1px bottom border
+- backdrop blur instead of shadow
+- restrained active-state treatment
 
-### Data Surfaces
+For Cluster Dashboard, the nav should still feel product-like and utilitarian, but this treatment will make it more polished.
 
-Cards, tables, and filter controls should read like reliable administrative furniture rendered with premium restraint:
+### Search
+The Genesis `⌘K` search pattern is worth considering for a future pass. It is not required immediately, but it would be one of the most valuable product-level upgrades if you want the app to feel more premium and efficient.
 
-- White surfaces
-- thin borders
-- soft shadows
-- restrained hover fills
+## Best Things To Adopt
+The strongest Genesis ideas for this app are:
 
-Hover feedback should be visible but quiet, usually through a light gray background shift rather than motion-heavy transitions, scaling, or glow effects.
+- Indigo as the clear primary interaction color
+- Warm light-gray page background instead of hard white everywhere
+- Editorial display typography paired with a cleaner body font
+- Minimal static shadows with hover-only lift
+- Backdrop-blurred sticky navigation
+- Better framed cards and list rows
+- Indigo focus rings instead of purely neutral focus treatment
 
-### Buttons & Inputs
+## Best Things To Skip
+Some Genesis traits should be adapted carefully or avoided:
 
-There are effectively two button families, but they should be calmer than a typical admin dashboard:
-
-- **Blue action buttons** for public-facing or entry-point CTAs (`button-action`).
-- **Monochrome utility buttons** for authenticated forms, navigation, and data actions (`button-neutral`, `button-outline`).
-
-Red should be used sparingly and primarily inside confirmation states, destructive messaging, or exceptional alerts, not as a constant accent in the everyday shell. Most operational actions should read as black, white, gray, or muted blue.
-
-That contrast is part of the current product identity. The styling should stay spare enough that hierarchy comes from placement and contrast, not ornament.
+- Don’t import community-gallery aesthetics that imply a marketplace or media product.
+- Don’t use green as a second broad UI accent across the shell.
+- Don’t overuse hover lift on every single card or row.
+- Don’t let typography become so expressive that dense admin screens become harder to scan.
 
 ## Do's and Don'ts
-
-- Do keep the UI bright, minimal, and operationally focused.
-- Do let whitespace carry some of the premium feel.
-- Do use blue sparingly so it retains meaning as an action and navigation accent.
-- Do prefer monochrome controls for everyday admin actions.
-- Do prefer border, spacing, and typography hierarchy over decorative containers.
-- Do preserve the centered, open composition of auth and entry flows.
-- Do aim for a quieter, more reduced tone in the writing and the resulting UI.
-- Don't introduce saturated multi-color palettes into the main shell.
-- Don't use red as a default side-rail or navigation accent.
-- Don't rely on large shadows, glass effects, or gradient-heavy surfaces.
-- Don't make data screens feel playful; they should stay clear, neutral, and dependable.
-- Don't over-style navigation with pills, underlines, or segmented-control treatments unless the entire design language is being upgraded.
+- Do use indigo only for interactive emphasis, active states, focus, and key CTAs.
+- Do keep the warm gray background and white-card layering consistent.
+- Do use the 4px spacing grid everywhere.
+- Do use General Sans for display moments and DM Sans for the bulk of product UI.
+- Do reserve green for selective highlights and positive emphasis only.
+- Do keep semantic red, amber, and green available, but secondary to indigo.
+- Don't fall back to flat pure black-and-white everywhere.
+- Don't use more than one filled primary button in the same local view section unless the flow clearly needs it.
+- Don't add decorative gradients, glossy effects, or illustration-heavy branding.
+- Don't let shadows become permanent decoration; save them for hover, focus, and popovers.
