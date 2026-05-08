@@ -3,7 +3,8 @@
 // b/c the LoginForm is already a CC b/c of using `useForm()` hook and we're importing this into the LoginForm
 // but still make it a CC explicitly for clarity;
 
-import { Button } from "@nextui-org/react";
+import { Loader2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { useFormStatus } from "react-dom";
 
 export default function LogInFormButton() {
@@ -11,7 +12,8 @@ export default function LogInFormButton() {
   const { pending: isSubmitting } = useFormStatus();
 
   return (
-    <Button type="submit" disabled={isSubmitting} isLoading={isSubmitting}>
+    <Button type="submit" disabled={isSubmitting}>
+      {isSubmitting && <Loader2 className="h-4 w-4 animate-spin" />}
       Log in
     </Button>
   );

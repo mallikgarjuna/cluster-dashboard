@@ -10,7 +10,7 @@ import {
   FundingCallWithAllRelatedTypes,
   FundingProgrammeWithAllRelatedTypes,
 } from "@/prisma/customTypes";
-import { Card, CardBody, CardHeader } from "@nextui-org/react";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { usePathname, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
@@ -125,7 +125,7 @@ const PIFundersTable = () => {
         <CardHeader className="pb-0">
           <h2 className="text-3xl font-bold">Funders Table</h2>
         </CardHeader>
-        <CardBody>
+        <CardContent>
           <Table.Root variant="surface" size={"1"}>
             <Table.Header>
               <Table.Row>
@@ -248,7 +248,7 @@ const PIFundersTable = () => {
                 )}
             </Table.Body>
           </Table.Root>
-        </CardBody>
+        </CardContent>
       </Card>
     </>
   );

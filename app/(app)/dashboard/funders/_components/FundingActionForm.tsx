@@ -1,20 +1,30 @@
 "use client";
 
+import { createFundingActionSA } from "@/lib/actions/funderActions";
+import { updateFundingActionSA } from "@/lib/actions/updateFunderActions";
 import {
   CreateFundingActionFormInputType,
   CreateFundingActionFormSchema,
 } from "@/lib/validationSchemas";
-import { createFundingActionSA } from "@/lib/actions/funderActions";
-import { updateFundingActionSA } from "@/lib/actions/updateFunderActions";
 import { FundingProgrammeWithActionsCalls } from "@/prisma/customTypes";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button, Input, Select, SelectItem } from "@nextui-org/react";
+import { Button } from "@/components/ui/button";
+import { FieldError } from "@/components/ui/field-error";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { FundingAction } from "@prisma/client";
 import { useQuery } from "@tanstack/react-query";
+import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Controller, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
-import React from "react";
 
 interface Props {
   fAction?: FundingAction;
@@ -33,32 +43,21 @@ const FundingActionForm = ({ fAction }: Props) => {
     resolver: zodResolver(CreateFundingActionFormSchema),
   });
 
-  const { data: fundingProgrammes, isLoading, error } = useFundingProgrammes();
+  const { data: fundingProgrammes } = useFundingProgrammes();
 
   const onSubmitCreateUpdateFundingActionForm = async (
     fundingActionFormData: CreateFundingActionFormInputType,
   ) => {
-    // console.log(fundingActionFormData);
-    //
     try {
       const result = fAction
         ? await updateFundingActionSA(fAction.id, fundingActionFormData)
         : await createFundingActionSA(fundingActionFormData);
-      //
-      //
-      //
 
       if (!result?.success) {
         toast.error(result?.message + " ");
       } else {
         toast.success(result.message);
-
-        // Reset the form after successfull submission
         reset();
-
-        // Invalidate (and refetch) every query in the cache
-        // queryClient.invalidateQueries();
-
         router.refresh();
         router.push("/dashboard/funders");
       }
@@ -71,71 +70,65 @@ const FundingActionForm = ({ fAction }: Props) => {
   return (
     <form
       onSubmit={handleSubmit(onSubmitCreateUpdateFundingActionForm)}
-      className="space-y-2"
+      className="space-y-4"
     >
       <h2 className="text-xl font-bold">Add a new Funding Action</h2>
 
-      <Input
-        {...register("name")}
-        errorMessage={errors.name?.message}
-        isInvalid={!!errors.name}
-        type="text"
-        label="Funding Action name (NWO: Funding Instrument/Programme)"
-        placeholder="Enter Funding Action name. E.g., ERC/MSCA/etc., Veni/Vidi/Vici/etc."
-        defaultValue={fAction?.name}
-      />
+      <div>
+        <Label className="mb-2 block">
+          Funding Action name (NWO: Funding Instrument/Programme)
+        </Label>
+        <Input
+          {...register("name")}
+          type="text"
+          placeholder="Enter Funding Action name. E.g., ERC/MSCA/etc., Veni/Vidi/Vici/etc."
+          defaultValue={fAction?.name}
+        />
+        <FieldError className="mt-1" message={errors.name?.message} />
+      </div>
 
-      {/* Add an input field for selecting the related funding programme */}
       <Controller
         control={control}
         name="fundingProgrammeId"
         defaultValue={fAction?.fundingProgrammeId ?? undefined}
         render={({ field }) => (
-          <>
+          <div>
+            <Label className="mb-2 block">(Related) Funding Programme</Label>
             {fundingProgrammes ? (
               <Select
-                {...field}
-                {...register("fundingProgrammeId")}
-                errorMessage={errors.fundingProgrammeId?.message}
-                isInvalid={!!errors.fundingProgrammeId}
-                label="(Related) Funding Programme"
-                placeholder="Select the related funding programme"
-                // defaultSelectedKeys={
-                //   fAction?.fundingProgrammeId
-                //     ? [fAction.fundingProgrammeId]
-                //     : []
-                // }
+                value={field.value}
+                onValueChange={field.onChange}
+                defaultValue={field.value}
               >
-                {fundingProgrammes ? (
-                  fundingProgrammes.map((program) => (
+                <SelectTrigger>
+                  <SelectValue placeholder="Select the related funding programme" />
+                </SelectTrigger>
+                <SelectContent>
+                  {fundingProgrammes.map((program) => (
                     <SelectItem key={program.id} value={program.id}>
                       {program.name}
                     </SelectItem>
-                  ))
-                ) : (
-                  <SelectItem key={""} value={""}>
-                    None
-                  </SelectItem>
-                )}
+                  ))}
+                </SelectContent>
               </Select>
             ) : (
               <p>Loading funding programs...</p>
             )}
-          </>
+            <FieldError
+              className="mt-1"
+              message={errors.fundingProgrammeId?.message}
+            />
+          </div>
         )}
       />
 
       <div className="flex justify-between">
-        <Button
-          type="submit"
-          disabled={isSubmitting}
-          isLoading={isSubmitting}
-          color="primary"
-        >
+        <Button type="submit" disabled={isSubmitting}>
+          {isSubmitting ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
           {fAction ? "Update Funding Action" : "Create New Funding Action"}
         </Button>
 
-        <Button type="button" color="danger" onPress={() => router.back()}>
+        <Button type="button" variant="destructive" onClick={() => router.back()}>
           Cancel
         </Button>
       </div>
@@ -143,9 +136,6 @@ const FundingActionForm = ({ fAction }: Props) => {
   );
 };
 
-// This fetcher is created so that I can use fetch() to add a tag for relvalidating
-// in the SA;
-// https://nextjs.org/docs/app/building-your-application/data-fetching/fetching-caching-and-revalidating#on-demand-revalidation
 const fetchFundingProgrammes = async () => {
   const res = await fetch("/api/fundingProgrammes", {
     next: { tags: ["fundingProgrammes-api"] },
@@ -158,9 +148,9 @@ export const useFundingProgrammes = () =>
   useQuery<FundingProgrammeWithActionsCalls[]>({
     queryKey: ["fundingProgrammes-api"],
     queryFn: () => fetchFundingProgrammes(),
-    staleTime: 60 * 1000, //60s
+    staleTime: 60 * 1000,
     retry: 3,
-    cacheTime: 0, // 0 = no cache
+    cacheTime: 0,
   });
 
 export default FundingActionForm;

@@ -2,8 +2,9 @@
 
 import { GrantStatusBadge } from "@/app/components";
 import { GrantWithUser } from "@/prisma/customTypes";
-import { Card, CardBody, CardHeader } from "@nextui-org/react";
-import { Button, Flex, Table } from "@radix-ui/themes";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Flex, Table } from "@radix-ui/themes";
 import Link from "next/link";
 
 interface Props {
@@ -18,7 +19,7 @@ const LatestGrants = ({ latestGrants }: Props) => {
       <CardHeader className="pb-0">
         <h1 className="text-3xl font-bold">Latest Grants</h1>
       </CardHeader>
-      <CardBody>
+      <CardContent>
         <Table.Root>
           <Table.Body>
             {latestGrants.map((grant) => (
@@ -35,7 +36,9 @@ const LatestGrants = ({ latestGrants }: Props) => {
                       <GrantStatusBadge status={grant.status} />
                     </Flex>
                     {grant.assignedToUser && (
-                      <Button>{grant.assignedToUser?.email}</Button>
+                      <Button variant="outline">
+                        {grant.assignedToUser?.email}
+                      </Button>
                     )}
                   </Flex>
                 </Table.Cell>
@@ -43,7 +46,7 @@ const LatestGrants = ({ latestGrants }: Props) => {
             ))}
           </Table.Body>
         </Table.Root>
-      </CardBody>
+      </CardContent>
     </Card>
   );
 };

@@ -6,9 +6,12 @@ import {
   ForgotPasswordFormSchema,
 } from "@/lib/validationSchemas";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button, Input } from "@nextui-org/react";
+import { Button } from "@/components/ui/button";
+import { FieldError } from "@/components/ui/field-error";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import React from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { HiMail } from "react-icons/hi";
@@ -19,27 +22,13 @@ export default function ForgotPasswordForm() {
     register,
     trigger,
     getValues,
-    handleSubmit,
     formState: { errors, isSubmitting },
     reset,
   } = useForm<ForgotPasswordFormInputType>({
     resolver: zodResolver(ForgotPasswordFormSchema),
   });
 
-  // const submitRequest: SubmitHandler<ForgotPasswordFormInputType> = async (
-  //   ForgotPasswordFormData,
-  // ) => {
-  //   try {
-  //     const result = await forgotPassword(ForgotPasswordFormData);
-  //     toast.success("Reset password link was sent to your email.");
-  //     reset();
-  //   } catch (error) {
-  //     // console.log(error);
-  //     toast.error("Something went wrong..." + "\n" + getErrorMessage(error));
-  //   }
-  // };
-
-  const handleAction = async (formData: FormData) => {
+  const handleAction = async (_formData: FormData) => {
     const resultTrigger = await trigger();
     if (!resultTrigger) {
       return;
@@ -58,25 +47,24 @@ export default function ForgotPasswordForm() {
   };
 
   return (
-    <form
-      // onSubmit={handleSubmit(submitRequest)}
-      action={handleAction}
-      className="flex flex-col gap-2 place-self-stretch"
-    >
-      <Input
-        type="email"
-        label="Email"
-        placeholder="Enter your email"
-        {...register("email")}
-        startContent={<HiMail />}
-        errorMessage={errors.email?.message}
-      />
-      <Button
-        type="submit"
-        color="primary"
-        isLoading={isSubmitting}
-        disabled={isSubmitting}
-      >
+    <form action={handleAction} className="flex flex-col gap-2 place-self-stretch">
+      <div>
+        <Label className="mb-2 block">Email</Label>
+        <div className="relative">
+          <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500">
+            <HiMail />
+          </span>
+          <Input
+            type="email"
+            placeholder="Enter your email"
+            {...register("email")}
+            className="pl-9"
+          />
+        </div>
+        <FieldError className="mt-1" message={errors.email?.message} />
+      </div>
+      <Button type="submit" disabled={isSubmitting}>
+        {isSubmitting ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
         {isSubmitting ? "Sending..." : "Send me a reset link"}
       </Button>
     </form>

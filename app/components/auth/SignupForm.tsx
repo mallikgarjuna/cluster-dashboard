@@ -1,15 +1,51 @@
 "use client";
 
-import { Button, Checkbox, Input, Link } from "@nextui-org/react";
-import { HiEye, HiEyeOff, HiKey, HiMail, HiUser } from "react-icons/hi";
-import React, { useState } from "react";
-import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import { registerUser } from "@/lib/actions/authActions";
 import { SignupFormInputType, SignupFormSchema } from "@/lib/validationSchemas";
 import { zodResolver } from "@hookform/resolvers/zod";
-import axios from "axios";
-import toast from "react-hot-toast";
-import { registerUser } from "@/lib/actions/authActions";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { FieldError } from "@/components/ui/field-error";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Loader2 } from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useState, type ReactNode } from "react";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import toast from "react-hot-toast";
+import { HiEye, HiEyeOff, HiKey, HiMail, HiUser } from "react-icons/hi";
+
+type FieldWrapperProps = {
+  label: string;
+  error?: string;
+  className?: string;
+  icon?: ReactNode;
+  children: ReactNode;
+};
+
+function FieldWrapper({
+  label,
+  error,
+  className,
+  icon,
+  children,
+}: FieldWrapperProps) {
+  return (
+    <div className={className}>
+      <Label className="mb-2 block">{label}</Label>
+      <div className="relative">
+        {icon ? (
+          <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500">
+            {icon}
+          </span>
+        ) : null}
+        {children}
+      </div>
+      <FieldError className="mt-1" message={error} />
+    </div>
+  );
+}
 
 const SignupForm = () => {
   const router = useRouter();
@@ -29,9 +65,7 @@ const SignupForm = () => {
   const saveUser: SubmitHandler<SignupFormInputType> = async (
     singupFormData,
   ) => {
-    // const { confirmPassword, accepted, ...user } = singupFormData;
     try {
-      // await axios.post("/api/users/register", singupFormData);
       const result = await registerUser(singupFormData);
       if (!result.success) {
         toast.error(result.message);
@@ -42,7 +76,6 @@ const SignupForm = () => {
         reset();
         router.push("/auth/login");
       }
-      // console.log(singupFormData);
     } catch (error) {
       toast.error("Something went wrong...");
       console.error(error);
@@ -54,87 +87,107 @@ const SignupForm = () => {
       onSubmit={handleSubmit(saveUser)}
       className="grid grid-cols-2 gap-3 place-self-stretch rounded-md border p-2"
     >
-      <Input
-        {...register("firstName")}
-        errorMessage={errors.firstName?.message}
-        isInvalid={!!errors.firstName}
-        type="text"
+      <FieldWrapper
         label="First Name"
-        placeholder="Enter your first name"
-        startContent={<HiUser />}
-      />
-      <Input
-        {...register("lastName")}
-        errorMessage={errors.lastName?.message}
-        isInvalid={!!errors.lastName}
-        type="text"
+        error={errors.firstName?.message}
+        icon={<HiUser />}
+      >
+        <Input
+          {...register("firstName")}
+          type="text"
+          placeholder="Enter your first name"
+          className="pl-9"
+        />
+      </FieldWrapper>
+
+      <FieldWrapper
         label="Last Name"
-        placeholder="Enter your last name"
-        startContent={<HiUser />}
-      />
-      <Input
-        {...register("email")}
-        errorMessage={errors.email?.message}
-        isInvalid={!!errors.email}
-        type="email"
+        error={errors.lastName?.message}
+        icon={<HiUser />}
+      >
+        <Input
+          {...register("lastName")}
+          type="text"
+          placeholder="Enter your last name"
+          className="pl-9"
+        />
+      </FieldWrapper>
+
+      <FieldWrapper
         label="Email"
-        placeholder="Enter your email"
-        startContent={<HiMail />}
+        error={errors.email?.message}
         className="col-span-2"
-      />
-      <Input
-        {...register("password")}
-        errorMessage={errors.password?.message}
-        isInvalid={!!errors.password}
-        type={isVisiblePass ? "text" : "password"}
+        icon={<HiMail />}
+      >
+        <Input
+          {...register("email")}
+          type="email"
+          placeholder="Enter your email"
+          className="pl-9"
+        />
+      </FieldWrapper>
+
+      <FieldWrapper
         label="Password"
-        placeholder="Enter your password"
-        startContent={<HiKey />}
-        endContent={
-          <Button isIconOnly variant="light" onPress={toggleVisiblePass}>
-            {isVisiblePass ? <HiEyeOff /> : <HiEye />}
-          </Button>
-        }
+        error={errors.password?.message}
         className="col-span-2"
-      />
-      <Input
-        {...register("confirmPassword")}
-        errorMessage={errors.confirmPassword?.message}
-        isInvalid={!!errors.confirmPassword}
-        type={isVisiblePass ? "text" : "password"}
+        icon={<HiKey />}
+      >
+        <Input
+          {...register("password")}
+          type={isVisiblePass ? "text" : "password"}
+          placeholder="Enter your password"
+          className="pl-9 pr-10"
+        />
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon"
+          className="absolute right-1 top-1/2 -translate-y-1/2"
+          aria-label={isVisiblePass ? "Hide password" : "Show password"}
+          onClick={toggleVisiblePass}
+        >
+          {isVisiblePass ? <HiEyeOff /> : <HiEye />}
+        </Button>
+      </FieldWrapper>
+
+      <FieldWrapper
         label="Confirm Password"
-        placeholder="Renter to confirm password"
-        startContent={<HiKey />}
+        error={errors.confirmPassword?.message}
         className="col-span-2"
-      />
+        icon={<HiKey />}
+      >
+        <Input
+          {...register("confirmPassword")}
+          type={isVisiblePass ? "text" : "password"}
+          placeholder="Re-enter to confirm password"
+          className="pl-9"
+        />
+      </FieldWrapper>
 
       <Controller
         control={control}
         name="accepted"
         render={({ field }) => (
-          <Checkbox
-            onChange={field.onChange}
-            onBlur={field.onBlur}
-            type="checkbox"
-            className="col-span-2"
-          >
-            I accept the <Link href="/terms"> terms and conditions</Link>.
-          </Checkbox>
+          <div className="col-span-2 space-y-2">
+            <label className="flex items-start gap-2 text-sm">
+              <Checkbox
+                checked={field.value}
+                onCheckedChange={(checked) => field.onChange(Boolean(checked))}
+                onBlur={field.onBlur}
+              />
+              <span>
+                I accept the <Link href="/terms">terms and conditions</Link>.
+              </span>
+            </label>
+            <FieldError message={errors.accepted?.message} />
+          </div>
         )}
       />
-      {!!errors.accepted && (
-        <p className="col-span-2 text-xs text-red-500">
-          {errors.accepted.message}
-        </p>
-      )}
+
       <div className="col-span-2 flex justify-center">
-        <Button
-          type="submit"
-          disabled={isSubmitting}
-          isLoading={isSubmitting}
-          color="primary"
-          className="w-48"
-        >
+        <Button type="submit" disabled={isSubmitting} className="w-48">
+          {isSubmitting ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
           {isSubmitting ? "Signing up..." : "Sign up"}
         </Button>
       </div>

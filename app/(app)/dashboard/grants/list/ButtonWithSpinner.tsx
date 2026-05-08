@@ -1,8 +1,7 @@
 "use client";
-import { Button, Spinner } from "@nextui-org/react";
-// import { Spinner } from "@/app/components";
+import { Loader2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import React, { ComponentType, ReactElement, useState } from "react";
 
 interface Props {
@@ -16,7 +15,6 @@ const ButtonWithSpinner = ({
   iconComponent: IconComponent,
 }: Props) => {
   const [isLoading, setIsLoading] = useState(false);
-  const router = useRouter();
 
   // a function to handle different possible types of 'IconComponent'
   const renderIcon = () => {
@@ -26,31 +24,25 @@ const ButtonWithSpinner = ({
     return null;
   };
 
-  // This way. clicking anywhere on the button will
-  // trigger the loading spinner and navigation
-  const handleClick = () => {
-    setIsLoading(true);
-    router.push(hrefProp);
-  };
-
   return (
-    <Link href={hrefProp}>
-      <Button
-        // onClick={() => setIsLoading(true)}
-        onPress={handleClick}
-        disabled={isLoading}
-        isLoading={isLoading}
-        spinner={<Spinner color="white" size="sm" />}
-        spinnerPlacement="start"
-        color="primary"
-        className="w-full px-16"
+    <Button asChild className="w-full px-16">
+      <Link
+        href={hrefProp}
+        aria-disabled={isLoading}
+        className={isLoading ? "pointer-events-none" : undefined}
+        onClick={(event) => {
+          if (isLoading) {
+            event.preventDefault();
+            return;
+          }
+          setIsLoading(true);
+        }}
       >
-        {/* {isLoading && <Spinner size="sm" />} */}
+        {isLoading && <Loader2 className="h-4 w-4 animate-spin" />}
         {renderIcon()}
         {name}
-        {/* <Link href={hrefProp}>{name}</Link> */}
-      </Button>
-    </Link>
+      </Link>
+    </Button>
   );
 };
 

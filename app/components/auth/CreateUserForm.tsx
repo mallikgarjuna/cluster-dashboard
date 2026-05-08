@@ -1,17 +1,30 @@
 "use client";
 
+import { createUserByAdmin } from "@/lib/actions/authActions";
 import {
   CreateUserFormInputType,
   CreateUserFormSchema,
 } from "@/lib/validationSchemas";
-import { createUserByAdmin } from "@/lib/actions/authActions";
-import { Button, Checkbox, Input, Select, SelectItem } from "@nextui-org/react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { FieldError } from "@/components/ui/field-error";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Department, UserRole } from "@prisma/client";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
+import { Loader2 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import { useState, type ReactNode } from "react";
 import { Controller, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import {
@@ -22,17 +35,45 @@ import {
   HiOfficeBuilding,
   HiUser,
 } from "react-icons/hi";
-import { zodResolver } from "@hookform/resolvers/zod";
+
+type FieldWrapperProps = {
+  label: string;
+  error?: string;
+  className?: string;
+  icon?: ReactNode;
+  children: ReactNode;
+};
+
+function FieldWrapper({
+  label,
+  error,
+  className,
+  icon,
+  children,
+}: FieldWrapperProps) {
+  return (
+    <div className={className}>
+      <Label className="mb-2 block">{label}</Label>
+      <div className="relative">
+        {icon ? (
+          <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500">
+            {icon}
+          </span>
+        ) : null}
+        {children}
+      </div>
+      <FieldError className="mt-1" message={error} />
+    </div>
+  );
+}
 
 const CreateUserForm = () => {
-  const { data: departments, error, isLoading } = useDepartments();
-  const queryClient = useQueryClient();
+  const { data: departments } = useDepartments();
   const router = useRouter();
   const {
     register,
     trigger,
     getValues,
-    handleSubmit,
     formState: { errors, isSubmitting },
     control,
     reset,
@@ -43,71 +84,24 @@ const CreateUserForm = () => {
   const [isVisiblePass, setIsVisiblePass] = useState(false);
   const toggleVisiblePass = () => setIsVisiblePass((prev) => !prev);
 
-  // const createUserOnSubmit = async (
-  //   createUserFormData: CreateUserFormInputType,
-  // ) => {
-  //   // Check the type of departmentId returned by the form
-  //   // console.log(createUserFormData);
-
-  //   try {
-  //     const result = await createUserByAdmin(createUserFormData);
-  //     if (!result.success) {
-  //       toast.error(result.message);
-  //     } else {
-  //       toast.success(
-  //         "The user created by Admin successfully!" + "\n" + result.message,
-  //       );
-  //       reset();
-  //       // router.push("/admin");
-
-  //       // Invalidate (and refetch) every query in the cache
-  //       queryClient.invalidateQueries();
-  //       // Invalidate (and refetch) every query with a key that starts with `users`
-  //       queryClient.invalidateQueries({
-  //         queryKey: ["users"],
-  //       });
-  //       queryClient.invalidateQueries({
-  //         queryKey: ["usersInGrantForm"],
-  //       });
-  //       queryClient.invalidateQueries({
-  //         queryKey: ["usersInAssigneeSelect"],
-  //       });
-
-  //       router.push("/dashboard/grants/list");
-  //       router.refresh();
-  //     }
-  //   } catch (error) {
-  //     toast.error("Something went wrong...");
-  //     console.error(error);
-  //   }
-  // };
-
-  const handleAction = async (formData: FormData) => {
+  const handleAction = async (_formData: FormData) => {
     const resultTrigger = await trigger();
     if (!resultTrigger) return;
 
-    // FormData object first needs to be converted to a JS object;
-    // console.log("formData: ", formData);
-
-    // This is a plain JS object after zodResolver() validation is applied
-    // Note: getValues() doesn't get the zod `transformations` applied;
     const createUserData = getValues();
-    // console.log("createUserData: ", createUserData);
-
     const result = await createUserByAdmin(createUserData);
     if (!result.success) {
       toast.error(result.message);
       return;
-    } else {
-      toast.success(result.message);
-      reset();
-      router.push("/admin");
     }
+
+    toast.success(result.message);
+    reset();
+    router.push("/admin");
   };
 
   return (
     <form
-      // onSubmit={handleSubmit(createUserOnSubmit)}
       action={handleAction}
       className="grid grid-cols-2 gap-3 place-self-stretch rounded-md border p-2"
     >
@@ -115,78 +109,111 @@ const CreateUserForm = () => {
         Create a new user - by Admin
       </h2>
 
-      <Input
-        {...register("firstName")}
-        errorMessage={errors.firstName?.message}
-        isInvalid={!!errors.firstName}
-        type="text"
+      <FieldWrapper
         label="First Name"
-        placeholder="Enter your first name"
-        startContent={<HiUser />}
-      />
-      <Input
-        {...register("lastName")}
-        errorMessage={errors.lastName?.message}
-        isInvalid={!!errors.lastName}
-        type="text"
+        error={errors.firstName?.message}
+        icon={<HiUser />}
+      >
+        <Input
+          {...register("firstName")}
+          type="text"
+          placeholder="Enter your first name"
+          className="pl-9"
+        />
+      </FieldWrapper>
+
+      <FieldWrapper
         label="Last Name"
-        placeholder="Enter your last name"
-        startContent={<HiUser />}
-      />
-      <Input
-        {...register("email")}
-        errorMessage={errors.email?.message}
-        isInvalid={!!errors.email}
-        type="email"
+        error={errors.lastName?.message}
+        icon={<HiUser />}
+      >
+        <Input
+          {...register("lastName")}
+          type="text"
+          placeholder="Enter your last name"
+          className="pl-9"
+        />
+      </FieldWrapper>
+
+      <FieldWrapper
         label="Email"
-        placeholder="Enter your email"
-        startContent={<HiMail />}
+        error={errors.email?.message}
         className="col-span-2"
-      />
-      <Input
-        {...register("password")}
-        errorMessage={errors.password?.message}
-        isInvalid={!!errors.password}
-        type={isVisiblePass ? "text" : "password"}
+        icon={<HiMail />}
+      >
+        <Input
+          {...register("email")}
+          type="email"
+          placeholder="Enter your email"
+          className="pl-9"
+        />
+      </FieldWrapper>
+
+      <FieldWrapper
         label="Password"
-        placeholder="Enter your password"
-        startContent={<HiKey />}
+        error={errors.password?.message}
         className="col-span-2"
-        endContent={
-          <Button isIconOnly variant="light" onPress={toggleVisiblePass}>
-            {isVisiblePass ? <HiEye /> : <HiEyeOff />}
-          </Button>
-        }
-      />
-      <Input
-        {...register("confirmPassword")}
-        errorMessage={errors.confirmPassword?.message}
-        isInvalid={!!errors.confirmPassword}
-        type={isVisiblePass ? "text" : "password"}
+        icon={<HiKey />}
+      >
+        <Input
+          {...register("password")}
+          type={isVisiblePass ? "text" : "password"}
+          placeholder="Enter your password"
+          className="pl-9 pr-10"
+        />
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon"
+          className="absolute right-1 top-1/2 -translate-y-1/2"
+          aria-label={isVisiblePass ? "Hide password" : "Show password"}
+          onClick={toggleVisiblePass}
+        >
+          {isVisiblePass ? <HiEye /> : <HiEyeOff />}
+        </Button>
+      </FieldWrapper>
+
+      <FieldWrapper
         label="Confirm Password"
-        placeholder="Confirm your password"
-        startContent={<HiKey />}
+        error={errors.confirmPassword?.message}
         className="col-span-2"
-      />
+        icon={<HiKey />}
+      >
+        <Input
+          {...register("confirmPassword")}
+          type={isVisiblePass ? "text" : "password"}
+          placeholder="Confirm your password"
+          className="pl-9"
+        />
+      </FieldWrapper>
+
       <Controller
         control={control}
         name="role"
         render={({ field }) => (
-          <Select
-            {...register("role")}
-            errorMessage={errors.role?.message}
-            isInvalid={!!errors.role}
+          <FieldWrapper
             label="User Role"
-            placeholder="Select user role"
-            startContent={<HiUser />}
+            error={errors.role?.message}
             className="col-span-2"
+            icon={<HiUser />}
           >
-            {Object.values(UserRole).map((role) => (
-              <SelectItem key={role} value={role}>
-                {role}
-              </SelectItem>
-            ))}
-          </Select>
+            <Select
+              value={field.value}
+              onValueChange={field.onChange}
+              defaultValue={field.value}
+            >
+              <SelectTrigger className="pl-9">
+                <SelectValue placeholder="Select user role" />
+              </SelectTrigger>
+              <SelectContent>
+                {Object.values(UserRole).map((role) => (
+                  <SelectItem key={role} value={role}>
+                    {role}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </FieldWrapper>
         )}
       />
 
@@ -194,66 +221,55 @@ const CreateUserForm = () => {
         control={control}
         name="departmentId"
         render={({ field }) => (
-          <Select
-            {...field}
-            // {...register("departmentId", { valueAsNumber: true })}
-            // onChange={(event) => field.onChange(parseInt(event.target.value))}
-            {...register("departmentId")}
-            errorMessage={errors.departmentId?.message}
-            isInvalid={!!errors.departmentId}
+          <FieldWrapper
             label="Department"
-            placeholder="Select user's department"
-            startContent={<HiOfficeBuilding />}
+            error={errors.departmentId?.message}
             className="col-span-2"
+            icon={<HiOfficeBuilding />}
           >
-            {departments?.map((department) => (
-              <SelectItem
-                key={department.id || "0"}
-                value={department.id || "0"}
-                textValue={department.nameShort ?? ""}
-              >
-                {department.nameShort}
-              </SelectItem>
-            )) || (
-              <SelectItem key={"0"} value={"0"}>
-                None
-              </SelectItem>
-            )}
-          </Select>
+            <Select
+              value={field.value}
+              onValueChange={field.onChange}
+              defaultValue={field.value}
+            >
+              <SelectTrigger className="pl-9">
+                <SelectValue placeholder="Select user's department" />
+              </SelectTrigger>
+              <SelectContent>
+                {departments?.map((department) => (
+                  <SelectItem key={department.id} value={department.id}>
+                    {department.nameShort}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </FieldWrapper>
         )}
       />
-      {!!errors.departmentId && (
-        <p className="text-sm text-red-500">{errors.departmentId.message}</p>
-      )}
 
       <Controller
         control={control}
         name="accepted"
         render={({ field }) => (
-          <Checkbox
-            onChange={field.onChange}
-            onBlur={field.onBlur}
-            type="checkbox"
-            className="col-span-2"
-          >
-            I accept the <Link href={"/terms"}> terms and conditions</Link>
-          </Checkbox>
+          <div className="col-span-2 space-y-2">
+            <label className="flex items-start gap-2 text-sm">
+              <Checkbox
+                checked={field.value}
+                onCheckedChange={(checked) => field.onChange(Boolean(checked))}
+                onBlur={field.onBlur}
+              />
+              <span>
+                I accept the <Link href="/terms">terms and conditions</Link>
+              </span>
+            </label>
+            <FieldError message={errors.accepted?.message} />
+          </div>
         )}
       />
-      {!!errors.accepted && (
-        <p className="col-span-2 text-xs text-red-500">
-          {errors.accepted.message}
-        </p>
-      )}
 
       <div className="col-span-2 flex flex-col items-center justify-center gap-2">
-        <Button
-          type="submit"
-          disabled={isSubmitting}
-          isLoading={isSubmitting}
-          color="primary"
-          className="w-48"
-        >
+        <Button type="submit" disabled={isSubmitting} className="w-48">
+          {isSubmitting ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
           {isSubmitting ? "Creating User..." : "Create User"}
         </Button>
         <em>Note: An activation email will be sent to the Web Admin</em>
@@ -266,7 +282,7 @@ const useDepartments = () =>
   useQuery<Department[]>({
     queryKey: ["departments"],
     queryFn: () => axios.get("/api/departments").then((res) => res.data),
-    staleTime: 60 * 1000, //60s
+    staleTime: 60 * 1000,
     retry: 3,
   });
 

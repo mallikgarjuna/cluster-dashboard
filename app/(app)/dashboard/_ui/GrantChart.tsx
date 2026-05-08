@@ -1,6 +1,6 @@
 "use client";
 
-import { Card, CardBody, CardHeader } from "@nextui-org/react";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import {
   Bar,
   BarChart,
@@ -29,7 +29,7 @@ const GrantChart = ({ awaiting, submitted, awarded, rejected }: Props) => {
       <CardHeader>
         <p className="text-lg font-bold"># Grants per Status</p>
       </CardHeader>
-      <CardBody>
+      <CardContent>
         <ResponsiveContainer width="100%" height={300}>
           <BarChart data={data}>
             <XAxis dataKey="label" />
@@ -44,7 +44,7 @@ const GrantChart = ({ awaiting, submitted, awarded, rejected }: Props) => {
             />
           </BarChart>
         </ResponsiveContainer>
-      </CardBody>
+      </CardContent>
     </Card>
   );
 };

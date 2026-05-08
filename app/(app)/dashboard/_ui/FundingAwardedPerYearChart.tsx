@@ -1,6 +1,6 @@
 "use client";
 
-import { Card, CardBody, CardHeader } from "@nextui-org/react";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import {
   CartesianGrid,
   Legend,
@@ -27,7 +27,7 @@ const FundingAwardedPerYearChart = ({ perYearData }: Props) => {
       <CardHeader>
         <p className="font-bold">Total Funding Awarded (€) per Year</p>
       </CardHeader>
-      <CardBody>
+      <CardContent>
         <ResponsiveContainer width="100%" height={300}>
           <LineChart data={perYearData}>
             <XAxis dataKey="year" padding={{ left: 20, right: 20 }} />
@@ -44,7 +44,7 @@ const FundingAwardedPerYearChart = ({ perYearData }: Props) => {
             <Legend />
           </LineChart>
         </ResponsiveContainer>
-      </CardBody>
+      </CardContent>
     </Card>
   );
 };

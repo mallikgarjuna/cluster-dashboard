@@ -10,7 +10,7 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 - Javascript/ Typescript
 - Tailwind CSS
-- NextUI -> Shadcn
+- Shadcn UI and Radix UI
 - React.js
 - Next.js
 - Prima ORM

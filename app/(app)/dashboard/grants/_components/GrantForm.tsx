@@ -1,63 +1,70 @@
 "use client";
-import { Spinner } from "@/app/components";
+
+import { createGrant, updateGrant } from "@/lib/actions/grant/grantActions";
 import { GrantFormDataType, grantFormSchema } from "@/lib/validationSchemas";
+import { GrantWithAllRelatedTypes } from "@/prisma/customTypes";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { FieldError } from "@/components/ui/field-error";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
-  Button,
-  Checkbox,
-  Dropdown,
-  DropdownItem,
-  DropdownMenu,
-  DropdownTrigger,
-  Input,
   Select,
+  SelectContent,
   SelectItem,
-} from "@nextui-org/react";
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
-  FundingAction,
   FundingCall,
-  FundingProgramme,
-  Grant,
   StatusGrant,
   User,
   enumApplicantRole,
   enumGroupMemberType,
 } from "@prisma/client";
+import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
+import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { Controller, SubmitHandler, useForm, useWatch } from "react-hook-form";
+import { useEffect, useRef, type ReactNode } from "react";
+import { Controller, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import SimpleMdeReact from "react-simplemde-editor";
 import "easymde/dist/easymde.min.css";
-import { fetchAllUsers } from "@/lib/actions/user/userQueries";
-import { useQuery } from "@tanstack/react-query";
 import { useFundingAgencies } from "../../funders/_components/FundingProgrammeForm";
-import {
-  FundingActionWithCalls,
-  FundingProgrammeWithActionsCalls,
-  GrantWithAllRelatedTypes,
-} from "@/prisma/customTypes";
-import { useFundingProgrammes } from "../../funders/_components/FundingActionForm";
-import {
-  useFundingActions,
-  useFundingCalls,
-} from "../../funders/_components/FundingCallForm";
-import { useEffect, useState } from "react";
-import { createGrant, updateGrant } from "@/lib/actions/grant/grantActions";
 
 interface Props {
-  // grant?: Grant;
   grant?: GrantWithAllRelatedTypes;
 }
 
-const GrantForm = ({ grant }: Props) => {
-  console.log("GrantForm rendered");
+type FieldWrapperProps = {
+  label: string;
+  error?: string;
+  className?: string;
+  children: ReactNode;
+};
 
+function FieldWrapper({
+  label,
+  error,
+  className,
+  children,
+}: FieldWrapperProps) {
+  return (
+    <div className={className}>
+      <Label className="mb-2 block">{label}</Label>
+      {children}
+      <FieldError className="mt-1" message={error} />
+    </div>
+  );
+}
+
+const GrantForm = ({ grant }: Props) => {
   const router = useRouter();
   const {
     register,
     trigger,
-    handleSubmit,
     control,
     reset,
     formState: { errors, isSubmitting },
@@ -66,125 +73,96 @@ const GrantForm = ({ grant }: Props) => {
     getValues,
   } = useForm<GrantFormDataType>({
     resolver: zodResolver(grantFormSchema),
+    defaultValues: {
+      fundingAgencyId: grant?.fundingAgencyId ?? undefined,
+      fundingProgrammeId: grant?.fundingProgrammeId ?? undefined,
+      fundingActionId: grant?.fundingActionId ?? undefined,
+      fundingCallId: grant?.fundingCallId ?? undefined,
+      groupMemberType: grant?.groupMemberType ?? undefined,
+      assignedToUserId: grant?.assignedToUserId ?? undefined,
+      applicantRole: grant?.applicantRole ?? undefined,
+      isBudgetApproved: grant?.isBudgetApproved ?? false,
+      isDMPSubmitted: grant?.isDMPSubmitted ?? false,
+    },
   });
 
-  const { data: users, error, isLoading } = useUsers();
+  const { data: users } = useUsers();
+  const { data: fetchedFundingAgencies } = useFundingAgencies();
 
-  const [fundingProgrammes, setFundingProgrammes] = useState<
-    FundingProgrammeWithActionsCalls[]
-  >([]);
-  const [fundingActions, setFundingActions] = useState<
-    FundingActionWithCalls[]
-  >([]);
-  const [fundingCalls, setFundingCalls] = useState<FundingCall[]>([]);
-
-  // Watch the funders Ids
   const selectedFundingAgencyId = watch("fundingAgencyId");
   const selectedFundingProgrammeId = watch("fundingProgrammeId");
   const selectedFundingActionId = watch("fundingActionId");
 
-  const { data: fetchedFundingAgencies } = useFundingAgencies();
-  const { data: fetchedFundingProgrammes } = useFundingProgrammes();
-  const { data: fetchedFundingActions } = useFundingActions();
-  const { data: fetchedFundingCalls } = useFundingCalls();
+  const fundingProgrammes =
+    fetchedFundingAgencies?.find(
+      (fundingAgency) => fundingAgency.id === selectedFundingAgencyId,
+    )?.fundingProgrammes || [];
+  const fundingActions =
+    fundingProgrammes.find(
+      (fundingProgramme) => fundingProgramme.id === selectedFundingProgrammeId,
+    )?.fundingActions || [];
+  const fundingCalls: FundingCall[] =
+    fundingActions.find(
+      (fundingAction) => fundingAction.id === selectedFundingActionId,
+    )?.fundingCalls || [];
 
-  // Effect to update fundingProgrammes when a fundingAgency is selected
-  useEffect(() => {
-    const selectedFundingAgency = fetchedFundingAgencies?.find(
-      (fAgency) => fAgency.id === selectedFundingAgencyId,
-    );
-    setValue("fundingProgrammeId", undefined); //Reset when agency is selected
-    setFundingProgrammes(selectedFundingAgency?.fundingProgrammes || []);
-  }, [selectedFundingAgencyId, fetchedFundingAgencies, setValue]);
+  const hasInitializedFundingAgency = useRef(false);
+  const hasInitializedFundingProgramme = useRef(false);
+  const hasInitializedFundingAction = useRef(false);
 
-  // Effect to update fundingActions when a fundingProgramme is selected
   useEffect(() => {
-    const selectedFundingProgrmme = fundingProgrammes.find(
-      (fp) => fp.id === selectedFundingProgrammeId,
-    );
-    setValue("fundingActionId", undefined); //Reset when programme is selected
-    setFundingActions(selectedFundingProgrmme?.fundingActions || []);
-  }, [selectedFundingProgrammeId, fundingProgrammes, setValue]);
+    if (!hasInitializedFundingAgency.current) {
+      hasInitializedFundingAgency.current = true;
+      return;
+    }
 
-  // Effect to update fundingCalls when a fundingAction is selected
+    setValue("fundingProgrammeId", undefined);
+    setValue("fundingActionId", undefined);
+    setValue("fundingCallId", undefined);
+  }, [selectedFundingAgencyId, setValue]);
+
   useEffect(() => {
-    const selectedFundingAction = fundingActions.find(
-      (fa) => fa.id === selectedFundingActionId,
-    );
-    setValue("fundingCallId", undefined); //Reset when action is selected
-    setFundingCalls(selectedFundingAction?.fundingCalls || []);
-  }, [selectedFundingActionId, fundingActions, setValue]);
+    if (!hasInitializedFundingProgramme.current) {
+      hasInitializedFundingProgramme.current = true;
+      return;
+    }
+
+    setValue("fundingActionId", undefined);
+    setValue("fundingCallId", undefined);
+  }, [selectedFundingProgrammeId, setValue]);
+
+  useEffect(() => {
+    if (!hasInitializedFundingAction.current) {
+      hasInitializedFundingAction.current = true;
+      return;
+    }
+
+    setValue("fundingCallId", undefined);
+  }, [selectedFundingActionId, setValue]);
 
   const statuses = Object.values(StatusGrant);
-
   const applicantRoles = Object.values(enumApplicantRole);
-
   const groupMemberTypes = Object.values(enumGroupMemberType);
 
-  // const submitGrantForm: SubmitHandler<GrantFormDataType> = async (
-  //   grantFormData,
-  // ) => {
-  // // Validates form data before calling the submit handler
-  // // Prevents form submission if validation fails
-  // // Integrates with React Hook Form's validation schema
-  //   // console.log(grantFormData);
-  //   try {
-  //     if (grant) {
-  //       await axios.patch(`/api/grants/${grant.id}`, grantFormData);
-  //     } else {
-  //       await axios.post("/api/grants", grantFormData);
-  //     }
-  //     toast.success("The grant was saved successfully!");
-  //     reset();
-  //     router.push("/dashboard/grants/list");
-  //     router.refresh();
-  //     // console.log(grantFormData);
-  //   } catch (error) {
-  //     toast.error("Something went wrong...");
-  //     console.log(error);
-  //   }
-  // };
-  // const submitGrantForm = (grantFormData: GrantFormDataType) => {
-  //   console.log(grantFormData);
-  // };
-
-  const handleAction = async (formData: FormData) => {
-    // `formData` is not validated (and is of type `FormData`)
-    // console.log("formData: ", formData); // a FormData object
-
-    // Manually Trigger the RHF validation and return if `errors` to on CS;
+  const handleAction = async (_formData: FormData) => {
     const resultTrigger = await trigger();
     if (!resultTrigger) return;
 
-    // Get validated form data as a plain JS object (of type `GrantFormDataType`)
     const grantData = getValues();
-    // console.log("grantData: ", grantData);
-
-    // Clean the data
-    // Convert the empty string "" dates to `undefined` that will be saved as `null` in DB;
-    // B/c form returns empty string for empty date fields;
-    grantData.submissionDate = grantData.submissionDate || undefined; // Will be saved as null
+    grantData.submissionDate = grantData.submissionDate || undefined;
     grantData.deadline = grantData.deadline || undefined;
     grantData.decisionDate = grantData.decisionDate || undefined;
     grantData.projectStartDate = grantData.projectStartDate || undefined;
     grantData.projectEndDate = grantData.projectEndDate || undefined;
-    // console.log("grantData: ", grantData);
 
-    // Convert empty string to `undefined`
-    // fundingAgencyId is returning "" (not sure why, TODO:) while the others are returning `undefined`;;
     grantData.fundingAgencyId = grantData.fundingAgencyId || undefined;
     grantData.fundingProgrammeId = grantData.fundingProgrammeId || undefined;
     grantData.fundingActionId = grantData.fundingActionId || undefined;
     grantData.fundingCallId = grantData.fundingCallId || undefined;
-    // console.log("grantData: ", grantData);
 
-    // Pass the cleaned data to the SAs:
-    let result;
-    if (grant) {
-      result = await updateGrant(grant.id, grantData);
-    } else {
-      result = await createGrant(grantData);
-    }
+    const result = grant
+      ? await updateGrant(grant.id, grantData)
+      : await createGrant(grantData);
 
     if (result && !result.success) {
       toast.error(result.message);
@@ -192,718 +170,595 @@ const GrantForm = ({ grant }: Props) => {
       toast.success(result.message);
       reset();
       router.push("/dashboard/grants/list");
-      // router.refresh();
     } else {
-      // fallback error for unexpected cases where `result` is `undefined`;
       toast.error("Unexpected error. Failed to create/update grant.");
     }
   };
 
   return (
     <div className="max-w-full">
-      <form
-        // onSubmit={handleSubmit(submitGrantForm)}
-        action={handleAction}
-        className="space-y-2"
-      >
+      <form action={handleAction} className="space-y-4">
         <div className="text-3xl font-bold">
-          {!!grant ? "Edit Grant" : "Create New Grant"}
+          {grant ? "Edit Grant" : "Create New Grant"}
         </div>
-        <Input
-          {...register("title")}
-          errorMessage={errors.title?.message}
-          isInvalid={!!errors.title}
-          type="text"
-          label="Title *"
-          placeholder="Title of the grant"
-          defaultValue={grant?.title}
-          classNames={{
-            input: [
-              "placeholder:text-default-700/50 dark:placeholder:text-default-400",
-            ],
-          }}
-        />
-        <Input
-          {...register("acronym")}
-          errorMessage={errors.acronym?.message}
-          isInvalid={!!errors.acronym}
-          type="text"
-          label="Acronym *"
-          placeholder="Maximum 20 characters (If none, add two keywords from the title)"
-          defaultValue={grant?.acronym || ""}
-          classNames={{
-            input: [
-              "placeholder:text-default-700/50 dark:placeholder:text-default-400",
-            ],
-          }}
-        />
-        <Controller
-          name="description"
-          control={control}
-          render={({ field }) => (
-            <SimpleMdeReact
-              {...field}
-              placeholder="Description of grant *"
-              options={{
-                maxHeight: "100px",
-                autofocus: true,
-              }}
-            />
-          )}
-          defaultValue={grant?.description}
-        />
-        {!!errors.description && (
-          <p className="text-sm text-red-500">{errors.description.message}</p>
-        )}
-        <div className="flex gap-2 rounded-md border border-gray-300 py-2">
+
+        <FieldWrapper label="Title *" error={errors.title?.message}>
           <Input
-            {...register("applicantFullName")}
-            errorMessage={errors.applicantFullName?.message}
-            isInvalid={!!errors.applicantFullName}
+            {...register("title")}
             type="text"
-            label="Applicant's LastName + FirstName - Text input *"
-            placeholder="(If not a PI): Applicant's LastName + FirstName"
-            defaultValue={grant?.applicantFullName}
-            classNames={{
-              input: [
-                "placeholder:text-default-700/50 dark:placeholder:text-default-400",
-              ],
-            }}
+            placeholder="Title of the grant"
+            defaultValue={grant?.title}
           />
+        </FieldWrapper>
+
+        <FieldWrapper label="Acronym *" error={errors.acronym?.message}>
+          <Input
+            {...register("acronym")}
+            type="text"
+            placeholder="Maximum 20 characters (If none, add two keywords from the title)"
+            defaultValue={grant?.acronym || ""}
+          />
+        </FieldWrapper>
+
+        <div>
+          <Label className="mb-2 block">Description *</Label>
+          <Controller
+            name="description"
+            control={control}
+            defaultValue={grant?.description}
+            render={({ field }) => (
+              <SimpleMdeReact
+                {...field}
+                placeholder="Description of grant *"
+                options={{
+                  maxHeight: "100px",
+                  autofocus: true,
+                }}
+              />
+            )}
+          />
+          <FieldError className="mt-1" message={errors.description?.message} />
+        </div>
+
+        <div className="grid gap-4 rounded-md border border-gray-300 p-3 md:grid-cols-3">
+          <FieldWrapper
+            label="Applicant's LastName + FirstName - Text input *"
+            error={errors.applicantFullName?.message}
+          >
+            <Input
+              {...register("applicantFullName")}
+              type="text"
+              placeholder="(If not a PI): Applicant's LastName + FirstName"
+              defaultValue={grant?.applicantFullName}
+            />
+          </FieldWrapper>
 
           <Controller
             control={control}
             name="groupMemberType"
             defaultValue={grant?.groupMemberType ?? undefined}
-            render={({ field }) => {
-              return (
+            render={({ field }) => (
+              <FieldWrapper
+                label="Applicant's Designation (Group member type) *"
+                error={errors.groupMemberType?.message}
+              >
                 <Select
-                  label="Applicant's Designation (Group member type) *"
-                  placeholder="Select Applicant's Designation"
-                  // className="max-w-xs"
-                  {...register("groupMemberType")}
-                  errorMessage={errors.groupMemberType?.message}
-                  isInvalid={!!errors.groupMemberType}
-                  classNames={{
-                    value: grant?.groupMemberType
-                      ? "text-black"
-                      : "text-gray-400",
-                  }}
+                  value={field.value}
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
                 >
-                  {groupMemberTypes?.map((memberType) => (
-                    <SelectItem
-                      key={memberType}
-                      value={memberType}
-                      textValue={memberType.toString()}
-                    >
-                      {memberType}
-                    </SelectItem>
-                  )) ?? []}
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select Applicant's Designation" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {groupMemberTypes.map((memberType) => (
+                      <SelectItem key={memberType} value={memberType}>
+                        {memberType}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
                 </Select>
-              );
-            }}
+              </FieldWrapper>
+            )}
           />
 
           <Controller
             control={control}
             name="assignedToUserId"
             defaultValue={grant?.assignedToUserId ?? undefined}
-            render={({ field }) => {
-              return (
+            render={({ field }) => (
+              <FieldWrapper
+                label="Applicant's Groupleader *"
+                error={errors.assignedToUserId?.message}
+              >
                 <Select
-                  {...field}
-                  label="Applicant's Groupleader *"
-                  placeholder="Select groupleader"
-                  // className="max-w-xs"
-                  {...register("assignedToUserId")}
-                  errorMessage={errors.assignedToUserId?.message}
-                  isInvalid={!!errors.assignedToUserId}
-                  defaultSelectedKeys={
-                    grant?.assignedToUserId ? [grant.assignedToUserId] : []
-                  }
-                  onChange={(event) => {
-                    const newValue = event.target.value;
+                  value={field.value}
+                  onValueChange={(newValue) => {
                     field.onChange(newValue);
                     if (
                       newValue &&
                       getValues("applicantFullName") === "" &&
                       getValues("groupMemberType") === "PI"
                     ) {
-                      const selectedUser = users?.find(
-                        (user) => user.id === newValue,
-                      );
+                      const selectedUser = users?.find((user) => user.id === newValue);
                       setValue(
                         "applicantFullName",
                         selectedUser?.lastName || "",
                       );
                     }
-
-                    // console.log(
-                    //   "applicantFullName: ",
-                    //   getValues("applicantFullName"),
-                    // );
-                    // console.log(
-                    //   "groupMemberType: ",
-                    //   getValues("groupMemberType"),
-                    // );
-                    // console.log("event.target.value: ", event.target.value);
                   }}
-                  classNames={{
-                    value: grant?.assignedToUserId
-                      ? "text-black"
-                      : "text-gray-400",
-                  }}
-                  scrollShadowProps={{ isEnabled: false }}
-                  showScrollIndicators={true}
-                  listboxProps={{
-                    className: "max-h-[300px] overflow-y-auto ",
-                  }}
+                  defaultValue={field.value}
                 >
-                  {users?.map((user) => (
-                    <SelectItem
-                      key={user?.id}
-                      value={user?.id}
-                      textValue={user?.lastName ?? ""}
-                    >
-                      {user?.lastName}
-                    </SelectItem>
-                  )) ?? []}
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select groupleader" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {users?.map((user) => (
+                      <SelectItem key={user.id} value={user.id}>
+                        {user.lastName}
+                      </SelectItem>
+                    )) ?? []}
+                  </SelectContent>
                 </Select>
-              );
-            }}
+              </FieldWrapper>
+            )}
           />
         </div>
+
         <Controller
           control={control}
           name="applicantRole"
           defaultValue={grant?.applicantRole ?? undefined}
-          render={({ field }) => {
-            // const selectedKeys = grant?.applicantRole
-            //   ? [grant.applicantRole]
-            //   : [];
-            return (
+          render={({ field }) => (
+            <FieldWrapper
+              label="Applicant's Grant Application Role *"
+              error={errors.applicantRole?.message}
+            >
               <Select
-                label="Applicant's Grant Application Role *"
-                placeholder="Select Applecant Role"
-                // className="max-w-xs"
-                {...register("applicantRole")}
-                errorMessage={errors.applicantRole?.message}
-                isInvalid={!!errors.applicantRole}
-                // defaultSelectedKeys={selectedKeys}
-                classNames={{
-                  value: grant?.applicantRole ? "text-black" : "text-gray-400",
-                }}
+                value={field.value}
+                onValueChange={field.onChange}
+                defaultValue={field.value}
               >
-                {applicantRoles?.map((role) => (
-                  <SelectItem
-                    key={role}
-                    value={role}
-                    textValue={role.toString()}
-                  >
-                    {role}
-                  </SelectItem>
-                )) ?? []}
+                <SelectTrigger className="max-w-xs">
+                  <SelectValue placeholder="Select Applicant Role" />
+                </SelectTrigger>
+                <SelectContent>
+                  {applicantRoles.map((role) => (
+                    <SelectItem key={role} value={role}>
+                      {role}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
               </Select>
-            );
-          }}
+            </FieldWrapper>
+          )}
         />
+
         <Controller
           control={control}
           name="isBudgetApproved"
           defaultValue={grant?.isBudgetApproved ?? false}
           render={({ field }) => (
-            <Checkbox
-              {...field}
-              checked={field.value}
-              isSelected={field.value}
-              onChange={(e) => field.onChange(e.target.checked)}
-              value={String(field.value)}
-            >
-              Is Budget approved by the Project Controller?
-            </Checkbox>
+            <div className="space-y-2">
+              <label className="flex items-start gap-2 text-sm">
+                <Checkbox
+                  checked={field.value}
+                  onCheckedChange={(checked) => field.onChange(Boolean(checked))}
+                />
+                <span>Is Budget approved by the Project Controller?</span>
+              </label>
+              <FieldError message={errors.isBudgetApproved?.message} />
+            </div>
           )}
         />
-        <div className="flex gap-2 rounded-md border border-gray-300 py-2">
-          <Input
-            disabled={true}
-            {...register("budgetTotal", { valueAsNumber: true })}
-            errorMessage={errors.budgetTotal?.message}
-            isInvalid={!!errors.budgetTotal}
-            type="number"
-            label="<Disabled, to be removed> Budget Total of the grant application"
-            placeholder="Total budget of the grant"
-            // defaultValue is uncontrolled (if not below, may need to use Controlled comp;)
-            defaultValue={grant?.budgetTotal?.toString() || "0"}
-            // defaultValue={grant?.budgetTotal || 0}
-            classNames={{
-              input: [
-                "placeholder:text-default-700/50 dark:placeholder:text-default-400",
-              ],
-            }}
-            onKeyDown={(e) => {
-              if (e.key === "ArrowUp" || e.key === "ArrowDown") {
-                e.preventDefault();
-              }
-            }}
-          />
 
-          <Input
-            {...register("budgetAssignedToPI", { valueAsNumber: true })}
-            errorMessage={errors.budgetAssignedToPI?.message}
-            isInvalid={!!errors.budgetAssignedToPI}
-            type="number"
+        <div className="grid gap-4 rounded-md border border-gray-300 p-3 md:grid-cols-2">
+          <FieldWrapper
+            label="<Disabled, to be removed> Budget Total of the grant application"
+            error={errors.budgetTotal?.message}
+          >
+            <Input
+              disabled
+              {...register("budgetTotal", { valueAsNumber: true })}
+              type="number"
+              placeholder="Total budget of the grant"
+              defaultValue={grant?.budgetTotal?.toString() || "0"}
+              onKeyDown={(event) => {
+                if (event.key === "ArrowUp" || event.key === "ArrowDown") {
+                  event.preventDefault();
+                }
+              }}
+            />
+          </FieldWrapper>
+
+          <FieldWrapper
             label="Budget Assigned to the applicant (or UMCG)"
-            placeholder="Budget Assigned to the applicant (or UMCG)"
-            // defaultValue is uncontrolled (if not below, may need to use Controlled comp;)
-            defaultValue={grant?.budgetAssignedToPI?.toString() || "0"}
-            // defaultValue={grant?.budgetTotal || 0}
-            classNames={{
-              input: [
-                "placeholder:text-default-700/50 dark:placeholder:text-default-400",
-              ],
-            }}
-            onKeyDown={(e) => {
-              if (e.key === "ArrowUp" || e.key === "ArrowDown") {
-                e.preventDefault();
-              }
-            }}
-          />
+            error={errors.budgetAssignedToPI?.message}
+          >
+            <Input
+              {...register("budgetAssignedToPI", { valueAsNumber: true })}
+              type="number"
+              placeholder="Budget Assigned to the applicant (or UMCG)"
+              defaultValue={grant?.budgetAssignedToPI?.toString() || "0"}
+              onKeyDown={(event) => {
+                if (event.key === "ArrowUp" || event.key === "ArrowDown") {
+                  event.preventDefault();
+                }
+              }}
+            />
+          </FieldWrapper>
         </div>
-        {/* Related Funding Agency */}
-        <div className="flex gap-2 rounded-md border border-gray-300 py-2">
-          {/* Add an input field for selecting the related funding agency */}
+
+        <div className="grid gap-4 rounded-md border border-gray-300 p-3 md:grid-cols-[1fr_auto_1fr]">
           <Controller
             control={control}
             name="fundingAgencyId"
             defaultValue={grant?.fundingAgencyId ?? undefined}
             render={({ field }) => (
-              <Select
-                {...field}
-                {...register("fundingAgencyId")}
-                errorMessage={errors.fundingAgencyId?.message}
-                isInvalid={!!errors.fundingAgencyId}
+              <FieldWrapper
                 label="Funding Agency - Select"
-                placeholder="Select the related funding agency"
-                defaultSelectedKeys={
-                  grant?.fundingAgencyId ? [grant.fundingAgencyId] : []
-                }
-                // className="bg-gray-600"
-                // listboxProps={{
-                //   itemClasses: {
-                //     base: "bg-gray-600",
-                //   },
-                // }}
-                classNames={{
-                  value: grant?.fundingAgencyId
-                    ? "text-black"
-                    : "text-gray-400",
-                }}
+                error={errors.fundingAgencyId?.message}
               >
-                {fetchedFundingAgencies ? (
-                  fetchedFundingAgencies.map((fundingAgency) => (
-                    <SelectItem key={fundingAgency.id} value={fundingAgency.id}>
-                      {fundingAgency.name}
-                    </SelectItem>
-                  ))
-                ) : (
-                  <SelectItem key={""} value={""}>
-                    None
-                  </SelectItem>
-                )}
-              </Select>
+                <Select
+                  value={field.value}
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select the related funding agency" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {fetchedFundingAgencies?.map((fundingAgency) => (
+                      <SelectItem key={fundingAgency.id} value={fundingAgency.id}>
+                        {fundingAgency.name}
+                      </SelectItem>
+                    )) ?? []}
+                  </SelectContent>
+                </Select>
+              </FieldWrapper>
             )}
           />
 
-          <span className="self-center">or</span>
+          <span className="self-center justify-self-center">or</span>
 
-          <Input
-            {...register("fundingAgency")}
-            errorMessage={errors.fundingAgency?.message}
-            isInvalid={!!errors.fundingAgency}
-            type="text"
+          <FieldWrapper
             label="Funding Agency - Text input"
-            placeholder="E.g., EU/EC, NL/NWO, USA/NSF-NIH, DE/DFG, etc."
-            defaultValue={grant?.fundingAgency || ""}
-            classNames={{
-              input: [
-                "placeholder:text-default-700/50 dark:placeholder:text-default-400",
-              ],
-            }}
-          />
+            error={errors.fundingAgency?.message}
+          >
+            <Input
+              {...register("fundingAgency")}
+              type="text"
+              placeholder="E.g., EU/EC, NL/NWO, USA/NSF-NIH, DE/DFG, etc."
+              defaultValue={grant?.fundingAgency || ""}
+            />
+          </FieldWrapper>
         </div>
-        {/* Related Funding Programme */}
-        <div className="flex gap-2 rounded-md border border-gray-300 py-2">
-          {/* Add an input field for selecting the related funding agency */}
+
+        <div className="grid gap-4 rounded-md border border-gray-300 p-3 md:grid-cols-[1fr_auto_1fr]">
           <Controller
             control={control}
             name="fundingProgrammeId"
             defaultValue={grant?.fundingProgrammeId ?? undefined}
             render={({ field }) => (
-              <Select
-                {...field}
-                {...register("fundingProgrammeId")}
-                errorMessage={errors.fundingProgrammeId?.message}
-                isInvalid={!!errors.fundingProgrammeId}
+              <FieldWrapper
                 label="Funding Programme - Select"
-                placeholder="Select the related funding programme"
-                defaultSelectedKeys={
-                  grant?.fundingProgrammeId ? [grant.fundingProgrammeId] : []
-                }
-                classNames={{
-                  value: grant?.fundingProgrammeId
-                    ? "text-black"
-                    : "text-gray-400",
-                }}
+                error={errors.fundingProgrammeId?.message}
               >
-                {selectedFundingAgencyId && fundingProgrammes.length ? (
-                  fundingProgrammes.map((fundingProgramme) => (
-                    <SelectItem
-                      key={fundingProgramme.id}
-                      value={fundingProgramme.id}
-                    >
-                      {fundingProgramme.name}
-                    </SelectItem>
-                  ))
-                ) : (
-                  <SelectItem key={""} value={""}>
-                    None (or) Select a funding agency first
-                  </SelectItem>
-                )}
-              </Select>
+                <Select
+                  value={field.value}
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                  disabled={!selectedFundingAgencyId || fundingProgrammes.length === 0}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select the related funding programme" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {selectedFundingAgencyId && fundingProgrammes.length ? (
+                      fundingProgrammes.map((fundingProgramme) => (
+                        <SelectItem
+                          key={fundingProgramme.id}
+                          value={fundingProgramme.id}
+                        >
+                          {fundingProgramme.name}
+                        </SelectItem>
+                      ))
+                    ) : (
+                      <div className="px-2 py-1.5 text-sm text-zinc-500">
+                        None (or) Select a funding agency first
+                      </div>
+                    )}
+                  </SelectContent>
+                </Select>
+              </FieldWrapper>
             )}
           />
 
-          <span className="self-center">or</span>
+          <span className="self-center justify-self-center">or</span>
 
-          <Input
-            {...register("fundingProgramme")}
-            errorMessage={errors.fundingProgramme?.message}
-            isInvalid={!!errors.fundingProgramme}
-            type="text"
+          <FieldWrapper
             label="Funding Programme - Text input"
-            placeholder="E.g., HORIZON-EU, Talent-Development-Programme, etc."
-            defaultValue={grant?.fundingProgramme || ""}
-            classNames={{
-              input: [
-                "placeholder:text-default-700/50 dark:placeholder:text-default-400",
-              ],
-            }}
-          />
+            error={errors.fundingProgramme?.message}
+          >
+            <Input
+              {...register("fundingProgramme")}
+              type="text"
+              placeholder="E.g., HORIZON-EU, Talent-Development-Programme, etc."
+              defaultValue={grant?.fundingProgramme || ""}
+            />
+          </FieldWrapper>
         </div>
-        {/* Related Funding Actions */}
-        <div className="flex gap-2 rounded-md border border-gray-300 py-2">
-          {/* Add an input field for selecting the related funding agency */}
+
+        <div className="grid gap-4 rounded-md border border-gray-300 p-3 md:grid-cols-[1fr_auto_1fr]">
           <Controller
             control={control}
             name="fundingActionId"
             defaultValue={grant?.fundingActionId ?? undefined}
             render={({ field }) => (
-              <Select
-                {...field}
-                {...register("fundingActionId")}
-                errorMessage={errors.fundingActionId?.message}
-                isInvalid={!!errors.fundingActionId}
+              <FieldWrapper
                 label="Funding Action - Select"
-                placeholder="Select the related funding action"
-                defaultSelectedKeys={
-                  grant?.fundingActionId ? [grant.fundingActionId] : [] //
-                }
-                classNames={{
-                  value: grant?.fundingActionId
-                    ? "text-black"
-                    : "text-gray-400",
-                }}
+                error={errors.fundingActionId?.message}
               >
-                {selectedFundingProgrammeId && fundingActions ? (
-                  fundingActions.map((fundingAction) => (
-                    <SelectItem key={fundingAction.id} value={fundingAction.id}>
-                      {fundingAction.name}
-                    </SelectItem>
-                  ))
-                ) : (
-                  <SelectItem key={""} value={""}>
-                    None (or) Select a funding programme first
-                  </SelectItem>
-                )}
-              </Select>
+                <Select
+                  value={field.value}
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                  disabled={!selectedFundingProgrammeId || fundingActions.length === 0}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select the related funding action" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {selectedFundingProgrammeId && fundingActions.length ? (
+                      fundingActions.map((fundingAction) => (
+                        <SelectItem key={fundingAction.id} value={fundingAction.id}>
+                          {fundingAction.name}
+                        </SelectItem>
+                      ))
+                    ) : (
+                      <div className="px-2 py-1.5 text-sm text-zinc-500">
+                        None (or) Select a funding programme first
+                      </div>
+                    )}
+                  </SelectContent>
+                </Select>
+              </FieldWrapper>
             )}
           />
 
-          <span className="self-center">or</span>
+          <span className="self-center justify-self-center">or</span>
 
-          <Input
-            {...register("fundingAction")}
-            errorMessage={errors.fundingAction?.message}
-            isInvalid={!!errors.fundingAction}
-            type="text"
+          <FieldWrapper
             label="Funding Action - Text input"
-            placeholder="E.g., ERC, Veni, etc."
-            defaultValue={grant?.fundingAction || ""}
-            classNames={{
-              input: [
-                "placeholder:text-default-700/50 dark:placeholder:text-default-400",
-              ],
-            }}
-          />
+            error={errors.fundingAction?.message}
+          >
+            <Input
+              {...register("fundingAction")}
+              type="text"
+              placeholder="E.g., ERC, Veni, etc."
+              defaultValue={grant?.fundingAction || ""}
+            />
+          </FieldWrapper>
         </div>
-        {/* Related Funding Calls */}
-        <div className="flex gap-2 rounded-md border border-gray-300 py-2">
-          {/* Add an input field for selecting the related funding call */}
+
+        <div className="grid gap-4 rounded-md border border-gray-300 p-3 md:grid-cols-[1fr_auto_1fr]">
           <Controller
             control={control}
             name="fundingCallId"
             defaultValue={grant?.fundingCallId ?? undefined}
             render={({ field }) => (
-              <Select
-                {...field}
-                {...register("fundingCallId")}
-                errorMessage={errors.fundingCallId?.message}
-                isInvalid={!!errors.fundingCallId}
+              <FieldWrapper
                 label="Funding Call - Select"
-                placeholder="Select the related funding call"
-                onChange={(event) => {
-                  field.onChange(event.target.value);
-                  const selectedFundingCallId = event.target.value;
-                  const selectedFundingCall = fundingCalls?.find(
-                    (fc) => fc.id === selectedFundingCallId,
-                  );
-                  if (selectedFundingCall) {
-                    setValue("urlFundingCall", selectedFundingCall.url || "");
-                  } else {
-                    setValue("urlFundingCall", "");
-                  }
-                }}
-                defaultSelectedKeys={
-                  grant?.fundingCallId ? [grant.fundingCallId] : [] //
-                }
-                classNames={{
-                  value: grant?.fundingCallId ? "text-black" : "text-gray-400",
-                }}
+                error={errors.fundingCallId?.message}
               >
-                {selectedFundingActionId && fundingCalls ? (
-                  fundingCalls.map((fundingCallItem) => (
-                    <SelectItem
-                      key={fundingCallItem.id}
-                      value={fundingCallItem.id}
-                    >
-                      {fundingCallItem.name}
-                    </SelectItem>
-                  ))
-                ) : (
-                  <SelectItem key={""} value={""}>
-                    None (or) Select a funding action first
-                  </SelectItem>
-                )}
-              </Select>
+                <Select
+                  value={field.value}
+                  onValueChange={(value) => {
+                    field.onChange(value);
+                    const selectedFundingCall = fundingCalls.find((fc) => fc.id === value);
+                    setValue("urlFundingCall", selectedFundingCall?.url || "");
+                  }}
+                  defaultValue={field.value}
+                  disabled={!selectedFundingActionId || fundingCalls.length === 0}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select the related funding call" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {selectedFundingActionId && fundingCalls.length ? (
+                      fundingCalls.map((fundingCallItem) => (
+                        <SelectItem
+                          key={fundingCallItem.id}
+                          value={fundingCallItem.id}
+                        >
+                          {fundingCallItem.name}
+                        </SelectItem>
+                      ))
+                    ) : (
+                      <div className="px-2 py-1.5 text-sm text-zinc-500">
+                        None (or) Select a funding action first
+                      </div>
+                    )}
+                  </SelectContent>
+                </Select>
+              </FieldWrapper>
             )}
           />
 
-          <span className="self-center">or</span>
+          <span className="self-center justify-self-center">or</span>
 
-          <Input
-            {...register("fundingCall")}
-            errorMessage={errors.fundingCall?.message}
-            isInvalid={!!errors.fundingCall}
-            type="text"
+          <FieldWrapper
             label="Funding Call - Text input"
-            placeholder="E.g., ERC-StG-2024, Veni-ZonMw-2024, etc."
-            defaultValue={grant?.fundingCall || ""}
-            classNames={{
-              input: [
-                "placeholder:text-default-700/50 dark:placeholder:text-default-400",
-              ],
-            }}
-          />
+            error={errors.fundingCall?.message}
+          >
+            <Input
+              {...register("fundingCall")}
+              type="text"
+              placeholder="E.g., ERC-StG-2024, Veni-ZonMw-2024, etc."
+              defaultValue={grant?.fundingCall || ""}
+            />
+          </FieldWrapper>
         </div>
-        <Input
-          {...register("urlFundingCall")}
-          errorMessage={errors.urlFundingCall?.message}
-          isInvalid={!!errors.urlFundingCall}
-          type="text"
+
+        <FieldWrapper
           label="URL of the Funding Call"
-          placeholder="E.g., https://ec.europa.eu/info/funding-tenders/topic-details/erc-2024-stg"
-          defaultValue={grant?.urlFundingCall || ""}
-          classNames={{
-            input: [
-              "placeholder:text-default-700/50 dark:placeholder:text-default-400",
-            ],
-          }}
-        />
-        <div className="flex gap-2 rounded-md border border-gray-300 py-2">
+          error={errors.urlFundingCall?.message}
+        >
           <Input
-            {...register("submissionDate")}
-            errorMessage={errors.submissionDate?.message}
-            isInvalid={!!errors.submissionDate}
-            type="date"
-            label="Submission Date"
-            // placeholder="Submission date of the grant"
-            defaultValue={grant?.submissionDate?.toISOString().substring(0, 10)}
-            // defaultValue={grant?.submissionDate}
-            classNames={{
-              input: [
-                "placeholder:text-default-700/50 dark:placeholder:text-default-400",
-              ],
-            }}
+            {...register("urlFundingCall")}
+            type="text"
+            placeholder="E.g., https://ec.europa.eu/info/funding-tenders/topic-details/erc-2024-stg"
+            defaultValue={grant?.urlFundingCall || ""}
           />
+        </FieldWrapper>
 
-          <Input
-            {...register("deadline")}
-            errorMessage={errors.deadline?.message}
-            isInvalid={!!errors.deadline}
-            type="date"
-            label="Deadline Date"
-            // placeholder="Submission date of the grant"
-            defaultValue={grant?.deadline?.toISOString().substring(0, 10)}
-            classNames={{
-              input: [
-                "placeholder:text-default-700/50 dark:placeholder:text-default-400",
-              ],
-            }}
-          />
+        <div className="grid gap-4 rounded-md border border-gray-300 p-3 md:grid-cols-3">
+          <FieldWrapper label="Submission Date" error={errors.submissionDate?.message}>
+            <Input
+              {...register("submissionDate")}
+              type="date"
+              defaultValue={grant?.submissionDate?.toISOString().substring(0, 10)}
+            />
+          </FieldWrapper>
 
-          <Input
-            {...register("decisionDate")}
-            errorMessage={errors.decisionDate?.message}
-            isInvalid={!!errors.decisionDate}
-            type="date"
-            label="Decision Date"
-            // placeholder="Submission date of the grant"
-            defaultValue={grant?.decisionDate?.toISOString().substring(0, 10)}
-            classNames={{
-              input: [
-                "placeholder:text-default-700/50 dark:placeholder:text-default-400",
-              ],
-            }}
-          />
+          <FieldWrapper label="Deadline Date" error={errors.deadline?.message}>
+            <Input
+              {...register("deadline")}
+              type="date"
+              defaultValue={grant?.deadline?.toISOString().substring(0, 10)}
+            />
+          </FieldWrapper>
+
+          <FieldWrapper label="Decision Date" error={errors.decisionDate?.message}>
+            <Input
+              {...register("decisionDate")}
+              type="date"
+              defaultValue={grant?.decisionDate?.toISOString().substring(0, 10)}
+            />
+          </FieldWrapper>
         </div>
+
         <Controller
           control={control}
           name="status"
           defaultValue={grant?.status ?? undefined}
-          render={({ field }) => {
-            // const selectedKeys = grant?.status ? [grant.status] : [];
-            return (
+          render={({ field }) => (
+            <FieldWrapper label="Application Status *" error={errors.status?.message}>
               <Select
-                label="Applicantion Status *"
-                placeholder="Select status"
-                className="max-w-xs"
-                {...register("status")}
-                errorMessage={errors.status?.message}
-                isInvalid={!!errors.status}
-                // defaultSelectedKeys={selectedKeys}
-                classNames={{
-                  value: grant?.status ? "text-black" : "text-gray-400",
-                }}
+                value={field.value}
+                onValueChange={field.onChange}
+                defaultValue={field.value}
               >
-                {statuses?.map((status) => (
-                  <SelectItem
-                    key={status}
-                    value={status}
-                    textValue={status.toString()}
-                  >
-                    {status}
-                  </SelectItem>
-                )) ?? []}
+                <SelectTrigger className="max-w-xs">
+                  <SelectValue placeholder="Select status" />
+                </SelectTrigger>
+                <SelectContent>
+                  {statuses.map((status) => (
+                    <SelectItem key={status} value={status}>
+                      {status}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
               </Select>
-            );
-          }}
+            </FieldWrapper>
+          )}
         />
-        <div className="flex gap-2 rounded-md border border-gray-300 py-2">
-          <Input
-            {...register("projectStartDate")}
-            errorMessage={errors.projectStartDate?.message}
-            isInvalid={!!errors.projectStartDate}
-            type="date"
-            label="Project Start Date (post award)"
-            placeholder="Project start date of the grant"
-            defaultValue={grant?.projectStartDate
-              ?.toISOString()
-              .substring(0, 10)}
-            classNames={{
-              input: [
-                "placeholder:text-default-700/50 dark:placeholder:text-default-400",
-              ],
-            }}
-          />
 
-          <Input
-            {...register("projectEndDate")}
-            errorMessage={errors.projectEndDate?.message}
-            isInvalid={!!errors.projectEndDate}
-            type="date"
+        <div className="grid gap-4 rounded-md border border-gray-300 p-3 md:grid-cols-2">
+          <FieldWrapper
+            label="Project Start Date (post award)"
+            error={errors.projectStartDate?.message}
+          >
+            <Input
+              {...register("projectStartDate")}
+              type="date"
+              placeholder="Project start date of the grant"
+              defaultValue={grant?.projectStartDate?.toISOString().substring(0, 10)}
+            />
+          </FieldWrapper>
+
+          <FieldWrapper
             label="Project End Date (post award)"
-            placeholder="End date of the project"
-            defaultValue={grant?.projectEndDate?.toISOString().substring(0, 10)}
-            classNames={{
-              input: [
-                "placeholder:text-default-700/50 dark:placeholder:text-default-400",
-              ],
+            error={errors.projectEndDate?.message}
+          >
+            <Input
+              {...register("projectEndDate")}
+              type="date"
+              placeholder="End date of the project"
+              defaultValue={grant?.projectEndDate?.toISOString().substring(0, 10)}
+            />
+          </FieldWrapper>
+        </div>
+
+        <FieldWrapper
+          label="Project number (UMCG, post award)"
+          error={errors.projectNumber?.message}
+        >
+          <Input
+            {...register("projectNumber", {
+              setValueAs: (val) => (val === "" ? null : parseInt(val, 10)),
+            })}
+            type="number"
+            placeholder="6 digit project number from project controller"
+            defaultValue={grant?.projectNumber?.toString() || ""}
+            onKeyDown={(event) => {
+              if (event.key === "ArrowUp" || event.key === "ArrowDown") {
+                event.preventDefault();
+              }
             }}
           />
-        </div>
-        <Input
-          {...register("projectNumber", {
-            setValueAs: (val) => (val === "" ? null : parseInt(val, 10)),
-          })}
-          errorMessage={errors.projectNumber?.message}
-          isInvalid={!!errors.projectNumber}
-          type="number"
-          label="Project number (UMCG, post award)"
-          placeholder="6 digit project number from project controller"
-          defaultValue={grant?.projectNumber?.toString() || ""} //default is null if not provided
-          classNames={{
-            input: [
-              "placeholder:text-default-700/50 dark:placeholder:text-default-400",
-            ],
-          }}
-          onKeyDown={(e) => {
-            if (e.key === "ArrowUp" || e.key === "ArrowDown") {
-              e.preventDefault();
-            }
-          }}
-        />
+        </FieldWrapper>
+
         <Controller
           control={control}
           name="isDMPSubmitted"
           defaultValue={grant?.isDMPSubmitted ?? false}
           render={({ field }) => (
-            <Checkbox
-              {...field}
-              checked={field.value}
-              isSelected={field.value}
-              onChange={(e) => field.onChange(e.target.checked)}
-              value={String(field.value)}
-            >
-              Is DMP created, reviewed by the DCC-UMCG, and shared with the
-              Project Manager?
-            </Checkbox>
+            <div className="space-y-2">
+              <label className="flex items-start gap-2 text-sm">
+                <Checkbox
+                  checked={field.value}
+                  onCheckedChange={(checked) => field.onChange(Boolean(checked))}
+                />
+                <span>
+                  Is DMP created, reviewed by the DCC-UMCG, and shared with the
+                  Project Manager?
+                </span>
+              </label>
+              <FieldError message={errors.isDMPSubmitted?.message} />
+            </div>
           )}
         />
-        <Controller
-          name="notes"
-          control={control}
-          render={({ field }) => (
-            <SimpleMdeReact
-              {...field}
-              contentEditable={false}
-              placeholder="<Disabled, to be removed> Additional notes"
-              options={{
-                maxHeight: "100px",
-                autofocus: true,
-              }}
-            />
-          )}
-          defaultValue={grant?.notes || ""}
-        />
-        {!!errors.notes && (
-          <p className="text-sm text-red-500">{errors.notes.message}</p>
-        )}
+
+        <div>
+          <Label className="mb-2 block">
+            &lt;Disabled, to be removed&gt; Additional notes
+          </Label>
+          <Controller
+            name="notes"
+            control={control}
+            defaultValue={grant?.notes || ""}
+            render={({ field }) => (
+              <SimpleMdeReact
+                {...field}
+                contentEditable={false}
+                placeholder="<Disabled, to be removed> Additional notes"
+                options={{
+                  maxHeight: "100px",
+                  autofocus: true,
+                }}
+              />
+            )}
+          />
+          <FieldError className="mt-1" message={errors.notes?.message} />
+        </div>
+
         <div className="flex justify-between">
-          <Button type="submit" color="primary" disabled={isSubmitting}>
+          <Button type="submit" disabled={isSubmitting}>
+            {isSubmitting ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
             {grant ? "Update Grant" : "Create New Grant"}
-            {isSubmitting && <Spinner />}
           </Button>
-          <Button type="button" color="danger" onClick={() => router.back()}>
+          <Button type="button" variant="destructive" onClick={() => router.back()}>
             Cancel
           </Button>
         </div>
@@ -916,7 +771,7 @@ const useUsers = () =>
   useQuery<User[]>({
     queryKey: ["usersInGrantForm"],
     queryFn: () => axios.get("/api/users").then((res) => res.data),
-    staleTime: 60 * 1000, //60s
+    staleTime: 60 * 1000,
     retry: 3,
   });
 
