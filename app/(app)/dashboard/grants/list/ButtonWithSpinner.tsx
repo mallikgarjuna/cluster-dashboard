@@ -1,6 +1,6 @@
 "use client";
-import { Button, Spinner } from "@nextui-org/react";
-// import { Spinner } from "@/app/components";
+import { Loader2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { ComponentType, ReactElement, useState } from "react";
@@ -36,19 +36,13 @@ const ButtonWithSpinner = ({
   return (
     <Link href={hrefProp}>
       <Button
-        // onClick={() => setIsLoading(true)}
-        onPress={handleClick}
+        onClick={handleClick}
         disabled={isLoading}
-        isLoading={isLoading}
-        spinner={<Spinner color="white" size="sm" />}
-        spinnerPlacement="start"
-        color="primary"
         className="w-full px-16"
       >
-        {/* {isLoading && <Spinner size="sm" />} */}
+        {isLoading && <Loader2 className="h-4 w-4 animate-spin" />}
         {renderIcon()}
         {name}
-        {/* <Link href={hrefProp}>{name}</Link> */}
       </Button>
     </Link>
   );

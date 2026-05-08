@@ -1,7 +1,7 @@
 "use client";
 
 import { Skeleton } from "@/app/components";
-import { Button } from "@nextui-org/react";
+import { Button } from "@/components/ui/button";
 import { Container, Flex } from "@radix-ui/themes";
 import classnames from "classnames";
 import { useSession } from "next-auth/react";
@@ -66,8 +66,10 @@ const NavBar = () => {
               <Flex gap="3" align="center">
                 <p>User role: {session?.user?.role}</p>
 
-                <Button as={Link} href="/profile" variant="faded">
+                <Button asChild variant="outline">
+                  <Link href="/profile">
                   {`${session.user.firstName} ${session.user.lastName}`}
+                  </Link>
                 </Button>
 
                 <LogOutButton />
