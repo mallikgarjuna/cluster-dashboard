@@ -1,20 +1,30 @@
 "use client";
 
+import { createFundingCallSA } from "@/lib/actions/funderActions";
+import { updateFundingCallSA } from "@/lib/actions/updateFunderActions";
 import {
   CreateFundingCallFormInputType,
   CreateFundingCallFormSchema,
 } from "@/lib/validationSchemas";
-import { createFundingCallSA } from "@/lib/actions/funderActions";
-import { updateFundingCallSA } from "@/lib/actions/updateFunderActions";
 import { FundingActionWithCalls } from "@/prisma/customTypes";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button, Input, Select, SelectItem } from "@nextui-org/react";
+import { Button } from "@/components/ui/button";
+import { FieldError } from "@/components/ui/field-error";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { FundingCall } from "@prisma/client";
 import { useQuery } from "@tanstack/react-query";
+import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Controller, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
-import React from "react";
 
 interface Props {
   fCall?: FundingCall;
@@ -33,32 +43,21 @@ const FundingCallForm = ({ fCall }: Props) => {
     resolver: zodResolver(CreateFundingCallFormSchema),
   });
 
-  const { data: fundingActions, isLoading, error } = useFundingActions();
+  const { data: fundingActions } = useFundingActions();
 
   const onSubmitCreateUpdateFundingCallForm = async (
     fundingCallFormData: CreateFundingCallFormInputType,
   ) => {
-    // console.log(fundingCallFormData);
-
     try {
       const result = fCall
         ? await updateFundingCallSA(fCall.id, fundingCallFormData)
         : await createFundingCallSA(fundingCallFormData);
 
-      //
-      //
-      //
       if (!result?.success) {
         toast.error(result?.message + " ");
       } else {
         toast.success(result.message);
-
-        // Reset the form after successfull submission
         reset();
-
-        // Invalidate (and refetch) every query in the cache
-        // queryClient.invalidateQueries();
-
         router.refresh();
         router.push("/dashboard/funders");
       }
@@ -71,79 +70,76 @@ const FundingCallForm = ({ fCall }: Props) => {
   return (
     <form
       onSubmit={handleSubmit(onSubmitCreateUpdateFundingCallForm)}
-      className="space-y-2"
+      className="space-y-4"
     >
       <h2 className="text-xl font-bold">Add a new Funding Call</h2>
 
-      <Input
-        {...register("name")}
-        errorMessage={errors.name?.message}
-        isInvalid={!!errors.name}
-        type="text"
-        label="Funding Call ID (NWO: Funding Round ID)"
-        placeholder="Enter Funding Call ID. E.g., MSCA-DN-2024/etc., Veni-ZonMw-2024/etc."
-        defaultValue={fCall?.name}
-      />
+      <div>
+        <Label className="mb-2 block">
+          Funding Call ID (NWO: Funding Round ID)
+        </Label>
+        <Input
+          {...register("name")}
+          type="text"
+          placeholder="Enter Funding Call ID. E.g., MSCA-DN-2024/etc., Veni-ZonMw-2024/etc."
+          defaultValue={fCall?.name}
+        />
+        <FieldError className="mt-1" message={errors.name?.message} />
+      </div>
 
-      <Input
-        {...register("url")}
-        errorMessage={errors.url?.message}
-        isInvalid={!!errors.url}
-        type="text"
-        label="URL of the Funding Call ID"
-        placeholder="Enter a valid URL"
-        defaultValue={fCall?.url ?? ""}
-      />
+      <div>
+        <Label className="mb-2 block">URL of the Funding Call ID</Label>
+        <Input
+          {...register("url")}
+          type="text"
+          placeholder="Enter a valid URL"
+          defaultValue={fCall?.url ?? ""}
+        />
+        <FieldError className="mt-1" message={errors.url?.message} />
+      </div>
 
-      {/* Add an input field for selecting the related funding programme */}
       <Controller
         control={control}
         name="fundingActionId"
         defaultValue={fCall?.fundingActionId ?? undefined}
         render={({ field }) => (
-          <>
+          <div>
+            <Label className="mb-2 block">(Related) Funding Action</Label>
             {fundingActions ? (
               <Select
-                {...field}
-                {...register("fundingActionId")}
-                errorMessage={errors.fundingActionId?.message}
-                isInvalid={!!errors.fundingActionId}
-                label="(Related) Funding Action"
-                placeholder="Select the related funding action"
-                // defaultSelectedKeys={
-                //   fCall?.fundingActionId ? [fCall.fundingActionId] : []
-                // }
+                value={field.value}
+                onValueChange={field.onChange}
+                defaultValue={field.value}
               >
-                {fundingActions ? (
-                  fundingActions.map((fundingAction) => (
+                <SelectTrigger>
+                  <SelectValue placeholder="Select the related funding action" />
+                </SelectTrigger>
+                <SelectContent>
+                  {fundingActions.map((fundingAction) => (
                     <SelectItem key={fundingAction.id} value={fundingAction.id}>
                       {fundingAction.name}
                     </SelectItem>
-                  ))
-                ) : (
-                  <SelectItem key={""} value={""}>
-                    None
-                  </SelectItem>
-                )}
+                  ))}
+                </SelectContent>
               </Select>
             ) : (
               <p>Loading funding actions...</p>
-            )}{" "}
-          </>
+            )}
+            <FieldError
+              className="mt-1"
+              message={errors.fundingActionId?.message}
+            />
+          </div>
         )}
       />
 
       <div className="flex justify-between">
-        <Button
-          type="submit"
-          disabled={isSubmitting}
-          isLoading={isSubmitting}
-          color="primary"
-        >
+        <Button type="submit" disabled={isSubmitting}>
+          {isSubmitting ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
           {fCall ? "Update Funding Call" : "Create New Funding Call"}
         </Button>
 
-        <Button type="button" color="danger" onPress={() => router.back()}>
+        <Button type="button" variant="destructive" onClick={() => router.back()}>
           Cancel
         </Button>
       </div>
@@ -151,9 +147,6 @@ const FundingCallForm = ({ fCall }: Props) => {
   );
 };
 
-// This fetcher is created so that I can use fetch() to add a tag for relvalidating
-// in the SA;
-// https://nextjs.org/docs/app/building-your-application/data-fetching/fetching-caching-and-revalidating#on-demand-revalidation
 const fetchFundingActions = async () => {
   const res = await fetch("/api/fundingActions", {
     next: { tags: ["fundingActions-api"] },
@@ -166,13 +159,11 @@ export const useFundingActions = () =>
   useQuery<FundingActionWithCalls[]>({
     queryKey: ["fundingActions-api"],
     queryFn: () => fetchFundingActions(),
-    staleTime: 60 * 1000, //60s
+    staleTime: 60 * 1000,
     retry: 3,
     cacheTime: 0,
   });
 
-// This useFundingCalls() is created to use it in GrantForm.tsx select dropdown
-// There was no place better to create it than here.
 const fetchFundingCalls = async () => {
   const res = await fetch("/api/fundingCalls", {
     next: { tags: ["fundingCalls-api"] },
@@ -185,7 +176,7 @@ export const useFundingCalls = () =>
   useQuery<FundingCall[]>({
     queryKey: ["fundingCalls-api"],
     queryFn: () => fetchFundingCalls(),
-    staleTime: 60 * 1000, //60s
+    staleTime: 60 * 1000,
     retry: 3,
     cacheTime: 0,
   });
