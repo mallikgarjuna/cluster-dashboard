@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "@/app/components/Link";
-import { Card, CardBody, CardHeader } from "@nextui-org/react";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { OSDepartmentShortName } from "@prisma/client";
 import { Table } from "@radix-ui/themes";
 import { useSession } from "next-auth/react";
@@ -217,7 +217,7 @@ const PIGrantsTable = () => {
             * Success Rate % = (# of Awarded) / (# of Submitted - # of Awaiting){" "}
           </p>
         </CardHeader>
-        <CardBody className="flex flex-col gap-5">
+        <CardContent className="flex flex-col gap-5">
           {departments.map((dept) => (
             <div key={dept} className="">
               <h1 className="text-lg font-bold">{`${dept}:`}</h1>
@@ -279,7 +279,7 @@ const PIGrantsTable = () => {
               </Table.Root>
             </div>
           ))}
-        </CardBody>
+        </CardContent>
       </Card>
     </React.Fragment>
   );

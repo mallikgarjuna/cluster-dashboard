@@ -1,6 +1,6 @@
 "use client";
 
-import { Card, CardBody, CardHeader } from "@nextui-org/react";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { StatusGrant } from "@prisma/client";
 import { Flex, Text } from "@radix-ui/themes";
 import classNames from "classnames";
@@ -79,17 +79,17 @@ const GrantSummary = ({
   ];
 
   return (
-    <Card>
+    <Card className="p-4">
       <Flex gap="4" justify="between">
         {containers.map((container) => (
           <Card
             key={container.label}
             className={classNames({
-              "my-1 bg-zinc-50": true,
+              "my-1 flex-1 bg-zinc-50": true,
               "hover:bg-zinc-400": container.isClickable,
             })}
           >
-            <CardHeader>
+            <CardHeader className="pb-2">
               <Link
                 className={classNames({
                   "text-sm font-medium": true,
@@ -107,11 +107,11 @@ const GrantSummary = ({
                 {container.label}
               </Link>
             </CardHeader>
-            <CardBody className="py-0">
+            <CardContent className="pt-0">
               <Text size="5" className="font-bold">
                 {container.value}
               </Text>
-            </CardBody>
+            </CardContent>
           </Card>
         ))}
       </Flex>
