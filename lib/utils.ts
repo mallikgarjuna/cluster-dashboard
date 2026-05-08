@@ -7,7 +7,7 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 type UpdateFilterQueryParamsInput = {
-  searchParams: URLSearchParams | ReadonlyURLSearchParams;
+  searchParams: URLSearchParams | { toString(): string };
   paramName: string;
   value: string;
   allValue?: string;

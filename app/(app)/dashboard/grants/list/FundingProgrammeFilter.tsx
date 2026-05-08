@@ -1,10 +1,11 @@
 "use client";
 
-import { Select, SelectItem } from "@nextui-org/react";
+import { updateFilterQueryParams } from "@/lib/utils";
 import { FundingProgramme } from "@prisma/client";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import Skeleton from "react-loading-skeleton";
+import FilterSelectField from "./FilterSelectField";
 import {
   useFundingFilterAgencies,
   useFundingFilterProgrammes,
@@ -47,37 +48,30 @@ const FundingProgrammeFilter = () => {
   if (error) return null;
   if (!fetchedFundingProgrammes) return null;
 
-  const handleSelectionOnChange = (
-    event: React.ChangeEvent<HTMLSelectElement>,
-  ) => {
-    const selectedFProgId = event.target.value;
+  const handleValueChange = (value: string) => {
+    const queryString = updateFilterQueryParams({
+      searchParams,
+      paramName: "fProgId",
+      value,
+      allValue: "",
+      resetParams: ["fActionId", "fCallId"],
+    });
 
-    const params = new URLSearchParams(searchParams);
-
-    if (selectedFProgId) params.set("fProgId", selectedFProgId);
-    else params.delete("fProgId");
-
-    // On fProgId change, reset the child filters of fProgramme
-    params.delete("fActionId");
-    params.delete("fCallId");
-
-    const query = params.size ? "?" + params.toString() : "";
-
-    router.push(pathname + query);
+    router.push(pathname + queryString);
   };
 
   return (
-    <Select
-      label="Filter by Funding programme..."
-      onChange={handleSelectionOnChange}
-      defaultSelectedKeys={[searchParams.get("fProgId") || ""]} // Ensure no null value
-    >
-      {fundingProgrammes?.map((fProg) => (
-        <SelectItem key={fProg.id || "All"} value={fProg.name || "All"}>
-          {fProg.name}
-        </SelectItem>
-      ))}
-    </Select>
+    <FilterSelectField
+      label="Filter by funding programme"
+      placeholder="Select funding programme"
+      onValueChange={handleValueChange}
+      defaultValue={searchParams.get("fProgId") || ""}
+      options={fundingProgrammes.map((fProg) => ({
+        label: fProg.name,
+        value: fProg.id,
+      }))}
+      allLabel="All"
+    />
   );
 };
 
