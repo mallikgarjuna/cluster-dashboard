@@ -2,14 +2,16 @@
 version: alpha
 name: Cluster Dashboard
 description: >
-  A light, restrained research administration dashboard that combines a neutral
-  white canvas, soft zinc framing, and a single institutional blue accent.
+  A light, highly restrained research administration dashboard built on a
+  white canvas, soft zinc separation, disciplined spacing, and a single
+  institutional blue accent.
 colors:
   background: "#ffffff"
   on-background: "#09090b"
   surface: "#ffffff"
   surface-muted: "#fafafa"
   surface-subtle: "#f4f4f5"
+  surface-elevated: "#ffffff"
   surface-brand-soft: "#bfdbfe"
   border: "#e4e4e7"
   border-strong: "#d4d4d8"
@@ -29,9 +31,9 @@ colors:
   success: "#22c55e"
   warning: "#eab308"
   danger: "#dc2626"
-  info-chart: "#0000ff"
-  success-chart: "#008000"
-  warning-chart: "#ffa500"
+  data-info: "#0000ff"
+  data-success: "#008000"
+  data-warning: "#ffa500"
 typography:
   headline-xl:
     fontFamily: Inter
@@ -129,6 +131,11 @@ components:
     rounded: "{rounded.lg}"
     padding: "{spacing.page-padding}"
     height: "{layout.hero-height-desktop}"
+  panel-minimal:
+    backgroundColor: "{colors.surface-elevated}"
+    textColor: "{colors.text-primary}"
+    rounded: "{rounded.md}"
+    padding: "{spacing.card-padding}"
   button-action:
     backgroundColor: "{colors.primary}"
     textColor: "#ffffff"
@@ -202,9 +209,9 @@ components:
 ---
 
 ## Overview
-Cluster Dashboard should feel like a dependable internal product, not a brand campaign. The interface is light, sparse, and task-oriented: most surfaces are plain white, typography does the organizational work, and visual emphasis is reserved for a small number of actions and status cues.
+Cluster Dashboard should feel like a dependable internal product rendered with restraint and confidence, not like a brand campaign. The interface is bright, quiet, and reduced: plain white surfaces carry most screens, typography performs most of the hierarchy, and emphasis is reserved for a small number of actions and state cues.
 
-The overall mood is professional and quiet. There is no dark mode styling in practice, no decorative gradients, and very little ornamental treatment. The strongest branded moment is the pale blue hero band on the homepage; elsewhere, blue is used more functionally for links, CTAs, and selected navigation.
+The overall mood is professional, calm, and high-trust. There is no decorative spectacle, no visual clutter, and almost no ornamental flourish. The strongest branded moment is the pale blue hero band on the homepage; elsewhere, blue should remain purposeful and controlled, used mainly for links, CTAs, and selected navigation.
 
 ## Colors
 The color system is built from three layers:
@@ -213,23 +220,23 @@ The color system is built from three layers:
 - Zinc grays handle borders, muted text, hover fills, and low-priority chrome.
 - A single medium blue acts as the primary accent for login actions, links, and key entry points.
 
-The rendered UI confirms that the product lives almost entirely on a bright white background. The pale blue banner is a soft supporting surface, not a dominant brand wash. Black and near-black text carry most of the visual weight.
+The rendered UI confirms that the product lives almost entirely on a bright white background. The pale blue banner is a supporting surface, not a dominant brand field. Black and near-black text carry most of the visual weight, which keeps the system feeling direct and reduced.
 
-Semantic color does appear, but mainly in status communication rather than broad layout. Success, warning, error, and chart-series hues should remain isolated to badges, alerts, and data visualization, so the main dashboard shell stays calm and neutral.
+Semantic color should stay isolated to status badges, alerts, and data visualization. The surrounding shell should remain largely monochrome so the interface retains a composed, premium quality instead of becoming noisy.
 
 ## Typography
-Inter is the only font family and should remain the entire system's voice. Its role here is straightforward: crisp, neutral, and highly legible for administrative tables and forms.
+Inter is the only font family and should remain the entire system's voice. Its role here is crisp, neutral, and highly legible, with a tone closer to product UI precision than expressive branding.
 
 Typography hierarchy is simple and practical:
 
-- Large headings use bold weights and moderate negative tracking.
-- Form labels, buttons, and compact metadata stay in the 12px to 14px range.
-- Body copy is standard 16px with comfortable but not luxurious line height.
+- Large headings use bold weights and modest negative tracking.
+- Form labels, buttons, and compact metadata stay disciplined in the 12px to 14px range.
+- Body copy stays at a standard 16px with relaxed but controlled line height.
 
-This is not an expressive editorial system. Avoid stylized type treatments, condensed headings, or oversized display moments outside of page titles and the homepage welcome block.
+This is not an expressive editorial system. Avoid stylized type treatments, decorative contrast, or oversized display moments outside page titles and the homepage welcome block. The best typographic result is clean, spare, and quietly authoritative.
 
 ## Layout
-The layout model is a centered application shell with a wide maximum content width and generous empty space around primary content blocks. The homepage and auth screens both use large amounts of open white space, which makes the product feel calmer and less dense even when the underlying workflows are operationally complex.
+The layout model is a centered application shell with a wide maximum content width and generous empty space around primary content blocks. The homepage and auth screens both rely on visible breathing room, which makes the product feel calmer and more intentional even when the workflows themselves are operationally dense.
 
 Spacing follows a practical 4px and 8px rhythm:
 
@@ -237,19 +244,19 @@ Spacing follows a practical 4px and 8px rhythm:
 - 16px to 24px for cards, sections, and navigation padding.
 - 48px and above for major separation on entry screens.
 
-Forms should stay structurally tight and centered. Data-heavy screens can expand horizontally, but should still feel contained inside the 1400px shell rather than stretching edge to edge.
+Forms should stay structurally tight, centered, and visually quiet. Data-heavy screens can expand horizontally, but should still feel contained inside the 1400px shell rather than stretched edge to edge. Space should read as a design decision, not as leftover emptiness.
 
 ## Elevation & Depth
-Depth is subtle. Most components rely on light borders and small Tailwind-style shadows rather than dramatic layering. The system should feel flat-first, with just enough lift to distinguish cards, inputs, and popovers from the white page.
+Depth is subtle. Most components rely on hairline-like borders and very soft shadows rather than dramatic layering. The system should feel flat-first, with just enough separation to distinguish cards, inputs, and popovers from the white page.
 
-- Standard cards use a soft low shadow plus a light border.
-- Inputs and select triggers use small control shadows, mostly to separate them from white backgrounds.
-- Popovers and dropdowns can step up one level in elevation, but should still feel restrained and system-like.
+- Standard cards use soft low-contrast lift plus a light border.
+- Inputs and select triggers use minimal control shadows, mostly to avoid disappearing into white backgrounds.
+- Popovers and dropdowns can step up one level in elevation, but should still feel restrained, precise, and system-like.
 
 Heavy glass effects, colored shadows, and dramatic floating panels would be off-brand for this product.
 
 ## Shapes
-The shape language is gently rounded but not playful. Most inputs and buttons sit at 6px to 8px radii, while larger cards stretch to 12px. The effect is modern and approachable without becoming soft or consumer-app-like.
+The shape language is gently rounded but not playful. Most inputs and buttons sit at 6px to 8px radii, while larger cards stretch to 12px. The effect should feel modern and approachable without becoming soft, bubbly, or consumer-app-like.
 
 - Inputs, buttons, and selects: use the `md` and `lg` radii.
 - Larger summary cards and grouped containers: use `xl`.
@@ -257,22 +264,22 @@ The shape language is gently rounded but not playful. Most inputs and buttons si
 
 ## Components
 ### Entry Screens
-The homepage pairs a large pale blue banner with a plain text welcome block and a single blue CTA. Keep this composition airy and uncomplicated. It should feel like a concise gateway into the product, not a marketing landing page.
+The homepage pairs a large pale blue banner with a plain text welcome block and a single blue CTA. Keep this composition airy, centered, and uncomplicated. It should feel like a concise gateway into the product, not a marketing landing page.
 
-The login screen uses a centered, lightly bordered form card on a white background with minimal decoration. Inputs are full-width, standard height, and visually subordinate to the form title and submit action.
+The login screen uses a centered, lightly bordered form card on a white background with minimal decoration. Inputs are full-width, standard height, and visually subordinate to the form title and submit action. The best reference mood is calm product minimalism rather than enterprise heaviness.
 
 ### Navigation
-Top navigation is understated. Links sit on a plain horizontal strip with bottom border separation. Inactive items are muted gray; the active route deepens to a darker blue rather than introducing a larger shape or background pill.
+Top navigation is understated. Links sit on a plain horizontal strip with bottom border separation. Inactive items are muted gray; the active route deepens to a darker blue rather than introducing a larger shape, pill, or tab treatment.
 
 ### Data Surfaces
-Cards, tables, and filter controls should read like reliable administrative furniture:
+Cards, tables, and filter controls should read like reliable administrative furniture rendered with premium restraint:
 
 - White surfaces
 - thin borders
 - soft shadows
 - restrained hover fills
 
-Hover feedback should be visible but quiet, usually through a light gray background shift rather than motion-heavy transitions or glow effects.
+Hover feedback should be visible but quiet, usually through a light gray background shift rather than motion-heavy transitions, scaling, or glow effects.
 
 ### Buttons & Inputs
 There are effectively two button families:
@@ -280,13 +287,15 @@ There are effectively two button families:
 - Blue action buttons for public-facing or entry-point CTAs.
 - Near-black utility buttons from the shared control set for authenticated forms and dashboard actions.
 
-That contrast is part of the current product identity. Do not collapse everything into one accent family unless the broader UI is being intentionally redesigned.
+That contrast is part of the current product identity. Do not collapse everything into one accent family unless the broader UI is being intentionally redesigned. The styling should stay spare enough that hierarchy comes from placement and contrast, not ornament.
 
 ## Do's and Don'ts
 - Do keep the UI bright, minimal, and operationally focused.
+- Do let whitespace carry some of the premium feel.
 - Do use blue sparingly so it retains meaning as an action and navigation accent.
 - Do prefer border, spacing, and typography hierarchy over decorative containers.
 - Do preserve the centered, open composition of auth and entry flows.
+- Do aim for a quieter, more reduced tone in the writing and the resulting UI.
 - Don't introduce saturated multi-color palettes into the main shell.
 - Don't rely on large shadows, glass effects, or gradient-heavy surfaces.
 - Don't make data screens feel playful; they should stay clear, neutral, and dependable.
