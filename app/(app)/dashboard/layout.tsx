@@ -7,7 +7,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
       <div>
         <NavBarDashboard />
       </div>
-      <div className="page-shell pt-0">{children}</div>
+      <div>{children}</div>
     </div>
   );
 };

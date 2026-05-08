@@ -165,6 +165,16 @@ components:
   button-outline-hover:
     backgroundColor: "{colors.surface-subtle}"
     textColor: "{colors.text-secondary}"
+  button-danger:
+    backgroundColor: "{colors.danger}"
+    textColor: "#ffffff"
+    typography: "{typography.label-md}"
+    rounded: "{rounded.md}"
+    height: 36px
+    padding: "0 16px"
+  button-danger-hover:
+    backgroundColor: "#b91c1c" # A darker shade of the danger color
+    textColor: "#ffffff"
   input-field:
     backgroundColor: "{colors.surface}"
     textColor: "{colors.text-primary}"
@@ -209,11 +219,13 @@ components:
 ---
 
 ## Overview
+
 Cluster Dashboard should feel like a dependable internal product rendered with restraint and confidence, not like a brand campaign. The interface is bright, quiet, and reduced: plain white surfaces carry most screens, typography performs most of the hierarchy, and emphasis is reserved for a small number of actions and state cues.
 
 The overall mood is professional, calm, and high-trust. There is no decorative spectacle, no visual clutter, and almost no ornamental flourish. The strongest branded moment is the pale blue hero band on the homepage; elsewhere, blue should remain purposeful and controlled, used mainly for links, CTAs, and selected navigation.
 
 ## Colors
+
 The color system is built from three layers:
 
 - White and near-white surfaces create a clean administrative canvas.
@@ -225,6 +237,7 @@ The rendered UI confirms that the product lives almost entirely on a bright whit
 Semantic color should stay isolated to status badges, alerts, and data visualization. The surrounding shell should remain largely monochrome so the interface retains a composed, premium quality instead of becoming noisy.
 
 ## Typography
+
 Inter is the only font family and should remain the entire system's voice. Its role here is crisp, neutral, and highly legible, with a tone closer to product UI precision than expressive branding.
 
 Typography hierarchy is simple and practical:
@@ -236,6 +249,7 @@ Typography hierarchy is simple and practical:
 This is not an expressive editorial system. Avoid stylized type treatments, decorative contrast, or oversized display moments outside page titles and the homepage welcome block. The best typographic result is clean, spare, and quietly authoritative.
 
 ## Layout
+
 The layout model is a centered application shell with a wide maximum content width and generous empty space around primary content blocks. The homepage and auth screens both rely on visible breathing room, which makes the product feel calmer and more intentional even when the workflows themselves are operationally dense.
 
 Spacing follows a practical 4px and 8px rhythm:
@@ -247,6 +261,7 @@ Spacing follows a practical 4px and 8px rhythm:
 Forms should stay structurally tight, centered, and visually quiet. Data-heavy screens can expand horizontally, but should still feel contained inside the 1400px shell rather than stretched edge to edge. Space should read as a design decision, not as leftover emptiness.
 
 ## Elevation & Depth
+
 Depth is subtle. Most components rely on hairline-like borders and very soft shadows rather than dramatic layering. The system should feel flat-first, with just enough separation to distinguish cards, inputs, and popovers from the white page.
 
 - Standard cards use soft low-contrast lift plus a light border.
@@ -256,6 +271,7 @@ Depth is subtle. Most components rely on hairline-like borders and very soft sha
 Heavy glass effects, colored shadows, and dramatic floating panels would be off-brand for this product.
 
 ## Shapes
+
 The shape language is gently rounded but not playful. Most inputs and buttons sit at 6px to 8px radii, while larger cards stretch to 12px. The effect should feel modern and approachable without becoming soft, bubbly, or consumer-app-like.
 
 - Inputs, buttons, and selects: use the `md` and `lg` radii.
@@ -263,15 +279,19 @@ The shape language is gently rounded but not playful. Most inputs and buttons si
 - Avoid pill-heavy styling except for badges and small semantic indicators.
 
 ## Components
+
 ### Entry Screens
+
 The homepage pairs a large pale blue banner with a plain text welcome block and a single blue CTA. Keep this composition airy, centered, and uncomplicated. It should feel like a concise gateway into the product, not a marketing landing page.
 
 The login screen uses a centered, lightly bordered form card on a white background with minimal decoration. Inputs are full-width, standard height, and visually subordinate to the form title and submit action. The best reference mood is calm product minimalism rather than enterprise heaviness.
 
 ### Navigation
+
 Top navigation is understated. Links sit on a plain horizontal strip with bottom border separation. Inactive items are muted gray; the active route deepens to a darker blue rather than introducing a larger shape, pill, or tab treatment.
 
 ### Data Surfaces
+
 Cards, tables, and filter controls should read like reliable administrative furniture rendered with premium restraint:
 
 - White surfaces
@@ -282,21 +302,27 @@ Cards, tables, and filter controls should read like reliable administrative furn
 Hover feedback should be visible but quiet, usually through a light gray background shift rather than motion-heavy transitions, scaling, or glow effects.
 
 ### Buttons & Inputs
-There are effectively two button families:
 
-- Blue action buttons for public-facing or entry-point CTAs.
-- Near-black utility buttons from the shared control set for authenticated forms and dashboard actions.
+There are effectively two button families, but they should be calmer than a typical admin dashboard:
 
-That contrast is part of the current product identity. Do not collapse everything into one accent family unless the broader UI is being intentionally redesigned. The styling should stay spare enough that hierarchy comes from placement and contrast, not ornament.
+- **Blue action buttons** for public-facing or entry-point CTAs (`button-action`).
+- **Monochrome utility buttons** for authenticated forms, navigation, and data actions (`button-neutral`, `button-outline`).
+
+Red should be used sparingly and primarily inside confirmation states, destructive messaging, or exceptional alerts, not as a constant accent in the everyday shell. Most operational actions should read as black, white, gray, or muted blue.
+
+That contrast is part of the current product identity. The styling should stay spare enough that hierarchy comes from placement and contrast, not ornament.
 
 ## Do's and Don'ts
+
 - Do keep the UI bright, minimal, and operationally focused.
 - Do let whitespace carry some of the premium feel.
 - Do use blue sparingly so it retains meaning as an action and navigation accent.
+- Do prefer monochrome controls for everyday admin actions.
 - Do prefer border, spacing, and typography hierarchy over decorative containers.
 - Do preserve the centered, open composition of auth and entry flows.
 - Do aim for a quieter, more reduced tone in the writing and the resulting UI.
 - Don't introduce saturated multi-color palettes into the main shell.
+- Don't use red as a default side-rail or navigation accent.
 - Don't rely on large shadows, glass effects, or gradient-heavy surfaces.
 - Don't make data screens feel playful; they should stay clear, neutral, and dependable.
 - Don't over-style navigation with pills, underlines, or segmented-control treatments unless the entire design language is being upgraded.

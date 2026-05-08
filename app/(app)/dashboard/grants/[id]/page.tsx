@@ -43,8 +43,8 @@ const GrantDetailPage = async ({ params }: Props) => {
       <Box className="md:col-span-4">
         <GrantDetails grant={grant} />
       </Box>
-      <Box>
-        <Flex direction="column" gap="2">
+      <Box className="md:pl-2">
+        <Flex direction="column" gap="2" className="section-panel p-3 md:sticky md:top-6">
           {(session?.user.role === "ADMIN" ||
             session?.user.id === grant.assignedToUserId) && (
             <>
