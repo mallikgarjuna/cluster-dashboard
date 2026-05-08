@@ -2,7 +2,7 @@
 
 import { createGrant, updateGrant } from "@/lib/actions/grant/grantActions";
 import { GrantFormDataType, grantFormSchema } from "@/lib/validationSchemas";
-import { FundingActionWithCalls, FundingProgrammeWithActionsCalls, GrantWithAllRelatedTypes } from "@/prisma/customTypes";
+import { GrantWithAllRelatedTypes } from "@/prisma/customTypes";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -27,7 +27,7 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useRef, type ReactNode } from "react";
 import { Controller, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import SimpleMdeReact from "react-simplemde-editor";
@@ -73,52 +73,72 @@ const GrantForm = ({ grant }: Props) => {
     getValues,
   } = useForm<GrantFormDataType>({
     resolver: zodResolver(grantFormSchema),
+    defaultValues: {
+      fundingAgencyId: grant?.fundingAgencyId ?? undefined,
+      fundingProgrammeId: grant?.fundingProgrammeId ?? undefined,
+      fundingActionId: grant?.fundingActionId ?? undefined,
+      fundingCallId: grant?.fundingCallId ?? undefined,
+      groupMemberType: grant?.groupMemberType ?? undefined,
+      assignedToUserId: grant?.assignedToUserId ?? undefined,
+      applicantRole: grant?.applicantRole ?? undefined,
+      isBudgetApproved: grant?.isBudgetApproved ?? false,
+      isDMPSubmitted: grant?.isDMPSubmitted ?? false,
+    },
   });
 
   const { data: users } = useUsers();
   const { data: fetchedFundingAgencies } = useFundingAgencies();
 
-  const [fundingProgrammes, setFundingProgrammes] = useState<
-    FundingProgrammeWithActionsCalls[]
-  >([]);
-  const [fundingActions, setFundingActions] = useState<FundingActionWithCalls[]>(
-    [],
-  );
-  const [fundingCalls, setFundingCalls] = useState<FundingCall[]>([]);
-
   const selectedFundingAgencyId = watch("fundingAgencyId");
   const selectedFundingProgrammeId = watch("fundingProgrammeId");
   const selectedFundingActionId = watch("fundingActionId");
 
+  const fundingProgrammes =
+    fetchedFundingAgencies?.find(
+      (fundingAgency) => fundingAgency.id === selectedFundingAgencyId,
+    )?.fundingProgrammes || [];
+  const fundingActions =
+    fundingProgrammes.find(
+      (fundingProgramme) => fundingProgramme.id === selectedFundingProgrammeId,
+    )?.fundingActions || [];
+  const fundingCalls: FundingCall[] =
+    fundingActions.find(
+      (fundingAction) => fundingAction.id === selectedFundingActionId,
+    )?.fundingCalls || [];
+
+  const hasInitializedFundingAgency = useRef(false);
+  const hasInitializedFundingProgramme = useRef(false);
+  const hasInitializedFundingAction = useRef(false);
+
   useEffect(() => {
-    const selectedFundingAgency = fetchedFundingAgencies?.find(
-      (fAgency) => fAgency.id === selectedFundingAgencyId,
-    );
+    if (!hasInitializedFundingAgency.current) {
+      hasInitializedFundingAgency.current = true;
+      return;
+    }
+
     setValue("fundingProgrammeId", undefined);
     setValue("fundingActionId", undefined);
     setValue("fundingCallId", undefined);
-    setFundingProgrammes(selectedFundingAgency?.fundingProgrammes || []);
-    setFundingActions([]);
-    setFundingCalls([]);
-  }, [selectedFundingAgencyId, fetchedFundingAgencies, setValue]);
+  }, [selectedFundingAgencyId, setValue]);
 
   useEffect(() => {
-    const selectedFundingProgramme = fundingProgrammes.find(
-      (programme) => programme.id === selectedFundingProgrammeId,
-    );
+    if (!hasInitializedFundingProgramme.current) {
+      hasInitializedFundingProgramme.current = true;
+      return;
+    }
+
     setValue("fundingActionId", undefined);
     setValue("fundingCallId", undefined);
-    setFundingActions(selectedFundingProgramme?.fundingActions || []);
-    setFundingCalls([]);
-  }, [selectedFundingProgrammeId, fundingProgrammes, setValue]);
+  }, [selectedFundingProgrammeId, setValue]);
 
   useEffect(() => {
-    const selectedFundingAction = fundingActions.find(
-      (action) => action.id === selectedFundingActionId,
-    );
+    if (!hasInitializedFundingAction.current) {
+      hasInitializedFundingAction.current = true;
+      return;
+    }
+
     setValue("fundingCallId", undefined);
-    setFundingCalls(selectedFundingAction?.fundingCalls || []);
-  }, [selectedFundingActionId, fundingActions, setValue]);
+  }, [selectedFundingActionId, setValue]);
 
   const statuses = Object.values(StatusGrant);
   const applicantRoles = Object.values(enumApplicantRole);
