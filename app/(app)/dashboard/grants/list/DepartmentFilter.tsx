@@ -8,6 +8,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { updateFilterQueryParams } from "@/lib/utils";
 import { OSDepartmentShortName } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
@@ -43,16 +44,11 @@ const DepartmentFilter = ({ departments }: DepartmentFilterProps) => {
   // console.log("Departments: ", departments);
 
   const handleValueChange = (value: string) => {
-    // console.log("Value: ", value);
-
-    const params = new URLSearchParams(searchParams);
-    if (value === "All") {
-      params.delete("department");
-    } else {
-      params.set("department", value);
-    }
-
-    const queryString = "?" + params.toString();
+    const queryString = updateFilterQueryParams({
+      searchParams,
+      paramName: "department",
+      value,
+    });
 
     // router.push(`/dashboard/grants/list${query}`);
     // Add 'pathname' instead of explicitly adding it so that this comp can be added to all pages;

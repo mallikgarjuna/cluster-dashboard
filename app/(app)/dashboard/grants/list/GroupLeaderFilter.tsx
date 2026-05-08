@@ -11,6 +11,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { updateFilterQueryParams } from "@/lib/utils";
 import { UserWithDepartment } from "@/prisma/customTypes";
 import { OSDepartmentShortName } from "@prisma/client";
 import { useSession } from "next-auth/react";
@@ -60,17 +61,11 @@ const GroupLeaderFilter = ({ groupLeaders }: Props) => {
   });
 
   const handleValueChange = (value: string) => {
-    // console.log("groupLeader value: ", value);
-
-    const params = new URLSearchParams(searchParams);
-
-    if (value === "All") {
-      params.delete("groupLeader");
-    } else {
-      params.set("groupLeader", value);
-    }
-
-    const queryString = params.size ? "?" + params.toString() : "";
+    const queryString = updateFilterQueryParams({
+      searchParams,
+      paramName: "groupLeader",
+      value,
+    });
 
     router.push(pathname + queryString);
   };

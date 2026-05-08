@@ -8,6 +8,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { updateFilterQueryParams } from "@/lib/utils";
 // import { Select, SelectItem } from "@nextui-org/react";
 import { StatusGrant } from "@prisma/client";
 // import { Select } from "@radix-ui/themes";
@@ -41,15 +42,11 @@ const GrantStatusFilter = ({ grantStatuses }: GrantStatusFilterProps) => {
 
   const handleValueChange = (value: string) => {
     console.log("status select: ", value);
-
-    const params = new URLSearchParams(searchParams);
-    if (value === "All") {
-      params.delete("status");
-    } else {
-      params.set("status", value);
-    }
-
-    const queryString = params.size ? "?" + params.toString() : "";
+    const queryString = updateFilterQueryParams({
+      searchParams,
+      paramName: "status",
+      value,
+    });
 
     router.push(`${pathname}${queryString}`);
   };

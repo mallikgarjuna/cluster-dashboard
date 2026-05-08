@@ -8,6 +8,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { updateFilterQueryParams } from "@/lib/utils";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 type GrantStartYearFilterProps = {
@@ -27,15 +28,11 @@ const GrantStartYearFilter = ({ startYears }: GrantStartYearFilterProps) => {
 
   const handleValueChange = (value: string) => {
     console.log("startYear Value: ", value);
-
-    const params = new URLSearchParams(searchParams);
-    if (value === "All") {
-      params.delete("year"); //TODO: rename it to `startYear`;
-    } else {
-      params.set("year", value);
-    }
-
-    const queryString = params.size ? "?" + params.toString() : "";
+    const queryString = updateFilterQueryParams({
+      searchParams,
+      paramName: "year",
+      value,
+    });
 
     router.push(`${pathname}${queryString}`);
   };

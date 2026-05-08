@@ -6,6 +6,34 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+type UpdateFilterQueryParamsInput = {
+  searchParams: URLSearchParams | ReadonlyURLSearchParams;
+  paramName: string;
+  value: string;
+  allValue?: string;
+  resetParams?: string[];
+};
+
+export function updateFilterQueryParams({
+  searchParams,
+  paramName,
+  value,
+  allValue = "All",
+  resetParams = [],
+}: UpdateFilterQueryParamsInput) {
+  const params = new URLSearchParams(searchParams);
+
+  if (value === allValue) {
+    params.delete(paramName);
+  } else {
+    params.set(paramName, value);
+  }
+
+  resetParams.forEach((param) => params.delete(param));
+
+  return params.size ? `?${params.toString()}` : "";
+}
+
 export const getErrorMessage = (error: unknown) => {
   let message: string;
 

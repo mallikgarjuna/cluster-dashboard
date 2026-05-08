@@ -8,6 +8,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { updateFilterQueryParams } from "@/lib/utils";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 type GrantSubmitYearFilterProps = {
@@ -29,17 +30,11 @@ const GrantSubmissionYearFilter = ({
 
   const handleValueChange = (value: string) => {
     console.log("submitYear: ", value); // submitYear:  2023
-
-    const params = new URLSearchParams(searchParams);
-    // console.log("params: ", params); // params:  URLSearchParams { year → "2023" }
-
-    if (value === "All") {
-      params.delete("submitYear");
-    } else {
-      params.set("submitYear", value);
-    }
-
-    const queryString = params.size ? "?" + params.toString() : "";
+    const queryString = updateFilterQueryParams({
+      searchParams,
+      paramName: "submitYear",
+      value,
+    });
     // console.log("query: ", query); // query:  ?submitYear=2023
 
     router.push(pathname + queryString);
