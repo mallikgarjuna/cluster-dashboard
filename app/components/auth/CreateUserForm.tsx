@@ -103,11 +103,15 @@ const CreateUserForm = () => {
   return (
     <form
       action={handleAction}
-      className="grid grid-cols-2 gap-3 place-self-stretch rounded-md border p-2"
+      className="auth-panel form-grid max-w-3xl"
     >
-      <h2 className="col-span-2 flex justify-center text-lg font-bold">
-        Create a new user - by Admin
-      </h2>
+      <div className="col-span-full space-y-2 text-center">
+        <h1 className="auth-heading">Create a new user</h1>
+        <p className="auth-subtle-copy">
+          Set up a user account, assign a role, and associate the correct
+          department.
+        </p>
+      </div>
 
       <FieldWrapper
         label="First Name"
@@ -251,8 +255,8 @@ const CreateUserForm = () => {
         control={control}
         name="accepted"
         render={({ field }) => (
-          <div className="col-span-2 space-y-2">
-            <label className="flex items-start gap-2 text-sm">
+          <div className="col-span-full space-y-2">
+            <label className="flex items-start gap-3 text-sm leading-6 text-zinc-600">
               <Checkbox
                 checked={field.value}
                 onCheckedChange={(checked) => field.onChange(Boolean(checked))}
@@ -267,12 +271,14 @@ const CreateUserForm = () => {
         )}
       />
 
-      <div className="col-span-2 flex flex-col items-center justify-center gap-2">
+      <div className="col-span-full flex flex-col items-center justify-center gap-2 pt-2">
         <Button type="submit" disabled={isSubmitting} className="w-48">
           {isSubmitting ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
           {isSubmitting ? "Creating User..." : "Create User"}
         </Button>
-        <em>Note: An activation email will be sent to the Web Admin</em>
+        <em className="text-sm text-zinc-500">
+          An activation email will be sent to the Web Admin.
+        </em>
       </div>
     </form>
   );

@@ -47,9 +47,14 @@ const LoginForm = ({ callbackUrl: _callbackUrl }: Props) => {
   return (
     <form
       action={handleAction}
-      className="flex min-w-96 flex-col items-center justify-center gap-2 rounded-md border p-2"
+      className="auth-panel flex w-full flex-col gap-5"
     >
-      <div className="text-2xl font-bold">Log in Form</div>
+      <div className="space-y-2 text-center">
+        <div className="auth-heading">Log in</div>
+        <p className="auth-subtle-copy">
+          Access the cluster workspace with your institutional credentials.
+        </p>
+      </div>
 
       <div className="w-full">
         <Label className="mb-2 block">Email</Label>
@@ -79,7 +84,9 @@ const LoginForm = ({ callbackUrl: _callbackUrl }: Props) => {
         <FieldError className="mt-1" message={errors.password?.message} />
       </div>
 
-      <LogInFormButton />
+      <div className="flex justify-center pt-1">
+        <LogInFormButton />
+      </div>
     </form>
   );
 };

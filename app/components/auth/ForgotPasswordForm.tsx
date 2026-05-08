@@ -47,7 +47,7 @@ export default function ForgotPasswordForm() {
   };
 
   return (
-    <form action={handleAction} className="flex flex-col gap-2 place-self-stretch">
+    <form action={handleAction} className="flex flex-col gap-5">
       <div>
         <Label className="mb-2 block">Email</Label>
         <div className="relative">
@@ -63,7 +63,7 @@ export default function ForgotPasswordForm() {
         </div>
         <FieldError className="mt-1" message={errors.email?.message} />
       </div>
-      <Button type="submit" disabled={isSubmitting}>
+      <Button type="submit" disabled={isSubmitting} className="self-start">
         {isSubmitting ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
         {isSubmitting ? "Sending..." : "Send me a reset link"}
       </Button>

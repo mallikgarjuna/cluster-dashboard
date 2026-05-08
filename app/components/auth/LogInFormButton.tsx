@@ -12,7 +12,7 @@ export default function LogInFormButton() {
   const { pending: isSubmitting } = useFormStatus();
 
   return (
-    <Button type="submit" disabled={isSubmitting}>
+    <Button type="submit" disabled={isSubmitting} className="min-w-32">
       {isSubmitting && <Loader2 className="h-4 w-4 animate-spin" />}
       Log in
     </Button>

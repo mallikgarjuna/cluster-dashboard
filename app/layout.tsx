@@ -29,7 +29,7 @@ export default function RootLayout({
           <TanSackQueryClientProvider>
             <Theme>
               {/* <NavBar /> */}
-              <main className="mx-auto w-full max-w-[1400px]">
+              <main className="min-h-screen bg-white">
                 {/* <Container> */}
                 <Toaster
                   toastOptions={{

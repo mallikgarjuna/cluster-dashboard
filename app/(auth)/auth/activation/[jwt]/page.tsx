@@ -1,7 +1,5 @@
 import { activateUser } from "@/lib/actions/authActions";
-import axios from "axios";
 import Link from "next/link";
-import React from "react";
 
 interface Props {
   params: {
@@ -23,43 +21,50 @@ const ActivationPage = async ({ params }: Props) => {
   const result = await activateUser(params.jwt); //use server action instead of API
 
   return (
-    <div className="flex h-screen flex-col items-center justify-center">
-      <h1 className="text-2xl font-bold">ActivationPage</h1>
-      <p>Activation for {params.jwt}</p>
-      <p>{result}</p>
-      {result === "userNotExist" ? (
-        <p className="text-2xl text-red-500">The user does not exist.</p>
-      ) : result === "alreadyActivated" ? (
-        <>
-          <p className="text-2xl text-red-500">
-            The user is already activated.
-          </p>
-          <Link
-            href="/auth/login"
-            className="flex items-center gap-5 self-start rounded-lg bg-blue-500 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-blue-400 md:text-base"
-            prefetch={false}
-          >
-            <span>Log in</span>
-          </Link>
-        </>
-      ) : result === "success" ? (
-        <>
-          <p className="text-2xl text-green-500">
-            Success! The user is now activated.
-          </p>
-          <Link
-            href="/auth/login"
-            className="flex items-center gap-5 self-start rounded-lg bg-blue-500 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-blue-400 md:text-base"
-            prefetch={false}
-          >
-            <span>Log in</span>
-          </Link>
-        </>
-      ) : (
-        <p className="text-2xl text-yellow-500">
-          Oops! Something went wrong...
+    <div className="page-shell flex min-h-screen items-center justify-center py-16">
+      <div className="auth-panel flex max-w-xl flex-col items-center gap-4 text-center">
+        <p className="text-xs font-semibold uppercase tracking-[0.16em] text-zinc-500">
+          Account Activation
         </p>
-      )}
+        <h1 className="auth-heading">Activate your account</h1>
+        <p className="auth-subtle-copy">
+          We checked the activation link and processed the current account
+          state.
+        </p>
+        {result === "userNotExist" ? (
+          <p className="text-2xl text-red-500">The user does not exist.</p>
+        ) : result === "alreadyActivated" ? (
+          <>
+            <p className="text-2xl text-red-500">
+              The user is already activated.
+            </p>
+            <Link
+              href="/auth/login"
+              className="inline-flex items-center gap-4 rounded-lg bg-blue-500 px-6 py-3 text-sm font-medium text-white shadow-sm transition-colors duration-200 hover:bg-blue-400 md:text-base"
+              prefetch={false}
+            >
+              <span>Log in</span>
+            </Link>
+          </>
+        ) : result === "success" ? (
+          <>
+            <p className="text-2xl text-green-500">
+              Success! The user is now activated.
+            </p>
+            <Link
+              href="/auth/login"
+              className="inline-flex items-center gap-4 rounded-lg bg-blue-500 px-6 py-3 text-sm font-medium text-white shadow-sm transition-colors duration-200 hover:bg-blue-400 md:text-base"
+              prefetch={false}
+            >
+              <span>Log in</span>
+            </Link>
+          </>
+        ) : (
+          <p className="text-2xl text-yellow-500">
+            Oops! Something went wrong...
+          </p>
+        )}
+      </div>
     </div>
   );
 };

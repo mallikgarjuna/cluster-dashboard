@@ -9,7 +9,7 @@ const ResetPasswordPage = ({ params }: Props) => {
   const payload = verifyJwt(params.jwt);
   if (!payload || !params.jwt)
     return (
-      <div className="flex h-screen items-center justify-center text-2xl text-red-500">
+      <div className="auth-panel text-center text-xl font-semibold text-red-500">
         The URL is not valid.
       </div>
     );

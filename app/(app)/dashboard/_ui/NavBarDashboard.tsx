@@ -6,8 +6,8 @@ import { usePathname } from "next/navigation";
 
 const NavBarDashboard = () => {
   return (
-    <nav className="mb-5 border-b px-5 py-3">
-      <Container>
+    <nav className="mb-8 border-b border-zinc-200/90 bg-white">
+      <Container className="px-6 py-4 md:px-8">
         <Flex justify="between">
           <Flex gap="3" align="center">
             <NavLinks />
@@ -32,13 +32,13 @@ const NavLinks = () => {
   ];
 
   return (
-    <ul className="flex space-x-6">
+    <ul className="flex flex-wrap items-center gap-x-5 gap-y-3">
       {links.map((link) => (
         <li key={link.href}>
           <Link
             className={classnames({
               "nav-link": true,
-              "!text-blue-900": link.href === currentPath,
+              "nav-link-active": link.href === currentPath,
             })}
             href={link.href}
           >
