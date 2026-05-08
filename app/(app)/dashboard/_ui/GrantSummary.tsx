@@ -81,7 +81,7 @@ const GrantSummary = ({
   return (
     <Card className="p-4">
       <CardHeader className="pb-2">
-        <p className="text-sm font-medium uppercase tracking-[0.14em] text-zinc-500">
+        <p className="text-sm font-medium uppercase tracking-[0.14em] text-[var(--color-primary)]">
           Overview
         </p>
       </CardHeader>
@@ -90,16 +90,16 @@ const GrantSummary = ({
           <Card
             key={container.label}
             className={classNames({
-              "my-1 min-w-[180px] flex-1 border-zinc-200/80 bg-zinc-50 shadow-none transition-colors duration-200": true,
-              "hover:bg-zinc-100": container.isClickable,
+              "my-1 min-w-[180px] flex-1 border-[#E8E8EC] bg-[var(--color-surface-muted)] shadow-none transition-all duration-200": true,
+              "hover:-translate-y-px hover:bg-white hover:shadow-[0_8px_30px_rgba(0,0,0,0.08)]": container.isClickable,
             })}
           >
             <CardHeader className="space-y-2 pb-2">
               <Link
                 className={classNames({
-                  "text-xs font-semibold uppercase tracking-[0.12em] text-zinc-500": true,
+                  "text-xs font-semibold uppercase tracking-[0.12em] text-[var(--color-text-muted)]": true,
                   "pointer-events-none": !container.isClickable,
-                  "hover:text-zinc-950": container.isClickable,
+                  "hover:text-[var(--color-primary)]": container.isClickable,
                 })}
                 href={{
                   pathname: "/dashboard/grants/list",
@@ -113,7 +113,10 @@ const GrantSummary = ({
               </Link>
             </CardHeader>
             <CardContent className="pt-0">
-              <Text size="5" className="font-bold tracking-[-0.03em] text-zinc-950">
+              <Text
+                size="5"
+                className="font-display font-bold tracking-[-0.04em] text-[var(--color-text-primary)]"
+              >
                 {container.value}
               </Text>
             </CardContent>

@@ -50,15 +50,11 @@ const PIFundersTable = () => {
     fetchData();
   }, [queryString]);
 
-  const BorderedCell = (props: any) => (
-    <Table.Cell {...props} style={{ borderBottom: "1px solid #e5e5e5" }} />
-  );
-
   const BorderedRow = (props: any) => (
     <Table.Row
       {...props}
-      style={{ borderBottom: "1px solid #e5e5e5" }}
-      className="transition-colors hover:bg-gray-200"
+      style={{ borderBottom: "1px solid #E8E8EC" }}
+      className="transition-colors duration-200 hover:bg-[var(--color-surface-muted)]"
     />
   );
 
@@ -68,8 +64,13 @@ const PIFundersTable = () => {
     const query = params.size ? "?" + params.toString() : "";
     return (
       <div className="flex gap-2">
-        <Link href={`/dashboard/grants/list${query}`}>{fAgency.name}</Link>
-        <p>({fAgency.grants.length})</p>
+        <Link
+          href={`/dashboard/grants/list${query}`}
+          className="font-medium text-[var(--color-text-primary)] transition-colors duration-200 hover:text-[var(--color-primary)]"
+        >
+          {fAgency.name}
+        </Link>
+        <p className="text-[var(--color-text-muted)]">({fAgency.grants.length})</p>
       </div>
     );
   };
@@ -81,8 +82,13 @@ const PIFundersTable = () => {
     const query = params.size ? "?" + params.toString() : "";
     return (
       <div className="flex gap-2">
-        <Link href={`/dashboard/grants/list${query}`}>{fP.name}</Link>
-        <p>({fP.grants.length})</p>
+        <Link
+          href={`/dashboard/grants/list${query}`}
+          className="font-medium text-[var(--color-text-primary)] transition-colors duration-200 hover:text-[var(--color-primary)]"
+        >
+          {fP.name}
+        </Link>
+        <p className="text-[var(--color-text-muted)]">({fP.grants.length})</p>
       </div>
     );
   };
@@ -95,8 +101,13 @@ const PIFundersTable = () => {
     const query = params.size ? "?" + params.toString() : "";
     return (
       <div className="flex gap-2">
-        <Link href={`/dashboard/grants/list${query}`}>{fA.name}</Link>
-        <p>({fA.grants.length})</p>
+        <Link
+          href={`/dashboard/grants/list${query}`}
+          className="font-medium text-[var(--color-text-primary)] transition-colors duration-200 hover:text-[var(--color-primary)]"
+        >
+          {fA.name}
+        </Link>
+        <p className="text-[var(--color-text-muted)]">({fA.grants.length})</p>
       </div>
     );
   };
@@ -109,8 +120,13 @@ const PIFundersTable = () => {
     const query = params.size ? "?" + params.toString() : "";
     return (
       <div className="flex gap-2">
-        <Link href={`/dashboard/grants/list${query}`}>{fC.name}</Link>
-        <p>({fC.grants.length})</p>
+        <Link
+          href={`/dashboard/grants/list${query}`}
+          className="font-medium text-[var(--color-text-primary)] transition-colors duration-200 hover:text-[var(--color-primary)]"
+        >
+          {fC.name}
+        </Link>
+        <p className="text-[var(--color-text-muted)]">({fC.grants.length})</p>
       </div>
     );
   };
@@ -119,21 +135,21 @@ const PIFundersTable = () => {
   return (
     <Card>
         <CardHeader className="space-y-2 pb-2">
-          <p className="text-sm font-medium uppercase tracking-[0.14em] text-zinc-500">
+          <p className="text-sm font-medium uppercase tracking-[0.14em] text-[var(--color-secondary)]">
             Funding Relationships
           </p>
-          <h2 className="text-3xl font-semibold tracking-[-0.03em] text-zinc-950">
+          <h2 className="font-display text-3xl font-bold tracking-[-0.04em] text-[var(--color-text-primary)]">
             Funders Table
           </h2>
         </CardHeader>
         <CardContent>
-          <Table.Root variant="surface" size={"1"} className="rounded-xl border border-zinc-200/90 bg-white">
+          <Table.Root variant="surface" size={"1"} className="rounded-xl border border-[var(--color-border)] bg-white">
             <Table.Header>
-              <Table.Row className="bg-zinc-50/80">
+              <Table.Row className="bg-[var(--color-surface-muted)]">
                 {columnsFundersTable.map((column) => (
                   <Table.ColumnHeaderCell
                     key={column.key}
-                    className="text-xs font-semibold uppercase tracking-[0.12em] text-zinc-500"
+                    className="text-xs font-semibold uppercase tracking-[0.12em] text-[var(--color-text-muted)]"
                   >
                     {column.value}
                   </Table.ColumnHeaderCell>

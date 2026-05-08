@@ -21,31 +21,31 @@ const FundersLinks = () => {
     <div>
       <article className="section-panel flex flex-col gap-4 p-8">
         <div className="space-y-2">
-          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-zinc-500">
+          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[var(--color-secondary)]">
             Funding Records
           </p>
-          <h2 className="text-3xl font-semibold tracking-[-0.03em] text-zinc-950">
+          <h2 className="font-display text-3xl font-bold tracking-[-0.04em] text-[var(--color-text-primary)]">
             Funders
           </h2>
         </div>
-        <ol className="flex flex-col gap-3 text-sm text-zinc-600">
+        <ol className="flex flex-col gap-3 text-sm text-[var(--color-text-secondary)]">
           <li>
-            <Link href="/dashboard/funders/agency/new" className="transition-colors duration-200 hover:text-zinc-950">
+            <Link href="/dashboard/funders/agency/new" className="indigo-link">
               Create a new funding agency
             </Link>
           </li>
           <li>
-            <Link href="/dashboard/funders/programme/new" className="transition-colors duration-200 hover:text-zinc-950">
+            <Link href="/dashboard/funders/programme/new" className="indigo-link">
               Create a new funding programme
             </Link>
           </li>
           <li>
-            <Link href="/dashboard/funders/action/new" className="transition-colors duration-200 hover:text-zinc-950">
+            <Link href="/dashboard/funders/action/new" className="indigo-link">
               Create a new funding action
             </Link>
           </li>
           <li>
-            <Link href="/dashboard/funders/call/new" className="transition-colors duration-200 hover:text-zinc-950">
+            <Link href="/dashboard/funders/call/new" className="indigo-link">
               Create a new funding call
             </Link>
           </li>

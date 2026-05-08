@@ -17,34 +17,41 @@ const LatestGrants = ({ latestGrants }: Props) => {
   return (
     <Card>
       <CardHeader className="space-y-2 pb-2">
-        <p className="text-sm font-medium uppercase tracking-[0.14em] text-zinc-500">
+        <p className="text-sm font-medium uppercase tracking-[0.14em] text-[var(--color-primary)]">
           Recent Activity
         </p>
-        <h1 className="text-3xl font-semibold tracking-[-0.03em] text-zinc-950">
+        <h1 className="font-display text-3xl font-bold tracking-[-0.04em] text-[var(--color-text-primary)]">
           Latest Grants
         </h1>
       </CardHeader>
       <CardContent>
-        <Table.Root variant="surface" size="1">
+        <Table.Root
+          variant="surface"
+          size="1"
+          className="rounded-xl border border-[var(--color-border)] bg-white"
+        >
           <Table.Body>
             {latestGrants.map((grant) => (
               <Table.Row
                 key={grant.id}
-                className="transition-colors duration-200 hover:bg-zinc-100"
+                className="transition-colors duration-200 hover:bg-[var(--color-surface-muted)]"
               >
                 <Table.Cell>
                   <Flex justify="between">
                     <Flex direction="column" gap="2" align="start">
                       <Link
                         href={`/dashboard/grants/${grant.id}`}
-                        className="font-medium text-zinc-950 transition-colors duration-200 hover:text-zinc-600"
+                        className="font-medium text-[var(--color-text-primary)] transition-colors duration-200 hover:text-[var(--color-primary)]"
                       >
                         {grant.title}
                       </Link>
                       <GrantStatusBadge status={grant.status} />
                     </Flex>
                     {grant.assignedToUser && (
-                      <Button variant="outline" className="min-w-40 justify-center">
+                      <Button
+                        variant="outline"
+                        className="min-w-40 justify-center border-[var(--color-border)] text-[var(--color-text-secondary)]"
+                      >
                         {grant.assignedToUser?.email}
                       </Button>
                     )}

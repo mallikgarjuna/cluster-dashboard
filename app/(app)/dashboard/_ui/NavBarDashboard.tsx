@@ -6,8 +6,8 @@ import { usePathname } from "next/navigation";
 
 const NavBarDashboard = () => {
   return (
-    <nav className="mb-8 border-b border-zinc-200/90 bg-white">
-      <Container className="px-6 py-4 md:px-8">
+    <nav className="sticky top-[57px] z-30 mb-8 border-b border-[var(--color-border)] bg-white/78 backdrop-blur-xl">
+      <Container className="px-6 py-3 md:px-8">
         <Flex justify="between">
           <Flex gap="3" align="center">
             <NavLinks />

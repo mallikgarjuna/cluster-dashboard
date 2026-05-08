@@ -6,18 +6,18 @@ const AdminPage = () => {
     <div className="space-y-8">
       <article className="section-panel flex flex-col gap-4 p-8">
         <div className="space-y-2">
-          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-zinc-500">
+          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[var(--color-primary)]">
             Administration
           </p>
-          <h2 className="text-3xl font-semibold tracking-[-0.03em] text-zinc-950">
+          <h2 className="font-display text-3xl font-bold tracking-[-0.04em] text-[var(--color-text-primary)]">
             Admin Tasks
           </h2>
         </div>
-        <ol className="flex flex-col gap-3 text-sm text-zinc-600">
+        <ol className="flex flex-col gap-3 text-sm text-[var(--color-text-secondary)]">
           <li>
             <Link
               href="/auth/createUser"
-              className="transition-colors duration-200 hover:text-zinc-950"
+              className="indigo-link"
             >
               Create new user by Web-Admin
             </Link>
@@ -25,7 +25,7 @@ const AdminPage = () => {
           <li>
             <Link
               href="/dashboard"
-              className="transition-colors duration-200 hover:text-zinc-950"
+              className="indigo-link"
             >
               Dashboard
             </Link>
@@ -34,18 +34,18 @@ const AdminPage = () => {
       </article>
       <article className="section-panel flex flex-col gap-4 p-8">
         <div className="space-y-2">
-          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-zinc-500">
+          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[var(--color-secondary)]">
             Funding Data
           </p>
-          <h2 className="text-3xl font-semibold tracking-[-0.03em] text-zinc-950">
+          <h2 className="font-display text-3xl font-bold tracking-[-0.04em] text-[var(--color-text-primary)]">
             Funders
           </h2>
         </div>
-        <ol className="flex flex-col gap-3 text-sm text-zinc-600">
+        <ol className="flex flex-col gap-3 text-sm text-[var(--color-text-secondary)]">
           <li>
             <Link
               href="/dashboard/funders/agency/new"
-              className="transition-colors duration-200 hover:text-zinc-950"
+              className="indigo-link"
             >
               Create a new funding agency
             </Link>
@@ -53,7 +53,7 @@ const AdminPage = () => {
           <li>
             <Link
               href="/dashboard/funders/programme/new"
-              className="transition-colors duration-200 hover:text-zinc-950"
+              className="indigo-link"
             >
               Create a new funding programme
             </Link>
@@ -61,7 +61,7 @@ const AdminPage = () => {
           <li>
             <Link
               href="/dashboard/funders/action/new"
-              className="transition-colors duration-200 hover:text-zinc-950"
+              className="indigo-link"
             >
               Create a new funding action
             </Link>
@@ -69,7 +69,7 @@ const AdminPage = () => {
           <li>
             <Link
               href="/dashboard/funders/call/new"
-              className="transition-colors duration-200 hover:text-zinc-950"
+              className="indigo-link"
             >
               Create a new funding call
             </Link>
