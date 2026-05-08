@@ -1,5 +1,17 @@
-"use server";
+// "use server";
+import "server-only";
+// Server-utils (queries) for Grants
+
 import prisma from "@/prisma/client";
+import { Grant, StatusGrant } from "@prisma/client";
+
+async function getGrantByGrantId(grantId: Grant["id"]) {
+  const grant = await prisma.grant.findUnique({
+    where: { id: grantId },
+  });
+
+  return grant;
+}
 
 async function fetchUniqueGrantYearsSA() {
   //   get all unique submission dates (not years, yet) - gives us an array of objects
@@ -61,5 +73,50 @@ async function fetchUniqueGrantYearsSA() {
   return uniqueYears;
 }
 
+// For PostgreSQL: use a more efficient raw query
+// This approach is more efficient for large datasets as it performs the year extraction at the database level.
+async function getUniqueGrantStartYears() {
+  const uniqueStartYears = await prisma.$queryRaw<{ year: number }[]>`
+    SELECT DISTINCT EXTRACT(YEAR FROM "projectStartDate") as year 
+    FROM "Grant" 
+    WHERE "projectStartDate" IS NOT NULL 
+    ORDER BY year ASC`;
+
+  return uniqueStartYears.map((entry) => Number(entry.year));
+  // explicitly convert the years to numbers, although it may not be necessary if they are already being returned as numbers.
+
+  // ***** don't use the prisma query - it's slow for large dbs ***
+  // Get unique years using Prisma's date functions
+  // const uniqueYears = await prisma.grant
+  //   .findMany({
+  //     select: {
+  //       projectStartDate: true,
+  //     },
+  //     distinct: ["projectStartDate"],
+  //     orderBy: {
+  //       projectStartDate: "desc",
+  //     },
+  //   })
+  //   .then((dates) =>
+  //     // Filter out null dates and extract unique years
+  //     dates
+  //       .map((d) => d.projectStartDate)
+  //       .filter((date): date is Date => date !== null)
+  //       .map((date) => date.getFullYear())
+  //       .sort((a, b) => a - b),
+  //   );
+  // return uniqueYears;
+}
+
+const getGrantStatuses = async () => {
+  const grantStatuses = Object.values(StatusGrant);
+  return grantStatuses;
+};
+
 // Export functions for use in other files
-export { fetchUniqueGrantYearsSA };
+export {
+  getGrantByGrantId,
+  fetchUniqueGrantYearsSA,
+  getUniqueGrantStartYears,
+  getGrantStatuses,
+};

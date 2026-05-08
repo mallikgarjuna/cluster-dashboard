@@ -1,9 +1,10 @@
 "use client";
 
-import { Select, SelectItem } from "@nextui-org/react";
+import { updateFilterQueryParams } from "@/lib/utils";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import Skeleton from "react-loading-skeleton";
-import { useFundingAgencies } from "../../funders/_components/FundingProgrammeForm";
+import FilterSelectField from "./FilterSelectField";
+import { useFundingFilterAgencies } from "./fundingFilterQueries";
 
 const FundingAgencyFilter = () => {
   const searchParams = useSearchParams();
@@ -14,47 +15,35 @@ const FundingAgencyFilter = () => {
     data: fetchedFundingAgencies,
     isLoading,
     error,
-  } = useFundingAgencies();
+  } = useFundingFilterAgencies();
 
   if (isLoading) return <Skeleton />;
   if (error) return null;
-
-  // Fallback to null if undefined, to prevent type error below
   if (!fetchedFundingAgencies) return null;
 
-  const handleSelectionChange = (
-    event: React.ChangeEvent<HTMLSelectElement>,
-  ) => {
-    const fAgencyId = event.target.value;
-    // console.log("fAgencyId: ", fAgencyId);
+  const handleValueChange = (value: string) => {
+    const queryString = updateFilterQueryParams({
+      searchParams,
+      paramName: "fAgencyId",
+      value,
+      resetParams: ["fProgId", "fActionId", "fCallId"],
+    });
 
-    const params = new URLSearchParams(searchParams);
-
-    if (fAgencyId) params.set("fAgencyId", fAgencyId);
-    else params.delete("fAgencyId");
-
-    // On fAgencyId change, reset the child filters of fAgency
-    params.delete("fProgId");
-    params.delete("fActionId");
-    params.delete("fCallId");
-
-    const query = params.size ? "?" + params.toString() : "";
-
-    router.push(pathname + query);
+    router.push(pathname + queryString);
   };
 
   return (
-    <Select
-      label="Filter by funding agency..."
-      onChange={handleSelectionChange}
-      defaultSelectedKeys={[searchParams.get("fAgencyId") || ""]} // Ensure no null value
-    >
-      {fetchedFundingAgencies?.map((fAgency) => (
-        <SelectItem key={fAgency.id || "All"} value={fAgency.name || "All"}>
-          {fAgency.name}
-        </SelectItem>
-      ))}
-    </Select>
+    <FilterSelectField
+      label="Filter by funding agency"
+      placeholder="Select funding agency"
+      onValueChange={handleValueChange}
+      defaultValue={searchParams.get("fAgencyId") || ""}
+      options={fetchedFundingAgencies.map((fAgency) => ({
+        label: fAgency.name,
+        value: fAgency.id,
+      }))}
+      allLabel="All"
+    />
   );
 };
 

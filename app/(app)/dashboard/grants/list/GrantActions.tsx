@@ -1,15 +1,10 @@
-import { GrantStatusBadge } from "@/app/components";
-import { Button, Flex } from "@radix-ui/themes";
-import Link from "next/link";
-import React from "react";
-import GrantStatusFilter from "./GrantStatusFilter";
-import DepartmentFilter from "./DepartmentFilter";
-import GroupLeaderFilter from "./GroupLeaderFilter";
-import GrantStartYearFilter from "./GrantStartYearFilter";
-import prisma from "@/prisma/client";
+import { StatusGrant } from "@prisma/client";
+import { Flex } from "@radix-ui/themes";
 import ButtonWithSpinner from "./ButtonWithSpinner";
-import GrantSubmissionYearFilter from "./GrantSubmissionYearFilter";
 import dynamic from "next/dynamic";
+import { getDepartmentShortNames } from "@/lib/actions/department/deptQueries";
+import { getUniqueGrantStartYears } from "@/lib/actions/grant/grantQueries";
+import { getGroupLeadersWithDepartment } from "@/lib/actions/user/userQueries";
 
 const DynamicGrantStatusFilter = dynamic(
   () => import("@/app/(app)/dashboard/grants/list/GrantStatusFilter"),
@@ -53,23 +48,19 @@ const DynamicFundingCallFilter = dynamic(
 );
 
 const GrantActions = async () => {
-  const usersWithDepartment = await prisma.user.findMany({
-    where: { role: "GROUPLEADER" },
-    orderBy: { lastName: "asc" },
-    include: { relatedDepartment: true },
-  });
+  const groupLeaders = await getGroupLeadersWithDepartment();
+  const departments = await getDepartmentShortNames();
+  const grantStartYears = await getUniqueGrantStartYears();
+  const grantStatuses = Object.values(StatusGrant);
 
   return (
     <Flex direction="column" gap="3">
       <Flex justify="between" gap="3" align="center">
-        <DynamicGrantStatusFilter />
-        <DynamicDepartmentFilter />
-        <DynamicGroupLeaderFilter users={usersWithDepartment} />
-        <DynamicGrantStartYearFilter />
-        <DynamicGrantSubmissionYearFilter />
-        {/* <Button>
-        <Link href="/dashboard/grants/new">New Grant</Link>
-      </Button> */}
+        <DynamicGrantStatusFilter grantStatuses={grantStatuses} />
+        <DynamicDepartmentFilter departments={departments} />
+        <DynamicGroupLeaderFilter groupLeaders={groupLeaders} />
+        <DynamicGrantStartYearFilter startYears={grantStartYears} />
+        <DynamicGrantSubmissionYearFilter submitYears={grantStartYears} />
         <ButtonWithSpinner hrefProp="/dashboard/grants/new" name="New Grant" />
       </Flex>
       <Flex justify="between" gap="3" align="center">

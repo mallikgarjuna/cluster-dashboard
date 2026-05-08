@@ -1,23 +1,27 @@
-import React from "react";
+import { getDepartmentShortNames } from "@/lib/actions/department/deptQueries";
+import { getUniqueGrantStartYears } from "@/lib/actions/grant/grantQueries";
+import { getGroupLeadersWithDepartment } from "@/lib/actions/user/userQueries";
 import DepartmentFilter from "../grants/list/DepartmentFilter";
-import GroupLeaderFilter from "../grants/list/GroupLeaderFilter";
 import GrantStartYearFilter from "../grants/list/GrantStartYearFilter";
-import prisma from "@/prisma/client";
 import GrantSubmissionYearFilter from "../grants/list/GrantSubmissionYearFilter";
+import GroupLeaderFilter from "../grants/list/GroupLeaderFilter";
 
 const DashboardActions = async () => {
-  const usersWithDepartment = await prisma.user.findMany({
-    where: { role: "GROUPLEADER" },
-    orderBy: { lastName: "asc" },
-    include: { relatedDepartment: true },
-  });
+  const groupLeaders = await getGroupLeadersWithDepartment();
+
+  const departmentShortNames = await getDepartmentShortNames();
+  // console.log("Department short names: ", departmentShortNames);
+
+  const grantStartYears = await getUniqueGrantStartYears();
+  // console.log("Grant start years: ", grantStartYears);
 
   return (
-    <div className="flex gap-3">
-      <DepartmentFilter />
-      <GroupLeaderFilter users={usersWithDepartment} />
-      <GrantStartYearFilter />
-      <GrantSubmissionYearFilter />
+    <div className="flex justify-stretch gap-2">
+      <DepartmentFilter departments={departmentShortNames} />
+      <GroupLeaderFilter groupLeaders={groupLeaders} />
+      <GrantStartYearFilter startYears={grantStartYears} />
+      <GrantSubmissionYearFilter submitYears={grantStartYears} />
+      {/* to avoid another db fetching operation, use startYears for submitYears */}
     </div>
   );
 };

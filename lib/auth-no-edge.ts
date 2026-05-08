@@ -23,6 +23,7 @@ const config = {
 
         const user = await prisma.user.findUnique({
           where: { email },
+          include: { relatedDepartment: true }, // to access it from session() callback;
         });
         if (!user) {
           console.log("No user found");

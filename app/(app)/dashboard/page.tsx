@@ -1,4 +1,4 @@
-import { fetchUniqueGrantYearsSA } from "@/lib/actions/grant/queries";
+import { fetchUniqueGrantYearsSA } from "@/lib/actions/grant/grantQueries";
 import { checkAuth } from "@/lib/server-utils";
 import prisma from "@/prisma/client";
 import { OSDepartmentShortName } from "@prisma/client";

@@ -1,5 +1,6 @@
 "use client";
 import { Spinner } from "@/app/components";
+import { deleteGrant } from "@/lib/actions/grant/grantActions";
 import { AlertDialog, Button, Flex } from "@radix-ui/themes";
 import axios from "axios";
 import { useRouter } from "next/navigation";
@@ -14,12 +15,13 @@ const DeleteGrantButton = ({ grantId }: Props) => {
   const [error, setError] = useState(false);
   const [isDeleting, setDeleting] = useState(false);
 
-  const deleteGrant = async () => {
+  const handleDeleteGrant = async () => {
     try {
       // to simuate error
       // throw new Error();
       setDeleting(true);
-      await axios.delete(`/api/grants/${grantId}`);
+      // await axios.delete(`/api/grants/${grantId}`);
+      await deleteGrant(grantId); // Use SA instead of RH-API;
       router.push("/dashboard/grants/list");
       router.refresh();
     } catch (error) {
@@ -50,7 +52,7 @@ const DeleteGrantButton = ({ grantId }: Props) => {
               </Button>
             </AlertDialog.Cancel>
             <AlertDialog.Action>
-              <Button color="red" onClick={deleteGrant}>
+              <Button color="red" onClick={handleDeleteGrant}>
                 Delete Grant
               </Button>
             </AlertDialog.Action>

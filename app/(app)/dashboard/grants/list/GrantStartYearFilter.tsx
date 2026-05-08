@@ -1,46 +1,43 @@
 "use client";
-import { Select, SelectItem, SelectSection } from "@nextui-org/react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import React from "react";
 
-const startYears = ["AllStarted", "2023", "2024"];
-const GrantStartYearFilter = () => {
+import { updateFilterQueryParams } from "@/lib/utils";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import FilterSelectField from "./FilterSelectField";
+
+type GrantStartYearFilterProps = {
+  startYears: number[];
+};
+
+const GrantStartYearFilter = ({ startYears }: GrantStartYearFilterProps) => {
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
 
+  const startYearOptions = startYears.map((year) => ({
+    label: year.toString(),
+    value: year.toString(),
+  }));
+
+  const handleValueChange = (value: string) => {
+    const queryString = updateFilterQueryParams({
+      searchParams,
+      paramName: "year",
+      value,
+    });
+
+    router.push(`${pathname}${queryString}`);
+  };
+
+  const defaultValueSelect = searchParams.get("year") || "All";
+
   return (
-    <Select
-      label="Filter by start year..."
-      className="max-w-xs"
-      defaultSelectedKeys={[searchParams.get("year") || "All"]}
-      onChange={(event) => {
-        const year = event.target.value;
-        // console.log("year: ", year);
-        const params = new URLSearchParams(searchParams);
-
-        if (year) params.set("year", year);
-        else params.delete("year");
-        // console.log("params: ", params.toString());
-
-        const query = params.size ? "?" + params.toString() : "";
-        router.push(pathname + query);
-      }}
-    >
-      <SelectSection title={"All"} showDivider>
-        <SelectItem key={"All"} value={"All"} textValue={"All"}>
-          All
-        </SelectItem>
-      </SelectSection>
-
-      <SelectSection title={"Years"} showDivider>
-        {startYears.map((year) => (
-          <SelectItem key={year} value={year} textValue={year.toString() ?? ""}>
-            {year}
-          </SelectItem>
-        ))}
-      </SelectSection>
-    </Select>
+    <FilterSelectField
+      label="Filter by start year"
+      placeholder="Select start year"
+      onValueChange={handleValueChange}
+      defaultValue={defaultValueSelect}
+      options={startYearOptions}
+    />
   );
 };
 

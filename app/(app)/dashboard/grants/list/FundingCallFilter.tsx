@@ -1,31 +1,35 @@
 "use client";
 
-import { Select, SelectItem } from "@nextui-org/react";
+import { updateFilterQueryParams } from "@/lib/utils";
 import { FundingCall } from "@prisma/client";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import Skeleton from "react-loading-skeleton";
+import FilterSelectField from "./FilterSelectField";
 import {
-  useFundingActions,
-  useFundingCalls,
-} from "../../funders/_components/FundingCallForm";
+  useFundingFilterActions,
+  useFundingFilterCalls,
+} from "./fundingFilterQueries";
 
 const FundingCallFilter = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
 
-  const { data: fetchedFundingActions } = useFundingActions();
-  const { data: fetchedFundingCalls, isLoading, error } = useFundingCalls();
+  const { data: fetchedFundingActions } = useFundingFilterActions();
+  const {
+    data: fetchedFundingCalls,
+    isLoading,
+    error,
+  } = useFundingFilterCalls();
 
   const [fundingCalls, setFundingCalls] = useState<FundingCall[]>([]);
 
-  // useEffect to update fundingCalls when a fActionId is selected
   useEffect(() => {
     const fetchData = () => {
       const params = new URLSearchParams(searchParams);
       const fActionId = params.get("fActionId");
-      if (fActionId) {
+      if (fActionId && fActionId !== "All") {
         const selectedFAction = fetchedFundingActions?.find(
           (fAction) => fAction.id === fActionId,
         );
@@ -41,33 +45,28 @@ const FundingCallFilter = () => {
   if (error) return null;
   if (!fetchedFundingCalls) return null;
 
-  const handleSelectionOnChange = (
-    event: React.ChangeEvent<HTMLSelectElement>,
-  ) => {
-    const selectedFCallId = event.target.value;
+  const handleValueChange = (value: string) => {
+    const queryString = updateFilterQueryParams({
+      searchParams,
+      paramName: "fCallId",
+      value,
+    });
 
-    const params = new URLSearchParams(searchParams);
-
-    if (selectedFCallId) params.set("fCallId", selectedFCallId);
-    else params.delete("fCallId");
-
-    const query = params.size ? "?" + params.toString() : "";
-
-    router.push(pathname + query);
+    router.push(pathname + queryString);
   };
 
   return (
-    <Select
-      label="Filter by Funcing Call..."
-      onChange={handleSelectionOnChange}
-      defaultSelectedKeys={[searchParams.get("fCallId") || ""]}
-    >
-      {fundingCalls.map((fCall) => (
-        <SelectItem key={fCall.id || "All"} value={fCall.name || "All"}>
-          {fCall.name}
-        </SelectItem>
-      ))}
-    </Select>
+    <FilterSelectField
+      label="Filter by funding call"
+      placeholder="Select funding call"
+      onValueChange={handleValueChange}
+      defaultValue={searchParams.get("fCallId") || ""}
+      options={fundingCalls.map((fCall) => ({
+        label: fCall.name,
+        value: fCall.id,
+      }))}
+      allLabel="All"
+    />
   );
 };
 
