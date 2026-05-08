@@ -80,22 +80,27 @@ const GrantSummary = ({
 
   return (
     <Card className="p-4">
-      <Flex gap="4" justify="between">
+      <CardHeader className="pb-2">
+        <p className="text-sm font-medium uppercase tracking-[0.14em] text-zinc-500">
+          Overview
+        </p>
+      </CardHeader>
+      <Flex gap="4" justify="between" wrap="wrap">
         {containers.map((container) => (
           <Card
             key={container.label}
             className={classNames({
-              "my-1 flex-1 bg-zinc-50": true,
-              "hover:bg-zinc-400": container.isClickable,
+              "my-1 min-w-[180px] flex-1 border-zinc-200/80 bg-zinc-50 shadow-none transition-colors duration-200": true,
+              "hover:bg-zinc-100": container.isClickable,
             })}
           >
-            <CardHeader className="pb-2">
+            <CardHeader className="space-y-2 pb-2">
               <Link
                 className={classNames({
-                  "text-sm font-medium": true,
+                  "text-xs font-semibold uppercase tracking-[0.12em] text-zinc-500": true,
                   "pointer-events-none": !container.isClickable,
+                  "hover:text-zinc-950": container.isClickable,
                 })}
-                // href={`/dashboard/grants/list?status=${container.status}`} // TODO: add appropriate query params
                 href={{
                   pathname: "/dashboard/grants/list",
                   query: {
@@ -108,7 +113,7 @@ const GrantSummary = ({
               </Link>
             </CardHeader>
             <CardContent className="pt-0">
-              <Text size="5" className="font-bold">
+              <Text size="5" className="font-bold tracking-[-0.03em] text-zinc-950">
                 {container.value}
               </Text>
             </CardContent>

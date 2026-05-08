@@ -61,16 +61,23 @@ const FundersTable = () => {
   );
 
   const BorderedRow = (props: any) => (
-    <Table.Row {...props} style={{ borderBottom: "1px solid #e5e5e5" }} />
+    <Table.Row
+      {...props}
+      style={{ borderBottom: "1px solid #e5e5e5" }}
+      className="transition-colors duration-200 hover:bg-zinc-100"
+    />
   );
 
   const fAgencyCellContent = (fAgency: FundingAgencyWithAllRelatedTypes) => {
     return (
       <div className="flex gap-2">
-        <Link href={`/dashboard/funders/agency/edit/${fAgency.id}`}>
+        <Link
+          href={`/dashboard/funders/agency/edit/${fAgency.id}`}
+          className="font-medium text-zinc-950 transition-colors duration-200 hover:text-zinc-600"
+        >
           {fAgency.name}
         </Link>
-        <p>({fAgency.grants.length})</p>
+        <p className="text-zinc-500">({fAgency.grants.length})</p>
       </div>
     );
   };
@@ -78,10 +85,13 @@ const FundersTable = () => {
   const fProgrammeCellContent = (fP: FundingProgrammeWithAllRelatedTypes) => {
     return (
       <div className="flex gap-2">
-        <Link href={`/dashboard/funders/programme/edit/${fP.id}`}>
+        <Link
+          href={`/dashboard/funders/programme/edit/${fP.id}`}
+          className="font-medium text-zinc-950 transition-colors duration-200 hover:text-zinc-600"
+        >
           {fP.name}
         </Link>
-        <p>({fP.grants.length})</p>
+        <p className="text-zinc-500">({fP.grants.length})</p>
       </div>
     );
   };
@@ -89,8 +99,13 @@ const FundersTable = () => {
   const fActionCellContent = (fA: FundingActionWithAllRelatedTypes) => {
     return (
       <div className="flex gap-2">
-        <Link href={`/dashboard/funders/action/edit/${fA.id}`}>{fA.name}</Link>
-        <p>({fA.grants.length})</p>
+        <Link
+          href={`/dashboard/funders/action/edit/${fA.id}`}
+          className="font-medium text-zinc-950 transition-colors duration-200 hover:text-zinc-600"
+        >
+          {fA.name}
+        </Link>
+        <p className="text-zinc-500">({fA.grants.length})</p>
       </div>
     );
   };
@@ -98,25 +113,36 @@ const FundersTable = () => {
   const fCallCellContent = (fC: FundingCallWithAllRelatedTypes) => {
     return (
       <div className="flex gap-2">
-        <Link href={`/dashboard/funders/call/edit/${fC.id}`}>{fC.name}</Link>
-        <p>({fC.grants.length})</p>
+        <Link
+          href={`/dashboard/funders/call/edit/${fC.id}`}
+          className="font-medium text-zinc-950 transition-colors duration-200 hover:text-zinc-600"
+        >
+          {fC.name}
+        </Link>
+        <p className="text-zinc-500">({fC.grants.length})</p>
       </div>
     );
   };
 
   // Count the grants for each funding agency
-  const grantsCountOfFAgencies = (fAgency: FundingAgencyWithAllRelatedTypes) =>
-    fAgency.grants.length;
-
   return (
-    <>
-      <div className="mt-8 flex flex-col gap-2">
-        <h2 className="text-3xl font-bold">Funders Table</h2>
-        <Table.Root variant="surface" size={"1"}>
+      <div className="section-panel mt-2 flex flex-col gap-4 p-8">
+        <div className="space-y-2">
+          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-zinc-500">
+            Reference Table
+          </p>
+          <h2 className="text-3xl font-semibold tracking-[-0.03em] text-zinc-950">
+            Funders Table
+          </h2>
+        </div>
+        <Table.Root variant="surface" size={"1"} className="rounded-xl border border-zinc-200/90 bg-white">
           <Table.Header>
-            <Table.Row>
+            <Table.Row className="bg-zinc-50/80">
               {columnsFundersTable.map((column) => (
-                <Table.ColumnHeaderCell key={column.key}>
+                <Table.ColumnHeaderCell
+                  key={column.key}
+                  className="text-xs font-semibold uppercase tracking-[0.12em] text-zinc-500"
+                >
                   {column.value}
                 </Table.ColumnHeaderCell>
               ))}
@@ -161,44 +187,44 @@ const FundersTable = () => {
                                         )
                                         .map((fc, fcIndex) => (
                                           <BorderedRow key={fc.id}>
-                                            <Table.Cell>
-                                              {fcIndex === 0 &&
-                                              faIndex === 0 &&
-                                              fpIndex === 0
+                                              <Table.Cell className="text-zinc-700">
+                                                {fcIndex === 0 &&
+                                                faIndex === 0 &&
+                                                fpIndex === 0
                                                 ? fAgencyCellContent(fagency)
                                                 : null}
                                             </Table.Cell>
-                                            <Table.Cell>
-                                              {fcIndex === 0 && faIndex == 0
-                                                ? fProgrammeCellContent(fp)
-                                                : null}
-                                            </Table.Cell>
-                                            <Table.Cell>
-                                              {fcIndex === 0
-                                                ? fActionCellContent(fa)
-                                                : null}
-                                            </Table.Cell>
-                                            <Table.Cell>
-                                              {fCallCellContent(fc)}
-                                            </Table.Cell>
+                                              <Table.Cell className="text-zinc-700">
+                                                {fcIndex === 0 && faIndex == 0
+                                                  ? fProgrammeCellContent(fp)
+                                                  : null}
+                                              </Table.Cell>
+                                              <Table.Cell className="text-zinc-700">
+                                                {fcIndex === 0
+                                                  ? fActionCellContent(fa)
+                                                  : null}
+                                              </Table.Cell>
+                                              <Table.Cell className="text-zinc-700">
+                                                {fCallCellContent(fc)}
+                                              </Table.Cell>
                                           </BorderedRow>
                                         ))
                                     ) : (
                                       <BorderedRow key={fa.id}>
-                                        <Table.Cell>
+                                        <Table.Cell className="text-zinc-700">
                                           {faIndex === 0 && fpIndex === 0
                                             ? fAgencyCellContent(fagency)
                                             : null}
                                         </Table.Cell>
-                                        <Table.Cell>
+                                        <Table.Cell className="text-zinc-700">
                                           {faIndex == 0
                                             ? fProgrammeCellContent(fp)
                                             : null}
                                         </Table.Cell>
-                                        <Table.Cell>
+                                        <Table.Cell className="text-zinc-700">
                                           {fActionCellContent(fa)}
                                         </Table.Cell>
-                                        <Table.Cell>
+                                        <Table.Cell className="text-zinc-500">
                                           No Funding Calls
                                         </Table.Cell>
                                       </BorderedRow>
@@ -207,26 +233,26 @@ const FundersTable = () => {
                                 ))
                             ) : (
                               <BorderedRow key={fp.id}>
-                                <Table.Cell>
+                                <Table.Cell className="text-zinc-700">
                                   {fpIndex === 0
                                     ? fAgencyCellContent(fagency)
                                     : null}
                                 </Table.Cell>
-                                <Table.Cell>
+                                <Table.Cell className="text-zinc-700">
                                   {fProgrammeCellContent(fp)}
                                 </Table.Cell>
-                                <Table.Cell>No Funding Actions</Table.Cell>
-                                <Table.Cell>No Funding Calls</Table.Cell>
+                                <Table.Cell className="text-zinc-500">No Funding Actions</Table.Cell>
+                                <Table.Cell className="text-zinc-500">No Funding Calls</Table.Cell>
                               </BorderedRow>
                             )}
                           </React.Fragment>
                         ))
                     ) : (
                       <BorderedRow key={fagency.id}>
-                        <Table.Cell>{fAgencyCellContent(fagency)}</Table.Cell>
-                        <Table.Cell>No Funding Programmes</Table.Cell>
-                        <Table.Cell>No Funding Actions</Table.Cell>
-                        <Table.Cell>No Funding Calls</Table.Cell>
+                        <Table.Cell className="text-zinc-700">{fAgencyCellContent(fagency)}</Table.Cell>
+                        <Table.Cell className="text-zinc-500">No Funding Programmes</Table.Cell>
+                        <Table.Cell className="text-zinc-500">No Funding Actions</Table.Cell>
+                        <Table.Cell className="text-zinc-500">No Funding Calls</Table.Cell>
                       </BorderedRow>
                     )}
                   </React.Fragment>
@@ -235,7 +261,6 @@ const FundersTable = () => {
           </Table.Body>
         </Table.Root>
       </div>
-    </>
   );
 };
 

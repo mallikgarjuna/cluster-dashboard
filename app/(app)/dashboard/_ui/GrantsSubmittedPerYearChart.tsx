@@ -24,27 +24,32 @@ interface Props {
 const GrantsSubmittedPerYearChart = ({ perYearData }: Props) => {
   return (
     <Card>
-      <CardHeader>
-        <p className="font-bold"># Grants Submitted/Awarded per Year</p>
+      <CardHeader className="space-y-2 pb-2">
+        <p className="text-sm font-medium uppercase tracking-[0.14em] text-zinc-500">
+          Submission Trend
+        </p>
+        <p className="font-semibold text-zinc-950"># Grants Submitted/Awarded per Year</p>
       </CardHeader>
       <CardContent>
         <ResponsiveContainer width="100%" height={300}>
           <LineChart data={perYearData}>
-            <XAxis dataKey="year" padding={{ left: 20, right: 20 }} />
-            <YAxis />
+            <XAxis dataKey="year" padding={{ left: 20, right: 20 }} stroke="#71717a" tickLine={false} axisLine={false} />
+            <YAxis stroke="#71717a" tickLine={false} axisLine={false} />
             <Line
               dataKey="submitted"
               type="monotone"
-              stroke="blue"
-              activeDot={{ r: 10 }}
+              stroke="#18181b"
+              strokeWidth={2}
+              activeDot={{ r: 6, fill: "#18181b" }}
             />
             <Line
               dataKey="awarded"
               type="monotone"
-              stroke="green"
-              activeDot={{ r: 10 }}
+              stroke="#71717a"
+              strokeWidth={2}
+              activeDot={{ r: 6, fill: "#71717a" }}
             />
-            <CartesianGrid strokeDasharray="3 3" />
+            <CartesianGrid stroke="#e4e4e7" strokeDasharray="3 3" />
             <Tooltip />
             <Legend />
           </LineChart>

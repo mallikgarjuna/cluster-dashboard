@@ -116,21 +116,25 @@ const PIFundersTable = () => {
   };
 
   // Count the grants for each funding agency
-  const grantsCountOfFAgencies = (fAgency: FundingAgencyWithAllRelatedTypes) =>
-    fAgency.grants.length;
-
   return (
-    <>
-      <Card>
-        <CardHeader className="pb-0">
-          <h2 className="text-3xl font-bold">Funders Table</h2>
+    <Card>
+        <CardHeader className="space-y-2 pb-2">
+          <p className="text-sm font-medium uppercase tracking-[0.14em] text-zinc-500">
+            Funding Relationships
+          </p>
+          <h2 className="text-3xl font-semibold tracking-[-0.03em] text-zinc-950">
+            Funders Table
+          </h2>
         </CardHeader>
         <CardContent>
-          <Table.Root variant="surface" size={"1"}>
+          <Table.Root variant="surface" size={"1"} className="rounded-xl border border-zinc-200/90 bg-white">
             <Table.Header>
-              <Table.Row>
+              <Table.Row className="bg-zinc-50/80">
                 {columnsFundersTable.map((column) => (
-                  <Table.ColumnHeaderCell key={column.key}>
+                  <Table.ColumnHeaderCell
+                    key={column.key}
+                    className="text-xs font-semibold uppercase tracking-[0.12em] text-zinc-500"
+                  >
                     {column.value}
                   </Table.ColumnHeaderCell>
                 ))}
@@ -249,8 +253,7 @@ const PIFundersTable = () => {
             </Table.Body>
           </Table.Root>
         </CardContent>
-      </Card>
-    </>
+    </Card>
   );
 };
 
