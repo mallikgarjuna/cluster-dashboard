@@ -21,7 +21,7 @@ export function updateFilterQueryParams({
   allValue = "All",
   resetParams = [],
 }: UpdateFilterQueryParamsInput) {
-  const params = new URLSearchParams(searchParams);
+  const params = new URLSearchParams(searchParams.toString());
 
   if (value === allValue) {
     params.delete(paramName);
