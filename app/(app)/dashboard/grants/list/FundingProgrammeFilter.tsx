@@ -5,20 +5,22 @@ import { FundingProgramme } from "@prisma/client";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import Skeleton from "react-loading-skeleton";
-import { useFundingProgrammes } from "../../funders/_components/FundingActionForm";
-import { useFundingAgencies } from "../../funders/_components/FundingProgrammeForm";
+import {
+  useFundingFilterAgencies,
+  useFundingFilterProgrammes,
+} from "./fundingFilterQueries";
 
 const FundingProgrammeFilter = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
 
-  const { data: fetchedFundingAgencies } = useFundingAgencies();
+  const { data: fetchedFundingAgencies } = useFundingFilterAgencies();
   const {
     data: fetchedFundingProgrammes,
     isLoading,
     error,
-  } = useFundingProgrammes();
+  } = useFundingFilterProgrammes();
 
   const [fundingProgrammes, setFundingProgrammes] = useState<
     FundingProgramme[]

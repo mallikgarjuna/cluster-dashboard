@@ -6,17 +6,21 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import Skeleton from "react-loading-skeleton";
 import {
-  useFundingActions,
-  useFundingCalls,
-} from "../../funders/_components/FundingCallForm";
+  useFundingFilterActions,
+  useFundingFilterCalls,
+} from "./fundingFilterQueries";
 
 const FundingCallFilter = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
 
-  const { data: fetchedFundingActions } = useFundingActions();
-  const { data: fetchedFundingCalls, isLoading, error } = useFundingCalls();
+  const { data: fetchedFundingActions } = useFundingFilterActions();
+  const {
+    data: fetchedFundingCalls,
+    isLoading,
+    error,
+  } = useFundingFilterCalls();
 
   const [fundingCalls, setFundingCalls] = useState<FundingCall[]>([]);
 

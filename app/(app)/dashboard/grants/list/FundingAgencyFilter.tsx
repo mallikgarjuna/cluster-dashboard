@@ -3,7 +3,7 @@
 import { Select, SelectItem } from "@nextui-org/react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import Skeleton from "react-loading-skeleton";
-import { useFundingAgencies } from "../../funders/_components/FundingProgrammeForm";
+import { useFundingFilterAgencies } from "./fundingFilterQueries";
 
 const FundingAgencyFilter = () => {
   const searchParams = useSearchParams();
@@ -14,7 +14,7 @@ const FundingAgencyFilter = () => {
     data: fetchedFundingAgencies,
     isLoading,
     error,
-  } = useFundingAgencies();
+  } = useFundingFilterAgencies();
 
   if (isLoading) return <Skeleton />;
   if (error) return null;
