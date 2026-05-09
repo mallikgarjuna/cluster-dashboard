@@ -41,7 +41,7 @@ function DetailSection({
         <h2 className="detail-section-title">{title}</h2>
         <p className="detail-section-copy">{description}</p>
       </div>
-      {children}
+      <div className="detail-section-body">{children}</div>
     </section>
   );
 }
@@ -98,15 +98,13 @@ const GrantDetails = async ({ grant }: Props) => {
         title="Core Grant Identity"
         description="Start with the primary title, shorthand, and a plain-language description that gives context before any operational detail."
       >
-        <div className="detail-grid md:grid-cols-2">
-          <CustomFiledDetails subheading="Title *" fieldInfo={grant.title} />
-          <CustomFiledDetails subheading="Acronym *" fieldInfo={grant.acronym} />
-          <div className="md:col-span-2">
-            <CustomFiledDetails
-              subheading="Description *"
-              fieldInfo={grant.description}
-            />
-          </div>
+        <CustomFiledDetails subheading="Title *" fieldInfo={grant.title} />
+        <CustomFiledDetails subheading="Acronym *" fieldInfo={grant.acronym} />
+        <div className="detail-span-full">
+          <CustomFiledDetails
+            subheading="Description *"
+            fieldInfo={grant.description}
+          />
         </div>
       </DetailSection>
 
@@ -115,7 +113,7 @@ const GrantDetails = async ({ grant }: Props) => {
         title="People And Approval Context"
         description="Document who is applying, how they are positioned in the group, and which internal approvals already exist."
       >
-        <div className="field-cluster">
+        <div className="field-cluster detail-span-full">
           <div className="grid gap-4 md:grid-cols-3">
             <CustomFiledDetails
               subheading="Applicant's LastName + FirstName - Text input *"
@@ -139,7 +137,7 @@ const GrantDetails = async ({ grant }: Props) => {
           />
         </div>
 
-        <div className="field-cluster space-y-3 md:col-span-2 xl:col-span-2">
+        <div className="field-cluster detail-span-full space-y-3">
           <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-[var(--color-text-muted)]">
             Internal Approval
           </p>
@@ -155,7 +153,7 @@ const GrantDetails = async ({ grant }: Props) => {
         title="Financial Inputs"
         description="Keep the amount fields concise and easy to scan, with disabled legacy inputs visually de-emphasized."
       >
-        <div className="field-cluster md:col-span-2 xl:col-span-2">
+        <div className="field-cluster detail-span-full">
           <div className="grid gap-4 md:grid-cols-2">
             <CustomFiledDetails
               subheading="<Disabled, to be removed> Budget Total of the grant application"
@@ -198,7 +196,7 @@ const GrantDetails = async ({ grant }: Props) => {
           textLabel="Funding Call - Text input"
           textValue={grant.fundingCall}
         />
-        <div className="md:col-span-2 xl:col-span-2">
+        <div className="detail-span-full">
           <CustomFiledDetails
             subheading="URL of the Funding Call"
             fieldInfo={grant.urlFundingCall}
@@ -211,7 +209,7 @@ const GrantDetails = async ({ grant }: Props) => {
         title="Dates And Status"
         description="Submission milestones and lifecycle status are grouped together to support later filtering and operational follow-up."
       >
-        <div className="field-cluster md:col-span-2 xl:col-span-2">
+        <div className="field-cluster detail-span-full">
           <div className="grid gap-4 md:grid-cols-3">
             <CustomFiledDetails
               subheading="Submission Date"
@@ -241,7 +239,7 @@ const GrantDetails = async ({ grant }: Props) => {
         title="Post-Award Delivery"
         description="Capture project timing, internal project identifiers, and post-award documentation in one calmer closing section."
       >
-        <div className="field-cluster md:col-span-2 xl:col-span-2">
+        <div className="field-cluster detail-span-full">
           <div className="grid gap-4 md:grid-cols-2">
             <CustomFiledDetails
               subheading="Project Start Date (post award)"
@@ -261,7 +259,7 @@ const GrantDetails = async ({ grant }: Props) => {
           />
         </div>
 
-        <div className="field-cluster space-y-3 md:col-span-2 xl:col-span-2">
+        <div className="field-cluster detail-span-full space-y-3">
           <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-[var(--color-text-muted)]">
             Documentation
           </p>
@@ -271,7 +269,7 @@ const GrantDetails = async ({ grant }: Props) => {
           />
         </div>
 
-        <div className="md:col-span-2 xl:col-span-2">
+        <div className="detail-span-full">
           <CustomFiledDetails
             subheading="<Disabled, to be removed> Additional notes"
             fieldInfo={grant.notes}

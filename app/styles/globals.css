@@ -105,6 +105,14 @@
     @apply grid gap-4 p-5 md:grid-cols-2 md:p-6 xl:grid-cols-3;
   }
 
+  .detail-section-body {
+    @apply grid grid-cols-1 gap-4 p-5 md:grid-cols-2 md:p-6;
+  }
+
+  .detail-span-full {
+    @apply md:col-span-2;
+  }
+
   .detail-value-card {
     @apply rounded-lg border bg-[var(--color-surface)] px-4 py-3;
     border-color: var(--color-border);
