@@ -16,6 +16,13 @@ type SectionProps = {
   children: ReactNode;
 };
 
+type ChoiceClusterProps = {
+  selectLabel: string;
+  selectValue: string | number | null;
+  textLabel: string;
+  textValue: string | number | null;
+};
+
 const formatDate = (value: Date | null | undefined) =>
   value ? value.toISOString().split("T")[0] : null;
 
@@ -39,6 +46,23 @@ function DetailSection({
   );
 }
 
+function ChoiceCluster({
+  selectLabel,
+  selectValue,
+  textLabel,
+  textValue,
+}: ChoiceClusterProps) {
+  return (
+    <div className="field-cluster md:col-span-2 xl:col-span-2">
+      <div className="grid gap-4 md:grid-cols-[1fr_auto_1fr]">
+        <CustomFiledDetails subheading={selectLabel} fieldInfo={selectValue} />
+        <span className="or-divider">or</span>
+        <CustomFiledDetails subheading={textLabel} fieldInfo={textValue} />
+      </div>
+    </div>
+  );
+}
+
 const GrantDetails = async ({ grant }: Props) => {
   const user = grant.assignedToUserId
     ? await prisma.user.findUnique({
@@ -51,15 +75,14 @@ const GrantDetails = async ({ grant }: Props) => {
       <section className="detail-section overflow-hidden">
         <div className="border-b border-[var(--color-border)] bg-[var(--color-surface-muted)] px-5 py-5 md:px-6">
           <Text className="text-[11px] font-medium uppercase tracking-[0.14em] text-[var(--color-primary)]">
-            Grant Overview
+            Grant Workspace
           </Text>
           <Heading className="mt-2 text-[32px] font-semibold tracking-[-0.04em] text-[var(--color-text-primary)]">
-            {grant.title}
+            View Grant
           </Heading>
           <Text className="mt-2 max-w-3xl text-sm leading-6 text-[var(--color-text-secondary)]">
-            A single place to review the operational profile of this application,
-            from applicant context and funding structure through to award timing
-            and delivery notes.
+            This view mirrors the editing structure so the record can be reviewed
+            in the same sequence it is maintained across the dashboard.
           </Text>
           <Flex gap="3" mt="4" wrap="wrap" align="center">
             <GrantStatusBadge status={grant.status} />
@@ -68,145 +91,191 @@ const GrantDetails = async ({ grant }: Props) => {
             </Text>
           </Flex>
         </div>
-        <div className="detail-grid md:grid-cols-2">
-          <CustomFiledDetails subheading="Acronym" fieldInfo={grant.acronym} />
-          <CustomFiledDetails
-            subheading="Description"
-            fieldInfo={grant.description}
-          />
-        </div>
       </section>
 
       <DetailSection
-        eyebrow="Applicant"
-        title="Ownership And Application Context"
-        description="The people, roles, and internal approval details that frame this submission."
+        eyebrow="Overview"
+        title="Core Grant Identity"
+        description="Start with the primary title, shorthand, and a plain-language description that gives context before any operational detail."
       >
-        <div className="detail-grid">
+        <div className="detail-grid md:grid-cols-2">
+          <CustomFiledDetails subheading="Title *" fieldInfo={grant.title} />
+          <CustomFiledDetails subheading="Acronym *" fieldInfo={grant.acronym} />
+          <div className="md:col-span-2">
+            <CustomFiledDetails
+              subheading="Description *"
+              fieldInfo={grant.description}
+            />
+          </div>
+        </div>
+      </DetailSection>
+
+      <DetailSection
+        eyebrow="Applicant"
+        title="People And Approval Context"
+        description="Document who is applying, how they are positioned in the group, and which internal approvals already exist."
+      >
+        <div className="field-cluster">
+          <div className="grid gap-4 md:grid-cols-3">
+            <CustomFiledDetails
+              subheading="Applicant's LastName + FirstName - Text input *"
+              fieldInfo={grant.applicantFullName}
+            />
+            <CustomFiledDetails
+              subheading="Applicant's Designation (Group member type) *"
+              fieldInfo={grant.groupMemberType}
+            />
+            <CustomFiledDetails
+              subheading="Applicant's Groupleader *"
+              fieldInfo={user?.lastName ?? null}
+            />
+          </div>
+        </div>
+
+        <div>
           <CustomFiledDetails
-            subheading="Applicant's Full Name"
-            fieldInfo={grant.applicantFullName}
-          />
-          <CustomFiledDetails
-            subheading="Applicant's Designation"
-            fieldInfo={grant.groupMemberType}
-          />
-          <CustomFiledDetails
-            subheading="Applicant's Groupleader"
-            fieldInfo={user?.lastName ?? null}
-          />
-          <CustomFiledDetails
-            subheading="Grant Application Role"
+            subheading="Applicant's Grant Application Role *"
             fieldInfo={grant.applicantRole}
           />
+        </div>
+
+        <div className="field-cluster space-y-3 md:col-span-2 xl:col-span-2">
+          <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-[var(--color-text-muted)]">
+            Internal Approval
+          </p>
           <CustomFiledDetails
-            subheading="Budget Approved By Project Controller"
+            subheading="Is Budget approved by the Project Controller?"
             fieldInfo={grant.isBudgetApproved ? "Yes" : "No"}
           />
         </div>
       </DetailSection>
 
       <DetailSection
-        eyebrow="Funding"
-        title="Funding Structure"
-        description="Selected taxonomy values and fallback free-text entries are shown together so the record remains readable even when a canonical source was not used."
+        eyebrow="Budget"
+        title="Financial Inputs"
+        description="Keep the amount fields concise and easy to scan, with disabled legacy inputs visually de-emphasized."
       >
-        <div className="detail-grid">
+        <div className="field-cluster md:col-span-2 xl:col-span-2">
+          <div className="grid gap-4 md:grid-cols-2">
+            <CustomFiledDetails
+              subheading="<Disabled, to be removed> Budget Total of the grant application"
+              fieldInfo={grant.budgetTotal}
+            />
+            <CustomFiledDetails
+              subheading="Budget Assigned to the applicant (or UMCG)"
+              fieldInfo={grant.budgetAssignedToPI}
+            />
+          </div>
+        </div>
+      </DetailSection>
+
+      <DetailSection
+        eyebrow="Funding"
+        title="Funding Taxonomy"
+        description="Structured selections and manual fallback text stay side by side so each grant can be recorded even when the taxonomy is incomplete."
+      >
+        <ChoiceCluster
+          selectLabel="Funding Agency - Select"
+          selectValue={grant.relatedFundingAgency?.name ?? "Not specified"}
+          textLabel="Funding Agency - Text input"
+          textValue={grant.fundingAgency}
+        />
+        <ChoiceCluster
+          selectLabel="Funding Programme - Select"
+          selectValue={grant.relatedFundingProgramme?.name ?? "Not specified"}
+          textLabel="Funding Programme - Text input"
+          textValue={grant.fundingProgramme}
+        />
+        <ChoiceCluster
+          selectLabel="Funding Action - Select"
+          selectValue={grant.relatedFundingAction?.name ?? "Not specified"}
+          textLabel="Funding Action - Text input"
+          textValue={grant.fundingAction}
+        />
+        <ChoiceCluster
+          selectLabel="Funding Call - Select"
+          selectValue={grant.relatedFundingCall?.name ?? "Not specified"}
+          textLabel="Funding Call - Text input"
+          textValue={grant.fundingCall}
+        />
+        <div className="md:col-span-2 xl:col-span-2">
           <CustomFiledDetails
-            subheading="Funding Agency (Select)"
-            fieldInfo={grant.relatedFundingAgency?.name ?? "Not specified"}
-          />
-          <CustomFiledDetails
-            subheading="Funding Agency (Text Input)"
-            fieldInfo={grant.fundingAgency}
-          />
-          <CustomFiledDetails
-            subheading="Funding Programme (Select)"
-            fieldInfo={grant.relatedFundingProgramme?.name ?? "Not specified"}
-          />
-          <CustomFiledDetails
-            subheading="Funding Programme (Text Input)"
-            fieldInfo={grant.fundingProgramme}
-          />
-          <CustomFiledDetails
-            subheading="Funding Action (Select)"
-            fieldInfo={grant.relatedFundingAction?.name ?? "Not specified"}
-          />
-          <CustomFiledDetails
-            subheading="Funding Action (Text Input)"
-            fieldInfo={grant.fundingAction}
-          />
-          <CustomFiledDetails
-            subheading="Funding Call (Select)"
-            fieldInfo={grant.relatedFundingCall?.name ?? "Not specified"}
-          />
-          <CustomFiledDetails
-            subheading="Funding Call (Text Input)"
-            fieldInfo={grant.fundingCall}
-          />
-          <CustomFiledDetails
-            subheading="Funding Call URL"
+            subheading="URL of the Funding Call"
             fieldInfo={grant.urlFundingCall}
           />
         </div>
       </DetailSection>
 
       <DetailSection
-        eyebrow="Budget And Timing"
-        title="Financial And Timeline Data"
-        description="Key amounts and milestone dates for submission, decisioning, and project delivery."
+        eyebrow="Timeline"
+        title="Dates And Status"
+        description="Submission milestones and lifecycle status are grouped together to support later filtering and operational follow-up."
       >
-        <div className="detail-grid">
+        <div className="field-cluster md:col-span-2 xl:col-span-2">
+          <div className="grid gap-4 md:grid-cols-3">
+            <CustomFiledDetails
+              subheading="Submission Date"
+              fieldInfo={formatDate(grant.submissionDate)}
+            />
+            <CustomFiledDetails
+              subheading="Deadline Date"
+              fieldInfo={formatDate(grant.deadline)}
+            />
+            <CustomFiledDetails
+              subheading="Decision Date"
+              fieldInfo={formatDate(grant.decisionDate)}
+            />
+          </div>
+        </div>
+
+        <div>
           <CustomFiledDetails
-            subheading="Budget Total"
-            fieldInfo={grant.budgetTotal}
-          />
-          <CustomFiledDetails
-            subheading="Budget Assigned To Applicant"
-            fieldInfo={grant.budgetAssignedToPI}
-          />
-          <CustomFiledDetails
-            subheading="Submission Date"
-            fieldInfo={formatDate(grant.submissionDate)}
-          />
-          <CustomFiledDetails
-            subheading="Deadline"
-            fieldInfo={formatDate(grant.deadline)}
-          />
-          <CustomFiledDetails
-            subheading="Decision Date"
-            fieldInfo={formatDate(grant.decisionDate)}
-          />
-          <CustomFiledDetails
-            subheading="Grant Status"
+            subheading="Application Status *"
             fieldInfo={grant.status ?? null}
-          />
-          <CustomFiledDetails
-            subheading="Project Start Date"
-            fieldInfo={formatDate(grant.projectStartDate)}
-          />
-          <CustomFiledDetails
-            subheading="Project End Date"
-            fieldInfo={formatDate(grant.projectEndDate)}
-          />
-          <CustomFiledDetails
-            subheading="Project Number"
-            fieldInfo={grant.projectNumber}
           />
         </div>
       </DetailSection>
 
       <DetailSection
         eyebrow="Delivery"
-        title="Operational Notes"
-        description="Post-award documentation state and any additional context recorded for internal follow-up."
+        title="Post-Award Delivery"
+        description="Capture project timing, internal project identifiers, and post-award documentation in one calmer closing section."
       >
-        <div className="detail-grid md:grid-cols-2">
+        <div className="field-cluster md:col-span-2 xl:col-span-2">
+          <div className="grid gap-4 md:grid-cols-2">
+            <CustomFiledDetails
+              subheading="Project Start Date (post award)"
+              fieldInfo={formatDate(grant.projectStartDate)}
+            />
+            <CustomFiledDetails
+              subheading="Project End Date (post award)"
+              fieldInfo={formatDate(grant.projectEndDate)}
+            />
+          </div>
+        </div>
+
+        <div>
           <CustomFiledDetails
-            subheading="DMP Created And Shared"
+            subheading="Project number (UMCG, post award)"
+            fieldInfo={grant.projectNumber}
+          />
+        </div>
+
+        <div className="field-cluster space-y-3 md:col-span-2 xl:col-span-2">
+          <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-[var(--color-text-muted)]">
+            Documentation
+          </p>
+          <CustomFiledDetails
+            subheading="Is DMP created, reviewed by the DCC-UMCG, and shared with the Project Manager?"
             fieldInfo={grant.isDMPSubmitted ? "Yes" : "No"}
           />
-          <CustomFiledDetails subheading="Notes" fieldInfo={grant.notes} />
+        </div>
+
+        <div className="md:col-span-2 xl:col-span-2">
+          <CustomFiledDetails
+            subheading="<Disabled, to be removed> Additional notes"
+            fieldInfo={grant.notes}
+          />
         </div>
       </DetailSection>
     </Flex>
