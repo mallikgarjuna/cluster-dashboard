@@ -9,7 +9,7 @@ import NextTopLoader from "nextjs-toploader";
 import { Toaster } from "react-hot-toast";
 import AuthSessionProvider from "./providers/AuthSessionProvider";
 import TanSackQueryClientProvider from "./providers/TanSackQueryClientProvider";
-import { inter } from "../lib/fonts";
+import { bodySans, codeMono, displaySans } from "../lib/fonts";
 
 export const metadata: Metadata = {
   title:
@@ -24,21 +24,25 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="light">
-      <body className={inter.className}>
+      <body
+        className={`${bodySans.variable} ${displaySans.variable} ${codeMono.variable} font-sans`}
+      >
         <AuthSessionProvider>
           <TanSackQueryClientProvider>
-            <Theme>
-              {/* <NavBar /> */}
-              <main className="mx-auto w-full max-w-[1400px]">
-                {/* <Container> */}
+            <Theme
+              accentColor="indigo"
+              grayColor="sand"
+              radius="medium"
+              scaling="100%"
+            >
+              <main className="min-h-screen bg-[var(--color-background)]">
                 <Toaster
                   toastOptions={{
                     duration: 5000,
                   }}
-                />{" "}
-                <NextTopLoader />
+                />
+                <NextTopLoader color="#6366F1" showSpinner={false} />
                 {children}
-                {/* </Container> */}
               </main>
             </Theme>
           </TanSackQueryClientProvider>

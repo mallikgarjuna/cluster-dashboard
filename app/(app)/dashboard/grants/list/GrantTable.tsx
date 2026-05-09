@@ -41,15 +41,20 @@ const GrantTable = async ({ searchParams, grants }: Props) => {
   };
 
   return (
-    <Table.Root variant="surface" size={"1"}>
+    <Table.Root
+      variant="surface"
+      size={"1"}
+      className="rounded-xl border border-[var(--color-border)] bg-white"
+    >
       <Table.Header>
-        <Table.Row>
+        <Table.Row className="bg-[var(--color-surface-muted)]">
           {columnsGrant.map((column) => (
             <Table.ColumnHeaderCell
               key={column.value}
-              className={`${column.classname}`} //min-w-[80px]
+              className={`text-xs font-semibold uppercase tracking-[0.12em] text-[var(--color-text-muted)] ${column.classname}`}
             >
               <NextLink
+                className="transition-colors duration-200 hover:text-[var(--color-primary)]"
                 href={{
                   query: {
                     ...searchParams,
@@ -71,7 +76,7 @@ const GrantTable = async ({ searchParams, grants }: Props) => {
           {columnsNonGrant.map((column) => (
             <Table.ColumnHeaderCell
               key={column.value}
-              className={column.classname}
+              className={`text-xs font-semibold uppercase tracking-[0.12em] text-[var(--color-text-muted)] ${column.classname}`}
             >
               {column.label}
             </Table.ColumnHeaderCell>
@@ -83,11 +88,14 @@ const GrantTable = async ({ searchParams, grants }: Props) => {
           return (
             <Table.Row
               key={grant.id}
-              className="transition-colors hover:bg-gray-200"
+              className="transition-colors duration-200 hover:bg-[var(--color-surface-muted)]"
             >
               <Tooltip content={grant.title}>
                 <Table.Cell className="max-w-[100px] truncate">
-                  <Link href={`/dashboard/grants/${grant.id}`}>
+                  <Link
+                    href={`/dashboard/grants/${grant.id}`}
+                    className="font-medium text-[var(--color-text-primary)] transition-colors duration-200 hover:text-[var(--color-primary)]"
+                  >
                     {(grant.acronym ?? grant.title).slice(0, 20)}
                   </Link>
                   <span className="block md:hidden">
@@ -112,7 +120,7 @@ const GrantTable = async ({ searchParams, grants }: Props) => {
                 <Table.Cell className="hidden max-w-[150px] truncate md:table-cell">
                   <Link
                     href={`/dashboard/grants/${grant.id}`}
-                    className="inline-block"
+                    className="inline-block text-[var(--color-text-secondary)] transition-colors duration-200 hover:text-[var(--color-primary)]"
                   >
                     {grant.relatedFundingCall?.name || grant.fundingCall || ""}
                   </Link>
@@ -124,31 +132,46 @@ const GrantTable = async ({ searchParams, grants }: Props) => {
               </Table.Cell>
 
               <Table.Cell className="hidden md:table-cell">
-                <Link href={`/dashboard/grants/${grant.id}`}>
+                <Link
+                  href={`/dashboard/grants/${grant.id}`}
+                  className="text-[var(--color-text-secondary)] hover:text-[var(--color-primary)]"
+                >
                   {grant.updatedAt.toISOString().split("T")[0]}
                 </Link>
               </Table.Cell>
 
               <Table.Cell className="hidden md:table-cell">
-                <Link href={`/dashboard/grants/${grant.id}`}>
+                <Link
+                  href={`/dashboard/grants/${grant.id}`}
+                  className="text-[var(--color-text-secondary)] hover:text-[var(--color-primary)]"
+                >
                   {grant.submissionDate?.toISOString().split("T")[0]}
                 </Link>
               </Table.Cell>
 
               <Table.Cell className="hidden md:table-cell">
-                <Link href={`/dashboard/grants/${grant.id}`}>
+                <Link
+                  href={`/dashboard/grants/${grant.id}`}
+                  className="text-[var(--color-text-secondary)] hover:text-[var(--color-primary)]"
+                >
                   {grant.projectStartDate?.toISOString().split("T")[0]}
                 </Link>
               </Table.Cell>
 
               <Table.Cell>
-                <Link href={`/dashboard/grants/${grant.id}`}>
+                <Link
+                  href={`/dashboard/grants/${grant.id}`}
+                  className="text-[var(--color-text-secondary)] hover:text-[var(--color-primary)]"
+                >
                   {grant.projectEndDate?.toISOString().split("T")[0]}
                 </Link>
               </Table.Cell>
 
               <Table.Cell className="hidden md:table-cell">
-                <Link href={`/dashboard/grants/${grant.id}`}>
+                <Link
+                  href={`/dashboard/grants/${grant.id}`}
+                  className="text-[var(--color-text-secondary)] hover:text-[var(--color-primary)]"
+                >
                   {grant.projectNumber}
                 </Link>
               </Table.Cell>

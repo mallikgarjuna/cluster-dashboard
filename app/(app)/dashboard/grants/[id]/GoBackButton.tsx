@@ -8,7 +8,12 @@ const GoBackButton = () => {
   const router = useRouter();
 
   return (
-    <Button type="button" variant="destructive" onClick={() => router.back()}>
+    <Button
+      type="button"
+      variant="outline"
+      className="w-full justify-start"
+      onClick={() => router.back()}
+    >
       Go Back
     </Button>
   );

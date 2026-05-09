@@ -26,21 +26,25 @@ const GrantChart = ({ awaiting, submitted, awarded, rejected }: Props) => {
   ];
   return (
     <Card>
-      <CardHeader>
-        <p className="text-lg font-bold"># Grants per Status</p>
+      <CardHeader className="space-y-2 pb-2">
+        <p className="text-sm font-medium uppercase tracking-[0.14em] text-[var(--color-primary)]">
+          Status Mix
+        </p>
+        <p className="font-display text-lg font-bold tracking-[-0.03em] text-[var(--color-text-primary)]">
+          # Grants per Status
+        </p>
       </CardHeader>
       <CardContent>
         <ResponsiveContainer width="100%" height={300}>
           <BarChart data={data}>
-            <XAxis dataKey="label" />
-            <YAxis />
-            {/* If the Tooltip is below the Bar, tooltip will mask the bar */}
+            <XAxis dataKey="label" stroke="#6B6B6B" tickLine={false} axisLine={false} />
+            <YAxis stroke="#6B6B6B" tickLine={false} axisLine={false} />
             <Tooltip />
             <Bar
               dataKey="value"
               barSize={60}
-              // style={{ fill: "var(--accent-9)" }}
-              fill="var(--accent-9)"
+              fill="#6366F1"
+              radius={[8, 8, 0, 0]}
             />
           </BarChart>
         </ResponsiveContainer>

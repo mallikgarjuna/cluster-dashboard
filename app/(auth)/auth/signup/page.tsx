@@ -1,18 +1,28 @@
 import { Link } from "@/app/components";
 import SignupForm from "@/app/components/auth/SignupForm";
-import { Box, Flex, Grid, Text } from "@radix-ui/themes";
+import { Box, Text } from "@radix-ui/themes";
 import React from "react";
 import { FaUserPlus } from "react-icons/fa";
 
 const SignupPage = () => {
   return (
-    <div className="grid grid-cols-1 place-items-center items-center gap-3 md:grid-cols-2">
-      <Box className="flex items-center justify-center md:col-span-2">
-        <Text className="p-2">Already have an account?</Text>
-        <Link href="/auth/login">Log in</Link>
+    <div className="flex w-full max-w-4xl flex-col items-center gap-5">
+      <Box className="flex items-center justify-center gap-2">
+        <Text className="text-sm text-[var(--color-text-secondary)]">
+          Already have an account?
+        </Text>
+        <Link href="/auth/login" className="indigo-link text-sm">
+          Log in
+        </Link>
       </Box>
-      <SignupForm />
-      <FaUserPlus size={200} />
+      <div className="grid w-full items-start gap-8 md:grid-cols-[minmax(0,1fr)_200px]">
+        <SignupForm />
+        <div className="hidden justify-center md:flex">
+          <div className="flex h-40 w-40 items-center justify-center rounded-full border border-[var(--color-border)] bg-[var(--color-primary-soft)] text-[var(--color-primary)]">
+            <FaUserPlus size={72} />
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

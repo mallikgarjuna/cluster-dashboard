@@ -25,7 +25,7 @@ const ButtonWithSpinner = ({
   };
 
   return (
-    <Button asChild className="w-full px-16">
+    <Button asChild variant="outline" className="w-full justify-start px-4">
       <Link
         href={hrefProp}
         aria-disabled={isLoading}

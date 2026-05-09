@@ -4,13 +4,6 @@ import { Table } from "@radix-ui/themes";
 // import { TableCellProps } from "@radix-ui/react-table";
 import { Link } from "@/app/components";
 import React, { useEffect, useState } from "react";
-import { useFundingAgencies } from "./FundingProgrammeForm";
-import {
-  FundingAction,
-  FundingAgency,
-  FundingCall,
-  FundingProgramme,
-} from "@prisma/client";
 import {
   FundingActionWithAllRelatedTypes,
   FundingAgencyWithAllRelatedTypes,
@@ -56,21 +49,24 @@ const FundersTable = () => {
     fetchData();
   }, [queryString]);
 
-  const BorderedCell = (props: any) => (
-    <Table.Cell {...props} style={{ borderBottom: "1px solid #e5e5e5" }} />
-  );
-
   const BorderedRow = (props: any) => (
-    <Table.Row {...props} style={{ borderBottom: "1px solid #e5e5e5" }} />
+    <Table.Row
+      {...props}
+      style={{ borderBottom: "1px solid #E8E8EC" }}
+      className="transition-colors duration-200 hover:bg-[var(--color-surface-muted)]"
+    />
   );
 
   const fAgencyCellContent = (fAgency: FundingAgencyWithAllRelatedTypes) => {
     return (
       <div className="flex gap-2">
-        <Link href={`/dashboard/funders/agency/edit/${fAgency.id}`}>
+        <Link
+          href={`/dashboard/funders/agency/edit/${fAgency.id}`}
+          className="font-medium text-[var(--color-text-primary)] transition-colors duration-200 hover:text-[var(--color-primary)]"
+        >
           {fAgency.name}
         </Link>
-        <p>({fAgency.grants.length})</p>
+        <p className="text-[var(--color-text-muted)]">({fAgency.grants.length})</p>
       </div>
     );
   };
@@ -78,10 +74,13 @@ const FundersTable = () => {
   const fProgrammeCellContent = (fP: FundingProgrammeWithAllRelatedTypes) => {
     return (
       <div className="flex gap-2">
-        <Link href={`/dashboard/funders/programme/edit/${fP.id}`}>
+        <Link
+          href={`/dashboard/funders/programme/edit/${fP.id}`}
+          className="font-medium text-[var(--color-text-primary)] transition-colors duration-200 hover:text-[var(--color-primary)]"
+        >
           {fP.name}
         </Link>
-        <p>({fP.grants.length})</p>
+        <p className="text-[var(--color-text-muted)]">({fP.grants.length})</p>
       </div>
     );
   };
@@ -89,8 +88,13 @@ const FundersTable = () => {
   const fActionCellContent = (fA: FundingActionWithAllRelatedTypes) => {
     return (
       <div className="flex gap-2">
-        <Link href={`/dashboard/funders/action/edit/${fA.id}`}>{fA.name}</Link>
-        <p>({fA.grants.length})</p>
+        <Link
+          href={`/dashboard/funders/action/edit/${fA.id}`}
+          className="font-medium text-[var(--color-text-primary)] transition-colors duration-200 hover:text-[var(--color-primary)]"
+        >
+          {fA.name}
+        </Link>
+        <p className="text-[var(--color-text-muted)]">({fA.grants.length})</p>
       </div>
     );
   };
@@ -98,25 +102,40 @@ const FundersTable = () => {
   const fCallCellContent = (fC: FundingCallWithAllRelatedTypes) => {
     return (
       <div className="flex gap-2">
-        <Link href={`/dashboard/funders/call/edit/${fC.id}`}>{fC.name}</Link>
-        <p>({fC.grants.length})</p>
+        <Link
+          href={`/dashboard/funders/call/edit/${fC.id}`}
+          className="font-medium text-[var(--color-text-primary)] transition-colors duration-200 hover:text-[var(--color-primary)]"
+        >
+          {fC.name}
+        </Link>
+        <p className="text-[var(--color-text-muted)]">({fC.grants.length})</p>
       </div>
     );
   };
 
   // Count the grants for each funding agency
-  const grantsCountOfFAgencies = (fAgency: FundingAgencyWithAllRelatedTypes) =>
-    fAgency.grants.length;
-
   return (
-    <>
-      <div className="mt-8 flex flex-col gap-2">
-        <h2 className="text-3xl font-bold">Funders Table</h2>
-        <Table.Root variant="surface" size={"1"}>
+    <div className="section-panel mt-2 flex flex-col gap-4 p-8">
+        <div className="space-y-2">
+          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[var(--color-secondary)]">
+            Reference Table
+          </p>
+          <h2 className="font-display text-3xl font-bold tracking-[-0.04em] text-[var(--color-text-primary)]">
+            Funders Table
+          </h2>
+        </div>
+        <Table.Root
+          variant="surface"
+          size={"1"}
+          className="rounded-xl border border-[var(--color-border)] bg-white"
+        >
           <Table.Header>
-            <Table.Row>
+            <Table.Row className="bg-[var(--color-surface-muted)]">
               {columnsFundersTable.map((column) => (
-                <Table.ColumnHeaderCell key={column.key}>
+                <Table.ColumnHeaderCell
+                  key={column.key}
+                  className="text-xs font-semibold uppercase tracking-[0.12em] text-[var(--color-text-muted)]"
+                >
                   {column.value}
                 </Table.ColumnHeaderCell>
               ))}
@@ -161,44 +180,44 @@ const FundersTable = () => {
                                         )
                                         .map((fc, fcIndex) => (
                                           <BorderedRow key={fc.id}>
-                                            <Table.Cell>
-                                              {fcIndex === 0 &&
-                                              faIndex === 0 &&
-                                              fpIndex === 0
+                                              <Table.Cell className="text-[var(--color-text-secondary)]">
+                                                {fcIndex === 0 &&
+                                                faIndex === 0 &&
+                                                fpIndex === 0
                                                 ? fAgencyCellContent(fagency)
                                                 : null}
                                             </Table.Cell>
-                                            <Table.Cell>
-                                              {fcIndex === 0 && faIndex == 0
-                                                ? fProgrammeCellContent(fp)
-                                                : null}
-                                            </Table.Cell>
-                                            <Table.Cell>
-                                              {fcIndex === 0
-                                                ? fActionCellContent(fa)
-                                                : null}
-                                            </Table.Cell>
-                                            <Table.Cell>
-                                              {fCallCellContent(fc)}
-                                            </Table.Cell>
+                                              <Table.Cell className="text-[var(--color-text-secondary)]">
+                                                {fcIndex === 0 && faIndex == 0
+                                                  ? fProgrammeCellContent(fp)
+                                                  : null}
+                                              </Table.Cell>
+                                              <Table.Cell className="text-[var(--color-text-secondary)]">
+                                                {fcIndex === 0
+                                                  ? fActionCellContent(fa)
+                                                  : null}
+                                              </Table.Cell>
+                                              <Table.Cell className="text-[var(--color-text-secondary)]">
+                                                {fCallCellContent(fc)}
+                                              </Table.Cell>
                                           </BorderedRow>
                                         ))
                                     ) : (
                                       <BorderedRow key={fa.id}>
-                                        <Table.Cell>
+                                        <Table.Cell className="text-[var(--color-text-secondary)]">
                                           {faIndex === 0 && fpIndex === 0
                                             ? fAgencyCellContent(fagency)
                                             : null}
                                         </Table.Cell>
-                                        <Table.Cell>
+                                        <Table.Cell className="text-[var(--color-text-secondary)]">
                                           {faIndex == 0
                                             ? fProgrammeCellContent(fp)
                                             : null}
                                         </Table.Cell>
-                                        <Table.Cell>
+                                        <Table.Cell className="text-[var(--color-text-secondary)]">
                                           {fActionCellContent(fa)}
                                         </Table.Cell>
-                                        <Table.Cell>
+                                        <Table.Cell className="text-[var(--color-text-muted)]">
                                           No Funding Calls
                                         </Table.Cell>
                                       </BorderedRow>
@@ -207,26 +226,26 @@ const FundersTable = () => {
                                 ))
                             ) : (
                               <BorderedRow key={fp.id}>
-                                <Table.Cell>
+                                <Table.Cell className="text-[var(--color-text-secondary)]">
                                   {fpIndex === 0
                                     ? fAgencyCellContent(fagency)
                                     : null}
                                 </Table.Cell>
-                                <Table.Cell>
+                                <Table.Cell className="text-[var(--color-text-secondary)]">
                                   {fProgrammeCellContent(fp)}
                                 </Table.Cell>
-                                <Table.Cell>No Funding Actions</Table.Cell>
-                                <Table.Cell>No Funding Calls</Table.Cell>
+                                <Table.Cell className="text-[var(--color-text-muted)]">No Funding Actions</Table.Cell>
+                                <Table.Cell className="text-[var(--color-text-muted)]">No Funding Calls</Table.Cell>
                               </BorderedRow>
                             )}
                           </React.Fragment>
                         ))
                     ) : (
                       <BorderedRow key={fagency.id}>
-                        <Table.Cell>{fAgencyCellContent(fagency)}</Table.Cell>
-                        <Table.Cell>No Funding Programmes</Table.Cell>
-                        <Table.Cell>No Funding Actions</Table.Cell>
-                        <Table.Cell>No Funding Calls</Table.Cell>
+                        <Table.Cell className="text-[var(--color-text-secondary)]">{fAgencyCellContent(fagency)}</Table.Cell>
+                        <Table.Cell className="text-[var(--color-text-muted)]">No Funding Programmes</Table.Cell>
+                        <Table.Cell className="text-[var(--color-text-muted)]">No Funding Actions</Table.Cell>
+                        <Table.Cell className="text-[var(--color-text-muted)]">No Funding Calls</Table.Cell>
                       </BorderedRow>
                     )}
                   </React.Fragment>
@@ -234,8 +253,7 @@ const FundersTable = () => {
               )}
           </Table.Body>
         </Table.Root>
-      </div>
-    </>
+    </div>
   );
 };
 

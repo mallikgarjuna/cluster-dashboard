@@ -72,9 +72,14 @@ const ResetPasswordForm = ({ jwtUserId }: Props) => {
   return (
     <form
       action={handleAction}
-      className="m-2 flex flex-col gap-2 rounded-md border p-2"
+      className="auth-panel flex flex-col gap-5"
     >
-      <div className="text-2xl font-bold">Reset Your Password</div>
+      <div className="space-y-2 text-center">
+        <div className="auth-heading">Reset your password</div>
+        <p className="auth-subtle-copy">
+          Create a new password for your Cluster Dashboard account.
+        </p>
+      </div>
 
       <div>
         <Label className="mb-2 block">Password</Label>
@@ -110,7 +115,7 @@ const ResetPasswordForm = ({ jwtUserId }: Props) => {
         />
       </div>
 
-      <div className="flex justify-center">
+      <div className="flex justify-center pt-1">
         <Button type="submit" disabled={isSubmitting}>
           {isSubmitting ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
           {isSubmitting ? "Resetting..." : "Reset"}

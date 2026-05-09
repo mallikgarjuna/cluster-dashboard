@@ -10,21 +10,23 @@ const statusMap: Record<
   StatusGrant,
   {
     label: string;
-    color: "blue" | "green" | "red" | "orange" | "purple" | "gray" | "tomato";
+    color: "blue" | "green" | "red" | "amber" | "gray";
   }
 > = {
   SUBMITTED: { label: "Submitted", color: "blue" },
   AWARDED: { label: "Awarded", color: "green" },
   REJECTED: { label: "Rejected", color: "red" },
-  RUNNING_PROJECT: { label: "Running project", color: "orange" },
-  ENDED_PROJECT: { label: "Ended project", color: "purple" },
+  RUNNING_PROJECT: { label: "Running project", color: "amber" },
+  ENDED_PROJECT: { label: "Ended project", color: "gray" },
   DRAFT: { label: "Draft", color: "gray" },
-  DELETED: { label: "Deleted", color: "tomato" },
+  DELETED: { label: "Deleted", color: "gray" },
 };
 
 const GrantStatusBadge = ({ status }: Props) => {
   return (
-    <Badge color={statusMap[status].color}>{statusMap[status].label}</Badge>
+    <Badge color={statusMap[status].color} variant="soft">
+      {statusMap[status].label}
+    </Badge>
   );
 };
 

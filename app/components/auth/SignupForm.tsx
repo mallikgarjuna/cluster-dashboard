@@ -36,7 +36,7 @@ function FieldWrapper({
       <Label className="mb-2 block">{label}</Label>
       <div className="relative">
         {icon ? (
-          <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500">
+          <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)]">
             {icon}
           </span>
         ) : null}
@@ -85,8 +85,15 @@ const SignupForm = () => {
   return (
     <form
       onSubmit={handleSubmit(saveUser)}
-      className="grid grid-cols-2 gap-3 place-self-stretch rounded-md border p-2"
+      className="auth-panel form-grid border-none bg-transparent p-0"
     >
+      <div className="col-span-full space-y-2 text-center">
+        <h1 className="auth-heading">Create account</h1>
+        <p className="auth-subtle-copy">
+          Register a new user with clean, minimal credentials setup.
+        </p>
+      </div>
+
       <FieldWrapper
         label="First Name"
         error={errors.firstName?.message}
@@ -169,15 +176,19 @@ const SignupForm = () => {
         control={control}
         name="accepted"
         render={({ field }) => (
-          <div className="col-span-2 space-y-2">
-            <label className="flex items-start gap-2 text-sm">
+          <div className="col-span-full space-y-2">
+            <label className="flex items-start gap-3 text-sm leading-6 text-[var(--color-text-secondary)]">
               <Checkbox
                 checked={field.value}
                 onCheckedChange={(checked) => field.onChange(Boolean(checked))}
                 onBlur={field.onBlur}
               />
               <span>
-                I accept the <Link href="/terms">terms and conditions</Link>.
+                I accept the{" "}
+                <Link href="/terms" className="indigo-link">
+                  terms and conditions
+                </Link>
+                .
               </span>
             </label>
             <FieldError message={errors.accepted?.message} />
@@ -185,7 +196,7 @@ const SignupForm = () => {
         )}
       />
 
-      <div className="col-span-2 flex justify-center">
+      <div className="col-span-full flex justify-center pt-2">
         <Button type="submit" disabled={isSubmitting} className="w-48">
           {isSubmitting ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
           {isSubmitting ? "Signing up..." : "Sign up"}

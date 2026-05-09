@@ -1,8 +1,9 @@
 "use client";
 import { Spinner } from "@/app/components";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import { deleteGrant } from "@/lib/actions/grant/grantActions";
-import { AlertDialog, Button, Flex } from "@radix-ui/themes";
-import axios from "axios";
+import { AlertDialog, Flex } from "@radix-ui/themes";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 
@@ -34,27 +35,41 @@ const DeleteGrantButton = ({ grantId }: Props) => {
     <>
       <AlertDialog.Root>
         <AlertDialog.Trigger>
-          <Button color="red" disabled={isDeleting}>
+          <button
+            type="button"
+            disabled={isDeleting}
+            className={cn(
+              buttonVariants({ variant: "outline" }),
+              "w-full justify-start",
+            )}
+          >
             Delete Grant
             {isDeleting && <Spinner />}
-          </Button>
+          </button>
         </AlertDialog.Trigger>
         <AlertDialog.Content>
-          <AlertDialog.Title>Confirm Deletetion</AlertDialog.Title>
-          <AlertDialog.Description>
+          <AlertDialog.Title>Confirm deletion</AlertDialog.Title>
+          <AlertDialog.Description className="text-zinc-600">
             Are you sure you want to delet this grant? This action cannot be
             undone.
           </AlertDialog.Description>
           <Flex mt="4" gap="3">
             <AlertDialog.Cancel>
-              <Button variant="soft" color="gray">
+              <button
+                type="button"
+                className={buttonVariants({ variant: "outline" })}
+              >
                 Cancel
-              </Button>
+              </button>
             </AlertDialog.Cancel>
             <AlertDialog.Action>
-              <Button color="red" onClick={handleDeleteGrant}>
+              <button
+                type="button"
+                className={buttonVariants({ variant: "default" })}
+                onClick={handleDeleteGrant}
+              >
                 Delete Grant
-              </Button>
+              </button>
             </AlertDialog.Action>
           </Flex>
         </AlertDialog.Content>
@@ -62,13 +77,12 @@ const DeleteGrantButton = ({ grantId }: Props) => {
       <AlertDialog.Root open={error}>
         <AlertDialog.Content>
           <AlertDialog.Title>Error</AlertDialog.Title>
-          <AlertDialog.Description>
+          <AlertDialog.Description className="text-zinc-600">
             This grant cannot be deleted.
           </AlertDialog.Description>
           <Button
-            variant="soft"
-            color="gray"
-            mt="2"
+            variant="outline"
+            className="mt-2"
             onClick={() => {
               setError(false);
             }}

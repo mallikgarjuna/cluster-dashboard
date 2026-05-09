@@ -9,7 +9,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
   return (
     <>
       <NavBar />
-      {children}
+      <div className="page-shell pt-0">{children}</div>
     </>
   );
 }

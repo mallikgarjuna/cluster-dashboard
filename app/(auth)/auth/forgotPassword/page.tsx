@@ -5,15 +5,18 @@ import { FaUserLock } from "react-icons/fa";
 
 const ForgotPasswordPage = () => {
   return (
-    <div className="flex flex-col gap-4">
-      <h1 className="text-center text-2xl font-bold">
-        Send password reset link to your email
-      </h1>
-
-      <div className="flex gap-2">
+    <div className="auth-panel flex w-full max-w-2xl flex-col gap-8 md:flex-row md:items-center md:justify-between">
+      <div className="max-w-md space-y-3">
+        <h1 className="auth-heading">Forgot your password?</h1>
+        <p className="auth-subtle-copy">
+          Send a reset link to your email and regain access to the dashboard
+          with minimal friction.
+        </p>
         <ForgotPasswordForm />
+      </div>
 
-        <FaUserLock size={100} />
+      <div className="hidden h-28 w-28 items-center justify-center rounded-full border border-[var(--color-border)] bg-[var(--color-primary-soft)] text-[var(--color-primary)] md:flex">
+        <FaUserLock size={48} />
       </div>
     </div>
   );

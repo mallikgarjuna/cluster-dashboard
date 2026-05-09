@@ -22,22 +22,28 @@ const NavBar = () => {
   const { data: session, status } = useSession();
 
   return (
-    <nav className="border-b px-5 py-3">
-      <Container>
-        <Flex justify="between">
-          <Flex gap="3" align="center">
-            <Link href="/">
+    <nav className="sticky top-0 z-40 border-b border-[var(--color-border)] bg-white/80 backdrop-blur-xl">
+      <Container className="px-6 py-3 md:px-8">
+        <Flex justify="between" align="center" gap="4">
+          <Flex gap="4" align="center">
+            <Link
+              href="/"
+              className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-[var(--color-border)] bg-white text-[var(--color-primary)] transition-colors duration-200 hover:bg-[var(--color-primary-soft)]"
+            >
               <GrCluster />
-              {/* <ClusterLogo /> */}
             </Link>
-            {/* <NavLinks /> */}
-            <ul className="flex space-x-6">
+            <div className="hidden md:block">
+              <span className="font-display text-sm font-bold tracking-[-0.03em] text-[var(--color-text-primary)]">
+                Cluster Dashboard
+              </span>
+            </div>
+            <ul className="flex items-center gap-5">
               {links.map((link) => (
                 <li key={link.href}>
                   <Link
                     className={classnames({
                       "nav-link": true,
-                      "!text-blue-900": link.href === currentPath,
+                      "nav-link-active": link.href === currentPath,
                     })}
                     href={link.href}
                   >
@@ -48,24 +54,23 @@ const NavBar = () => {
             </ul>
           </Flex>
           <Flex gap="3" align="center">
-            {/* <AuthStatus /> */}
             {status === "loading" && <Skeleton width="4rem" />}
 
             {status === "unauthenticated" && (
-              <>
-                <Link className="nav-link" href="/auth/login">
-                  Log in
-                </Link>
-              </>
+              <Button asChild variant="outline" size="sm">
+                <Link href="/auth/login">Log in</Link>
+              </Button>
             )}
 
             {status === "authenticated" && (
               <Flex gap="3" align="center">
-                <p>User role: {session?.user?.role}</p>
+                <p className="hidden text-sm text-[var(--color-text-secondary)] md:block">
+                  {session?.user?.role}
+                </p>
 
                 <Button asChild variant="outline">
                   <Link href="/profile">
-                  {`${session.user.firstName} ${session.user.lastName}`}
+                    {`${session.user.firstName} ${session.user.lastName}`}
                   </Link>
                 </Button>
 
